@@ -4,6 +4,6 @@ data class GroupState(val members: List<GroupMemberState>)
 
 class GroupMemberState(
     val user: User,
-    val currentHeartRate: HeartRate,
+    val currentHeartRate: HeartRate?,
     val upperLimitHeartRate: HeartRate
 )

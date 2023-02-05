@@ -18,6 +18,13 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
+
+        /* Only used for polar SDK */
+        maven("https://jitpack.io") {
+            mavenContent {
+                includeGroup("com.github.polarofficial")
+            }
+        }
     }
 }
 

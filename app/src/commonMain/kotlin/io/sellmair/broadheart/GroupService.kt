@@ -46,7 +46,7 @@ val dummyGroupState
     get() = GroupState(
         dummyGroupStatic.members + GroupMemberState(
             user = Me.user,
-            currentHeartRate = HeartRate(130),
+            currentHeartRate = Me.myHeartRate,
             upperLimitHeartRate = Me.myLimit
         )
     )
