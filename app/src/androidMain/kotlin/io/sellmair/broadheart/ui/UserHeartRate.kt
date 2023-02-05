@@ -1,9 +1,6 @@
 package io.sellmair.broadheart.ui
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

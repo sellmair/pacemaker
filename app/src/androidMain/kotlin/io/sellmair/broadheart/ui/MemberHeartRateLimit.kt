@@ -14,8 +14,8 @@ import io.sellmair.broadheart.*
 fun MemberHeartRateLimit(memberState: GroupMemberState, range: ClosedRange<HeartRate>) {
     /* Render the respective limits */
     if (memberState.user == Me.user) {
-        MyStatusHeader(memberState)
         MyLimit(memberState, range)
+        MyStatusHeader(memberState)
     } else {
         OnHeartRateScalePosition(memberState.upperLimitHeartRate, range, side = ScaleSide.Left) {
             Canvas(
