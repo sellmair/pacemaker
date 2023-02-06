@@ -4,7 +4,7 @@ package io.sellmair.broadheart
 import kotlin.math.absoluteValue
 
 data class User(
-    val uuid: UUID,
+    val uuid: UserId,
     val name: String,
     val imageUrl: String? = null
 )

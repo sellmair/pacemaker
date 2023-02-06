@@ -1,4 +1,9 @@
 <manifest package="io.sellmair.broadheart" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
 
     <!-- Polar SDK needs Bluetooth scan permission to search for BLE devices. Polar BLE SDK doesn't use the scan
@@ -46,6 +51,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".MainService"/>
 
     </application>
 </manifest>

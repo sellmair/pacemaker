@@ -17,7 +17,7 @@ private val dummyGroupStatic = GroupState(
     members = listOf(
         GroupMemberState(
             user = User(
-                uuid = randomUUID(),
+                uuid = randomUID(),
                 name = "Michael Weingartner"
             ),
             currentHeartRate = HeartRate(124),
@@ -25,7 +25,7 @@ private val dummyGroupStatic = GroupState(
         ),
         GroupMemberState(
             user = User(
-                uuid = randomUUID(),
+                uuid = randomUID(),
                 name = "Sebastian Weingartner"
             ),
             currentHeartRate = HeartRate(110),
@@ -33,7 +33,7 @@ private val dummyGroupStatic = GroupState(
         ),
         GroupMemberState(
             user = User(
-                uuid = randomUUID(),
+                uuid = randomUID(),
                 name = "Christian Andreas"
             ),
             currentHeartRate = HeartRate(135),

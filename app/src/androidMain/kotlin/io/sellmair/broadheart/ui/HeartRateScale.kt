@@ -66,6 +66,6 @@ fun heartRateOfY(y: Float, range: ClosedRange<HeartRate>, height: Float): HeartR
     if (y > height) return range.start
     if (y < 0) return range.endInclusive
     val rangeWidth = range.endInclusive.value - range.start.value
-    val hr = (1 - y / height) * rangeWidth + range.start.value
+    val hr = range.endInclusive.value - (rangeWidth * y) / height
     return HeartRate(hr)
 }

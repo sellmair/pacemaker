@@ -2,7 +2,7 @@ package io.sellmair.broadheart
 
 object Me {
     val user = User(
-        uuid = randomUUID(),
+        uuid = randomUID(),
         name = "Sebastian Sellmair",
         imageUrl = null
     )
