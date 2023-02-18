@@ -1,7 +1,5 @@
 @file:Suppress("OPT_IN_USAGE_FUTURE_ERROR", "UnstableApiUsage")
 
-import android.annotation.SuppressLint
-
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
@@ -18,7 +16,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.4.3-dev-k1.8.20-Beta-15b4f4328eb"
     }
 }
 
@@ -54,5 +52,16 @@ kotlin {
     sourceSets.getByName("androidInstrumentedTest").dependencies {
         implementation(platform("androidx.compose:compose-bom:2022.12.00"))
         implementation("androidx.compose.ui:ui-test-junit4")
+    }
+
+    /* Requried for 1.8.20-Beta */
+    android().compilations.all {
+        kotlinOptions {
+            kotlinOptions {
+                freeCompilerArgs += listOf(
+                    "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+                )
+            }
+        }
     }
 }

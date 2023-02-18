@@ -7,10 +7,10 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("jvm") version "1.8.0"
-        kotlin("multiplatform") version "1.8.0"
-        kotlin("android") version "1.8.0"
-        id("com.android.application") version "7.4.0-beta02"
+        kotlin("jvm") version "1.8.20-Beta"
+        kotlin("multiplatform") version "1.8.20-Beta"
+        kotlin("android") version "1.8.20-Beta"
+        id("com.android.application") version "7.4.0"
     }
 }
 
@@ -23,6 +23,12 @@ dependencyResolutionManagement {
         maven("https://jitpack.io") {
             mavenContent {
                 includeGroup("com.github.polarofficial")
+            }
+        }
+
+        maven("https://androidx.dev/storage/compose-compiler/repository") {
+            mavenContent {
+                includeGroupByRegex("androidx.compose.*")
             }
         }
     }
