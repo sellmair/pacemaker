@@ -9,15 +9,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.*
+import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.service.GroupMemberState
 
 @Composable
 fun MemberHeartRateLimit(memberState: GroupMemberState, range: ClosedRange<HeartRate>) {
+    if(memberState.user == null || memberState.upperHeartRateLimit == null) return
+
     /* Render the respective limits */
-    if (memberState.user == Me.user) {
+    if (memberState.user.isMe) {
         MyLimit(memberState, range)
-        MyStatusHeader(memberState)
     } else {
-        OnHeartRateScalePosition(memberState.upperLimitHeartRate, range, side = ScaleSide.Left) {
+        OnHeartRateScalePosition(memberState.upperHeartRateLimit, range, side = ScaleSide.Left) {
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth(.4f)

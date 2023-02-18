@@ -3,7 +3,7 @@ package io.sellmair.broadheart.service
 import android.app.*
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import io.sellmair.broadheart.HeartRate
+import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.MainActivity
 
 class MainServiceNotification(private val service: Service) {
@@ -25,7 +25,7 @@ class MainServiceNotification(private val service: Service) {
         }
     }
 
-    private fun createDefautlNotification(): NotificationCompat.Builder {
+    private fun createDefaultNotification(): NotificationCompat.Builder {
         val notificationIntent = Intent(service, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(service, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -39,12 +39,12 @@ class MainServiceNotification(private val service: Service) {
 
 
     fun startForeground() {
-        service.startForeground(notificationId, createDefautlNotification().build())
+        service.startForeground(notificationId, createDefaultNotification().build())
     }
 
     fun update(myHeartRate: HeartRate, myHeartRateLimit: HeartRate) {
         notificationManager.notify(
-            notificationId, createDefautlNotification()
+            notificationId, createDefaultNotification()
                 .setContentText("Current HR: $myHeartRate Limit: $myHeartRateLimit")
                 .build()
         )

@@ -16,18 +16,22 @@ import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.User
 import io.sellmair.broadheart.displayColor
 import io.sellmair.broadheart.nameAbbreviation
-import io.sellmair.broadheart.toColor
+import io.sellmair.broadheart.service.GroupMemberState
 
 @Composable
 fun UserHead(
-    user: User,
+    memberState: GroupMemberState,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
 ) {
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(SolidColor(user.displayColor.toColor()))
+            drawCircle(SolidColor(memberState.displayColor.toColor()))
         }
-        Text(text = user.nameAbbreviation, color = Color.White, fontSize = 10.sp)
+        Text(
+            text = memberState.user?.nameAbbreviation ?: "?",
+            color = Color.White,
+            fontSize = 10.sp
+        )
     }
 }

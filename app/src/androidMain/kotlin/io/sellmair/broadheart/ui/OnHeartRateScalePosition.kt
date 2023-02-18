@@ -3,7 +3,7 @@ package io.sellmair.broadheart.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
-import io.sellmair.broadheart.HeartRate
+import io.sellmair.broadheart.hrSensor.HeartRate
 import kotlin.math.roundToInt
 
 enum class ScaleSide {

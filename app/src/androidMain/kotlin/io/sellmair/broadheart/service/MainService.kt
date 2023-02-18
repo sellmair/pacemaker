@@ -1,81 +1,69 @@
 package io.sellmair.broadheart.service
 
-import android.Manifest
-import android.app.*
+import android.app.Service
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.CombinedVibration
+import android.os.Binder
 import android.os.IBinder
-import android.os.VibrationEffect
-import android.os.VibratorManager
-import androidx.core.app.NotificationCompat
-import androidx.core.content.edit
-import com.polar.sdk.api.PolarBleApi
-import com.polar.sdk.api.PolarBleApiDefaultImpl
-import io.sellmair.broadheart.HeartRate
-import io.sellmair.broadheart.MainActivity
-import io.sellmair.broadheart.Me
+import io.sellmair.broadheart.hrSensor.HrReceiver
+import io.sellmair.broadheart.hrSensor.polar.PolarHrReceiver
 import kotlinx.coroutines.*
-import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
+import kotlin.coroutines.CoroutineContext
 
-class MainService : Service() {
+class MainService : Service(), CoroutineScope {
 
-    private val scope = CoroutineScope(Dispatchers.Main + Job())
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
+
+    data class Services(
+        val userService: UserService,
+        val groupService: GroupService
+    )
+
+    inner class MainServiceBinder : Binder() {
+        val services = Services(
+            userService = userService,
+            groupService = groupService
+        )
+    }
+
+    private val hrReceiver = HrReceiver(PolarHrReceiver(this))
+    private val notification = MainServiceNotification(this)
+    private val userService: UserService = AndroidUserService(this)
+    private val groupService = DefaultGroupService(userService)
+
 
     override fun onCreate() {
         super.onCreate()
-        val notification = MainServiceNotification(this)
-
-        /* Load my limit from shared preferences */
-        Me.myLimit = HeartRate(
-            getSharedPreferences("limit", MODE_PRIVATE)
-                .getFloat("limit", Me.myLimit.value)
-        )
-
         notification.startForeground()
+        launchHrLimitDaemon(this, groupService)
 
+        /* Connecting our hr receiver with the group service */
+        hrReceiver.measurements
+            .onEach { hrMeasurement -> groupService.push(hrMeasurement) }
+            .launchIn(this)
 
-        /* Update notification and vibrate if we're over limit */
-        scope.launch {
-            while (true) {
-                delay(1000)
-
-                val myHeartRate = Me.myHeartRate ?: continue
-                notification.update(myHeartRate, Me.myLimit)
-
-                if (myHeartRate > Me.myLimit) {
-                    val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                    vibratorManager.vibrate(
-                        CombinedVibration.createParallel(
-                            VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
-                        )
+        /* Update notification showing current users heart rate */
+        launch {
+            val currentUser = userService.currentUser()
+            groupService.groupState
+                .mapNotNull { it.members.find { it.user?.uuid == currentUser.uuid } }
+                .collect { currentUserState ->
+                    notification.update(
+                        currentUserState.currentHeartRate ?: return@collect,
+                        currentUserState.upperHeartRateLimit ?: return@collect
                     )
                 }
-            }
-        }
-
-        /* Start receiving HR updates */
-        if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-            val api = PolarBleApiDefaultImpl.defaultImplementation(this, PolarBleApi.FEATURE_HR)
-
-            scope.launch {
-                api.startListenForPolarHrBroadcasts(null).asFlow().collect { broadcast ->
-                    Me.myHeartRate = HeartRate(broadcast.hr)
-                }
-            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        /* Store limit in shared preferences */
-        getSharedPreferences("limit", MODE_PRIVATE).edit(true) {
-            putFloat("limit", Me.myLimit.value)
-        }
-        scope.cancel()
+        cancel()
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
+    override fun onBind(intent: Intent?): IBinder {
+        return MainServiceBinder()
     }
 }

@@ -13,7 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.*
+import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.hrSensor.step
+import io.sellmair.broadheart.service.GroupState
 import kotlin.math.roundToInt
 
 

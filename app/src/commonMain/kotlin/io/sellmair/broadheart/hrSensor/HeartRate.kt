@@ -1,4 +1,4 @@
-package io.sellmair.broadheart
+package io.sellmair.broadheart.hrSensor
 
 import kotlin.jvm.JvmInline
 import kotlin.math.roundToInt

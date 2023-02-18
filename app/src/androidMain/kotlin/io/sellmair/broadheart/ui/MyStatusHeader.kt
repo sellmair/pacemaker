@@ -2,7 +2,6 @@ package io.sellmair.broadheart.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -21,10 +20,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.*
+import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.service.GroupState
 
 
 @Composable
-fun MyStatusHeader(state: GroupMemberState) {
+fun MyStatusHeader(state: GroupState?) {
+    val myState = state?.members.orEmpty()
+        .find { groupMemberState -> groupMemberState.user?.isMe == true }
+
     Box {
         Column(
             Modifier
@@ -47,7 +51,7 @@ fun MyStatusHeader(state: GroupMemberState) {
                     .height(IntrinsicSize.Min)
             ) {
                 Text(
-                    state.currentHeartRate?.toString() ?: "N/A",
+                    myState?.currentHeartRate?.toString() ?: "N/A",
                     fontWeight = FontWeight.Black,
                     fontSize = 48.sp,
                     modifier = Modifier
@@ -56,8 +60,10 @@ fun MyStatusHeader(state: GroupMemberState) {
                 )
 
                 Button(
-                    colors = ButtonDefaults.buttonColors(containerColor = Me.user.displayColor.toColor()),
-                    onClick = { Log.d("x", "click")},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = myState?.displayColor?.toColor() ?: Color.Gray
+                    ),
+                    onClick = { Log.d("x", "click") },
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(24.dp),
@@ -66,18 +72,19 @@ fun MyStatusHeader(state: GroupMemberState) {
                 }
             }
 
-            Text(
-                state.upperLimitHeartRate.toString(),
-                Modifier.offset(y = (-4).dp),
-                fontWeight = FontWeight.Light,
-                fontSize = 10.sp,
-                color = state.user.displayColor.toColor()
-            )
+            if (myState?.upperHeartRateLimit != null)
+                Text(
+                    myState.upperHeartRateLimit.toString(),
+                    Modifier.offset(y = (-4).dp),
+                    fontWeight = FontWeight.Light,
+                    fontSize = 10.sp,
+                    color = myState.displayColor.toColor()
+                )
 
             Icon(
                 Icons.Outlined.FavoriteBorder, "Heart",
                 Modifier.offset(y = (-4).dp),
-                tint = state.user.displayColorLight.toColor()
+                tint = myState?.displayColorLight?.toColor() ?: Color.Gray
             )
         }
     }

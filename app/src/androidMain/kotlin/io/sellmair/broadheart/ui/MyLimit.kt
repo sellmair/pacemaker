@@ -15,14 +15,19 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.*
+import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.service.GroupMemberState
 
 @Composable
 fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
+    if (state.user == null) return
+    if (state.upperHeartRateLimit == null) return
+
     var isDragging: Boolean by remember { mutableStateOf(false) }
     var parentSize: IntSize? = null
 
     OnHeartRateScalePosition(
-        state.upperLimitHeartRate, range,
+        state.upperHeartRateLimit, range,
         side = ScaleSide.Right,
         modifier = Modifier
             .onPlaced { coordinates ->
@@ -36,7 +41,7 @@ fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
                     val newY = change.position.y
                     val parentHeight = parentSize?.height ?: return@detectVerticalDragGestures
                     val newHeartRate = heartRateOfY(newY, range, parentHeight.toFloat())
-                    Me.myLimit = newHeartRate
+                    //Me.myLimit = newHeartRate // TODO NOW!
                     Log.d("Logic", "new HR: $newHeartRate")
                 }
             }
@@ -59,7 +64,7 @@ fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
 
         if (isDragging) {
             Text(
-                state.upperLimitHeartRate.toString(), lineHeight = 12.sp,
+                state.upperHeartRateLimit.toString(), lineHeight = 12.sp,
                 modifier = Modifier.padding(start = 45.dp)
             )
         }

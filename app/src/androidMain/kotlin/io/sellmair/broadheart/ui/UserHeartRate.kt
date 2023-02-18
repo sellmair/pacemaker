@@ -16,10 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.*
+import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.service.GroupMemberState
 
 @Composable
 fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRate>) {
-    val side = if (state.user == Me.user) ScaleSide.Right else ScaleSide.Left
+    val side = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
     if (state.currentHeartRate == null) return
 
     val animatedHeartRate = remember { Animatable(state.currentHeartRate.value) }
@@ -34,20 +36,24 @@ fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRa
             end = if (side == ScaleSide.Left) 48.dp else 0.dp
         )
     ) {
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            UserHead(state.user, modifier = Modifier.padding(horizontal = 4.dp))
-            if (state.currentHeartRate > state.upperLimitHeartRate) {
-                Icon(
-                    Icons.Default.Warning, "Too high",
-                    modifier = Modifier.size(12.dp),
-                    tint = Color.Red
-                )
-            } else {
-                Icon(
-                    Icons.Default.ThumbUp, "OK",
-                    modifier = Modifier.size(12.dp),
-                    tint = state.user.displayColorLight.toColor()
-                )
+            UserHead(state, modifier = Modifier.padding(horizontal = 4.dp))
+
+            if (state.upperHeartRateLimit != null) {
+                if (state.currentHeartRate > state.upperHeartRateLimit) {
+                    Icon(
+                        Icons.Default.Warning, "Too high",
+                        modifier = Modifier.size(12.dp),
+                        tint = Color.Red
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.ThumbUp, "OK",
+                        modifier = Modifier.size(12.dp),
+                        tint = state.displayColorLight.toColor()
+                    )
+                }
             }
         }
     }
