@@ -9,17 +9,16 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.MainService
 import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.ui.HeartRateScale
-import io.sellmair.broadheart.ui.MyStatusHeader
+import io.sellmair.broadheart.ui.MainPage
+import io.sellmair.broadheart.ui.Route
+import io.sellmair.broadheart.ui.SettingsPage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
@@ -38,13 +37,23 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT), 0)
         startForegroundService()
 
-        val groupStates = mainServiceConnection.groupServices
+        val groupStates = mainServiceConnection.groupService
             .flatMapLatest { servicesOrNull -> servicesOrNull?.groupState ?: flowOf(null) }
 
         setContent {
+            var route by remember { mutableStateOf(Route.MainPage) }
             val groupState by groupStates.collectAsState(null)
-            HeartRateScale(groupState)
-            MyStatusHeader(groupState)
+
+            when (route) {
+                Route.MainPage -> MainPage(groupState = groupState, onRoute = { route = it })
+                Route.SettingsPage -> {
+                    BackHandler { route = Route.MainPage }
+                    SettingsPage(
+                        userService = mainServiceConnection.userService.value ?: return@setContent,
+                        groupService = mainServiceConnection.groupService.value ?: return@setContent,
+                    )
+                }
+            }
         }
     }
 
@@ -53,7 +62,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         private val _groupService = MutableStateFlow<GroupService?>(null)
 
         val userService = _userService.asStateFlow()
-        val groupServices = _groupService.asStateFlow()
+        val groupService = _groupService.asStateFlow()
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is MainService.MainServiceBinder) {

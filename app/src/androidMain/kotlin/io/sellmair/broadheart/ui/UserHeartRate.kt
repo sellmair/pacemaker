@@ -38,7 +38,9 @@ fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRa
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            UserHead(state, modifier = Modifier.padding(horizontal = 4.dp))
+            UserHead(state, modifier = Modifier
+                .padding(horizontal = 4.dp)
+            )
 
             if (state.upperHeartRateLimit != null) {
                 if (state.currentHeartRate > state.upperHeartRateLimit) {

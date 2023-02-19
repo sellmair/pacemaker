@@ -10,7 +10,8 @@ import kotlin.time.Duration.Companion.minutes
 
 interface GroupService {
     val groupState: StateFlow<GroupState>
-    suspend fun push(measurement: HrMeasurement)
+    suspend fun add(measurement: HrMeasurement)
+    suspend fun updateState()
 }
 
 class DefaultGroupService(
@@ -20,9 +21,11 @@ class DefaultGroupService(
     private val _groupState = MutableStateFlow(GroupState(emptyList()))
     override val groupState: StateFlow<GroupState> = _groupState.asStateFlow()
 
-    override suspend fun push(measurement: HrMeasurement) {
+    override suspend fun add(measurement: HrMeasurement) {
         measurements.add(measurement)
+    }
 
+    override suspend fun updateState() {
         val nextState = withContext(Dispatchers.Default) {
             calculateGroupState(userService, measurements)
         }

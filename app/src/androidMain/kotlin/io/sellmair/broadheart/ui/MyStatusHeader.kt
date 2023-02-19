@@ -25,7 +25,10 @@ import io.sellmair.broadheart.service.GroupState
 
 
 @Composable
-fun MyStatusHeader(state: GroupState?) {
+fun MyStatusHeader(
+    state: GroupState?,
+    onSettingsClicked: () -> Unit
+) {
     val myState = state?.members.orEmpty()
         .find { groupMemberState -> groupMemberState.user?.isMe == true }
 
@@ -63,7 +66,7 @@ fun MyStatusHeader(state: GroupState?) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = myState?.displayColor?.toColor() ?: Color.Gray
                     ),
-                    onClick = { Log.d("x", "click") },
+                    onClick = onSettingsClicked,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(24.dp),
