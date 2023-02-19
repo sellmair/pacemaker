@@ -146,7 +146,7 @@ fun NearbyDeviceCard(
                 }
 
 
-                if (state.user == me) {
+                if (state.user?.isMe == true) {
                     ElevatedButton(
                         onClick = {
                             onEvent(SettingsPageEvent.UnlinkSensor(state.sensorInfo.id))

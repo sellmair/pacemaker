@@ -61,8 +61,7 @@ fun SettingsPageDevicesList(
                 compareBy<GroupMemberState> { it.user?.isMe?.let { 0 } ?: 1 }
                     .then(compareBy { it.sensorInfo?.id?.value.orEmpty() })
             )
-        LazyColumn(
-        ) {
+        LazyColumn {
             items(memberStates) { member ->
                 Box(
                     modifier = Modifier

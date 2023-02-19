@@ -66,7 +66,7 @@ class MainService : Service(), CoroutineScope {
         launch {
             val currentUser = userService.currentUser()
             groupService.groupState
-                .mapNotNull { it.members.find { it.user?.id == currentUser.id } }
+                .mapNotNull { it.members.find { it.user?.isMe == true } }
                 .collect { currentUserState ->
                     notification.update(
                         currentUserState.currentHeartRate ?: return@collect,
