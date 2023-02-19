@@ -10,15 +10,21 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.MainService
 import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.ui.mainPage.MainPage
 import io.sellmair.broadheart.ui.Route
+import io.sellmair.broadheart.ui.mainPage.MainPage
 import io.sellmair.broadheart.ui.settingsPage.SettingsPage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -33,6 +39,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     private val mainServiceConnection = MainServiceConnection()
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         coroutineContext = Dispatchers.Main + Job()
@@ -47,19 +54,30 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             var route by remember { mutableStateOf(Route.MainPage) }
             val groupState by groupStates.collectAsState(null)
 
-            when (route) {
-                Route.MainPage -> MainPage(
-                    groupState = groupState,
-                    onRoute = { route = it },
-                    onMyHeartRateLimitChanged = { newHeartRateLimit ->
-                        mainServiceConnection.updateHeartRateLimitChannel.trySend(newHeartRateLimit)
-                    }
-                )
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedVisibility(
+                    visible = route == Route.MainPage,
+                    enter = slideInHorizontally(tween(250, 250)) + fadeIn(tween(500, 250)),
+                    exit = slideOutHorizontally(tween(500)) + fadeOut(tween(250))
+                ) {
+                    MainPage(
+                        groupState = groupState,
+                        onRoute = { route = it },
+                        onMyHeartRateLimitChanged = { newHeartRateLimit ->
+                            mainServiceConnection.updateHeartRateLimitChannel.trySend(newHeartRateLimit)
+                        }
+                    )
+                }
 
-                Route.SettingsPage -> {
+                AnimatedVisibility(
+                    visible = route == Route.SettingsPage,
+                    enter = slideInHorizontally(tween(250, 250), initialOffsetX = { it }) + fadeIn(tween(500, 250)),
+                    exit = slideOutHorizontally(tween(500), targetOffsetX = { it } ) + fadeOut(tween(250))
+                ) {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.White))
                     SettingsPage(
-                        userService = mainServiceConnection.userService.value ?: return@setContent,
-                        groupService = mainServiceConnection.groupService.value ?: return@setContent,
+                        userService = mainServiceConnection.userService.value ?: return@AnimatedVisibility,
+                        groupService = mainServiceConnection.groupService.value ?: return@AnimatedVisibility,
                         onBack = { route = Route.MainPage }
                     )
                 }
