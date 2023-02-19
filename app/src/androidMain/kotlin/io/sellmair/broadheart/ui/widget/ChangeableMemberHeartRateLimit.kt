@@ -21,11 +21,13 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ChangeableMemberHeartRateLimit(
-    state: GroupMemberState, range: ClosedRange<HeartRate>,
+    state: GroupMemberState,
+    range: ClosedRange<HeartRate>,
+    horizontalCenterBias: Float = .5f,
+    side: ScaleSide = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left,
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
     if (state.user == null) return
-    if (!state.user.isMe) return
     if (state.upperHeartRateLimit == null) return
 
     var myHeartRateLimit by remember { mutableStateOf(state.upperHeartRateLimit) }
@@ -36,7 +38,8 @@ fun ChangeableMemberHeartRateLimit(
     OnHeartRateScalePosition(
         heartRate = myHeartRateLimit,
         range = range,
-        side = if (state.user.isMe) ScaleSide.Right else ScaleSide.Left,
+        side = side,
+        horizontalCenterBias = horizontalCenterBias,
         modifier = Modifier
             .onPlaced { coordinates ->
                 parentSize = coordinates.parentCoordinates?.size

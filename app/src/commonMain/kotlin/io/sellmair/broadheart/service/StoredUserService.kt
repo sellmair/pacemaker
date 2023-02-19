@@ -10,6 +10,8 @@ import io.sellmair.broadheart.randomUserId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -48,9 +50,21 @@ class StoredUserService(
         }
     }
 
-    override suspend fun saveSensorId(user: User, sensorId: HrSensorId) {
+    override suspend fun delete(user: User) {
+        write {
+            users.remove(user.id)
+        }
+    }
+
+    override suspend fun linkSensor(user: User, sensorId: HrSensorId) {
         write {
             userIdBySensorId[sensorId] = user.id
+        }
+    }
+
+    override suspend fun unlinkSensor(sensorId: HrSensorId) {
+        write {
+            userIdBySensorId.remove(sensorId)
         }
     }
 
@@ -75,15 +89,19 @@ class StoredUserService(
 
     /* IO */
 
+    private val mutex = Mutex()
+
     private suspend inline fun <T> read(readAction: () -> T): T {
         initialLoad.await()
-        return readAction()
+        return mutex.withLock { readAction() }
     }
 
     private suspend inline fun <T> write(writeAction: () -> T): T {
         initialLoad.await()
         return try {
-            writeAction()
+            mutex.withLock {
+                writeAction()
+            }
         } finally {
             onWriteActionPerformedChannel.send(Unit)
         }

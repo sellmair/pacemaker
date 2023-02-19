@@ -11,6 +11,7 @@ data class User(
     val isMe: Boolean,
     val id: UserId,
     val name: String,
+    val isAdhoc: Boolean = false,
     val imageUrl: String? = null
 )
 
@@ -33,14 +34,14 @@ data class HSLColor(
 
 val User.displayColorLight: HSLColor
     get() = HSLColor(
-        hue = name.hashCode().toFloat().absoluteValue % 360f,
+        hue = id.hashCode().toFloat().absoluteValue % 360f,
         saturation = 0.7f,
         lightness = 0.75f
     )
 
 val User.displayColor: HSLColor
     get() = HSLColor(
-        hue = name.hashCode().toFloat().absoluteValue % 360f,
+        hue = id.hashCode().toFloat().absoluteValue % 360f,
         saturation = .5f,
         lightness = .4f
     )

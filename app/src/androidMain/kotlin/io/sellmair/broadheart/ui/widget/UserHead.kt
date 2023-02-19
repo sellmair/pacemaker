@@ -24,12 +24,28 @@ fun UserHead(
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
 ) {
+    UserHead(
+        abbreviation = memberState.user?.nameAbbreviation ?: "?",
+        color = memberState.displayColor.toColor(),
+        modifier = modifier,
+        size = size
+    )
+}
+
+
+@Composable
+fun UserHead(
+    abbreviation: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    size: Dp = 24.dp,
+) {
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(SolidColor(memberState.displayColor.toColor()))
+            drawCircle(SolidColor(color))
         }
         Text(
-            text = memberState.user?.nameAbbreviation ?: "?",
+            text = abbreviation,
             color = Color.White,
             fontSize = 10.sp
         )

@@ -37,6 +37,7 @@ kotlin {
         implementation("androidx.activity:activity-compose:1.7.0-alpha04")
         implementation("androidx.compose.material3:material3")
         implementation("androidx.compose.ui:ui-tooling-preview")
+        implementation("androidx.compose.material:material-icons-extended:1.3.1")
 
         /* Polar SDK and dependencies */
         implementation("com.github.polarofficial:polar-ble-sdk:4.0.0")

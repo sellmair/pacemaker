@@ -27,7 +27,7 @@ class DefaultGroupService(
 
     override suspend fun updateState() {
         val nextState = withContext(Dispatchers.Default) {
-            calculateGroupState(userService, measurements)
+            calculateGroupState(userService, measurements.toList())
         }
 
         _groupState.emit(nextState)

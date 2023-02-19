@@ -57,10 +57,10 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 )
 
                 Route.SettingsPage -> {
-                    BackHandler { route = Route.MainPage }
                     SettingsPage(
                         userService = mainServiceConnection.userService.value ?: return@setContent,
                         groupService = mainServiceConnection.groupService.value ?: return@setContent,
+                        onBack = { route = Route.MainPage }
                     )
                 }
             }

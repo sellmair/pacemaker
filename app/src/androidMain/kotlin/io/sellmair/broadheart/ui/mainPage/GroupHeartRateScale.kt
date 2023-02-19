@@ -19,7 +19,7 @@ fun GroupHeartRateOverview(
     range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f),
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}
 ) {
-    HeartRateScale(range) {
+    HeartRateScale(range = range) {
         state?.members.orEmpty().forEach { memberState ->
             MemberHeartRateIndicator(memberState, range)
 

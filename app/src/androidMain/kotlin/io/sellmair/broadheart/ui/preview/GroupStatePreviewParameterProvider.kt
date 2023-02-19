@@ -7,3 +7,4 @@ class GroupStatePreviewParameterProvider : PreviewParameterProvider<GroupState?>
     override val values: Sequence<GroupState?>
         get() = sequenceOf(null)
 }
+

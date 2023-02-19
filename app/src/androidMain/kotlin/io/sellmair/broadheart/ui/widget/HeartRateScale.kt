@@ -20,13 +20,21 @@ import kotlin.math.roundToInt
 @Preview(heightDp = 400, widthDp = 200)
 @Composable
 fun HeartRateScale(
+    modifier: Modifier = Modifier,
     range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f),
-    content: @Composable () -> Unit = {}
+    horizontalCenterBias: Float = .5f,
+    content: @Composable () -> Unit = {},
 ) {
-    Box {
+    Box(modifier) {
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
+            val center = drawContext.size.run {
+                Offset(
+                    x = horizontalCenterBias * width,
+                    y = height / 2f
+                )
+            }
             val brush = SolidColor(Color.Gray)
             drawLine(brush, Offset(center.x, 0f), Offset(center.x, size.height), strokeWidth = 3f)
 
@@ -37,7 +45,12 @@ fun HeartRateScale(
         }
 
         (range step 5).map(::HeartRate).forEach { heartRate ->
-            OnHeartRateScalePosition(heartRate, range, modifier = Modifier.padding(start = 24.dp)) {
+            OnHeartRateScalePosition(
+                heartRate = heartRate,
+                range = range,
+                horizontalCenterBias = horizontalCenterBias,
+                modifier = Modifier.padding(start = 24.dp)
+            ) {
                 val isEmphasized = heartRate.value.roundToInt() % 10 == 0
                 Text(
                     heartRate.toString(),

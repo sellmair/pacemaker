@@ -1,123 +1,107 @@
 package io.sellmair.broadheart.ui.settingsPage
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.*
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.User
-import io.sellmair.broadheart.hrSensor.HrSensorInfo
+import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.hrSensor.HrSensorId
+import io.sellmair.broadheart.randomUserId
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.ui.widget.UserHead
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalMaterial3Api::class)
+sealed interface SettingsPageEvent {
+    object Back : SettingsPageEvent
+    data class UpdateMe(val user: User) : SettingsPageEvent
+    data class LinkSensor(val user: User, val sensor: HrSensorId) : SettingsPageEvent
+    data class UnlinkSensor(val sensor: HrSensorId) : SettingsPageEvent
+    data class CreateAdhocUser(val sensor: HrSensorId) : SettingsPageEvent
+    data class UpdateAdhocUser(val user: User) : SettingsPageEvent
+    data class DeleteAdhocUser(val user: User) : SettingsPageEvent
+    data class UpdateAdhocUserLimit(val user: User, val limit: HeartRate) : SettingsPageEvent
+}
+
 @Composable
 fun SettingsPage(
     userService: UserService,
     groupService: GroupService,
+    onBack: () -> Unit = {}
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    var currentUser by remember { mutableStateOf<User?>(null) }
+    BackHandler { onBack() }
+
+    var me by remember { mutableStateOf<User?>(null) }
     val groupState by groupService.groupState.collectAsState(null)
 
+    val eventChannel = remember { Channel<SettingsPageEvent>(Channel.UNLIMITED) }
+
+    /* Process incoming events */
     LaunchedEffect(Unit) {
-        currentUser = userService.currentUser()
-    }
+        eventChannel.consumeEach { event ->
+            when (event) {
+                is SettingsPageEvent.Back -> {
+                    onBack()
+                }
 
-    Column(Modifier.fillMaxSize()) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = currentUser?.name.orEmpty(),
-                onValueChange = { text ->
-                    currentUser = currentUser?.copy(name = text)
-                    currentUser?.let { updateUser ->
-                        coroutineScope.launch { userService.save(updateUser) }
-                    }
-                },
-                label = {},
-                textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center),
-                singleLine = true,
-                shape = TextFieldDefaults.outlinedShape,
-            )
-        }
+                is SettingsPageEvent.LinkSensor -> {
+                    userService.linkSensor(event.user, event.sensor)
+                }
 
-        LazyColumn {
-            items(groupState?.members.orEmpty()) { memberState ->
+                is SettingsPageEvent.UnlinkSensor -> {
+                    userService.unlinkSensor(event.sensor)
+                }
 
-                ElevatedCard(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 12.dp)
-                        .clickable {
-                            coroutineScope.launch {
-                                userService.saveSensorId(
-                                    userService.currentUser(),
-                                    memberState.sensorInfo?.id ?: return@launch
-                                )
-                            }
-                        },
-                    elevation = CardDefaults.cardElevation(),
-                ) {
+                is SettingsPageEvent.UpdateMe -> {
+                    userService.save(event.user)
+                    me = event.user
+                }
 
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp)
-                    ) {
-                        UserHead(
-                            memberState = memberState,
-                            size = 48.dp,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        Column(Modifier.padding(horizontal = 24.dp)) {
-                            if (memberState.user != null) {
-                                Text(memberState.user.name)
-                            }
-                            if (memberState.sensorInfo != null) {
-                                Column {
-                                    if (memberState.currentHeartRate != null) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.Favorite, "HR", Modifier.size(12.dp))
-                                            Text(memberState.currentHeartRate.value.roundToInt().toString())
-                                        }
-                                    }
+                is SettingsPageEvent.CreateAdhocUser -> {
+                    val id = randomUserId()
+                    val adhocUser = User(
+                        isMe = false,
+                        id = id,
+                        name = "Adhoc ${id.value.absoluteValue % 1000}",
+                        isAdhoc = true
+                    )
+                    userService.save(adhocUser)
+                    userService.linkSensor(adhocUser, event.sensor)
+                    userService.saveUpperHeartRateLimit(adhocUser, HeartRate(130))
+                    groupService.updateState()
+                }
 
-                                    if (memberState.sensorInfo.rssi != null) {
-                                        Text("${memberState.sensorInfo.rssi} db")
-                                    }
+                is SettingsPageEvent.UpdateAdhocUser -> {
+                    userService.save(event.user)
+                    groupService.updateState()
+                }
 
-                                    Text(memberState.sensorInfo.id.value)
+                is SettingsPageEvent.DeleteAdhocUser -> {
+                    userService.delete(event.user)
+                    groupService.updateState()
+                }
 
-                                    when (memberState.sensorInfo.vendor) {
-                                        HrSensorInfo.Vendor.Polar -> Text("Polar")
-                                        HrSensorInfo.Vendor.Garmin -> Text("Garmin")
-                                        HrSensorInfo.Vendor.Unknown -> Unit
-                                    }
-                                }
-                            }
-                        }
-                    }
+                is SettingsPageEvent.UpdateAdhocUserLimit -> {
+                    userService.saveUpperHeartRateLimit(event.user, event.limit)
+                    groupService.updateState()
                 }
             }
+
+            groupService.updateState()
         }
     }
+
+    /* Initially load 'me' */
+    LaunchedEffect(Unit) {
+        me = userService.currentUser()
+    }
+
+    me?.let { nonNullMe ->
+        SettingsPageContent(
+            me = nonNullMe,
+            groupState = groupState,
+            onEvent = { event -> eventChannel.trySend(event) }
+        )
+    }
 }
+

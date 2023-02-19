@@ -1,6 +1,7 @@
 package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import io.sellmair.broadheart.hrSensor.HeartRate
@@ -15,6 +16,7 @@ fun OnHeartRateScalePosition(
     heartRate: HeartRate,
     range: ClosedRange<HeartRate>,
     modifier: Modifier = Modifier,
+    horizontalCenterBias: Float = .5f,
     side: ScaleSide = ScaleSide.Right,
     content: @Composable () -> Unit
 ) {
@@ -24,8 +26,8 @@ fun OnHeartRateScalePosition(
             placeables.forEach { placeable ->
                 placeable.placeRelative(
                     x = when (side) {
-                        ScaleSide.Right -> (constraints.maxWidth / 2f).roundToInt()
-                        ScaleSide.Left -> ((constraints.maxWidth / 2f) - placeable.width).roundToInt()
+                        ScaleSide.Right -> constraints.maxWidth.times(horizontalCenterBias).roundToInt()
+                        ScaleSide.Left -> (constraints.maxWidth.times(horizontalCenterBias) - placeable.width).roundToInt()
                     },
                     y = yOfHeartRate(
                         HeartRate(heartRate.value), range, constraints.maxHeight.toFloat()
