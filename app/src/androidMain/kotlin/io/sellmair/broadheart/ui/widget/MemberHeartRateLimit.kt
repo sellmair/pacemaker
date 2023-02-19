@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.*
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.ui.toColor
 
 @Composable
 fun MemberHeartRateLimit(

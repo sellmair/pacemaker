@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
@@ -10,12 +10,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.hrSensor.step
-import io.sellmair.broadheart.service.GroupState
 import kotlin.math.roundToInt
 
 

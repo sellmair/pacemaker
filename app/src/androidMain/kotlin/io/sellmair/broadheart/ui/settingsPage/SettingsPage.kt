@@ -1,6 +1,5 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.settingsPage
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +18,7 @@ import io.sellmair.broadheart.User
 import io.sellmair.broadheart.hrSensor.HrSensorInfo
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.UserService
+import io.sellmair.broadheart.ui.widget.UserHead
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

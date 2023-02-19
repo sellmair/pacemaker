@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

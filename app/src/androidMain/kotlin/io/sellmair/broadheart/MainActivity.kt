@@ -17,9 +17,9 @@ import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.MainService
 import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.ui.MainPage
+import io.sellmair.broadheart.ui.mainPage.MainPage
 import io.sellmair.broadheart.ui.Route
-import io.sellmair.broadheart.ui.SettingsPage
+import io.sellmair.broadheart.ui.settingsPage.SettingsPage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach

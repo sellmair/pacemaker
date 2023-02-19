@@ -1,6 +1,5 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.widget
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
@@ -14,9 +13,10 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.*
+import io.sellmair.broadheart.displayColorLight
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.ui.toColor
 import kotlin.math.roundToInt
 
 @Composable

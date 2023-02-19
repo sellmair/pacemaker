@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Row
@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.*
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.ui.toColor
 
 @Composable
 fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRate>) {
@@ -38,8 +39,10 @@ fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRa
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            UserHead(state, modifier = Modifier
-                .padding(horizontal = 4.dp)
+            UserHead(
+                memberState = state,
+                modifier = Modifier
+                    .padding(horizontal = 4.dp)
             )
 
             if (state.upperHeartRateLimit != null) {

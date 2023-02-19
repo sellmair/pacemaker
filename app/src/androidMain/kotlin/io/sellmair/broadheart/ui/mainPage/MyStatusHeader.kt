@@ -1,6 +1,5 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.mainPage
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -20,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.*
-import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.service.GroupState
+import io.sellmair.broadheart.ui.toColor
 
 
 @Composable

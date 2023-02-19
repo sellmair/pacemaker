@@ -1,8 +1,9 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.broadheart.ui.mainPage
 
 import androidx.compose.runtime.Composable
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupState
+import io.sellmair.broadheart.ui.Route
 
 @Composable
 fun MainPage(
@@ -10,7 +11,7 @@ fun MainPage(
     onRoute: (Route) -> Unit,
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}
 ) {
-    GroupHeartRateScale(
+    GroupHeartRateOverview(
         state = groupState,
         onMyHeartRateLimitChanged = onMyHeartRateLimitChanged
     )
