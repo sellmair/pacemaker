@@ -44,7 +44,13 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         coroutineContext = Dispatchers.Main + Job()
 
-        requestPermissions(arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT), 0)
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_ADVERTISE
+            ), 0
+        )
         startForegroundService()
 
         val groupStates = mainServiceConnection.groupService
@@ -72,9 +78,13 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 AnimatedVisibility(
                     visible = route == Route.SettingsPage,
                     enter = slideInHorizontally(tween(250, 250), initialOffsetX = { it }) + fadeIn(tween(500, 250)),
-                    exit = slideOutHorizontally(tween(500), targetOffsetX = { it } ) + fadeOut(tween(250))
+                    exit = slideOutHorizontally(tween(500), targetOffsetX = { it }) + fadeOut(tween(250))
                 ) {
-                    Box(modifier = Modifier.fillMaxSize().background(Color.White))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    )
                     SettingsPage(
                         userService = mainServiceConnection.userService.value ?: return@AnimatedVisibility,
                         groupService = mainServiceConnection.groupService.value ?: return@AnimatedVisibility,

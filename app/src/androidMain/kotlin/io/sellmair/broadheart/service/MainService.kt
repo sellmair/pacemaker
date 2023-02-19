@@ -7,9 +7,7 @@ import android.os.IBinder
 import io.sellmair.broadheart.hrSensor.HrReceiver
 import io.sellmair.broadheart.hrSensor.polar.PolarHrReceiver
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
@@ -64,7 +62,6 @@ class MainService : Service(), CoroutineScope {
 
         /* Update notification showing current users heart rate */
         launch {
-            val currentUser = userService.currentUser()
             groupService.groupState
                 .mapNotNull { it.members.find { it.user?.isMe == true } }
                 .collect { currentUserState ->
@@ -74,6 +71,24 @@ class MainService : Service(), CoroutineScope {
                     )
                 }
         }
+
+        /* Start broadcasting my own state to other participants */
+        launch {
+            val broadcastService = AndroidBroadcastService(AndroidBroadcaster(this@MainService))
+            groupService.groupState
+                .filterNotNull()
+                .mapNotNull { it.members.find { it.user?.isMe == true } }
+                .collect { groupState -> broadcastService.broadcastMyState(groupState) }
+        }
+
+
+        /* Receive broadcasts */
+        launch {
+            AndroidBroadcastReceiver(this@MainService).collect {
+                println(it)
+            }
+        }
+
     }
 
     override fun onDestroy() {

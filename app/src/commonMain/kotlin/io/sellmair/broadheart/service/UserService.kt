@@ -17,4 +17,3 @@ interface UserService {
     suspend fun findUser(sensorId: HrSensorId): User?
     suspend fun findUpperHeartRateLimit(user: User): HeartRate?
 }
-
