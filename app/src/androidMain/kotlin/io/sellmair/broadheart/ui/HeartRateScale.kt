@@ -19,11 +19,11 @@ import io.sellmair.broadheart.service.GroupState
 import kotlin.math.roundToInt
 
 
-@Preview(heightDp = 200, widthDp = 100)
+@Preview(heightDp = 400, widthDp = 200)
 @Composable
 fun HeartRateScale(
-    @PreviewParameter(GroupStatePreviewParameterProvider::class) state: GroupState?,
-    range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f)
+    range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f),
+    content: @Composable () -> Unit = {}
 ) {
     Box {
         Canvas(
@@ -49,10 +49,7 @@ fun HeartRateScale(
             }
         }
 
-        state?.members.orEmpty().forEach { memberState ->
-            MemberHeartRateIndicator(memberState, range)
-            MemberHeartRateLimit(memberState, range)
-        }
+        content()
     }
 }
 

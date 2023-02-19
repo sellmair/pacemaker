@@ -49,6 +49,9 @@ fun SettingsPage(
                 value = currentUser?.name.orEmpty(),
                 onValueChange = { text ->
                     currentUser = currentUser?.copy(name = text)
+                    currentUser?.let { updateUser ->
+                        coroutineScope.launch { userService.save(updateUser) }
+                    }
                 },
                 label = {},
                 textStyle = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center),

@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -31,8 +32,12 @@ class MainService : Service(), CoroutineScope {
 
     private val hrReceiver = HrReceiver(PolarHrReceiver(this))
     private val notification = MainServiceNotification(this)
-    private val userService: UserService = AndroidUserService(this)
-    private val groupService = DefaultGroupService(userService)
+
+    private val userService: UserService by lazy {
+        StoredUserService(this, filesDir.resolve("userService").toOkioPath())
+    }
+
+    private val groupService by lazy { DefaultGroupService(userService) }
 
 
     override fun onCreate() {
@@ -61,7 +66,7 @@ class MainService : Service(), CoroutineScope {
         launch {
             val currentUser = userService.currentUser()
             groupService.groupState
-                .mapNotNull { it.members.find { it.user?.uuid == currentUser.uuid } }
+                .mapNotNull { it.members.find { it.user?.id == currentUser.id } }
                 .collect { currentUserState ->
                     notification.update(
                         currentUserState.currentHeartRate ?: return@collect,

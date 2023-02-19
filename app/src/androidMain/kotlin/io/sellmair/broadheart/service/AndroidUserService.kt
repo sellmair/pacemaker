@@ -4,20 +4,20 @@ import android.content.Context
 import io.sellmair.broadheart.User
 import io.sellmair.broadheart.UserId
 import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.HrSensorInfo
+import io.sellmair.broadheart.hrSensor.HrSensorId
 
 class AndroidUserService(private val context: Context) : UserService {
 
     private val users = mutableMapOf(
         UserId(0L) to User(
             isMe = true,
-            uuid = UserId(0L),
+            id = UserId(0L),
             name = "Sebastian Sellmair",
             imageUrl = null
         )
     )
 
-    private val sensors = mutableMapOf<HrSensorInfo.HrSensorId, User>()
+    private val sensors = mutableMapOf<HrSensorId, User>()
 
     private val limits = mutableMapOf<UserId, HeartRate>()
 
@@ -26,23 +26,23 @@ class AndroidUserService(private val context: Context) : UserService {
     }
 
     override suspend fun save(user: User) {
-        users[user.uuid] = user
+        users[user.id] = user
     }
 
-    override suspend fun saveSensorId(user: User, sensorId: HrSensorInfo.HrSensorId) {
+    override suspend fun saveSensorId(user: User, sensorId: HrSensorId) {
         sensors[sensorId] = user
     }
 
     override suspend fun saveUpperHeartRateLimit(user: User, limit: HeartRate) {
-        limits[user.uuid] = limit
+        limits[user.id] = limit
     }
 
-    override suspend fun findUser(sensorId: HrSensorInfo.HrSensorId): User? {
+    override suspend fun findUser(sensorId: HrSensorId): User? {
         return sensors[sensorId]
     }
 
     override suspend fun findUpperHeartRateLimit(user: User): HeartRate? {
         if(user.isMe) return HeartRate(130)
-        return limits[user.uuid]
+        return limits[user.id]
     }
 }

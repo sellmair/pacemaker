@@ -17,18 +17,26 @@ import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.*
 import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
+import kotlin.math.roundToInt
 
 @Composable
-fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
+fun ChangeableMemberHeartRateLimit(
+    state: GroupMemberState, range: ClosedRange<HeartRate>,
+    onLimitChanged: (HeartRate) -> Unit = {}
+) {
     if (state.user == null) return
+    if (!state.user.isMe) return
     if (state.upperHeartRateLimit == null) return
+
+    var myHeartRateLimit by remember { mutableStateOf(state.upperHeartRateLimit) }
 
     var isDragging: Boolean by remember { mutableStateOf(false) }
     var parentSize: IntSize? = null
 
     OnHeartRateScalePosition(
-        state.upperHeartRateLimit, range,
-        side = ScaleSide.Right,
+        heartRate = myHeartRateLimit,
+        range = range,
+        side = if (state.user.isMe) ScaleSide.Right else ScaleSide.Left,
         modifier = Modifier
             .onPlaced { coordinates ->
                 parentSize = coordinates.parentCoordinates?.size
@@ -41,8 +49,8 @@ fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
                     val newY = change.position.y
                     val parentHeight = parentSize?.height ?: return@detectVerticalDragGestures
                     val newHeartRate = heartRateOfY(newY, range, parentHeight.toFloat())
-                    //Me.myLimit = newHeartRate // TODO NOW!
-                    Log.d("Logic", "new HR: $newHeartRate")
+                    myHeartRateLimit = newHeartRate
+                    onLimitChanged(newHeartRate)
                 }
             }
     ) {
@@ -64,7 +72,7 @@ fun MyLimit(state: GroupMemberState, range: ClosedRange<HeartRate>) {
 
         if (isDragging) {
             Text(
-                state.upperHeartRateLimit.toString(), lineHeight = 12.sp,
+                myHeartRateLimit.value.roundToInt().toString(), lineHeight = 12.sp,
                 modifier = Modifier.padding(start = 45.dp)
             )
         }

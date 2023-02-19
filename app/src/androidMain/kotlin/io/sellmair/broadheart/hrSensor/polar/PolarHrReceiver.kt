@@ -5,10 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.polar.sdk.api.PolarBleApi
 import com.polar.sdk.api.PolarBleApiDefaultImpl
-import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.HrMeasurement
-import io.sellmair.broadheart.hrSensor.HrReceiver
-import io.sellmair.broadheart.hrSensor.HrSensorInfo
+import io.sellmair.broadheart.hrSensor.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -30,7 +27,7 @@ class PolarHrReceiver(private val context: Context) : HrReceiver {
             HrMeasurement(
                 heartRate = HeartRate(data.hr.toFloat()),
                 sensorInfo = HrSensorInfo(
-                    id = HrSensorInfo.HrSensorId(data.polarDeviceInfo.deviceId),
+                    id = HrSensorId(data.polarDeviceInfo.deviceId),
                     address = data.polarDeviceInfo.address,
                     vendor = HrSensorInfo.Vendor.Polar,
                     rssi = data.polarDeviceInfo.rssi

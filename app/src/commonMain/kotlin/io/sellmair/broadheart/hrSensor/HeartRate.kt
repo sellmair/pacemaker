@@ -1,8 +1,10 @@
 package io.sellmair.broadheart.hrSensor
 
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.roundToInt
 
+@Serializable
 @JvmInline
 value class HeartRate(val value: Float) : Comparable<HeartRate> {
     constructor(value: Int) : this(value.toFloat())

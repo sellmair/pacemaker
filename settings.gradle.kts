@@ -3,13 +3,13 @@
 pluginManagement {
     repositories {
         mavenCentral()
+        gradlePluginPortal()
         google()
     }
 
     plugins {
-        kotlin("jvm") version "1.8.20-Beta"
         kotlin("multiplatform") version "1.8.20-Beta"
-        kotlin("android") version "1.8.20-Beta"
+        id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20-Beta"
         id("com.android.application") version "7.4.0"
     }
 }

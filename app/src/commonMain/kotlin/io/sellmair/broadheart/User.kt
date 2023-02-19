@@ -1,25 +1,29 @@
 package io.sellmair.broadheart
 
 import io.sellmair.broadheart.service.GroupMemberState
+import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
+@Serializable
 data class User(
     val isMe: Boolean,
-    val uuid: UserId,
+    val id: UserId,
     val name: String,
     val imageUrl: String? = null
 )
 
+@Serializable
 @JvmInline
 value class UserId(val value: Long)
 
-fun randomUID(): UserId {
+fun randomUserId(): UserId {
     return UserId(Random.nextLong())
 }
 
-val User.nameAbbreviation: String get() = name.split(Regex("\\s")).joinToString("") { it.first().uppercase() }
+val User.nameAbbreviation: String
+    get() = name.split(Regex("\\s")).joinToString("") { it.firstOrNull()?.uppercase() ?: "" }
 
 data class HSLColor(
     val hue: Float,

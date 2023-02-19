@@ -13,6 +13,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.MainService
 import io.sellmair.broadheart.service.UserService
@@ -20,6 +21,8 @@ import io.sellmair.broadheart.ui.MainPage
 import io.sellmair.broadheart.ui.Route
 import io.sellmair.broadheart.ui.SettingsPage
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
@@ -45,7 +48,14 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             val groupState by groupStates.collectAsState(null)
 
             when (route) {
-                Route.MainPage -> MainPage(groupState = groupState, onRoute = { route = it })
+                Route.MainPage -> MainPage(
+                    groupState = groupState,
+                    onRoute = { route = it },
+                    onMyHeartRateLimitChanged = { newHeartRateLimit ->
+                        mainServiceConnection.updateHeartRateLimitChannel.trySend(newHeartRateLimit)
+                    }
+                )
+
                 Route.SettingsPage -> {
                     BackHandler { route = Route.MainPage }
                     SettingsPage(
@@ -75,6 +85,20 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             _userService.tryEmit(null)
             _groupService.tryEmit(null)
         }
+
+        val updateHeartRateLimitChannel = Channel<HeartRate>(Channel.CONFLATED)
+
+        init {
+            launch {
+                updateHeartRateLimitChannel.consumeEach { newHeartRateLimit ->
+                    val userService = userService.filterNotNull().first()
+                    val groupService = groupService.filterNotNull().first()
+                    val me = userService.currentUser()
+                    userService.saveUpperHeartRateLimit(me, newHeartRateLimit)
+                    groupService.updateState()
+                }
+            }
+        }
     }
 
     private fun startForegroundService() {
@@ -87,5 +111,3 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         cancel()
     }
 }
-
-

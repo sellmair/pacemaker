@@ -13,25 +13,23 @@ import io.sellmair.broadheart.hrSensor.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
 
 @Composable
-fun MemberHeartRateLimit(memberState: GroupMemberState, range: ClosedRange<HeartRate>) {
-    if(memberState.user == null || memberState.upperHeartRateLimit == null) return
-
-    /* Render the respective limits */
-    if (memberState.user.isMe) {
-        MyLimit(memberState, range)
-    } else {
-        OnHeartRateScalePosition(memberState.upperHeartRateLimit, range, side = ScaleSide.Left) {
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth(.4f)
-                    .height(1.dp)
-            ) {
-                drawRect(
-                    Brush.linearGradient(
-                        listOf(Color.Transparent, memberState.user.displayColorLight.toColor()),
-                    ),
+fun MemberHeartRateLimit(
+    memberState: GroupMemberState,
+    range: ClosedRange<HeartRate>
+) {
+    if (memberState.user == null) return
+    if (memberState.upperHeartRateLimit == null) return
+    OnHeartRateScalePosition(memberState.upperHeartRateLimit, range, side = ScaleSide.Left) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth(.4f)
+                .height(1.dp)
+        ) {
+            drawRect(
+                Brush.linearGradient(
+                    listOf(Color.Transparent, memberState.user.displayColorLight.toColor()),
                 )
-            }
+            )
         }
     }
 }
