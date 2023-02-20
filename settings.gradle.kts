@@ -34,4 +34,5 @@ dependencyResolutionManagement {
     }
 }
 
-include("app")
+include(":app")
+include(":spoof-tool")
