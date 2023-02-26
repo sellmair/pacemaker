@@ -1,11 +1,11 @@
-package io.sellmair.broadheart.hrSensor
+package io.sellmair.broadheart.model
 
 import kotlinx.serialization.Serializable
 import kotlin.time.TimeMark
 
 @Serializable
-data class HrMeasurement(
+data class HeartRateMeasurement(
     val heartRate: HeartRate,
-    val sensorInfo: HrSensorInfo,
+    val sensorInfo: HeartRateSensorInfo,
     val receivedTime: TimeMark
 )

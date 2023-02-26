@@ -2,10 +2,10 @@ package io.sellmair.broadheart.ui.settingsPage
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
-import io.sellmair.broadheart.User
-import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.HrSensorId
-import io.sellmair.broadheart.randomUserId
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.HeartRateSensorId
+import io.sellmair.broadheart.model.randomUserId
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.UserService
 import kotlinx.coroutines.channels.Channel
@@ -15,9 +15,9 @@ import kotlin.math.absoluteValue
 sealed interface SettingsPageEvent {
     object Back : SettingsPageEvent
     data class UpdateMe(val user: User) : SettingsPageEvent
-    data class LinkSensor(val user: User, val sensor: HrSensorId) : SettingsPageEvent
-    data class UnlinkSensor(val sensor: HrSensorId) : SettingsPageEvent
-    data class CreateAdhocUser(val sensor: HrSensorId) : SettingsPageEvent
+    data class LinkSensor(val user: User, val sensor: HeartRateSensorId) : SettingsPageEvent
+    data class UnlinkSensor(val sensor: HeartRateSensorId) : SettingsPageEvent
+    data class CreateAdhocUser(val sensor: HeartRateSensorId) : SettingsPageEvent
     data class UpdateAdhocUser(val user: User) : SettingsPageEvent
     data class DeleteAdhocUser(val user: User) : SettingsPageEvent
     data class UpdateAdhocUserLimit(val user: User, val limit: HeartRate) : SettingsPageEvent

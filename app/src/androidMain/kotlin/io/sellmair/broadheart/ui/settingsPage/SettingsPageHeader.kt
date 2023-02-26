@@ -15,9 +15,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.User
+import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.displayColor
-import io.sellmair.broadheart.nameAbbreviation
+import io.sellmair.broadheart.model.nameAbbreviation
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.UserHead
 

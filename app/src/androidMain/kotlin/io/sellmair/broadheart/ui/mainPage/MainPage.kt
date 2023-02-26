@@ -1,7 +1,7 @@
 package io.sellmair.broadheart.ui.mainPage
 
 import androidx.compose.runtime.Composable
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupState
 import io.sellmair.broadheart.ui.Route
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import io.sellmair.broadheart.User
+import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.service.GroupState
 import io.sellmair.broadheart.ui.preview.UserPreviewParameterProvider

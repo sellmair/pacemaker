@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.displayColor
-import io.sellmair.broadheart.nameAbbreviation
+import io.sellmair.broadheart.model.nameAbbreviation
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 

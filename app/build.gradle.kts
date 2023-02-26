@@ -1,16 +1,12 @@
 @file:Suppress("OPT_IN_USAGE_FUTURE_ERROR", "UnstableApiUsage")
 
 plugins {
-    kotlin("multiplatform")
-    id("com.android.application")
+    id("kmp-application-conventions")
     kotlin("plugin.serialization")
 }
 
 android {
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 31
-    }
+    namespace = "io.sellmair.broadheart"
 
     buildFeatures {
         compose = true
@@ -22,16 +18,15 @@ android {
 }
 
 kotlin {
-    android()
-    iosArm64()
-
-    sourceSets.getByName("commonMain").dependencies {
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-        implementation("com.squareup.okio:okio:3.3.0")
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
+    sourceSets.commonMain.get().dependencies {
+        implementation(project(":models"))
+        implementation(project(":utils"))
+        implementation(project(":bluetooth"))
+        implementation(Dependencies.coroutinesCore)
+        implementation(Dependencies.okio)
     }
 
-    sourceSets.getByName("androidMain").dependencies {
+    sourceSets.androidMain.get().dependencies {
         /* androidx */
         implementation(platform("androidx.compose:compose-bom:2022.12.00"))
         implementation("androidx.activity:activity-compose:1.7.0-alpha04")
@@ -56,7 +51,7 @@ kotlin {
         }
     }
 
-    sourceSets.getByName("androidInstrumentedTest").dependencies {
+    sourceSets.androidInstrumentedTest.get().dependencies {
         implementation(platform("androidx.compose:compose-bom:2022.12.00"))
         implementation("androidx.compose.ui:ui-test-junit4")
     }
@@ -70,9 +65,5 @@ kotlin {
                 )
             }
         }
-    }
-
-    sourceSets.all {
-        languageSettings.optIn("kotlin.time.ExperimentalTime")
     }
 }

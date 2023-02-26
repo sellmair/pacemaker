@@ -1,10 +1,11 @@
 package io.sellmair.broadheart
 
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.model.UserId
 import io.sellmair.broadheart.service.GroupMemberState
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 import kotlin.math.absoluteValue
-import kotlin.random.Random
 
 @Serializable
 data class User(
@@ -19,12 +20,6 @@ data class User(
 @JvmInline
 value class UserId(val value: Long)
 
-fun randomUserId(): UserId {
-    return UserId(Random.nextLong())
-}
-
-val User.nameAbbreviation: String
-    get() = name.split(Regex("\\s")).joinToString("") { it.firstOrNull()?.uppercase() ?: "" }
 
 data class HSLColor(
     val hue: Float,

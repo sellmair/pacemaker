@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.hrSensor
+package io.sellmair.broadheart.model
 
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline

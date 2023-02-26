@@ -8,9 +8,7 @@ pluginManagement {
     }
 
     plugins {
-        kotlin("multiplatform") version "1.8.20-Beta"
         id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20-Beta"
-        id("com.android.application") version "7.4.0"
     }
 }
 
@@ -35,4 +33,7 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":models")
+include(":utils")
+include(":bluetooth")
 include(":spoof-tool")

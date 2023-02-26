@@ -1,16 +1,16 @@
 package io.sellmair.broadheart.service
 
-import io.sellmair.broadheart.User
-import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.HrSensorInfo
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.HeartRateSensorInfo
 import kotlinx.serialization.Serializable
 
 data class GroupState(val members: List<GroupMemberState>)
 
 @Serializable
-class GroupMemberState(
+data class GroupMemberState(
     val user: User?,
     val currentHeartRate: HeartRate?,
     val upperHeartRateLimit: HeartRate?,
-    val sensorInfo: HrSensorInfo?
+    val sensorInfo: HeartRateSensorInfo?
 )

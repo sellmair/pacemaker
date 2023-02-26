@@ -12,8 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.step
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.step
 import kotlin.math.roundToInt
 
 

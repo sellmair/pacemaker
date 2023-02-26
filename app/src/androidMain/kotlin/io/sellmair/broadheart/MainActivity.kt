@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.MainService
 import io.sellmair.broadheart.service.UserService

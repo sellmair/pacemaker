@@ -3,7 +3,7 @@ package io.sellmair.broadheart.service
 import android.app.*
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.MainActivity
 
 class MainServiceNotification(private val service: Service) {

@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import io.sellmair.broadheart.User
+import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.displayColor
 import io.sellmair.broadheart.displayColorLight
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.ChangeableMemberHeartRateLimit

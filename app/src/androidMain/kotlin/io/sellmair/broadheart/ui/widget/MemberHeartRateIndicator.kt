@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.*
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 

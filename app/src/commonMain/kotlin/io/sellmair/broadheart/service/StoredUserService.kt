@@ -1,12 +1,12 @@
 package io.sellmair.broadheart.service
 
-import io.sellmair.broadheart.User
-import io.sellmair.broadheart.UserId
-import io.sellmair.broadheart.hrSensor.HeartRate
-import io.sellmair.broadheart.hrSensor.HrSensorId
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.model.UserId
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.io.defaultFileSystem
 import io.sellmair.broadheart.io.readUtf8OrNull
-import io.sellmair.broadheart.randomUserId
+import io.sellmair.broadheart.model.randomUserId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -26,7 +26,7 @@ class StoredUserService(
 ) : UserService {
 
     private val users = mutableMapOf<UserId, User>()
-    private val userIdBySensorId = mutableMapOf<HrSensorId, UserId>()
+    private val userIdBySensorId = mutableMapOf<HeartRateSensorId, UserId>()
     private val heartRateLimitByUserId = mutableMapOf<UserId, HeartRate>()
 
     override suspend fun currentUser(): User {
@@ -56,13 +56,13 @@ class StoredUserService(
         }
     }
 
-    override suspend fun linkSensor(user: User, sensorId: HrSensorId) {
+    override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) {
         write {
             userIdBySensorId[sensorId] = user.id
         }
     }
 
-    override suspend fun unlinkSensor(sensorId: HrSensorId) {
+    override suspend fun unlinkSensor(sensorId: HeartRateSensorId) {
         write {
             userIdBySensorId.remove(sensorId)
         }
@@ -74,7 +74,7 @@ class StoredUserService(
         }
     }
 
-    override suspend fun findUser(sensorId: HrSensorId): User? {
+    override suspend fun findUser(sensorId: HeartRateSensorId): User? {
         return read {
             val userId = userIdBySensorId[sensorId] ?: return null
             users[userId]
@@ -124,7 +124,7 @@ class StoredUserService(
         /* Load userIdBySensorId */
         run {
             val content = fs.readUtf8OrNull(userIdBySensorIdFile) ?: return@run
-            val decoded = Json.decodeFromString<Map<HrSensorId, UserId>>(content)
+            val decoded = Json.decodeFromString<Map<HeartRateSensorId, UserId>>(content)
             userIdBySensorId.putAll(decoded)
         }
 

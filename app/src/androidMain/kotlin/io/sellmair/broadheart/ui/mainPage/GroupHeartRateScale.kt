@@ -3,9 +3,8 @@ package io.sellmair.broadheart.ui.mainPage
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupState
-import io.sellmair.broadheart.ui.*
 import io.sellmair.broadheart.ui.preview.GroupStatePreviewParameterProvider
 import io.sellmair.broadheart.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.broadheart.ui.widget.HeartRateScale

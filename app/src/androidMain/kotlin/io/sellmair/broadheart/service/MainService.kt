@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
 import io.sellmair.broadheart.hrSensor.HrReceiver
 import io.sellmair.broadheart.hrSensor.polar.PolarHrReceiver
 import kotlinx.coroutines.*
@@ -74,18 +75,22 @@ class MainService : Service(), CoroutineScope {
 
         /* Start broadcasting my own state to other participants */
         launch {
+            /*
             val broadcastService = AndroidBroadcastService(AndroidBroadcaster(this@MainService))
             groupService.groupState
                 .filterNotNull()
                 .mapNotNull { it.members.find { it.user?.isMe == true } }
                 .collect { groupState -> broadcastService.broadcastMyState(groupState) }
+
+             */
         }
 
 
         /* Receive broadcasts */
         launch {
-            AndroidBroadcastReceiver(this@MainService).collect {
-                println(it)
+            BroadheartBluetoothReceiver(this@MainService, this@MainService).receivedUsers.collect { user ->
+                userService.save(user)
+                groupService.updateState()
             }
         }
 

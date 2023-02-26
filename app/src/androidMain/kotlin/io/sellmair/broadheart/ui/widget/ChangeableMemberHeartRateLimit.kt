@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.displayColorLight
-import io.sellmair.broadheart.hrSensor.HeartRate
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 import kotlin.math.roundToInt
