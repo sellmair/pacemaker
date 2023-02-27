@@ -1,10 +1,7 @@
 package io.sellmair.broadheart.spoof
 
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.model.UserId
-import io.sellmair.broadheart.model.randomUserId
+import io.sellmair.broadheart.model.*
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCValues
 import kotlinx.coroutines.*
@@ -29,9 +26,17 @@ fun main() {
 
         sender = BroadheartBluetoothSender(user)
 
-        while (true) {
-            delay(10000)
-            println(sender)
+        withContext(Dispatchers.Default) {
+            while (isActive) {
+                print("Heart Rate: ")
+                sender?.updateHeartHeart(
+                    HeartRateSensorId("spoof-sensor"),
+                    HeartRate(readln().toIntOrNull() ?: continue)
+                )
+
+                print("Heart Rate Limit: ")
+                sender?.updateHeartRateLimit(HeartRate(readln().toIntOrNull() ?: continue))
+            }
         }
     }
 

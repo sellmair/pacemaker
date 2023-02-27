@@ -4,4 +4,5 @@ plugins {
 
 kotlin.sourceSets.commonMain.get().dependencies {
     api(Dependencies.coroutinesCore)
+    implementation(Dependencies.okio)
 }

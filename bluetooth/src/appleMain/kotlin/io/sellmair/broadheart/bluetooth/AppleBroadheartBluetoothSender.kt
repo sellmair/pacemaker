@@ -1,11 +1,12 @@
 package io.sellmair.broadheart.bluetooth
 
 import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.User
-import kotlinx.cinterop.*
 import platform.CoreBluetooth.*
 import platform.CoreBluetooth.CBUUID.Companion.UUIDWithString
 import platform.Foundation.*
+import kotlin.math.roundToInt
 
 suspend fun BroadheartBluetoothSender(user: User): BroadheartBluetoothSender {
     val peripheral = Peripheral()
@@ -28,15 +29,35 @@ suspend fun BroadheartBluetoothSender(user: User): BroadheartBluetoothSender {
         permissions = CBAttributePermissionsReadable
     )
 
-    val heartRateMeasurementCharacteristic = CBMutableCharacteristic(
-        type = UUIDWithString(ServiceConstants.heartRateMeasurementCharacteristicUuidString),
+    val sensorIdCharacteristic = CBMutableCharacteristic(
+        type = UUIDWithString(ServiceConstants.sensorIdCharacteristicUuidString),
+        properties = CBCharacteristicPropertyRead or CBCharacteristicPropertyNotify,
+        value = null,
+        permissions = CBAttributePermissionsReadable
+    )
+
+    val heartRateCharacteristic = CBMutableCharacteristic(
+        type = UUIDWithString(ServiceConstants.heartRateCharacteristicUuidString),
+        properties = CBCharacteristicPropertyRead or CBCharacteristicPropertyNotify,
+        value = null,
+        permissions = CBAttributePermissionsReadable
+    )
+
+    val heartRateLimitCharacteristic = CBMutableCharacteristic(
+        type = UUIDWithString(ServiceConstants.heartRateLimitCharacteristicUuidString),
         properties = CBCharacteristicPropertyRead or CBCharacteristicPropertyNotify,
         value = null,
         permissions = CBAttributePermissionsReadable
     )
 
     service.setCharacteristics(
-        listOf(userIdCharacteristic, userNameCharacteristic, heartRateMeasurementCharacteristic)
+        listOf(
+            userIdCharacteristic,
+            userNameCharacteristic,
+            sensorIdCharacteristic,
+            heartRateCharacteristic,
+            heartRateLimitCharacteristic
+        )
     )
 
     peripheral.manager.addService(service)
@@ -58,12 +79,25 @@ suspend fun BroadheartBluetoothSender(user: User): BroadheartBluetoothSender {
             peripheral.userName = user.name
         }
 
-        override fun updateHeartHeart(heartRate: HeartRate) {
-            peripheral.manager
+        override fun updateHeartHeart(sensorId: HeartRateSensorId, heartRate: HeartRate) {
+            peripheral.sensorId = sensorId.value
+            peripheral.heartRate = heartRate.value.roundToInt()
+            peripheral.manager.updateValue(
+                heartRate.value.roundToInt().toNSData(),
+                heartRateCharacteristic, null
+            )
+            peripheral.manager.updateValue(
+                sensorId.value.toNSData(),
+                sensorIdCharacteristic, null
+            )
         }
 
         override fun updateHeartRateLimit(heartRate: HeartRate) {
-            peripheral.manager
+            peripheral.heartRateLimit = heartRate.value.roundToInt()
+            peripheral.manager.updateValue(
+                heartRate.value.roundToInt().toNSData(),
+                heartRateLimitCharacteristic, null
+            )
         }
 
         override fun toString(): String {

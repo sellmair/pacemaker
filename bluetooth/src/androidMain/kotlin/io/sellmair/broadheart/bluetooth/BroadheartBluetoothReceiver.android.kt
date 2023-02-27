@@ -14,11 +14,16 @@ import android.content.pm.PackageManager
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import io.sellmair.broadheart.bluetooth.ServiceConstants.heartRateCharacteristicUuidString
+import io.sellmair.broadheart.bluetooth.ServiceConstants.heartRateLimitCharacteristicUuidString
+import io.sellmair.broadheart.bluetooth.ServiceConstants.sensorIdCharacteristicUuidString
 import io.sellmair.broadheart.bluetooth.ServiceConstants.userIdCharacteristicUuidString
 import io.sellmair.broadheart.bluetooth.ServiceConstants.userNameCharacteristicUuidString
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.UserId
+import io.sellmair.broadheart.utils.decodeToInt
 import io.sellmair.broadheart.utils.distinct
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -48,11 +53,26 @@ suspend fun BroadheartBluetoothReceiver(
         .map { device -> device.connect(context, currentCoroutineContext().job) }
         .collect { connectedDevice ->
             scope.launch {
-                val user = connectedDevice.user().stateIn(scope)
-                scope.launch {
-                    user.collect { user ->
-                        println(user)
-                    }
+                connectedDevice.user().collect { user ->
+                    println(user)
+                }
+            }
+
+            scope.launch {
+                connectedDevice.sensorId().collect { sensorId ->
+                    println(sensorId)
+                }
+            }
+
+            scope.launch {
+                connectedDevice.heartRate().collect { heartRate ->
+                    println(heartRate)
+                }
+            }
+
+            scope.launch {
+                connectedDevice.heartRateLimit().collect { heartRateLimit ->
+                    println(heartRateLimit)
                 }
             }
         }
@@ -108,6 +128,9 @@ private class ConnectedBluetoothDevice(
     private var connectedCoroutinesScope: CoroutineScope? = null
     private var userId = MutableStateFlow<Long?>(null)
     private var userName = MutableStateFlow<String?>(null)
+    private val heartRate = MutableStateFlow<HeartRate?>(null)
+    private val heartRateLimit = MutableStateFlow<HeartRate?>(null)
+    private val sensorId = MutableStateFlow<String?>(null)
 
     private val onCharacteristicReadChannel = Channel<CharacteristicReadResult>()
 
@@ -124,6 +147,7 @@ private class ConnectedBluetoothDevice(
     override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
         super.onServicesDiscovered(gatt, status)
         Log.d("bluetooth", "onServicesDiscovered(status=$status)")
+
         connectedCoroutinesScope = object : CoroutineScope {
             override val coroutineContext: CoroutineContext =
                 Dispatchers.Main + Job(parentJob)
@@ -132,24 +156,52 @@ private class ConnectedBluetoothDevice(
         connectedCoroutinesScope?.launch {
             val service = gatt.getService(UUID.fromString(ServiceConstants.serviceUuidString)) ?: return@launch
 
+            val sensorIdCharacteristic = service.getCharacteristic(UUID.fromString(sensorIdCharacteristicUuidString))
+                ?: return@launch
+
+            val heartRateCharacteristic = service.getCharacteristic(
+                UUID.fromString(heartRateCharacteristicUuidString)
+            ) ?: return@launch
+
+            val heartRateLimitCharacteristic = service.getCharacteristic(
+                UUID.fromString(heartRateLimitCharacteristicUuidString)
+            ) ?: return@launch
+
+
             val userIdCharacteristic = service.getCharacteristic(UUID.fromString(userIdCharacteristicUuidString))
                 ?: return@launch
 
             val userNameCharacteristic = service.getCharacteristic(UUID.fromString(userNameCharacteristicUuidString))
                 ?: return@launch
 
-            userId.value = ByteBuffer.wrap(gatt.readValue(userIdCharacteristic)).getLong()
-            userName.value = gatt.readValue(userNameCharacteristic).decodeToString()
+            userId.value = ByteBuffer.wrap(gatt.readValue(userIdCharacteristic) ?: return@launch).getLong()
+            userName.value = gatt.readValue(userNameCharacteristic)?.decodeToString()
+            sensorId.value = gatt.readValue(sensorIdCharacteristic)?.decodeToString()
+            heartRate.value = gatt.readValue(heartRateCharacteristic)?.decodeToInt()?.let(::HeartRate)
+            heartRateLimit.value = gatt.readValue(heartRateLimitCharacteristic)?.decodeToInt()?.let(::HeartRate)
+
+            gatt.enableNotifications(sensorIdCharacteristic)
+            gatt.enableNotifications(heartRateCharacteristic)
+            gatt.enableNotifications(heartRateLimitCharacteristic)
         }
     }
 
-    private suspend fun BluetoothGatt.readValue(characteristic: BluetoothGattCharacteristic): ByteArray {
-        val read = readCharacteristic(characteristic)
-        println("read=$read")
+    private suspend fun BluetoothGatt.readValue(characteristic: BluetoothGattCharacteristic): ByteArray? {
+        readCharacteristic(characteristic)
         return onCharacteristicReadChannel.receiveAsFlow()
-            .filterIsInstance<CharacteristicReadResult.Success>()
             .filter { it.characteristic == characteristic }
-            .first().value
+            .first()
+            .let { it as? CharacteristicReadResult.Success }
+            ?.value
+    }
+
+    @Suppress("DEPRECATION")
+    private fun BluetoothGatt.enableNotifications(characteristic: BluetoothGattCharacteristic) {
+        setCharacteristicNotification(characteristic, true)
+        val ccdUUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+        val ccdDescriptor: BluetoothGattDescriptor = characteristic.getDescriptor(ccdUUID)
+        ccdDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+        writeDescriptor(ccdDescriptor)
     }
 
     override fun onCharacteristicRead(
@@ -166,15 +218,35 @@ private class ConnectedBluetoothDevice(
         }
     }
 
-    fun user(): Flow<User> {
-        return combine(userId.filterNotNull(), userName.filterNotNull()) { id, name ->
-            User(
-                isMe = false,
-                id = UserId(id),
-                name = name
-            )
+    override fun onCharacteristicChanged(
+        gatt: BluetoothGatt,
+        characteristic: BluetoothGattCharacteristic,
+        value: ByteArray
+    ) {
+        super.onCharacteristicChanged(gatt, characteristic, value)
+        when (characteristic.uuid) {
+            UUID.fromString(sensorIdCharacteristicUuidString) ->
+                sensorId.value = value.decodeToString()
+
+            UUID.fromString(heartRateCharacteristicUuidString) ->
+                heartRate.value = HeartRate(value.decodeToInt())
+
+            UUID.fromString(heartRateLimitCharacteristicUuidString) ->
+                heartRateLimit.value = HeartRate(value.decodeToInt())
         }
     }
+
+    fun user(): Flow<User> = combine(userId.filterNotNull(), userName.filterNotNull()) { id, name ->
+        User(
+            isMe = false,
+            id = UserId(id),
+            name = name
+        )
+    }
+
+    fun sensorId(): Flow<String> = sensorId.filterNotNull()
+    fun heartRate(): Flow<HeartRate> = heartRate.filterNotNull()
+    fun heartRateLimit(): Flow<HeartRate> = heartRateLimit.filterNotNull()
 }
 
 sealed interface CharacteristicReadResult {
@@ -190,4 +262,3 @@ sealed interface CharacteristicReadResult {
         val value: ByteArray
     ) : CharacteristicReadResult
 }
-
