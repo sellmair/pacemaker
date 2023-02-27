@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
+import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
 import io.sellmair.broadheart.hrSensor.HrReceiver
 import io.sellmair.broadheart.hrSensor.polar.PolarHrReceiver
+import io.sellmair.broadheart.model.HeartRateMeasurement
+import io.sellmair.broadheart.model.HeartRateSensorInfo
+import io.sellmair.broadheart.model.User
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okio.Path.Companion.toOkioPath
@@ -45,10 +49,10 @@ class MainService : Service(), CoroutineScope {
         launchHrLimitDaemon(this, groupService)
 
         /* Connecting our hr receiver with the group service */
-        hrReceiver.measurements
+        val hrMeasurements = hrReceiver.measurements
             .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
             .onEach { groupService.updateState() }
-            .launchIn(this)
+            .shareIn(this, SharingStarted.WhileSubscribed())
 
         /*
          Regularly call the updateState w/o measurements, to invalidate old ones, in case
@@ -75,22 +79,41 @@ class MainService : Service(), CoroutineScope {
 
         /* Start broadcasting my own state to other participants */
         launch {
-            /*
-            val broadcastService = AndroidBroadcastService(AndroidBroadcaster(this@MainService))
-            groupService.groupState
-                .filterNotNull()
-                .mapNotNull { it.members.find { it.user?.isMe == true } }
-                .collect { groupState -> broadcastService.broadcastMyState(groupState) }
-
-             */
+            val sender = BroadheartBluetoothSender(this@MainService, this@MainService, userService.currentUser())
+            coroutineScope {
+                launch {
+                    hrMeasurements.collect { hrMeasurement ->
+                        val user = userService.currentUser()
+                        sender.updateUser(user)
+                        sender.updateHeartHeart(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
+                    }
+                }
+            }
         }
 
 
         /* Receive broadcasts */
         launch {
-            BroadheartBluetoothReceiver(this@MainService, this@MainService).receivedUsers.collect { user ->
+            BroadheartBluetoothReceiver(this@MainService, this@MainService).received.collect { received ->
+                val user = User(
+                    isMe = false, id = received.userId, name = received.userName
+                )
+
                 userService.save(user)
-                groupService.updateState()
+                userService.saveUpperHeartRateLimit(user, received.heartRateLimit)
+                userService.linkSensor(user, received.sensorId)
+
+                groupService.add(
+                    HeartRateMeasurement(
+                        heartRate = received.heartRate,
+                        sensorInfo = HeartRateSensorInfo(
+                            id = received.sensorId,
+                            address = received.address,
+                            vendor = HeartRateSensorInfo.Vendor.Unknown
+                        ),
+                        receivedTime = received.receivedTime
+                    )
+                )
             }
         }
 

@@ -26,6 +26,7 @@ class DefaultGroupService(
 
     override suspend fun add(measurement: HeartRateMeasurement) {
         measurements.add(measurement)
+        updateState()
     }
 
     override suspend fun add(foreignState: GroupMemberState) {

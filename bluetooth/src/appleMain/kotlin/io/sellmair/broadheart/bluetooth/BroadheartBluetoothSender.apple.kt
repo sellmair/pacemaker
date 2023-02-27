@@ -82,10 +82,12 @@ suspend fun BroadheartBluetoothSender(user: User): BroadheartBluetoothSender {
         override fun updateHeartHeart(sensorId: HeartRateSensorId, heartRate: HeartRate) {
             peripheral.sensorId = sensorId.value
             peripheral.heartRate = heartRate.value.roundToInt()
+
             peripheral.manager.updateValue(
                 heartRate.value.roundToInt().toNSData(),
                 heartRateCharacteristic, null
             )
+
             peripheral.manager.updateValue(
                 sensorId.value.toNSData(),
                 sensorIdCharacteristic, null
