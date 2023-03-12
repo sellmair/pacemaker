@@ -8,14 +8,19 @@ pluginManagement {
     }
 
     plugins {
-        id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20-Beta"
+        id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     }
 }
 
 dependencyResolutionManagement {
     repositories {
+
         mavenCentral()
-        google()
+        google {
+            mavenContent {
+                includeGroupByRegex(".*android.*")
+            }
+        }
 
         /* Only used for polar SDK */
         maven("https://jitpack.io") {
@@ -27,6 +32,12 @@ dependencyResolutionManagement {
         maven("https://androidx.dev/storage/compose-compiler/repository") {
             mavenContent {
                 includeGroupByRegex("androidx.compose.*")
+            }
+        }
+
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
+            mavenContent {
+                includeGroupByRegex(".*compose.*")
             }
         }
     }
