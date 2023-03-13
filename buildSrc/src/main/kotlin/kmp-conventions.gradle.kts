@@ -21,36 +21,6 @@ kotlin {
     macosX64()
     macosArm64()
 
-    val commonMain by sourceSets.getting
-    val mobileMain by sourceSets.creating
-    val nativeMain by sourceSets.creating
-    val appleMain by sourceSets.creating
-    val macosMain by sourceSets.creating
-    val iosMain by sourceSets.creating
-
-    nativeMain.dependsOn(commonMain)
-    appleMain.dependsOn(nativeMain)
-    iosMain.dependsOn(appleMain)
-    macosMain.dependsOn(appleMain)
-    macosMain.dependsOn(nativeMain)
-    iosMain.dependsOn(mobileMain)
-    mobileMain.dependsOn(commonMain)
-
-    targets.withType<KotlinNativeTarget>().all {
-        compilations.getByName("main").kotlinSourceSets.forAll { sourceSet ->
-            when (konanTarget.family) {
-                Family.OSX -> sourceSet.dependsOn(macosMain)
-                Family.IOS -> sourceSet.dependsOn(iosMain)
-                else -> sourceSet.dependsOn(nativeMain)
-            }
-        }
-    }
-
-    sourceSets.matching { it.name == "androidMain" }.all {
-        dependsOn(mobileMain)
-    }
-
-    /* Waiting for 1.8.20
     targetHierarchy.default {
         common {
             group("mobile") {
@@ -60,7 +30,7 @@ kotlin {
             }
         }
     }
-     */
+
 
     sourceSets.all {
         languageSettings.optIn("kotlin.time.ExperimentalTime")

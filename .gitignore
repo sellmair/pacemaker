@@ -2,3 +2,17 @@
 .gradle
 .idea
 spoof-tool/spoof
+
+# Ios specific:
+.DS_Store
+iosApp/Podfile.lock
+iosApp/Pods/*
+iosApp/iosApp.xcworkspace/*
+iosApp/iosApp.xcodeproj/*
+!iosApp/iosApp.xcodeproj/project.pbxproj
+app/HC.podspec
+
+# Addition
+/captures
+.externalNativeBuild
+.cxx
