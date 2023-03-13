@@ -20,9 +20,10 @@ android {
 
 kotlin {
     sourceSets.commonMain.get().dependencies {
-        api(project(":models"))
-        api(project(":utils"))
-        api(project(":bluetooth"))
+        implementation(project(":models"))
+        implementation(project(":utils"))
+        implementation(project(":bluetooth"))
+        implementation(project(":shared-ui"))
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
     }

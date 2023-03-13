@@ -1,4 +1,5 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
+package shared.ui
+
 import androidx.compose.runtime.Composable
 
 @Composable
