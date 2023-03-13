@@ -8,18 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.service.GroupState
-import io.sellmair.broadheart.ui.preview.UserPreviewParameterProvider
 
-@Preview(showBackground = true, widthDp = 400, heightDp = 600)
 @Composable
 fun SettingsPageContent(
-    @PreviewParameter(UserPreviewParameterProvider::class)
     me: User,
     groupState: GroupState? = null,
     onEvent: (SettingsPageEvent) -> Unit = {}

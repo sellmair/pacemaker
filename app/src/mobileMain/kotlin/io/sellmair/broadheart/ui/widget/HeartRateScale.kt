@@ -9,7 +9,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.model.HeartRate
@@ -17,7 +16,6 @@ import io.sellmair.broadheart.model.step
 import kotlin.math.roundToInt
 
 
-@Preview(heightDp = 400, widthDp = 200)
 @Composable
 fun HeartRateScale(
     modifier: Modifier = Modifier,

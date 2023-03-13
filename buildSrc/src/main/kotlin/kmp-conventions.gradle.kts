@@ -24,13 +24,12 @@ kotlin {
     targetHierarchy.default {
         common {
             group("mobile") {
+                group("ios")
                 withAndroid()
                 withJvm()
-                withIos()
             }
         }
     }
-
 
     sourceSets.all {
         languageSettings.optIn("kotlin.time.ExperimentalTime")

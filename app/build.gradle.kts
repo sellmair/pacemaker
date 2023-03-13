@@ -81,7 +81,7 @@ kotlin {
     cocoapods {
         version = "2023.1"
         name = "HC"
-        podfile = project.file("../iosApp/Podfile")
+        //podfile = project.file("../iosApp/Podfile")
 
         framework {
             homepage = "https://github.com/sellmair/broadheart"
