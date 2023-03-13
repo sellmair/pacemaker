@@ -2,3 +2,4 @@
 .gradle
 .idea
 spoof-tool/spoof
+local.properties
