@@ -70,7 +70,7 @@ kotlin {
                     "-linker-option", "-framework", "-linker-option", "CoreText",
                     "-linker-option", "-framework", "-linker-option", "CoreGraphics",
                     "-linker-option", "-framework", "-linker-option", "UIKit",
-                    //"-Xdisable-phases=VerifyBitcode"
+                    "-Xdisable-phases=VerifyBitcode"
                 )
 
                 isStatic = true
@@ -93,6 +93,6 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set(this.dependencies.compiler.forKotlin("1.8.0"))
+    kotlinCompilerPlugin.set(this.dependencies.compiler.forKotlin("1.8.10"))
     //kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.4-dev-k1.8.20-RC-88d9f3a8232")
 }
