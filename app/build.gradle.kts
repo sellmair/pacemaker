@@ -11,6 +11,9 @@ plugins {
 
 android {
     namespace = "io.sellmair.broadheart"
+    buildFeatures {
+        compose = true
+    }
 }
 
 kotlin {
@@ -61,6 +64,7 @@ kotlin {
     }
 
 
+    /*
     /* Setup frameworks for iOS */
     targets.withType<KotlinNativeTarget>().all {
         if (konanTarget.family.isAppleFamily) {
@@ -78,6 +82,8 @@ kotlin {
         }
     }
 
+     */
+
     cocoapods {
         version = "2023.1"
         name = "HC"
@@ -93,6 +99,5 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set(this.dependencies.compiler.forKotlin("1.8.10"))
-    //kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.4-dev-k1.8.20-RC-88d9f3a8232")
+    kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.2")
 }

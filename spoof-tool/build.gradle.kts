@@ -8,6 +8,9 @@ plugins {
 
 kotlin {
 
+    macosArm64()
+    macosX64()
+
     sourceSets.getByName("commonMain").dependencies {
         implementation(project(":bluetooth"))
         implementation(Dependencies.coroutinesCore)
