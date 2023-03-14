@@ -9,7 +9,7 @@ import SwiftUI
 import HC
 
 struct ComposeView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
+    func makeUIViewController(context: Context) ->
         HeartcastViewControllerKt.HeartcastViewController()
     }
 

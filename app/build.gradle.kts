@@ -70,7 +70,7 @@ kotlin {
                     "-linker-option", "-framework", "-linker-option", "CoreText",
                     "-linker-option", "-framework", "-linker-option", "CoreGraphics",
                     "-linker-option", "-framework", "-linker-option", "UIKit",
-                    "-Xdisable-phases=VerifyBitcode"
+                    //"-Xdisable-phases=VerifyBitcode"
                 )
 
                 isStatic = true
@@ -81,7 +81,7 @@ kotlin {
     cocoapods {
         version = "2023.1"
         name = "HC"
-        //podfile = project.file("../iosApp/Podfile")
+        podfile = project.file("../iosApp/Podfile")
 
         framework {
             homepage = "https://github.com/sellmair/broadheart"
@@ -93,5 +93,6 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.4-dev-k1.8.20-RC-88d9f3a8232")
+    kotlinCompilerPlugin.set(this.dependencies.compiler.forKotlin("1.8.0"))
+    //kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.4-dev-k1.8.20-RC-88d9f3a8232")
 }
