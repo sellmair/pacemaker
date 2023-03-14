@@ -7,7 +7,6 @@ import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.randomUserId
 import io.sellmair.broadheart.service.GroupService
 import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.ui.HCBackHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlin.math.absoluteValue
@@ -29,7 +28,7 @@ fun SettingsPage(
     groupService: GroupService,
     onBack: () -> Unit = {}
 ) {
-    HCBackHandler { onBack() }
+    //HCBackHandler { onBack() }
 
     var me by remember { mutableStateOf<User?>(null) }
     val groupState by groupService.groupState.collectAsState(null)

@@ -45,7 +45,7 @@ kotlin {
         implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
 
         /* kotlinx */
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.0-Beta")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.4")
 
     }
 

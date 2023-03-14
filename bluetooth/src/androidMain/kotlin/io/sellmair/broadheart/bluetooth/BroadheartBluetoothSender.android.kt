@@ -155,7 +155,7 @@ suspend fun BroadheartBluetoothSender(
             currentHeartRateSensorId = sensorId
             currentHearRate = heartRate
             scope.launch {
-                server.connectedDevices.forEach { device ->
+                manager.getConnectedDevices(BluetoothProfile.GATT).forEach { device ->
                     heartRateCharacteristic.setValue(heartRate.value.roundToInt().encodeToByteArray())
                     server.notifyCharacteristicChanged(device, heartRateCharacteristic, false)
                     onNotificationSentChannel.receiveAsFlow().filter { it == device }.first()
@@ -166,7 +166,7 @@ suspend fun BroadheartBluetoothSender(
         override fun updateHeartRateLimit(heartRate: HeartRate) {
             currentHeartRateLimit = heartRate
             scope.launch {
-                server.connectedDevices.forEach { device ->
+                manager.getConnectedDevices(BluetoothProfile.GATT).forEach { device ->
                     heartRateLimitCharacteristic.setValue(heartRate.value.roundToInt().encodeToByteArray())
                     server.notifyCharacteristicChanged(device, heartRateLimitCharacteristic, false)
                     onNotificationSentChannel.receiveAsFlow().filter { it == device }.first()

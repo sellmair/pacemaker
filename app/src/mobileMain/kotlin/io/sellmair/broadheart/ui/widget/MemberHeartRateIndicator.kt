@@ -25,8 +25,8 @@ fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRa
     val side = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
     if (state.currentHeartRate == null) return
 
-    val animatedHeartRate = remember { Animatable(state.currentHeartRate.value) }
-    LaunchedEffect(state.currentHeartRate) {
+    val animatedHeartRate = remember(state.user) { Animatable(state.currentHeartRate.value) }
+    LaunchedEffect(state.user) {
         animatedHeartRate.animateTo(state.currentHeartRate.value)
     }
 
