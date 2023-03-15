@@ -24,7 +24,7 @@ import io.sellmair.broadheart.ui.toColor
 
 
 @Composable
-fun MyStatusHeader(
+internal fun MyStatusHeader(
     state: GroupState?,
     onSettingsClicked: () -> Unit
 ) {

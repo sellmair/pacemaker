@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun HeartRateScale(
+internal fun HeartRateScale(
     modifier: Modifier = Modifier,
     range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f),
     horizontalCenterBias: Float = .5f,

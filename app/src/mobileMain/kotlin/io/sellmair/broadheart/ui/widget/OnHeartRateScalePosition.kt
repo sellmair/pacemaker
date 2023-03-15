@@ -11,7 +11,7 @@ enum class ScaleSide {
 }
 
 @Composable
-fun OnHeartRateScalePosition(
+internal fun OnHeartRateScalePosition(
     heartRate: HeartRate,
     range: ClosedRange<HeartRate>,
     modifier: Modifier = Modifier,

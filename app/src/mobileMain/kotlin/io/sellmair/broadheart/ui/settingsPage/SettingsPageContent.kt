@@ -14,7 +14,7 @@ import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.service.GroupState
 
 @Composable
-fun SettingsPageContent(
+internal fun SettingsPageContent(
     me: User,
     groupState: GroupState? = null,
     onEvent: (SettingsPageEvent) -> Unit = {}
@@ -38,7 +38,7 @@ fun SettingsPageContent(
 }
 
 @Composable
-fun SettingsPageDevicesList(
+internal fun SettingsPageDevicesList(
     me: User,
     groupState: GroupState?,
     onEvent: (SettingsPageEvent) -> Unit

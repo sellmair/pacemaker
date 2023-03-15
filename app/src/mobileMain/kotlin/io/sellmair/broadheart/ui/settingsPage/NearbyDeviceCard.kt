@@ -27,7 +27,7 @@ import io.sellmair.broadheart.ui.widget.UserHead
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NearbyDeviceCard(
+internal fun NearbyDeviceCard(
     me: User,
     state: GroupMemberState,
     onEvent: (SettingsPageEvent) -> Unit = {}

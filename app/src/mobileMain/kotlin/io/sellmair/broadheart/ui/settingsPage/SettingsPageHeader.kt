@@ -22,7 +22,7 @@ import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.UserHead
 
 @Composable
-fun SettingsPageHeader(
+internal fun SettingsPageHeader(
     me: User,
     onEvent: (SettingsPageEvent) -> Unit = {}
 ) {

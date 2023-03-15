@@ -14,7 +14,7 @@ import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 
 @Composable
-fun MemberHeartRateLimit(
+internal fun MemberHeartRateLimit(
     memberState: GroupMemberState,
     range: ClosedRange<HeartRate>
 ) {

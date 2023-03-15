@@ -20,7 +20,7 @@ import io.sellmair.broadheart.ui.toColor
 import kotlin.math.roundToInt
 
 @Composable
-fun ChangeableMemberHeartRateLimit(
+internal fun ChangeableMemberHeartRateLimit(
     state: GroupMemberState,
     range: ClosedRange<HeartRate>,
     horizontalCenterBias: Float = .5f,

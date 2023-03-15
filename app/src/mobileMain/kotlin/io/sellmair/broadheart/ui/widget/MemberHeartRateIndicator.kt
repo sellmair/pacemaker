@@ -21,7 +21,7 @@ import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 
 @Composable
-fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRate>) {
+internal fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRate>) {
     val side = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
     if (state.currentHeartRate == null) return
 

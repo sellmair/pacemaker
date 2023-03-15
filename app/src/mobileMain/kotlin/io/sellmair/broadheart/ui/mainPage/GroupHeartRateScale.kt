@@ -10,7 +10,7 @@ import io.sellmair.broadheart.ui.widget.MemberHeartRateIndicator
 import io.sellmair.broadheart.ui.widget.MemberHeartRateLimit
 
 @Composable
-fun GroupHeartRateOverview(
+internal fun GroupHeartRateOverview(
     state: GroupState?,
     range: ClosedRange<HeartRate> = HeartRate(40)..HeartRate(200f),
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}

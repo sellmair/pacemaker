@@ -24,7 +24,7 @@ sealed interface SettingsPageEvent {
 }
 
 @Composable
-fun SettingsPage(
+internal fun SettingsPage(
     userService: UserService,
     groupService: GroupService,
     onBack: () -> Unit = {}

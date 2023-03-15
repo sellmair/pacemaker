@@ -6,7 +6,7 @@ import io.sellmair.broadheart.service.GroupState
 import io.sellmair.broadheart.ui.Route
 
 @Composable
-fun MainPage(
+internal fun MainPage(
     groupState: GroupState?,
     onRoute: (Route) -> Unit,
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}

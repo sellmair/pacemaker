@@ -19,7 +19,7 @@ import io.sellmair.broadheart.service.GroupMemberState
 import io.sellmair.broadheart.ui.toColor
 
 @Composable
-fun UserHead(
+internal fun UserHead(
     memberState: GroupMemberState,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
@@ -34,7 +34,7 @@ fun UserHead(
 
 
 @Composable
-fun UserHead(
+internal fun UserHead(
     abbreviation: String,
     color: Color,
     modifier: Modifier = Modifier,
