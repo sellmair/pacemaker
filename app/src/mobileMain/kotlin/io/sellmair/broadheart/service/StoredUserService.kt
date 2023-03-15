@@ -4,9 +4,9 @@ import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.UserId
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
-import io.sellmair.broadheart.io.defaultFileSystem
-import io.sellmair.broadheart.io.readUtf8OrNull
 import io.sellmair.broadheart.model.randomUserId
+import io.sellmair.broadheart.utils.defaultFileSystem
+import io.sellmair.broadheart.utils.readUtf8OrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
