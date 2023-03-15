@@ -7,9 +7,9 @@ spoof-tool/spoof
 .DS_Store
 iosApp/Podfile.lock
 iosApp/Pods/*
-iosApp/iosApp.xcworkspace/*
-iosApp/iosApp.xcodeproj/*
-!iosApp/iosApp.xcodeproj/project.pbxproj
+iosApp/Heartcast.xcworkspace/*
+iosApp/Heartcast.xcodeproj/*
+!iosApp/Heartcast.xcodeproj/project.pbxproj
 app/HC.podspec
 
 # Addition
