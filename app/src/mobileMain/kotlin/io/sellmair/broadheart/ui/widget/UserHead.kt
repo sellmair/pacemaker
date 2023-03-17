@@ -13,14 +13,14 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.displayColor
+import io.sellmair.broadheart.ui.displayColor
 import io.sellmair.broadheart.model.nameAbbreviation
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
 import io.sellmair.broadheart.ui.toColor
 
 @Composable
 internal fun UserHead(
-    memberState: GroupMemberState,
+    memberState: GroupMember,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
 ) {

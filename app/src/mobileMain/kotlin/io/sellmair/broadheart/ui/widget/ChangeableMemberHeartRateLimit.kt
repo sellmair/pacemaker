@@ -13,24 +13,24 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.displayColorLight
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
 import io.sellmair.broadheart.ui.toColor
 import kotlin.math.roundToInt
 
 @Composable
 internal fun ChangeableMemberHeartRateLimit(
-    state: GroupMemberState,
+    state: GroupMember,
     range: ClosedRange<HeartRate>,
     horizontalCenterBias: Float = .5f,
     side: ScaleSide = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left,
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
     if (state.user == null) return
-    if (state.upperHeartRateLimit == null) return
+    if (state.heartRateLimit == null) return
 
-    var myHeartRateLimit by remember { mutableStateOf(state.upperHeartRateLimit) }
+    var myHeartRateLimit by remember { mutableStateOf(state.heartRateLimit) }
 
     var isDragging: Boolean by remember { mutableStateOf(false) }
     var parentSize: IntSize? = null

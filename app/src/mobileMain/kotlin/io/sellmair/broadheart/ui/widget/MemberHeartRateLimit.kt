@@ -8,19 +8,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.sellmair.broadheart.*
 import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.ui.toColor
 
 @Composable
 internal fun MemberHeartRateLimit(
-    memberState: GroupMemberState,
+    memberState: GroupMember,
     range: ClosedRange<HeartRate>
 ) {
     if (memberState.user == null) return
-    if (memberState.upperHeartRateLimit == null) return
-    OnHeartRateScalePosition(memberState.upperHeartRateLimit, range, side = ScaleSide.Left) {
+    if (memberState.heartRateLimit == null) return
+    OnHeartRateScalePosition(memberState.heartRateLimit, range, side = ScaleSide.Left) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth(.4f)

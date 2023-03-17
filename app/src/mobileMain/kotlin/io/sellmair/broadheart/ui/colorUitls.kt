@@ -1,25 +1,8 @@
-package io.sellmair.broadheart
+package io.sellmair.broadheart.ui
 
+import io.sellmair.broadheart.GroupMember
 import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.model.UserId
-import io.sellmair.broadheart.service.GroupMemberState
-import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 import kotlin.math.absoluteValue
-
-@Serializable
-data class User(
-    val isMe: Boolean,
-    val id: UserId,
-    val name: String,
-    val isAdhoc: Boolean = false,
-    val imageUrl: String? = null
-)
-
-@Serializable
-@JvmInline
-value class UserId(val value: Long)
-
 
 data class HSLColor(
     val hue: Float,
@@ -42,14 +25,14 @@ val User.displayColor: HSLColor
     )
 
 
-val GroupMemberState.displayColor: HSLColor
+val GroupMember.displayColor: HSLColor
     get() = user?.displayColor ?: HSLColor(
         hue = (this.sensorInfo?.id?.value?.hashCode() ?: 0).toFloat().absoluteValue % 360f,
         saturation = .5f,
         lightness = .4f
     )
 
-val GroupMemberState.displayColorLight: HSLColor
+val GroupMember.displayColorLight: HSLColor
     get() = user?.displayColor
         ?: HSLColor(
             hue = (this.sensorInfo?.id?.value?.hashCode() ?: 0).toFloat().absoluteValue % 360f,

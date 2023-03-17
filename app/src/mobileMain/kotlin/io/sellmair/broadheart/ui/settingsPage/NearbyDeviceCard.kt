@@ -15,10 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.displayColor
-import io.sellmair.broadheart.displayColorLight
+import io.sellmair.broadheart.ui.displayColor
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
+import io.sellmair.broadheart.viewModel.ApplicationIntent.SettingsPageIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.broadheart.ui.widget.HeartRateScale
@@ -29,8 +30,8 @@ import io.sellmair.broadheart.ui.widget.UserHead
 @Composable
 internal fun NearbyDeviceCard(
     me: User,
-    state: GroupMemberState,
-    onEvent: (SettingsPageEvent) -> Unit = {}
+    state: GroupMember,
+    onEvent: (SettingsPageIntent) -> Unit = {}
 ) {
     var contextMenuOpen by remember { mutableStateOf(false) }
     ElevatedCard(
@@ -50,11 +51,11 @@ internal fun NearbyDeviceCard(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            if (state.user != null) {
+            state.user?.let { user ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     UserHead(state)
                     Spacer(Modifier.size(8.dp))
-                    Text(state.user.name, fontWeight = FontWeight.Bold)
+                    Text(user.name, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -72,13 +73,13 @@ internal fun NearbyDeviceCard(
                     Text(state.currentHeartRate.toString())
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                if (state.upperHeartRateLimit != null) {
+                if (state.heartRateLimit != null) {
                     Icon(
                         Icons.Default.Warning, "HR Limit",
                         tint = state.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
-                    Text(state.upperHeartRateLimit.toString())
+                    Text(state.heartRateLimit.toString())
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
@@ -91,36 +92,37 @@ internal fun NearbyDeviceCard(
                 Spacer(modifier = Modifier.width(8.dp))
 
 
-                if (state.sensorInfo != null) {
+                state.sensorInfo?.let { sensorInfo ->
                     Icon(
                         Icons.Outlined.Sensors, "HR Limit",
                         tint = state.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
-                    Text(state.sensorInfo.id.value)
+                    Text(sensorInfo.id.value)
                     Spacer(modifier = Modifier.width(8.dp))
 
 
-                    if (state.sensorInfo.rssi != null) {
+                    if (sensorInfo.rssi != null) {
                         Icon(
                             Icons.Outlined.CellTower, "Signal Strength",
                             tint = state.displayColorLight.toColor(),
                             modifier = Modifier.size(12.dp)
                         )
-                        Text("${state.sensorInfo.rssi} db")
+                        Text("${sensorInfo.rssi} db")
                     }
                 }
             }
 
             if (contextMenuOpen) {
                 Spacer(modifier = Modifier.height(24.dp))
-                if (state.sensorInfo == null) return@Column
+               val sensorInfo = state.sensorInfo ?: return@Column
+                val user = state.user
 
                 /* Connect to my account button */
-                if (state.user == null) {
+                if (user == null) {
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageEvent.LinkSensor(me, state.sensorInfo.id))
+                            onEvent(SettingsPageIntent.LinkSensor(me, sensorInfo.id))
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = me.displayColor.copy(lightness = .97f).toColor()
@@ -133,7 +135,7 @@ internal fun NearbyDeviceCard(
 
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageEvent.CreateAdhocUser(state.sensorInfo.id))
+                            onEvent(SettingsPageIntent.CreateAdhocUser(sensorInfo.id))
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = me.displayColor.copy(lightness = .97f).toColor()
@@ -146,10 +148,10 @@ internal fun NearbyDeviceCard(
                 }
 
 
-                if (state.user?.isMe == true) {
+                if (user?.isMe == true) {
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageEvent.UnlinkSensor(state.sensorInfo.id))
+                            onEvent(SettingsPageIntent.UnlinkSensor(sensorInfo.id))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -158,11 +160,11 @@ internal fun NearbyDeviceCard(
                     }
                 }
 
-                if (state.user?.isAdhoc == true) {
+                if (user?.isAdhoc == true) {
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageEvent.DeleteAdhocUser(state.user))
-                            onEvent(SettingsPageEvent.UnlinkSensor(state.sensorInfo.id))
+                            onEvent(SettingsPageIntent.DeleteAdhocUser(user))
+                            onEvent(SettingsPageIntent.UnlinkSensor(sensorInfo.id))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -170,7 +172,7 @@ internal fun NearbyDeviceCard(
                         Text("Delete adhoc user")
                     }
 
-                    var adhocUserName by remember { mutableStateOf(state.user.name) }
+                    var adhocUserName by remember { mutableStateOf(user.name) }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -178,7 +180,7 @@ internal fun NearbyDeviceCard(
                         value = adhocUserName,
                         onValueChange = { newUserName ->
                             adhocUserName = newUserName
-                            onEvent(SettingsPageEvent.UpdateAdhocUser(state.user.copy(name = newUserName)))
+                            onEvent(SettingsPageIntent.UpdateAdhocUser(user.copy(name = newUserName)))
                         },
                         label = { Text("adhoc user name") },
                         singleLine = true,
@@ -200,7 +202,7 @@ internal fun NearbyDeviceCard(
                             horizontalCenterBias = .35f,
                             side = ScaleSide.Right,
                             onLimitChanged = { newHeartRateLimit ->
-                                onEvent(SettingsPageEvent.UpdateAdhocUserLimit(state.user, newHeartRateLimit))
+                                onEvent(SettingsPageIntent.UpdateAdhocUserLimit(user, newHeartRateLimit))
                             }
                         )
                     }

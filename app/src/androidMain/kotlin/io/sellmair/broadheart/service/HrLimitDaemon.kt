@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.CombinedVibration
 import android.os.VibrationEffect
 import android.os.VibratorManager
+import io.sellmair.broadheart.GroupMember
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupService) = launch {
     val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
-    var criticalMemberStates = listOf<GroupMemberState>()
+    var criticalMemberStates = listOf<GroupMember>()
 
 
     /* Vibrate on any critical member state */
@@ -30,10 +31,11 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
     }
 
     /* Collect critical member states */
-    groupService.groupState.collect { state ->
+    groupService.group.collect { state ->
         criticalMemberStates = state.members.filter { memberState ->
-            memberState.currentHeartRate != null && memberState.upperHeartRateLimit != null
-                    && memberState.currentHeartRate > memberState.upperHeartRateLimit
+            val currentHeartRate = memberState.currentHeartRate ?: return@filter false
+            val currentHeartRateLimit = memberState.heartRateLimit ?: return@filter false
+            currentHeartRate > currentHeartRateLimit
         }
     }
 }

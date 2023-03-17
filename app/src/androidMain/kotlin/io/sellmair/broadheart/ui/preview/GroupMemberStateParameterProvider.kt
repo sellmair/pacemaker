@@ -4,15 +4,15 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.HeartRateSensorInfo
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
 
-class GroupMemberStateParameterProvider : PreviewParameterProvider<GroupMemberState> {
-    override val values: Sequence<GroupMemberState>
+class GroupMemberStateParameterProvider : PreviewParameterProvider<GroupMember> {
+    override val values: Sequence<GroupMember>
         get() = sequenceOf(
-            GroupMemberState(
+            GroupMember(
                 user = UserPreviewParameterProvider().values.first(),
                 currentHeartRate = HeartRate(112f),
-                upperHeartRateLimit = HeartRate(120f),
+                heartRateLimit = HeartRate(120f),
                 sensorInfo = HeartRateSensorInfo(
                     id = HeartRateSensorId("aa:bb:cc:dd"),
                     address = "dd:ee:ff:gg:ee",

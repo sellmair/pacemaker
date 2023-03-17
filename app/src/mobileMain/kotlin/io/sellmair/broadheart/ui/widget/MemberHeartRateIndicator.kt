@@ -15,14 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.sellmair.broadheart.displayColorLight
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.service.GroupMemberState
+import io.sellmair.broadheart.GroupMember
 import io.sellmair.broadheart.ui.toColor
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRange<HeartRate>) {
+internal fun MemberHeartRateIndicator(state: GroupMember, range: ClosedRange<HeartRate>) {
     val side = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
     if (state.currentHeartRate == null) return
 
@@ -46,8 +46,8 @@ internal fun MemberHeartRateIndicator(state: GroupMemberState, range: ClosedRang
                     .padding(horizontal = 4.dp)
             )
 
-            if (state.upperHeartRateLimit != null) {
-                if (state.currentHeartRate > state.upperHeartRateLimit) {
+            if (state.heartRateLimit != null) {
+                if (state.currentHeartRate > state.heartRateLimit) {
                     Icon(
                         Icons.Default.Warning, "Too high",
                         modifier = Modifier.size(12.dp),

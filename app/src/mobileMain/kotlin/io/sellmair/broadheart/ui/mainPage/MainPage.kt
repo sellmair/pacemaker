@@ -2,13 +2,12 @@ package io.sellmair.broadheart.ui.mainPage
 
 import androidx.compose.runtime.Composable
 import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.service.GroupState
-import io.sellmair.broadheart.ui.Route
+import io.sellmair.broadheart.Group
 
 @Composable
 internal fun MainPage(
-    groupState: GroupState?,
-    onRoute: (Route) -> Unit,
+    groupState: Group?,
+    onSettingsClicked: () -> Unit,
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}
 ) {
     GroupHeartRateOverview(
@@ -17,5 +16,6 @@ internal fun MainPage(
     )
     MyStatusHeader(
         state = groupState,
-        onSettingsClicked = { onRoute(Route.SettingsPage) })
+        onSettingsClicked = onSettingsClicked
+    )
 }

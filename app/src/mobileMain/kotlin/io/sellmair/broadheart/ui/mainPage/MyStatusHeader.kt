@@ -18,14 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.*
-import io.sellmair.broadheart.service.GroupState
+import io.sellmair.broadheart.Group
+import io.sellmair.broadheart.ui.displayColor
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.ui.toColor
 
 
 @Composable
 internal fun MyStatusHeader(
-    state: GroupState?,
+    state: Group?,
     onSettingsClicked: () -> Unit
 ) {
     val myState = state?.members.orEmpty()
@@ -74,9 +75,9 @@ internal fun MyStatusHeader(
                 }
             }
 
-            if (myState?.upperHeartRateLimit != null)
+            if (myState?.heartRateLimit != null)
                 Text(
-                    myState.upperHeartRateLimit.toString(),
+                    myState.heartRateLimit.toString(),
                     Modifier.offset(y = (-4).dp),
                     fontWeight = FontWeight.Light,
                     fontSize = 10.sp,

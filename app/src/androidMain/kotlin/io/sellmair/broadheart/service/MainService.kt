@@ -67,12 +67,12 @@ class MainService : Service(), CoroutineScope {
 
         /* Update notification showing current users heart rate */
         launch {
-            groupService.groupState
+            groupService.group
                 .mapNotNull { it.members.find { it.user?.isMe == true } }
                 .collect { currentUserState ->
                     notification.update(
                         currentUserState.currentHeartRate ?: return@collect,
-                        currentUserState.upperHeartRateLimit ?: return@collect
+                        currentUserState.heartRateLimit ?: return@collect
                     )
                 }
         }

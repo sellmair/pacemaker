@@ -10,19 +10,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.service.GroupMemberState
-import io.sellmair.broadheart.service.GroupState
+import io.sellmair.broadheart.GroupMember
+import io.sellmair.broadheart.Group
+import io.sellmair.broadheart.viewModel.ApplicationIntent
 
 @Composable
 internal fun SettingsPageContent(
     me: User,
-    groupState: GroupState? = null,
-    onEvent: (SettingsPageEvent) -> Unit = {}
+    groupState: Group? = null,
+    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
+    onCloseSettingsPage: () -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         SettingsPageHeader(
             me = me,
-            onEvent = onEvent
+            onIntent = onIntent,
+            onCloseSettingsPage = onCloseSettingsPage
         )
 
         Spacer(Modifier.height(24.dp))
@@ -31,7 +34,7 @@ internal fun SettingsPageContent(
             SettingsPageDevicesList(
                 me = me,
                 groupState = groupState,
-                onEvent = onEvent
+                onIntent = onIntent
             )
         }
     }
@@ -40,8 +43,8 @@ internal fun SettingsPageContent(
 @Composable
 internal fun SettingsPageDevicesList(
     me: User,
-    groupState: GroupState?,
-    onEvent: (SettingsPageEvent) -> Unit
+    groupState: Group?,
+    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
         Text(
@@ -53,7 +56,7 @@ internal fun SettingsPageDevicesList(
 
         val memberStates = groupState?.members.orEmpty()
             .sortedWith(
-                compareBy<GroupMemberState> { it.user?.isMe?.let { 0 } ?: 1 }
+                compareBy<GroupMember> { it.user?.isMe?.let { 0 } ?: 1 }
                     .then(compareBy { it.sensorInfo?.id?.value.orEmpty() })
             )
         LazyColumn {
@@ -65,7 +68,7 @@ internal fun SettingsPageDevicesList(
                     NearbyDeviceCard(
                         me = me,
                         state = member,
-                        onEvent = onEvent
+                        onEvent = onIntent
                     )
                 }
             }

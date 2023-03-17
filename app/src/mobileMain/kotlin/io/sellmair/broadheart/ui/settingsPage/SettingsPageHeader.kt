@@ -16,22 +16,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.displayColor
+import io.sellmair.broadheart.ui.displayColor
 import io.sellmair.broadheart.model.nameAbbreviation
+import io.sellmair.broadheart.viewModel.ApplicationIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.UserHead
 
 @Composable
 internal fun SettingsPageHeader(
     me: User,
-    onEvent: (SettingsPageEvent) -> Unit = {}
+    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
+    onCloseSettingsPage: () -> Unit
 ) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        IconButton(onClick = { onEvent(SettingsPageEvent.Back) }) {
+        IconButton(onClick = onCloseSettingsPage) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back",
@@ -53,7 +55,7 @@ internal fun SettingsPageHeader(
             ),
             singleLine = true,
             onValueChange = { newName ->
-                onEvent(SettingsPageEvent.UpdateMe(me.copy(name = newName)))
+                onIntent(ApplicationIntent.SettingsPageIntent.UpdateMe(me.copy(name = newName)))
             })
 
         UserHead(
