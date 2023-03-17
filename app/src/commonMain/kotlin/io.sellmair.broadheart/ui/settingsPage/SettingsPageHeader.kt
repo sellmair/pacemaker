@@ -18,10 +18,9 @@ import androidx.compose.ui.unit.sp
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.ui.displayColor
 import io.sellmair.broadheart.model.nameAbbreviation
-import io.sellmair.broadheart.viewModel.ApplicationIntent
+import io.sellmair.broadheart.ApplicationIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.UserHead
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun SettingsPageHeader(

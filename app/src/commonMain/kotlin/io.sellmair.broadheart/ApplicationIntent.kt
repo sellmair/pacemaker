@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.viewModel
+package io.sellmair.broadheart
 
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId

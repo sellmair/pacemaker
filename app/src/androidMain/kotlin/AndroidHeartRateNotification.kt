@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.service
+package io.sellmair.broadheart.backend
 
 import android.app.*
 import android.content.Intent

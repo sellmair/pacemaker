@@ -1,14 +1,13 @@
-package io.sellmair.broadheart.service
+package io.sellmair.broadheart.backend
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import io.sellmair.broadheart.backend.ApplicationBackend
+import io.sellmair.broadheart.*
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
-import io.sellmair.broadheart.hrSensor.HeartRateReceiver
-import io.sellmair.broadheart.hrSensor.PolarHrReceiver
+import io.sellmair.broadheart.hrSensor.AndroidPolarHrReceiver
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorInfo
 import io.sellmair.broadheart.model.User
@@ -27,7 +26,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val groupService: GroupService
     ) : Binder(), ApplicationBackend
 
-    private val hrReceiver = HeartRateReceiver(PolarHrReceiver(this))
+    private val hrReceiver = HeartRateReceiver(AndroidPolarHrReceiver(this))
     private val notification = AndroidHeartRateNotification(this)
 
     override val userService: UserService by lazy {

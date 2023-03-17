@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.AndroidApplicationBackend"/>
+        <service android:name=".backend.AndroidApplicationBackend"/>
 
     </application>
 </manifest>

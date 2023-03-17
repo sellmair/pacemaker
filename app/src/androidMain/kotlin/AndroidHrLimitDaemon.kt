@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.service
+package io.sellmair.broadheart.backend
 
 import android.app.Service
 import android.content.Context
@@ -9,7 +9,7 @@ import io.sellmair.broadheart.GroupMember
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import io.sellmair.broadheart.service.GroupService
+import io.sellmair.broadheart.GroupService
 
 fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupService) = launch {
     val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.GroupMember
 import io.sellmair.broadheart.Group
-import io.sellmair.broadheart.viewModel.ApplicationIntent
+import io.sellmair.broadheart.ApplicationIntent
 
 @Composable
 internal fun SettingsPageContent(

@@ -1,19 +1,14 @@
 package io.sellmair.broadheart.ui
 
-import io.sellmair.broadheart.backend.ApplicationBackend
-import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
+import io.sellmair.broadheart.ApplicationBackend
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
-import io.sellmair.broadheart.hrSensor.HeartRateReceiver
-import io.sellmair.broadheart.model.HeartRateMeasurement
-import io.sellmair.broadheart.model.HeartRateSensorInfo
-import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.service.DefaultGroupService
-import io.sellmair.broadheart.service.GroupService
-import io.sellmair.broadheart.service.StoredUserService
-import io.sellmair.broadheart.service.UserService
+import io.sellmair.broadheart.HeartRateReceiver
+import io.sellmair.broadheart.DefaultGroupService
+import io.sellmair.broadheart.GroupService
+import io.sellmair.broadheart.StoredUserService
+import io.sellmair.broadheart.UserService
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
 import platform.Foundation.*

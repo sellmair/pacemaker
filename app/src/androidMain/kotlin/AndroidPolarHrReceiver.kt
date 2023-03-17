@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.polar.sdk.api.PolarBleApi
 import com.polar.sdk.api.PolarBleApiDefaultImpl
+import io.sellmair.broadheart.HeartRateReceiver
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorId
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlin.time.TimeSource
 
-class PolarHrReceiver(private val context: Context) : HeartRateReceiver {
+class AndroidPolarHrReceiver(private val context: Context) : HeartRateReceiver {
     override val measurements: Flow<HeartRateMeasurement> = flow {
         /* Check for permissions. Only run once permissions are granted */
         while (context.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {

@@ -1,14 +1,10 @@
-package io.sellmair.broadheart.viewModel
+package io.sellmair.broadheart
 
-import io.sellmair.broadheart.Group
-import io.sellmair.broadheart.backend.ApplicationBackend
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.randomUserId
-import io.sellmair.broadheart.service.GroupService
-import io.sellmair.broadheart.service.UserService
-import io.sellmair.broadheart.viewModel.ApplicationIntent.MainPageIntent
-import io.sellmair.broadheart.viewModel.ApplicationIntent.SettingsPageIntent
+import io.sellmair.broadheart.ApplicationIntent.MainPageIntent
+import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

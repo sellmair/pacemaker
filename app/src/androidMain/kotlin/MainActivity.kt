@@ -11,14 +11,10 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
-import io.sellmair.broadheart.backend.ApplicationBackend
-import io.sellmair.broadheart.service.AndroidApplicationBackend
+import io.sellmair.broadheart.backend.AndroidApplicationBackend
 import io.sellmair.broadheart.ui.ApplicationWindow
-import io.sellmair.broadheart.viewModel.ApplicationViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext

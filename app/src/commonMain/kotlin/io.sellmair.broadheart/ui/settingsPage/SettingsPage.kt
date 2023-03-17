@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.Group
 import io.sellmair.broadheart.ui.HCBackHandler
-import io.sellmair.broadheart.viewModel.ApplicationIntent
+import io.sellmair.broadheart.ApplicationIntent
 
 
 @Composable

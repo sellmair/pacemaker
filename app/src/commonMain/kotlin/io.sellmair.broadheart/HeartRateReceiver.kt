@@ -1,6 +1,6 @@
 @file:Suppress("OPT_IN_USAGE")
 
-package io.sellmair.broadheart.hrSensor
+package io.sellmair.broadheart
 
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import kotlinx.coroutines.flow.Flow

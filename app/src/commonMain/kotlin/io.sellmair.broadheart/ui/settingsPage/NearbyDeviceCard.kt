@@ -19,7 +19,7 @@ import io.sellmair.broadheart.ui.displayColor
 import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.GroupMember
-import io.sellmair.broadheart.viewModel.ApplicationIntent.SettingsPageIntent
+import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.broadheart.ui.widget.HeartRateScale

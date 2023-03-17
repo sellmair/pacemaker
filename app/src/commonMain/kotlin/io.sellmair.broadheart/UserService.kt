@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.service
+package io.sellmair.broadheart
 
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.HeartRate

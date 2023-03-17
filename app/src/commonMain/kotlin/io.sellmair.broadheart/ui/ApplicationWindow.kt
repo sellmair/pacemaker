@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import io.sellmair.broadheart.ui.mainPage.MainPage
 import io.sellmair.broadheart.ui.settingsPage.SettingsPage
-import io.sellmair.broadheart.viewModel.ApplicationIntent
-import io.sellmair.broadheart.viewModel.ApplicationViewModel
+import io.sellmair.broadheart.ApplicationIntent
+import io.sellmair.broadheart.ApplicationViewModel
 
 @Composable
 internal fun ApplicationWindow(
