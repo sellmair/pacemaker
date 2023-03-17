@@ -15,7 +15,8 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
-import io.sellmair.broadheart.service.MainService
+import io.sellmair.broadheart.backend.ApplicationBackend
+import io.sellmair.broadheart.service.AndroidApplicationBackend
 import io.sellmair.broadheart.ui.ApplicationWindow
 import io.sellmair.broadheart.viewModel.ApplicationViewModel
 import kotlinx.coroutines.*
@@ -27,9 +28,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     override var coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
-    private val mainServiceConnection = MainServiceConnection()
+    private val mainServiceConnection = ApplicationBackendConnection()
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         coroutineContext = Dispatchers.Main + Job()
@@ -44,38 +44,36 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         startForegroundService()
 
         setContent {
-            val service by mainServiceConnection.service.collectAsState()
-            service?.services?.let { services ->
-                ApplicationWindow(
-                    ApplicationViewModel(
-                        this.lifecycleScope,
-                        services.userService,
-                        services.groupService
-                    )
-                )
+            val backend = mainServiceConnection.backend.collectAsState().value
+            if (backend != null) {
+                ApplicationWindow(ApplicationViewModel(this.lifecycleScope, backend))
             }
         }
     }
 
-    private inner class MainServiceConnection : ServiceConnection {
+    private inner class ApplicationBackendConnection : ServiceConnection {
 
-        private val _service = MutableStateFlow<MainService.MainServiceBinder?>(null)
+        private val _backend = MutableStateFlow<ApplicationBackend?>(null)
 
-        val service = _service.asStateFlow()
+        val backend = _backend.asStateFlow()
 
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service is MainService.MainServiceBinder) {
-                this._service.value = service
+            if (service is AndroidApplicationBackend.MainServiceBinder) {
+                this._backend.value = service
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            _service.value = null
+            _backend.value = null
         }
     }
 
     private fun startForegroundService() {
-        bindService(Intent(this, MainService::class.java), mainServiceConnection, Context.BIND_AUTO_CREATE)
+        bindService(
+            Intent(this, AndroidApplicationBackend::class.java),
+            mainServiceConnection,
+            Context.BIND_AUTO_CREATE
+        )
     }
 
     override fun onDestroy() {

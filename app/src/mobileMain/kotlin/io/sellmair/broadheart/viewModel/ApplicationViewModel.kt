@@ -1,6 +1,7 @@
 package io.sellmair.broadheart.viewModel
 
 import io.sellmair.broadheart.Group
+import io.sellmair.broadheart.backend.ApplicationBackend
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.randomUserId
@@ -24,11 +25,10 @@ interface ApplicationViewModel {
 
 fun ApplicationViewModel(
     coroutineScope: CoroutineScope,
-    userService: UserService,
-    groupService: GroupService
+    backend: ApplicationBackend,
 ): ApplicationViewModel {
     return ApplicationViewModelImpl(
-        coroutineScope, userService, groupService
+        coroutineScope, backend.userService, backend.groupService
     )
 }
 
@@ -100,7 +100,9 @@ private class ApplicationViewModelImpl(
 
     init {
         coroutineScope.launch(Dispatchers.Main.immediate) {
+            println("Launched user load")
             _me.value = userService.currentUser()
+            println("Loaded user: ${_me.value}")
             intentQueue.consumeEach { intent ->
                 process(intent)
                 _me.value = userService.currentUser()

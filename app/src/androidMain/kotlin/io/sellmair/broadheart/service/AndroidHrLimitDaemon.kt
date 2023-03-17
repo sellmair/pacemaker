@@ -9,6 +9,7 @@ import io.sellmair.broadheart.GroupMember
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import io.sellmair.broadheart.service.GroupService
 
 fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupService) = launch {
     val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager

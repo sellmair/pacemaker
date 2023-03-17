@@ -1,19 +1,14 @@
 package io.sellmair.broadheart.service
 
-import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.model.UserId
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.model.HeartRateSensorId
-import io.sellmair.broadheart.model.randomUserId
+import io.sellmair.broadheart.model.*
 import io.sellmair.broadheart.utils.defaultFileSystem
 import io.sellmair.broadheart.utils.readUtf8OrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okio.FileSystem
 import okio.Path
@@ -28,6 +23,10 @@ class StoredUserService(
     private val users = mutableMapOf<UserId, User>()
     private val userIdBySensorId = mutableMapOf<HeartRateSensorId, UserId>()
     private val heartRateLimitByUserId = mutableMapOf<UserId, HeartRate>()
+
+    private val usersSerializer = ListSerializer(User.serializer())
+    private val userIdBySensorIdSerializer = MapSerializer(HeartRateSensorId.serializer(), UserId.serializer())
+    private val heartRateLimitByUserIdSerializer = MapSerializer(UserId.serializer(), HeartRate.serializer())
 
     override suspend fun currentUser(): User {
         return read {
@@ -76,7 +75,7 @@ class StoredUserService(
 
     override suspend fun findUser(sensorId: HeartRateSensorId): User? {
         return read {
-            val userId = userIdBySensorId[sensorId] ?: return null
+            val userId = userIdBySensorId[sensorId] ?: return@read null
             users[userId]
         }
     }
@@ -89,21 +88,18 @@ class StoredUserService(
 
     /* IO */
 
-    private val mutex = Mutex()
 
-    private suspend inline fun <T> read(readAction: () -> T): T {
-        initialLoad.await()
-        return mutex.withLock { readAction() }
+    private suspend fun <T> read(readAction: suspend () -> T): T {
+        return withContext(Dispatchers.Main.immediate) {
+            Action(readAction).dispatchAndAwait()
+        }
     }
 
-    private suspend inline fun <T> write(writeAction: () -> T): T {
-        initialLoad.await()
-        return try {
-            mutex.withLock {
-                writeAction()
+    private suspend fun <T> write(readAction: suspend () -> T): T {
+        return withContext(Dispatchers.Main.immediate) {
+            Action(readAction).dispatchAndAwait().also {
+                onWriteActionPerformedChannel.send(Unit)
             }
-        } finally {
-            onWriteActionPerformedChannel.send(Unit)
         }
     }
 
@@ -116,9 +112,7 @@ class StoredUserService(
         run {
             val content = fs.readUtf8OrNull(usersFile) ?: return@run
             val decoded = Json.decodeFromString<List<User>>(content)
-            decoded.forEach { decodedUser ->
-                users[decodedUser.id] = decodedUser
-            }
+            decoded.forEach { decodedUser -> users[decodedUser.id] = decodedUser }
         }
 
         /* Load userIdBySensorId */
@@ -136,6 +130,23 @@ class StoredUserService(
         }
     }
 
+    inner class Action<T>(
+        private val action: suspend () -> T
+    ) {
+        private val deferred = CompletableDeferred<T>()
+
+        suspend operator fun invoke() {
+            deferred.completeWith(runCatching { action() })
+        }
+
+        suspend fun dispatchAndAwait(): T {
+            actionsChannel.send(this)
+            return deferred.await()
+        }
+    }
+
+    private val actionsChannel = Channel<Action<*>>(Channel.UNLIMITED)
+
     private val onWriteActionPerformedChannel = Channel<Unit>(Channel.CONFLATED)
 
     init {
@@ -146,12 +157,28 @@ class StoredUserService(
                     userIdBySensorIdFile.parent?.let { fs.createDirectories(it) }
                     heartRateLimitsFile.parent?.let { fs.createDirectories(it) }
 
-                    fs.write(usersFile) { writeUtf8(Json.encodeToString(users.values)) }
-                    fs.write(userIdBySensorIdFile) { writeUtf8(Json.encodeToString(userIdBySensorId)) }
-                    fs.write(heartRateLimitsFile) { writeUtf8(Json.encodeToString(heartRateLimitByUserId)) }
+                    fs.write(usersFile) {
+                        writeUtf8(Json.encodeToString(usersSerializer, users.values.toList()))
+                    }
+
+                    fs.write(userIdBySensorIdFile) {
+                        writeUtf8(Json.encodeToString(userIdBySensorIdSerializer, userIdBySensorId))
+                    }
+
+                    fs.write(heartRateLimitsFile) {
+                        writeUtf8(Json.encodeToString(heartRateLimitByUserIdSerializer, heartRateLimitByUserId))
+                    }
+
                 } catch (t: Throwable) {
                     println("${StoredUserService::class.simpleName}: Failed to update storage: ${t.message}")
                 }
+            }
+        }
+
+        coroutineScope.launch(Dispatchers.Main.immediate) {
+            initialLoad.await()
+            actionsChannel.consumeEach { action ->
+                action()
             }
         }
     }

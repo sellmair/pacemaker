@@ -6,7 +6,7 @@ import androidx.core.app.NotificationCompat
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.MainActivity
 
-class MainServiceNotification(private val service: Service) {
+class AndroidHeartRateNotification(private val service: Service) {
 
     private companion object {
         const val notificationId = 1

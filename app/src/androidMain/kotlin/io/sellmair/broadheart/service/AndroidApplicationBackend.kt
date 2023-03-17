@@ -4,10 +4,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import io.sellmair.broadheart.backend.ApplicationBackend
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
 import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
-import io.sellmair.broadheart.hrSensor.HrReceiver
-import io.sellmair.broadheart.hrSensor.polar.PolarHrReceiver
+import io.sellmair.broadheart.hrSensor.HeartRateReceiver
+import io.sellmair.broadheart.hrSensor.PolarHrReceiver
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorInfo
 import io.sellmair.broadheart.model.User
@@ -17,30 +18,23 @@ import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
-class MainService : Service(), CoroutineScope {
+class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
-    data class Services(
-        val userService: UserService,
-        val groupService: GroupService
-    )
+    inner class MainServiceBinder(
+        override val userService: UserService,
+        override val groupService: GroupService
+    ) : Binder(), ApplicationBackend
 
-    inner class MainServiceBinder : Binder() {
-        val services = Services(
-            userService = userService,
-            groupService = groupService
-        )
-    }
+    private val hrReceiver = HeartRateReceiver(PolarHrReceiver(this))
+    private val notification = AndroidHeartRateNotification(this)
 
-    private val hrReceiver = HrReceiver(PolarHrReceiver(this))
-    private val notification = MainServiceNotification(this)
-
-    private val userService: UserService by lazy {
+    override val userService: UserService by lazy {
         StoredUserService(this, filesDir.resolve("userService").toOkioPath())
     }
 
-    private val groupService by lazy { DefaultGroupService(userService) }
+    override val groupService by lazy { DefaultGroupService(userService) }
 
 
     override fun onCreate() {
@@ -79,7 +73,11 @@ class MainService : Service(), CoroutineScope {
 
         /* Start broadcasting my own state to other participants */
         launch {
-            val sender = BroadheartBluetoothSender(this@MainService, this@MainService, userService.currentUser())
+            val sender = BroadheartBluetoothSender(
+                this@AndroidApplicationBackend,
+                this@AndroidApplicationBackend,
+                userService.currentUser()
+            )
             coroutineScope {
                 launch {
                     hrMeasurements.collect { hrMeasurement ->
@@ -94,7 +92,10 @@ class MainService : Service(), CoroutineScope {
 
         /* Receive broadcasts */
         launch {
-            BroadheartBluetoothReceiver(this@MainService, this@MainService).received.collect { received ->
+            BroadheartBluetoothReceiver(
+                this@AndroidApplicationBackend,
+                this@AndroidApplicationBackend
+            ).received.collect { received ->
                 val user = User(
                     isMe = false, id = received.userId, name = received.userName
                 )
@@ -125,6 +126,9 @@ class MainService : Service(), CoroutineScope {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        return MainServiceBinder()
+        return MainServiceBinder(
+            userService = userService,
+            groupService = groupService
+        )
     }
 }

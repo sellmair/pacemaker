@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -21,6 +21,7 @@ import io.sellmair.broadheart.model.nameAbbreviation
 import io.sellmair.broadheart.viewModel.ApplicationIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.UserHead
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun SettingsPageHeader(
@@ -28,6 +29,8 @@ internal fun SettingsPageHeader(
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
     onCloseSettingsPage: () -> Unit
 ) {
+    var userName by remember { mutableStateOf(me.name) }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -48,13 +51,14 @@ internal fun SettingsPageHeader(
             modifier = Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically),
-            value = me.name,
+            value = userName,
             textStyle = TextStyle(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             ),
             singleLine = true,
             onValueChange = { newName ->
+                userName = newName
                 onIntent(ApplicationIntent.SettingsPageIntent.UpdateMe(me.copy(name = newName)))
             })
 
