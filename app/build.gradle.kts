@@ -1,7 +1,9 @@
-@file:Suppress("UnstableApiUsage")
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+@file:Suppress("UnstableApiUsage", "OPT_IN_IS_NOT_ENABLED")
+@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
+@file:SuppressLint("TestManifestGradleConfiguration")
 
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import android.annotation.SuppressLint
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     id("kmp-application-conventions")
@@ -58,24 +60,6 @@ kotlin {
 
     sourceSets.androidInstrumentedTest.get().dependencies {
         implementation("androidx.compose.ui:ui-test-junit4")
-    }
-
-
-    /* Setup frameworks for iOS */
-    targets.withType<KotlinNativeTarget>().all {
-        if (konanTarget.family.isAppleFamily) {
-            binaries.framework {
-                freeCompilerArgs += listOf(
-                    "-linker-option", "-framework", "-linker-option", "Metal",
-                    "-linker-option", "-framework", "-linker-option", "CoreText",
-                    "-linker-option", "-framework", "-linker-option", "CoreGraphics",
-                    "-linker-option", "-framework", "-linker-option", "UIKit",
-                    "-Xdisable-phases=VerifyBitcode"
-                )
-
-                isStatic = true
-            }
-        }
     }
 
     cocoapods {
