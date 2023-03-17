@@ -15,7 +15,7 @@ interface GroupService {
     val group: StateFlow<Group>
     suspend fun add(measurement: HeartRateMeasurement)
     suspend fun add(foreignState: GroupMember)
-    suspend fun updateState()
+    suspend fun invalidate()
 }
 
 class DefaultGroupService(
@@ -28,14 +28,14 @@ class DefaultGroupService(
 
     override suspend fun add(measurement: HeartRateMeasurement) {
         measurements.add(measurement)
-        updateState()
+        invalidate()
     }
 
     override suspend fun add(foreignState: GroupMember) {
         foreignStates[foreignState.user?.id ?: return] = foreignState
     }
 
-    override suspend fun updateState() {
+    override suspend fun invalidate() {
         val nextState = withContext(Dispatchers.Default) {
             calculateGroupState(userService, measurements.toList(), foreignStates.values.toList())
         }

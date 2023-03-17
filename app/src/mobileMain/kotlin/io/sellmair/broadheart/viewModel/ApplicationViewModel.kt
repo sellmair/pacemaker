@@ -9,6 +9,7 @@ import io.sellmair.broadheart.service.UserService
 import io.sellmair.broadheart.viewModel.ApplicationIntent.MainPageIntent
 import io.sellmair.broadheart.viewModel.ApplicationIntent.SettingsPageIntent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
@@ -51,7 +52,7 @@ private class ApplicationViewModelImpl(
         is MainPageIntent.UpdateHeartRateLimit -> {
             val me = userService.currentUser()
             userService.saveUpperHeartRateLimit(me, intent.heartRateLimit)
-            groupService.updateState()
+            groupService.invalidate()
         }
 
         is SettingsPageIntent.LinkSensor -> {
@@ -78,30 +79,32 @@ private class ApplicationViewModelImpl(
             userService.save(adhocUser)
             userService.linkSensor(adhocUser, intent.sensor)
             userService.saveUpperHeartRateLimit(adhocUser, HeartRate(130))
-            groupService.updateState()
+            groupService.invalidate()
         }
 
         is SettingsPageIntent.UpdateAdhocUser -> {
             userService.save(intent.user)
-            groupService.updateState()
+            groupService.invalidate()
         }
 
         is SettingsPageIntent.DeleteAdhocUser -> {
             userService.delete(intent.user)
-            groupService.updateState()
+            groupService.invalidate()
         }
 
         is SettingsPageIntent.UpdateAdhocUserLimit -> {
             userService.saveUpperHeartRateLimit(intent.user, intent.limit)
-            groupService.updateState()
+            groupService.invalidate()
         }
     }
 
     init {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             _me.value = userService.currentUser()
             intentQueue.consumeEach { intent ->
                 process(intent)
+                _me.value = userService.currentUser()
+                groupService.invalidate()
             }
         }
     }

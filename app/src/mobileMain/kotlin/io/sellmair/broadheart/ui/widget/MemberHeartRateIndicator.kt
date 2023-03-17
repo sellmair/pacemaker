@@ -22,13 +22,13 @@ import io.sellmair.broadheart.ui.toColor
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun MemberHeartRateIndicator(state: GroupMember, range: ClosedRange<HeartRate>) {
-    val side = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
-    if (state.currentHeartRate == null) return
+internal fun MemberHeartRateIndicator(member: GroupMember, range: ClosedRange<HeartRate>) {
+    val side = if (member.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
+    if (member.currentHeartRate == null) return
 
-    val animatedHeartRate = remember("animate", state.user?.id) { Animatable(state.currentHeartRate.value) }
+    val animatedHeartRate = remember(member.user?.id) { Animatable(member.currentHeartRate.value) }
     rememberCoroutineScope().launch {
-        animatedHeartRate.animateTo(state.currentHeartRate.value)
+        animatedHeartRate.animateTo(member.currentHeartRate.value)
     }
 
     /* Can be null for myself */
@@ -41,13 +41,13 @@ internal fun MemberHeartRateIndicator(state: GroupMember, range: ClosedRange<Hea
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             UserHead(
-                memberState = state,
+                memberState = member,
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
             )
 
-            if (state.heartRateLimit != null) {
-                if (state.currentHeartRate > state.heartRateLimit) {
+            if (member.heartRateLimit != null) {
+                if (member.currentHeartRate > member.heartRateLimit) {
                     Icon(
                         Icons.Default.Warning, "Too high",
                         modifier = Modifier.size(12.dp),
@@ -57,7 +57,7 @@ internal fun MemberHeartRateIndicator(state: GroupMember, range: ClosedRange<Hea
                     Icon(
                         Icons.Default.ThumbUp, "OK",
                         modifier = Modifier.size(12.dp),
-                        tint = state.displayColorLight.toColor()
+                        tint = member.displayColorLight.toColor()
                     )
                 }
             }

@@ -51,7 +51,7 @@ class MainService : Service(), CoroutineScope {
         /* Connecting our hr receiver with the group service */
         val hrMeasurements = hrReceiver.measurements
             .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
-            .onEach { groupService.updateState() }
+            .onEach { groupService.invalidate() }
             .shareIn(this, SharingStarted.WhileSubscribed())
 
         /*
@@ -61,7 +61,7 @@ class MainService : Service(), CoroutineScope {
         launch {
             while (true) {
                 delay(30.seconds)
-                groupService.updateState()
+                groupService.invalidate()
             }
         }
 
