@@ -1,6 +1,7 @@
 package io.sellmair.broadheart.ui.widget
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -9,24 +10,27 @@ import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.sellmair.broadheart.ui.displayColorLight
-import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.GroupMember
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.UserId
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.ui.toColor
 import kotlinx.coroutines.launch
+
+/* How can this be done using remember? 🤷 */
+private val animationByUser = mutableMapOf<UserId?, Animatable<Float, AnimationVector1D>>()
 
 @Composable
 internal fun MemberHeartRateIndicator(member: GroupMember, range: ClosedRange<HeartRate>) {
     val side = if (member.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
     if (member.currentHeartRate == null) return
 
-    val animatedHeartRate = remember(member.user?.id) { Animatable(member.currentHeartRate.value) }
+    val animatedHeartRate = animationByUser.getOrPut(member.user?.id) { Animatable(member.currentHeartRate.value) }
     rememberCoroutineScope().launch {
         animatedHeartRate.animateTo(member.currentHeartRate.value)
     }

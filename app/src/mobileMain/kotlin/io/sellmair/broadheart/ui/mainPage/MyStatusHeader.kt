@@ -54,7 +54,7 @@ internal fun MyStatusHeader(
                     .height(IntrinsicSize.Min)
             ) {
                 Text(
-                    myState?.currentHeartRate?.toString() ?: "N/A",
+                    myState?.currentHeartRate?.toString() ?: "🤷‍♂️",
                     fontWeight = FontWeight.Black,
                     fontSize = 48.sp,
                     modifier = Modifier
