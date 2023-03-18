@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HeartRateSensorInfo(
     val id: HeartRateSensorId,
-    val address: String,
+    val address: String?,
     val vendor: Vendor,
     val rssi: Int? = null,
 ) {

@@ -1,16 +1,13 @@
 package io.sellmair.broadheart.bluetooth
 
-import io.sellmair.broadheart.model.*
-import kotlinx.coroutines.flow.SharedFlow
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.HeartRateSensorId
+import io.sellmair.broadheart.model.UserId
 import kotlin.time.TimeMark
 
-interface BroadheartBluetoothReceiver {
-    val received: SharedFlow<ReceivedBroadheartPackage>
-}
-
-data class ReceivedBroadheartPackage(
+data class HeartcastBroadcastPackage(
     val receivedTime: TimeMark,
-    val address: String,
+    val deviceId: BlePeripheralId,
     val userId: UserId,
     val userName: String,
     val sensorId: HeartRateSensorId,

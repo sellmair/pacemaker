@@ -1,37 +1,55 @@
 package io.sellmair.broadheart.spoof
 
-import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
+import io.sellmair.broadheart.bluetooth.DarwinBle
+import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
+import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.UserId
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopRun
+import kotlin.math.roundToInt
 
-var sender: BroadheartBluetoothSender? = null
 fun main() {
-    MainScope().launch(Dispatchers.Main) {
+    launchSendBroadcasts()
+    launchReceiveBroadcasts()
+    CFRunLoopRun()
+}
+
+private fun launchSendBroadcasts() = MainScope().launch {
+    MainScope().launch(Dispatchers.Default) {
         val user = User(
             isMe = true,
             id = UserId(2412),
             name = "Felix Werner"
         )
 
-        sender = BroadheartBluetoothSender(user)
+        val sender = HeartcastBluetoothSender(DarwinBle(this))
+        sender.updateUser(user)
 
-        withContext(Dispatchers.Default) {
-            while (isActive) {
-                print("Heart Rate: ")
-                sender?.updateHeartHeart(
-                    HeartRateSensorId("spoof-sensor"),
-                    HeartRate(readln().toIntOrNull() ?: continue)
+        while (isActive) {
+            val line = readln()
+            if (line.startsWith("l")) {
+                val heartRateLimit = line.removePrefix("l").toIntOrNull() ?: continue
+                sender.updateHeartRateLimit(HeartRate(heartRateLimit))
+                println("Updated spoof hr-limit: $heartRateLimit")
+            } else {
+                sender.updateHeartHeart(
+                    HeartRateSensorId("👻"), HeartRate(line.toIntOrNull() ?: continue)
                 )
-
-                print("Heart Rate Limit: ")
-                sender?.updateHeartRateLimit(HeartRate(readln().toIntOrNull() ?: continue))
+                println("Updated spoof hr: ${line.toIntOrNull()}")
             }
         }
-    }
 
-    CFRunLoopRun()
+    }
+}
+
+private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
+    DarwinBle(this).receiveHeartcastBroadcastPackages().collect { pkg ->
+        println("${pkg.userName}: ${pkg.heartRate.value.roundToInt()}/${pkg.heartRateLimit.value.roundToInt()}")
+    }
 }

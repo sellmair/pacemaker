@@ -6,7 +6,9 @@ plugins {
 }
 
 kotlin {
-    if (!plugins.hasPlugin(AndroidBasePlugin::class)) {
-        jvm()
+    afterEvaluate {
+        if (!plugins.hasPlugin(AndroidBasePlugin::class)) {
+            jvm()
+        }
     }
 }

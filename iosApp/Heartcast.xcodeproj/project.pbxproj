@@ -88,7 +88,6 @@
 				9C79BEBC2FD91B0DF012A22F /* Pods-Heartcast.debug.xcconfig */,
 				0AC847B3E25068E21E64E639 /* Pods-Heartcast.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -319,6 +318,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Heartcast/Preview Content\"";
+				DEVELOPMENT_TEAM = R58Q77NDGL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -348,6 +348,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Heartcast/Preview Content\"";
+				DEVELOPMENT_TEAM = R58Q77NDGL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

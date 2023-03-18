@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import io.sellmair.broadheart.*
-import io.sellmair.broadheart.bluetooth.BroadheartBluetoothReceiver
-import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
+import io.sellmair.broadheart.bluetooth.AndroidBle
+import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
+import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
 import io.sellmair.broadheart.hrSensor.AndroidPolarHrReceiver
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorInfo
@@ -34,7 +35,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     }
 
     override val groupService by lazy { DefaultGroupService(userService) }
-
 
     override fun onCreate() {
         super.onCreate()
@@ -72,18 +72,14 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         /* Start broadcasting my own state to other participants */
         launch {
-            val sender = BroadheartBluetoothSender(
-                this@AndroidApplicationBackend,
-                this@AndroidApplicationBackend,
-                userService.currentUser()
-            )
-            coroutineScope {
-                launch {
-                    hrMeasurements.collect { hrMeasurement ->
-                        val user = userService.currentUser()
-                        sender.updateUser(user)
-                        sender.updateHeartHeart(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
-                    }
+            val ble = AndroidBle(this, this@AndroidApplicationBackend)
+            val sender = HeartcastBluetoothSender(ble)
+            hrMeasurements.collect { hrMeasurement ->
+                val user = userService.currentUser()
+                sender.updateUser(user)
+                sender.updateHeartHeart(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
+                userService.findUpperHeartRateLimit(user)?.let { heartRateLimit ->
+                    sender.updateHeartRateLimit(heartRateLimit)
                 }
             }
         }
@@ -91,10 +87,8 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         /* Receive broadcasts */
         launch {
-            BroadheartBluetoothReceiver(
-                this@AndroidApplicationBackend,
-                this@AndroidApplicationBackend
-            ).received.collect { received ->
+            val ble = AndroidBle(this, this@AndroidApplicationBackend)
+            ble.receiveHeartcastBroadcastPackages().collect { received ->
                 val user = User(
                     isMe = false, id = received.userId, name = received.userName
                 )
@@ -108,7 +102,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
                         heartRate = received.heartRate,
                         sensorInfo = HeartRateSensorInfo(
                             id = received.sensorId,
-                            address = received.address,
+                            address = received.deviceId.value,
                             vendor = HeartRateSensorInfo.Vendor.Unknown
                         ),
                         receivedTime = received.receivedTime
@@ -116,7 +110,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
                 )
             }
         }
-
     }
 
     override fun onDestroy() {
