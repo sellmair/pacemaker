@@ -1,5 +1,6 @@
 package io.sellmair.broadheart.backend
 
+import AndroidBleHeartRateReceiver
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -27,7 +28,12 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val groupService: GroupService
     ) : Binder(), ApplicationBackend
 
-    private val hrReceiver = HeartRateReceiver(AndroidPolarHrReceiver(this))
+    private val ble by lazy { AndroidBle(this, this) }
+
+    private val hrReceiver = HeartRateReceiver(
+        AndroidPolarHrReceiver(this),
+        //AndroidBleHeartRateReceiver(ble)
+    )
     private val notification = AndroidHeartRateNotification(this)
 
     override val userService: UserService by lazy {
@@ -72,7 +78,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         /* Start broadcasting my own state to other participants */
         launch {
-            val ble = AndroidBle(this, this@AndroidApplicationBackend)
             val sender = HeartcastBluetoothSender(ble)
             hrMeasurements.collect { hrMeasurement ->
                 val user = userService.currentUser()
@@ -87,7 +92,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         /* Receive broadcasts */
         launch {
-            val ble = AndroidBle(this, this@AndroidApplicationBackend)
             ble.receiveHeartcastBroadcastPackages().collect { received ->
                 val user = User(
                     isMe = false, id = received.userId, name = received.userName

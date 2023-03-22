@@ -14,13 +14,14 @@ interface BleServer {
 
 interface BleClient {
     val service: BleServiceDescriptor
-    val peripherals: Flow<BlePeripheral>
+    val peripherals: Flow<BleDiscoveredPeripheral>
 }
 
 data class BlePeripheralId(val value: String)
 
-interface BlePeripheral {
+interface BleDiscoveredPeripheral {
     val peripheralId: BlePeripheralId
+    val rssi: Int
     suspend fun connect(): BleClientConnection
 }
 

@@ -39,24 +39,26 @@ internal suspend fun AndroidBleClient(
     val manager = context.getSystemService(BluetoothManager::class.java)
     return object : BleClient {
         override val service: BleServiceDescriptor = service
-        override val peripherals: Flow<BlePeripheral>
+        override val peripherals: Flow<BleDiscoveredPeripheral>
             get() = manager.scanForPeripherals(service)
-                .distinct { device -> device.address }
-                .map { device ->
-                    object : BlePeripheral {
-                        override val peripheralId: BlePeripheralId = device.peripheralId
+                .distinct { scanResult -> scanResult.device.peripheralId }
+                .map { scanResult ->
+                    object : BleDiscoveredPeripheral {
+                        override val rssi: Int get() = scanResult.rssi
+                        override val peripheralId: BlePeripheralId = scanResult.device.peripheralId
                         override suspend fun connect(): BleClientConnection {
-                            return device.connect(scope, context, service)
+                            return scanResult.device.connect(scope, context, service)
                         }
                     }
                 }
     }
 }
 
+
 private val BluetoothDevice.peripheralId: BlePeripheralId get() = BlePeripheralId(address)
 
 @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-private fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor): Flow<BluetoothDevice> = callbackFlow {
+private fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor): Flow<ScanResult> = callbackFlow {
     val scanCallback = object : ScanCallback() {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
@@ -65,7 +67,7 @@ private fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor): 
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             if (result == null) return
-            trySend(result.device)
+            trySend(result)
         }
     }
 

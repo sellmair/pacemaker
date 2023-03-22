@@ -19,22 +19,25 @@ suspend fun DarwinBleClient(scope: CoroutineScope, service: BleServiceDescriptor
 
     return object : BleClient {
         override val service: BleServiceDescriptor = service
-        override val peripherals: Flow<BlePeripheral>
+        override val peripherals: Flow<BleDiscoveredPeripheral>
             get() = centralDelegate.peripherals
-                .map { peripheral: CBPeripheral ->
-                    object : BlePeripheral {
-                        override val peripheralId: BlePeripheralId = peripheral.peripheralId
+                .map { discoveredPeripheral ->
+                    object : BleDiscoveredPeripheral {
+                        override val rssi: Int = discoveredPeripheral.rssi.intValue
+                        override val peripheralId: BlePeripheralId = discoveredPeripheral.peripheral.peripheralId
 
                         override suspend fun connect(): BleClientConnection {
-                            cbCentralManager.connectPeripheral(peripheral, mutableMapOf<Any?, Any>())
+                            cbCentralManager.connectPeripheral(
+                                discoveredPeripheral.peripheral, mutableMapOf<Any?, Any>()
+                            )
 
-                            centralDelegate.connectedPeripherals.first { it == peripheral }
+                            centralDelegate.connectedPeripherals.first { it == discoveredPeripheral.peripheral }
                             val peripheralDelegate = PeripheralDelegate(scope, service)
-                            peripheral.delegate = peripheralDelegate
-                            peripheral.discoverServices(listOf(service.uuid))
+                            discoveredPeripheral.peripheral.delegate = peripheralDelegate
+                            discoveredPeripheral.peripheral.discoverServices(listOf(service.uuid))
 
                             return object : BleClientConnection {
-                                override val peripheralId: BlePeripheralId = peripheral.peripheralId
+                                override val peripheralId: BlePeripheralId = discoveredPeripheral.peripheral.peripheralId
 
                                 override fun getValue(characteristic: BleCharacteristicDescriptor): Flow<ByteArray> {
                                     return peripheralDelegate.valueFlowOf(characteristic.uuid)
@@ -47,8 +50,13 @@ suspend fun DarwinBleClient(scope: CoroutineScope, service: BleServiceDescriptor
 }
 
 private class CentralDelegate(private val scope: CoroutineScope) : NSObject(), CBCentralManagerDelegateProtocol {
+    data class DiscoveredPeripheral(
+        val peripheral: CBPeripheral,
+        val rssi: NSNumber
+    )
+
     private val state = MutableStateFlow<Long?>(null)
-    private val _peripherals = MutableSharedFlow<CBPeripheral>()
+    private val _peripherals = MutableSharedFlow<DiscoveredPeripheral>()
     val peripherals = _peripherals.asSharedFlow()
 
     private val _connectedPeripherals = MutableSharedFlow<CBPeripheral>()
@@ -63,7 +71,7 @@ private class CentralDelegate(private val scope: CoroutineScope) : NSObject(), C
     ) {
         if (didDiscoverPeripheral.state == CBPeripheralStateDisconnected) {
             scope.launch {
-                _peripherals.emit(didDiscoverPeripheral)
+                _peripherals.emit(DiscoveredPeripheral(didDiscoverPeripheral, RSSI))
             }
         }
     }

@@ -2,6 +2,7 @@ package io.sellmair.broadheart.spoof
 
 import io.sellmair.broadheart.bluetooth.DarwinBle
 import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
+import io.sellmair.broadheart.bluetooth.receiveHeartRateMeasurements
 import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
@@ -17,6 +18,7 @@ import kotlin.math.roundToInt
 fun main() {
     launchSendBroadcasts()
     launchReceiveBroadcasts()
+    launchReceiveHeartRates()
     CFRunLoopRun()
 }
 
@@ -51,5 +53,11 @@ private fun launchSendBroadcasts() = MainScope().launch {
 private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
     DarwinBle(this).receiveHeartcastBroadcastPackages().collect { pkg ->
         println("${pkg.userName}: ${pkg.heartRate.value.roundToInt()}/${pkg.heartRateLimit.value.roundToInt()}")
+    }
+}
+
+private fun launchReceiveHeartRates() = MainScope().launch(Dispatchers.Default) {
+    DarwinBle(this).receiveHeartRateMeasurements().collect { measurement ->
+        println("HR: ${measurement.heartRate} | Device: ${measurement.sensorInfo.id}")
     }
 }
