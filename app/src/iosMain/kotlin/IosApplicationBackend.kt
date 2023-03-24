@@ -3,8 +3,14 @@ package io.sellmair.broadheart.ui
 import io.sellmair.broadheart.*
 import io.sellmair.broadheart.bluetooth.DarwinBle
 import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
+import io.sellmair.broadheart.model.HeartRateMeasurement
+import io.sellmair.broadheart.model.HeartRateSensorInfo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
@@ -42,13 +48,10 @@ class IosApplicationBackend : ApplicationBackend {
             }
         }
 
-        /* Broadcast my HR measurements */
         coroutineScope.launch {
-            val sender = HeartcastBluetoothSender(ble)
-            heartRateReceiver.measurements.collect { measurement ->
-                val user = userService.currentUser()
-                sender.updateUser(user)
-                sender.updateHeartHeart(measurement.sensorInfo.id, measurement.heartRate)
+            heartRateReceiver.measurements.collect { hrMeasurement ->
+                groupService.add(hrMeasurement)
+                groupService.invalidate()
             }
         }
     }

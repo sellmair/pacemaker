@@ -7,16 +7,14 @@ import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.HeartRateSensorInfo
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import kotlin.time.TimeSource
 
 
 suspend fun Ble.receiveHeartRateMeasurements(): Flow<HeartRateMeasurement> {
     return startClient(HeartRateBleService.service)
         .peripherals
+        .onEach { println("Found peripheral: ${it.peripheralId}") }
         .map { it.connect() }
         .flatMapMerge { connection ->
             connection.getValue(heartRateCharacteristic).mapNotNull { data ->
