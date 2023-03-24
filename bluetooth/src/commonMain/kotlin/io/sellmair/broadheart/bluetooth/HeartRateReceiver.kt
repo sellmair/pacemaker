@@ -36,7 +36,7 @@ suspend fun Ble.receiveHeartRateMeasurements(): Flow<HeartRateMeasurement> {
                     receivedTime = TimeSource.Monotonic.markNow(),
                     sensorInfo = HeartRateSensorInfo(
                         id = HeartRateSensorId(peripheral.peripheralId.value),
-                        rssi = null
+                        rssi = peripheral.rssi.value.value
                     )
                 )
             }

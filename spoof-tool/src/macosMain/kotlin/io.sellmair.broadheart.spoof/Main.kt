@@ -1,6 +1,6 @@
 package io.sellmair.broadheart.spoof
 
-import io.sellmair.broadheart.bluetooth.DarwinBle
+import io.sellmair.broadheart.bluetooth.Ble
 import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
 import io.sellmair.broadheart.bluetooth.receiveHeartRateMeasurements
 import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
@@ -30,7 +30,7 @@ private fun launchSendBroadcasts() = MainScope().launch {
             name = "Felix Werner"
         )
 
-        val sender = HeartcastBluetoothSender(DarwinBle(this))
+        val sender = HeartcastBluetoothSender(Ble(this))
         sender.updateUser(user)
 
         while (isActive) {
@@ -51,13 +51,13 @@ private fun launchSendBroadcasts() = MainScope().launch {
 }
 
 private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
-    DarwinBle(this).receiveHeartcastBroadcastPackages().collect { pkg ->
+    Ble(this).receiveHeartcastBroadcastPackages().collect { pkg ->
         println("${pkg.userName}: ${pkg.heartRate.value.roundToInt()}/${pkg.heartRateLimit.value.roundToInt()}")
     }
 }
 
 private fun launchReceiveHeartRates() = MainScope().launch(Dispatchers.Default) {
-    DarwinBle(this).receiveHeartRateMeasurements().collect { measurement ->
+    Ble(this).receiveHeartRateMeasurements().collect { measurement ->
         println("HR: ${measurement.heartRate} | Device: ${measurement.sensorInfo.id}")
     }
 }

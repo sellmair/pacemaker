@@ -9,7 +9,6 @@ import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import androidx.annotation.RequiresPermission
 import io.sellmair.broadheart.utils.distinct
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +17,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("MissingPermission")
-internal suspend fun AndroidBleCentralService(
+internal suspend fun BleCentralService(
     scope: CoroutineScope,
     context: Context,
     service: BleServiceDescriptor

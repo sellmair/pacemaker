@@ -1,14 +1,10 @@
 package io.sellmair.broadheart.ui
 
 import io.sellmair.broadheart.*
+import io.sellmair.broadheart.bluetooth.Ble
 import io.sellmair.broadheart.bluetooth.DarwinBle
-import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
-import io.sellmair.broadheart.model.HeartRateMeasurement
-import io.sellmair.broadheart.model.HeartRateSensorInfo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch

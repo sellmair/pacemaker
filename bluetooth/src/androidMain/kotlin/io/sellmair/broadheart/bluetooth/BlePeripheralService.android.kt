@@ -18,7 +18,7 @@ import kotlinx.coroutines.channels.consumeEach
 import java.util.*
 
 @SuppressLint("MissingPermission")
-internal suspend fun AndroidBlePeripheralService(
+internal suspend fun BlePeripheralService(
     scope: CoroutineScope,
     context: Context,
     service: BleServiceDescriptor

@@ -8,7 +8,7 @@ import platform.CoreBluetooth.*
 import platform.Foundation.*
 import platform.darwin.NSObject
 
-suspend fun DarwinBlePeripheralService(service: BleServiceDescriptor): BlePeripheralService {
+suspend fun BlePeripheralService(service: BleServiceDescriptor): BlePeripheralService {
     val peripheralDelegate = BPeripheralManagerDelegate()
     val cbPeripheralManager = CBPeripheralManager(peripheralDelegate, null)
     peripheralDelegate.awaitPoweredOnState()
