@@ -1,17 +1,16 @@
 package io.sellmair.broadheart.ui
 
-import io.sellmair.broadheart.ApplicationBackend
-import io.sellmair.broadheart.bluetooth.BroadheartBluetoothSender
-import io.sellmair.broadheart.HeartRateReceiver
-import io.sellmair.broadheart.DefaultGroupService
-import io.sellmair.broadheart.GroupService
-import io.sellmair.broadheart.StoredUserService
-import io.sellmair.broadheart.UserService
+import io.sellmair.broadheart.*
+import io.sellmair.broadheart.bluetooth.DarwinBle
+import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
-import platform.Foundation.*
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 import kotlin.time.Duration.Companion.seconds
 
 class IosApplicationBackend : ApplicationBackend {
@@ -29,7 +28,11 @@ class IosApplicationBackend : ApplicationBackend {
         DefaultGroupService(userService)
     }
 
-    private val heartRateReceiver = HeartRateReceiver()
+    private val ble = DarwinBle(coroutineScope)
+
+    private val heartRateReceiver = HeartRateReceiver(
+        BleHeartRateReceiver(ble)
+    )
 
     init {
         coroutineScope.launch {
@@ -41,7 +44,7 @@ class IosApplicationBackend : ApplicationBackend {
 
         /* Broadcast my HR measurements */
         coroutineScope.launch {
-            val sender = BroadheartBluetoothSender(userService.currentUser())
+            val sender = HeartcastBluetoothSender(ble)
             heartRateReceiver.measurements.collect { measurement ->
                 val user = userService.currentUser()
                 sender.updateUser(user)

@@ -47,7 +47,7 @@ internal fun ApplicationWindow(
                     .background(Color.White)
             )
 
-            if(me == null ) {
+            if (me == null) {
                 println("Missing: me")
             }
             me?.let { me ->
