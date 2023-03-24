@@ -1,9 +1,10 @@
 package io.sellmair.broadheart
 
-import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.HeartRateSensorInfo
+import io.sellmair.broadheart.model.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserService {
     suspend fun currentUser(): User
@@ -16,4 +17,6 @@ interface UserService {
     suspend fun findUser(sensorInfo: HeartRateSensorInfo): User? = findUser(sensorInfo.id)
     suspend fun findUser(sensorId: HeartRateSensorId): User?
     suspend fun findUpperHeartRateLimit(user: User): HeartRate?
+
+    val onChange: Flow<Unit>
 }

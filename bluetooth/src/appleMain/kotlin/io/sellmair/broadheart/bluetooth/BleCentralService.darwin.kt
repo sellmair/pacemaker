@@ -50,7 +50,7 @@ private class DarwinBlePeripheral(
 
     private val peripheral = discoveredPeripheral.peripheral
 
-    override val peripheralId: BlePeripheral.Id = discoveredPeripheral.peripheral.peripheralId
+    override val id: BlePeripheral.Id = discoveredPeripheral.peripheral.peripheralId
 
     private val valueFlows = mutableMapOf<BleUUID, MutableStateFlow<ByteArray?>>()
 
@@ -71,7 +71,12 @@ private class DarwinBlePeripheral(
     fun onDiscoveredPeripheral(discoveredPeripheral: CentralDelegate.DiscoveredPeripheral) {
         check(peripheral == discoveredPeripheral.peripheral)
         rssi.value = BlePeripheral.Rssi(discoveredPeripheral.rssi)
-        state.value = if (discoveredPeripheral.isConnectable) State.Disconnected else State.Connectable
+        state.value = when (discoveredPeripheral.peripheral.state) {
+            CBPeripheralStateConnected -> State.Connected
+            CBPeripheralStateConnecting -> State.Connecting
+            else -> if (discoveredPeripheral.isConnectable) State.Connectable
+            else State.Disconnected
+        }
     }
 
     override fun tryConnect() {

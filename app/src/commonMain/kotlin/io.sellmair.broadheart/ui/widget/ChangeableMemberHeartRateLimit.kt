@@ -13,9 +13,10 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.broadheart.ui.displayColorLight
-import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.GroupMember
+import io.sellmair.broadheart.model.HeartRate
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.ui.displayColorLight
 import io.sellmair.broadheart.ui.toColor
 import kotlin.math.roundToInt
 
@@ -29,8 +30,28 @@ internal fun ChangeableMemberHeartRateLimit(
 ) {
     if (state.user == null) return
     if (state.heartRateLimit == null) return
+    ChangeableMemberHeartRateLimit(
+        user = state.user,
+        heartRateLimit = state.heartRateLimit,
+        range = range,
+        horizontalCenterBias = horizontalCenterBias,
+        side = side,
+        onLimitChanged = onLimitChanged
+    )
+}
 
-    var myHeartRateLimit by remember { mutableStateOf(state.heartRateLimit) }
+@Composable
+internal fun ChangeableMemberHeartRateLimit(
+    user: User,
+    heartRateLimit: HeartRate,
+    range: ClosedRange<HeartRate>,
+    horizontalCenterBias: Float = .5f,
+    side: ScaleSide = if (user.isMe) ScaleSide.Right else ScaleSide.Left,
+    onLimitChanged: (HeartRate) -> Unit = {}
+) {
+
+
+    var myHeartRateLimit by remember { mutableStateOf(heartRateLimit) }
 
     var isDragging: Boolean by remember { mutableStateOf(false) }
     var parentSize: IntSize? = null
@@ -63,12 +84,12 @@ internal fun ChangeableMemberHeartRateLimit(
                     .fillMaxWidth(.3f)
                     .height(if (isDragging) 2.dp else 1.5.dp)
             ) {
-                drawRect(SolidColor(state.user.displayColorLight.toColor()))
+                drawRect(SolidColor(user.displayColorLight.toColor()))
             }
 
             Box(modifier = Modifier.size(if (isDragging) 30.dp else 20.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawCircle(SolidColor(state.user.displayColorLight.toColor()))
+                    drawCircle(SolidColor(user.displayColorLight.toColor()))
                 }
             }
         }

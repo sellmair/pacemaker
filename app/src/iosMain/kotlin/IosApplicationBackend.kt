@@ -1,12 +1,14 @@
+@file:OptIn(FlowPreview::class)
+
 package io.sellmair.broadheart.ui
 
 import io.sellmair.broadheart.*
-import io.sellmair.broadheart.bluetooth.Ble
 import io.sellmair.broadheart.bluetooth.DarwinBle
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
@@ -19,6 +21,10 @@ class IosApplicationBackend : ApplicationBackend {
 
     private val coroutineScope = MainScope()
 
+    private val ble = DarwinBle(coroutineScope)
+
+    override val bluetoothService: BluetoothService by lazy { BluetoothService(ble) }
+
     override val userService: UserService by lazy {
         val fileManager = NSFileManager.defaultManager()
         val documents = fileManager.URLsForDirectory(NSDocumentDirectory, NSUserDomainMask).first() as NSURL
@@ -30,11 +36,6 @@ class IosApplicationBackend : ApplicationBackend {
         DefaultGroupService(userService)
     }
 
-    private val ble = DarwinBle(coroutineScope)
-
-    private val heartRateReceiver = HeartRateReceiver(
-        BleHeartRateReceiver(ble)
-    )
 
     init {
         coroutineScope.launch {
@@ -45,10 +46,12 @@ class IosApplicationBackend : ApplicationBackend {
         }
 
         coroutineScope.launch {
-            heartRateReceiver.measurements.collect { hrMeasurement ->
-                groupService.add(hrMeasurement)
-                groupService.invalidate()
-            }
+            bluetoothService.peripherals.filterIsInstance<BluetoothService.Peripheral.HeartRateSensor>()
+                .flatMapMerge { it.measurements }
+                .collect { hrMeasurement ->
+                    groupService.add(hrMeasurement)
+                    groupService.invalidate()
+                }
         }
     }
 }

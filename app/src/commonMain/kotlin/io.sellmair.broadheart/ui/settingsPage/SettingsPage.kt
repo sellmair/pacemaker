@@ -1,28 +1,26 @@
 package io.sellmair.broadheart.ui.settingsPage
 
-import androidx.compose.runtime.*
-import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.Group
-import io.sellmair.broadheart.ui.HCBackHandler
+import androidx.compose.runtime.Composable
 import io.sellmair.broadheart.ApplicationIntent
+import io.sellmair.broadheart.NearbyDeviceViewModel
+import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.ui.HCBackHandler
 
 
 @Composable
 internal fun SettingsPage(
     me: User,
-    groupState: Group?,
+    nearbyDevices: List<NearbyDeviceViewModel>,
     onCloseSettingsPage: () -> Unit = {},
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit
 ) {
     HCBackHandler { onCloseSettingsPage() }
 
-
     SettingsPageContent(
         me = me,
-        groupState = groupState,
         onIntent = onIntent,
+        nearbyDevices = nearbyDevices,
         onCloseSettingsPage = onCloseSettingsPage
     )
-
 }
 

@@ -14,12 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
+import io.sellmair.broadheart.HeartRateSensorViewModel
+import io.sellmair.broadheart.NearbyDeviceViewModel
+import io.sellmair.broadheart.bluetooth.BlePeripheral
+import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.User
+import io.sellmair.broadheart.model.nameAbbreviation
 import io.sellmair.broadheart.ui.displayColor
 import io.sellmair.broadheart.ui.displayColorLight
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.GroupMember
-import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
 import io.sellmair.broadheart.ui.toColor
 import io.sellmair.broadheart.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.broadheart.ui.widget.HeartRateScale
@@ -30,14 +33,20 @@ import io.sellmair.broadheart.ui.widget.UserHead
 @Composable
 internal fun NearbyDeviceCard(
     me: User,
-    state: GroupMember,
+    device: NearbyDeviceViewModel,
     onEvent: (SettingsPageIntent) -> Unit = {}
 ) {
+    val user = device.associatedUser.collectAsState().value
+    val currentHeartRate = device.heartRate.collectAsState().value
+    val heartRateLimit = device.associatedHeartRateLimit.collectAsState().value
+    val sensorId = device.id
+    val rssi = device.rssi.collectAsState().value
+
     var contextMenuOpen by remember { mutableStateOf(false) }
     ElevatedCard(
         onClick = { contextMenuOpen = !contextMenuOpen },
         colors = CardDefaults.cardColors(
-            containerColor = state.user?.displayColor?.copy(lightness = .97f)?.toColor() ?: Color.White
+            containerColor = user?.displayColor?.copy(lightness = .97f)?.toColor() ?: Color.White
         ),
         elevation = CardDefaults.elevatedCardElevation(
             defaultElevation = 4.dp
@@ -51,9 +60,12 @@ internal fun NearbyDeviceCard(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            state.user?.let { user ->
+            user?.let { user ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    UserHead(state)
+                    UserHead(
+                        abbreviation = user.nameAbbreviation,
+                        color = user.displayColor.toColor()
+                    )
                     Spacer(Modifier.size(8.dp))
                     Text(user.name, fontWeight = FontWeight.Bold)
                 }
@@ -63,23 +75,23 @@ internal fun NearbyDeviceCard(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.width(4.dp))
-                if (state.currentHeartRate != null) {
+                if (currentHeartRate != null) {
                     Icon(
                         Icons.Default.Favorite, "HR",
-                        tint = state.displayColorLight.toColor(),
+                        tint = device.displayColorLight.toColor(),
                         modifier = Modifier
                             .size(12.dp)
                     )
-                    Text(state.currentHeartRate.toString())
+                    Text(currentHeartRate.toString())
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                if (state.heartRateLimit != null) {
+                if (heartRateLimit != null) {
                     Icon(
                         Icons.Default.Warning, "HR Limit",
-                        tint = state.displayColorLight.toColor(),
+                        tint = device.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
-                    Text(state.heartRateLimit.toString())
+                    Text(heartRateLimit.toString())
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
@@ -87,42 +99,68 @@ internal fun NearbyDeviceCard(
                     modifier = Modifier
                         .height(20.dp)
                         .width(1.dp)
-                        .background(state.displayColor.toColor())
+                        .background(device.displayColor.toColor())
                 )
                 Spacer(modifier = Modifier.width(8.dp))
 
 
-                state.sensorInfo?.let { sensorInfo ->
+                Icon(
+                    Icons.Outlined.Sensors, "HR Limit",
+                    tint = device.displayColorLight.toColor(),
+                    modifier = Modifier.size(12.dp)
+                )
+                Text(sensorId.value)
+                Spacer(modifier = Modifier.width(8.dp))
+
+
+                if (rssi != null) {
                     Icon(
-                        Icons.Outlined.Sensors, "HR Limit",
-                        tint = state.displayColorLight.toColor(),
+                        Icons.Outlined.CellTower, "Signal Strength",
+                        tint = device.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
-                    Text(sensorInfo.id.value)
-                    Spacer(modifier = Modifier.width(8.dp))
-
-
-                    if (sensorInfo.rssi != null) {
-                        Icon(
-                            Icons.Outlined.CellTower, "Signal Strength",
-                            tint = state.displayColorLight.toColor(),
-                            modifier = Modifier.size(12.dp)
-                        )
-                        Text("${sensorInfo.rssi} db")
-                    }
+                    Text("${rssi.value} db")
                 }
             }
 
             if (contextMenuOpen) {
                 Spacer(modifier = Modifier.height(24.dp))
-               val sensorInfo = state.sensorInfo ?: return@Column
-                val user = state.user
+
+                if (device is HeartRateSensorViewModel) {
+                    val deviceState = device.state.collectAsState().value
+
+                    if (deviceState == BlePeripheral.State.Connectable) {
+                        ElevatedButton(
+                            onClick = { device.tryConnect() },
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                containerColor = me.displayColor.copy(lightness = .97f).toColor()
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text("Connect to Sensor")
+                        }
+                    }
+
+                    if (deviceState == BlePeripheral.State.Connected) {
+                        ElevatedButton(
+                            onClick = { device.tryDisconnect() },
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                containerColor = me.displayColor.copy(lightness = .97f).toColor()
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text("Disconnect from Sensor")
+                        }
+                    }
+                }
 
                 /* Connect to my account button */
                 if (user == null) {
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageIntent.LinkSensor(me, sensorInfo.id))
+                            onEvent(SettingsPageIntent.LinkSensor(me, sensorId))
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = me.displayColor.copy(lightness = .97f).toColor()
@@ -130,12 +168,12 @@ internal fun NearbyDeviceCard(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Text("Connect to my account")
+                        Text("Link to my account")
                     }
 
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageIntent.CreateAdhocUser(sensorInfo.id))
+                            onEvent(SettingsPageIntent.CreateAdhocUser(sensorId))
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = me.displayColor.copy(lightness = .97f).toColor()
@@ -151,7 +189,7 @@ internal fun NearbyDeviceCard(
                 if (user?.isMe == true) {
                     ElevatedButton(
                         onClick = {
-                            onEvent(SettingsPageIntent.UnlinkSensor(sensorInfo.id))
+                            onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -160,11 +198,11 @@ internal fun NearbyDeviceCard(
                     }
                 }
 
-                if (user?.isAdhoc == true) {
+                if (user?.isAdhoc == true && heartRateLimit != null) {
                     ElevatedButton(
                         onClick = {
                             onEvent(SettingsPageIntent.DeleteAdhocUser(user))
-                            onEvent(SettingsPageIntent.UnlinkSensor(sensorInfo.id))
+                            onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -197,7 +235,8 @@ internal fun NearbyDeviceCard(
                             .height(200.dp)
                     ) {
                         ChangeableMemberHeartRateLimit(
-                            state = state,
+                            user = user,
+                            heartRateLimit = heartRateLimit,
                             range = range,
                             horizontalCenterBias = .35f,
                             side = ScaleSide.Right,

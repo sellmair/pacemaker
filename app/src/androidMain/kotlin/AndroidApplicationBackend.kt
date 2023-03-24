@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class)
+
 package io.sellmair.broadheart.backend
 
 import android.app.Service
@@ -8,7 +10,6 @@ import io.sellmair.broadheart.*
 import io.sellmair.broadheart.bluetooth.AndroidBle
 import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
 import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
-import io.sellmair.broadheart.hrSensor.AndroidPolarHrReceiver
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorInfo
 import io.sellmair.broadheart.model.User
@@ -23,16 +24,16 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
     inner class MainServiceBinder(
+        override val bluetoothService: BluetoothService,
         override val userService: UserService,
         override val groupService: GroupService
     ) : Binder(), ApplicationBackend
 
     private val ble by lazy { AndroidBle(this, this) }
 
-    private val hrReceiver = HeartRateReceiver(
-        //AndroidPolarHrReceiver(this),
-        BleHeartRateReceiver(ble)
-    )
+
+    override val bluetoothService by lazy { BluetoothService(ble) }
+
     private val notification = AndroidHeartRateNotification(this)
 
     override val userService: UserService by lazy {
@@ -47,7 +48,9 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         launchHrLimitDaemon(this, groupService)
 
         /* Connecting our hr receiver with the group service */
-        val hrMeasurements = hrReceiver.measurements
+        val hrMeasurements = bluetoothService.peripherals
+            .filterIsInstance<BluetoothService.Peripheral.HeartRateSensor>()
+            .flatMapMerge { it.measurements }
             .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
             .onEach { groupService.invalidate() }
             .shareIn(this, SharingStarted.WhileSubscribed())
@@ -119,7 +122,8 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override fun onBind(intent: Intent?): IBinder {
         return MainServiceBinder(
             userService = userService,
-            groupService = groupService
+            groupService = groupService,
+            bluetoothService = bluetoothService
         )
     }
 }

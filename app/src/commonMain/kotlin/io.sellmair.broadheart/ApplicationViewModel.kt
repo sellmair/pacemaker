@@ -1,10 +1,11 @@
 package io.sellmair.broadheart
 
+import io.sellmair.broadheart.ApplicationIntent.MainPageIntent
+import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
+import io.sellmair.broadheart.BluetoothService.Peripheral.HeartRateSensor
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.randomUserId
-import io.sellmair.broadheart.ApplicationIntent.MainPageIntent
-import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -16,6 +17,7 @@ import kotlin.math.absoluteValue
 interface ApplicationViewModel {
     val me: StateFlow<User?>
     val group: StateFlow<Group?>
+    val nearbyDevices: StateFlow<List<NearbyDeviceViewModel>>
     fun send(intent: ApplicationIntent)
 }
 
@@ -24,14 +26,15 @@ fun ApplicationViewModel(
     backend: ApplicationBackend,
 ): ApplicationViewModel {
     return ApplicationViewModelImpl(
-        coroutineScope, backend.userService, backend.groupService
+        coroutineScope, backend.userService, backend.groupService, backend.bluetoothService
     )
 }
 
 private class ApplicationViewModelImpl(
-    coroutineScope: CoroutineScope,
+    scope: CoroutineScope,
     private val userService: UserService,
-    private val groupService: GroupService
+    private val groupService: GroupService,
+    private val bluetoothService: BluetoothService,
 ) : ApplicationViewModel {
 
     private val intentQueue = Channel<ApplicationIntent>(Channel.UNLIMITED)
@@ -39,6 +42,15 @@ private class ApplicationViewModelImpl(
     override val me = _me.asStateFlow()
 
     override val group = groupService.group
+
+    override val nearbyDevices: StateFlow<List<NearbyDeviceViewModel>> =
+        bluetoothService.allPeripherals
+            .map { peripherals ->
+                peripherals
+                    .filterIsInstance<HeartRateSensor>()
+                    .map { sensor -> HeartRateSensorViewModelImpl(scope, userService, sensor) }
+            }.stateIn(scope, SharingStarted.WhileSubscribed(), emptyList())
+
 
     override fun send(intent: ApplicationIntent) {
         intentQueue.trySend(intent)
@@ -95,7 +107,7 @@ private class ApplicationViewModelImpl(
     }
 
     init {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
+        scope.launch(Dispatchers.Main.immediate) {
             println("Launched user load")
             _me.value = userService.currentUser()
             println("Loaded user: ${_me.value}")

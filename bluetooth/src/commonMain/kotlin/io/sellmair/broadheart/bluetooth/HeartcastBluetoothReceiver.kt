@@ -15,7 +15,7 @@ suspend fun Ble.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPack
     return startCentralService(HeartcastBleService.service).peripherals
         .onEach { it.tryConnect() }
         .flatMapMerge { peripheral ->
-            val peripheralId = peripheral.peripheralId
+            val peripheralId = peripheral.id
             var userId: UserId? = null
             var sensorId: HeartRateSensorId? = null
             var userName: String? = null

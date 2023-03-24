@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import io.sellmair.broadheart.ui.mainPage.MainPage
-import io.sellmair.broadheart.ui.settingsPage.SettingsPage
 import io.sellmair.broadheart.ApplicationIntent
 import io.sellmair.broadheart.ApplicationViewModel
+import io.sellmair.broadheart.ui.mainPage.MainPage
+import io.sellmair.broadheart.ui.settingsPage.SettingsPage
 
 @Composable
 internal fun ApplicationWindow(
@@ -19,6 +19,7 @@ internal fun ApplicationWindow(
 ) {
     var route by remember { mutableStateOf(Route.MainPage) }
     val groupState by viewModel.group.collectAsState(null)
+    val nearbyDevices by viewModel.nearbyDevices.collectAsState()
     val me by viewModel.me.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -52,8 +53,8 @@ internal fun ApplicationWindow(
             }
             me?.let { me ->
                 SettingsPage(
-                    groupState = groupState,
                     me = me,
+                    nearbyDevices = nearbyDevices,
                     onCloseSettingsPage = { route = Route.MainPage },
                     onIntent = viewModel::send
                 )

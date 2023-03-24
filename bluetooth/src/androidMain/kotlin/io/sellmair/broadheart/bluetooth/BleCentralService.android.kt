@@ -90,7 +90,7 @@ private class AndroidBleBlePeripheral(
         return valueFlowOf(characteristic.uuid).filterNotNull()
     }
 
-    override val peripheralId: BlePeripheral.Id = scanResult.device.peripheralId
+    override val id: BlePeripheral.Id = scanResult.device.peripheralId
 
     private val _rssi = MutableStateFlow(BlePeripheral.Rssi(scanResult.rssi))
 

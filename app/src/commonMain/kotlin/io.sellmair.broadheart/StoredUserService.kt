@@ -6,6 +6,7 @@ import io.sellmair.broadheart.utils.readUtf8OrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.builtins.ListSerializer
@@ -89,14 +90,17 @@ class StoredUserService(
         }
     }
 
+    override val onChange: MutableSharedFlow<Unit> = MutableSharedFlow()
+
     /* IO */
 
     private suspend fun <T> withLock(readAction: suspend () -> T): T {
+        initialLoad.await()
         return mutex.withLock { readAction() }
     }
 
     private suspend fun <T> writeWithLock(writeAction: suspend () -> T): T {
-        return withLock { write { writeAction() } }
+        return withLock { write { writeAction() } }.also { onChange.emit(Unit) }
     }
 
     private suspend fun <T> write(writeAction: suspend () -> T): T {

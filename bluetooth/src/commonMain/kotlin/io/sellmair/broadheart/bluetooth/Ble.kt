@@ -35,7 +35,7 @@ interface BlePeripheral {
         Connected
     }
 
-    val peripheralId: Id
+    val id: Id
     val rssi: StateFlow<Rssi>
     val state: StateFlow<State>
 
