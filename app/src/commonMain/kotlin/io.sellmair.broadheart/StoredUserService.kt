@@ -6,6 +6,8 @@ import io.sellmair.broadheart.utils.readUtf8OrNull
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.decodeFromString
@@ -20,6 +22,7 @@ class StoredUserService(
     ioDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : UserService {
 
+    private val mutex = Mutex()
     private val users = mutableMapOf<UserId, User>()
     private val userIdBySensorId = mutableMapOf<HeartRateSensorId, UserId>()
     private val heartRateLimitByUserId = mutableMapOf<UserId, HeartRate>()
@@ -29,7 +32,7 @@ class StoredUserService(
     private val heartRateLimitByUserIdSerializer = MapSerializer(UserId.serializer(), HeartRate.serializer())
 
     override suspend fun currentUser(): User {
-        return read {
+        return withLock {
             users.values.firstOrNull { it.isMe } ?: write {
                 val id = randomUserId()
                 val myUser = User(isMe = true, id = id, name = "Anonymous ${id.value % 1000}")
@@ -44,62 +47,63 @@ class StoredUserService(
     }
 
     override suspend fun save(user: User) {
-        write {
+        writeWithLock {
             users[user.id] = user
         }
     }
 
     override suspend fun delete(user: User) {
-        write {
+        writeWithLock {
             users.remove(user.id)
         }
     }
 
     override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) {
-        write {
+        writeWithLock {
             userIdBySensorId[sensorId] = user.id
         }
     }
 
     override suspend fun unlinkSensor(sensorId: HeartRateSensorId) {
-        write {
+        writeWithLock {
             userIdBySensorId.remove(sensorId)
         }
     }
 
     override suspend fun saveUpperHeartRateLimit(user: User, limit: HeartRate) {
-        write {
+        writeWithLock {
             heartRateLimitByUserId[user.id] = limit
         }
     }
 
     override suspend fun findUser(sensorId: HeartRateSensorId): User? {
-        return read {
-            val userId = userIdBySensorId[sensorId] ?: return@read null
+        return withLock {
+            val userId = userIdBySensorId[sensorId] ?: return@withLock null
             users[userId]
         }
     }
 
     override suspend fun findUpperHeartRateLimit(user: User): HeartRate? {
-        return read {
+        return withLock {
             heartRateLimitByUserId[user.id]
         }
     }
 
     /* IO */
 
-
-    private suspend fun <T> read(readAction: suspend () -> T): T {
-        return withContext(Dispatchers.Main.immediate) {
-            Action(readAction).dispatchAndAwait()
-        }
+    private suspend fun <T> withLock(readAction: suspend () -> T): T {
+        return mutex.withLock { readAction() }
     }
 
-    private suspend fun <T> write(readAction: suspend () -> T): T {
-        return withContext(Dispatchers.Main.immediate) {
-            Action(readAction).dispatchAndAwait().also {
-                onWriteActionPerformedChannel.send(Unit)
-            }
+    private suspend fun <T> writeWithLock(writeAction: suspend () -> T): T {
+        return withLock { write { writeAction() } }
+    }
+
+    private suspend fun <T> write(writeAction: suspend () -> T): T {
+        return try {
+            writeAction()
+        } finally {
+            onWriteActionPerformedChannel.send(Unit)
         }
     }
 
@@ -130,22 +134,6 @@ class StoredUserService(
         }
     }
 
-    inner class Action<T>(
-        private val action: suspend () -> T
-    ) {
-        private val deferred = CompletableDeferred<T>()
-
-        suspend operator fun invoke() {
-            deferred.completeWith(runCatching { action() })
-        }
-
-        suspend fun dispatchAndAwait(): T {
-            actionsChannel.send(this)
-            return deferred.await()
-        }
-    }
-
-    private val actionsChannel = Channel<Action<*>>(Channel.UNLIMITED)
 
     private val onWriteActionPerformedChannel = Channel<Unit>(Channel.CONFLATED)
 
@@ -172,13 +160,6 @@ class StoredUserService(
                 } catch (t: Throwable) {
                     println("${StoredUserService::class.simpleName}: Failed to update storage: ${t.message}")
                 }
-            }
-        }
-
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            initialLoad.await()
-            actionsChannel.consumeEach { action ->
-                action()
             }
         }
     }
