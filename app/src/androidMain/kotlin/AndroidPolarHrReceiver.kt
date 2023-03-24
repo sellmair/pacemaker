@@ -31,9 +31,7 @@ class AndroidPolarHrReceiver(private val context: Context) : HeartRateReceiver {
             HeartRateMeasurement(
                 heartRate = HeartRate(data.hr.toFloat()),
                 sensorInfo = HeartRateSensorInfo(
-                    id = HeartRateSensorId(data.polarDeviceInfo.deviceId),
-                    address = data.polarDeviceInfo.address,
-                    vendor = HeartRateSensorInfo.Vendor.Polar,
+                    id = HeartRateSensorId(data.polarDeviceInfo.address),
                     rssi = data.polarDeviceInfo.rssi
                 ),
                 receivedTime = TimeSource.Monotonic.markNow()

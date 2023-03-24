@@ -13,7 +13,7 @@ interface HeartcastBluetoothSender {
 }
 
 suspend fun HeartcastBluetoothSender(ble: Ble): HeartcastBluetoothSender {
-    val server = ble.startServer(HeartcastBleService.service)
+    val server = ble.startPeripheralService(HeartcastBleService.service)
     return object : HeartcastBluetoothSender {
         override suspend fun updateUser(user: User) {
             server.setValue(HeartcastBleService.userNameCharacteristic, user.name.encodeToByteArray())

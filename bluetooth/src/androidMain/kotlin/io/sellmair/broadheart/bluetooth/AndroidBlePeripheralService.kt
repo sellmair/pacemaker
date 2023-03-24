@@ -18,11 +18,11 @@ import kotlinx.coroutines.channels.consumeEach
 import java.util.*
 
 @SuppressLint("MissingPermission")
-internal suspend fun AndroidBleServer(
+internal suspend fun AndroidBlePeripheralService(
     scope: CoroutineScope,
     context: Context,
     service: BleServiceDescriptor
-): BleServer {
+): BlePeripheralService {
     /* Wait for bluetooth permission */
     while (
         context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
@@ -116,7 +116,7 @@ private class AndroidBleServer(
     private val gattServer: BluetoothGattServer,
     private val gattServerCallback: BluetoothGattServerCallback,
     private val gattService: BluetoothGattService,
-) : BleServer {
+) : BlePeripheralService {
 
     class SendNotificationCommand(val characteristic: BleCharacteristicDescriptor, val value: ByteArray)
 

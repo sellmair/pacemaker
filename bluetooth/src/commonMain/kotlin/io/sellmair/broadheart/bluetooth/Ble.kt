@@ -1,32 +1,47 @@
 package io.sellmair.broadheart.bluetooth
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.jvm.JvmInline
 
 interface Ble {
-    suspend fun startServer(service: BleServiceDescriptor): BleServer
-    suspend fun startClient(service: BleServiceDescriptor): BleClient
+    val scope: CoroutineScope
+    suspend fun startPeripheralService(service: BleServiceDescriptor): BlePeripheralService
+    suspend fun startCentralService(service: BleServiceDescriptor): BleCentralService
 }
 
-interface BleServer {
+interface BlePeripheralService {
     val service: BleServiceDescriptor
     suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray)
 }
 
-interface BleClient {
+interface BleCentralService {
     val service: BleServiceDescriptor
-    val peripherals: Flow<BleDiscoveredPeripheral>
+    val peripherals: Flow<BlePeripheral>
 }
 
-data class BlePeripheralId(val value: String)
+interface BlePeripheral {
+    @JvmInline
+    value class Id(val value: String)
 
-interface BleDiscoveredPeripheral {
-    val peripheralId: BlePeripheralId
-    val rssi: Int
-    suspend fun connect(): BleClientConnection
-}
+    @JvmInline
+    value class Rssi(val value: Int)
 
-interface BleClientConnection {
-    val peripheralId: BlePeripheralId
+    enum class State {
+        Disconnected,
+        Connectable,
+        Connecting,
+        Connected
+    }
+
+    val peripheralId: Id
+    val rssi: StateFlow<Rssi>
+    val state: StateFlow<State>
+
+    fun tryConnect()
+    fun tryDisconnect()
+
     fun getValue(characteristic: BleCharacteristicDescriptor): Flow<ByteArray>
 }
 

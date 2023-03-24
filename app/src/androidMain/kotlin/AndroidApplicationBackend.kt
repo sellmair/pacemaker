@@ -1,6 +1,5 @@
 package io.sellmair.broadheart.backend
 
-import AndroidBleHeartRateReceiver
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -31,8 +30,8 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     private val ble by lazy { AndroidBle(this, this) }
 
     private val hrReceiver = HeartRateReceiver(
-        AndroidPolarHrReceiver(this),
-        //AndroidBleHeartRateReceiver(ble)
+        //AndroidPolarHrReceiver(this),
+        BleHeartRateReceiver(ble)
     )
     private val notification = AndroidHeartRateNotification(this)
 
@@ -104,11 +103,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
                 groupService.add(
                     HeartRateMeasurement(
                         heartRate = received.heartRate,
-                        sensorInfo = HeartRateSensorInfo(
-                            id = received.sensorId,
-                            address = received.deviceId.value,
-                            vendor = HeartRateSensorInfo.Vendor.Unknown
-                        ),
+                        sensorInfo = HeartRateSensorInfo(id = received.sensorId),
                         receivedTime = received.receivedTime
                     )
                 )

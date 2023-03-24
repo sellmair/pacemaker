@@ -2,12 +2,12 @@ package io.sellmair.broadheart.bluetooth
 
 import kotlinx.coroutines.CoroutineScope
 
-class DarwinBle(private val scope: CoroutineScope) : Ble {
-    override suspend fun startServer(service: BleServiceDescriptor): BleServer {
-        return DarwinBleServer(service)
+class DarwinBle(override val scope: CoroutineScope) : Ble {
+    override suspend fun startPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
+        return DarwinBlePeripheralService(service)
     }
 
-    override suspend fun startClient(service: BleServiceDescriptor): BleClient {
-        return DarwinBleClient(scope, service)
+    override suspend fun startCentralService(service: BleServiceDescriptor): BleCentralService {
+        return DarwinBleCentralService(scope, service)
     }
 }

@@ -7,7 +7,7 @@ import kotlin.time.TimeMark
 
 data class HeartcastBroadcastPackage(
     val receivedTime: TimeMark,
-    val deviceId: BlePeripheralId,
+    val deviceId: BlePeripheral.Id,
     val userId: UserId,
     val userName: String,
     val sensorId: HeartRateSensorId,

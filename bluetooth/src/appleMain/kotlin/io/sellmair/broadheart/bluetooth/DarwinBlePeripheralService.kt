@@ -4,12 +4,11 @@ package io.sellmair.broadheart.bluetooth
 
 import io.sellmair.broadheart.utils.toNSData
 import kotlinx.coroutines.flow.*
-import okio.ByteString.Companion.toByteString
 import platform.CoreBluetooth.*
 import platform.Foundation.*
 import platform.darwin.NSObject
 
-suspend fun DarwinBleServer(service: BleServiceDescriptor): BleServer {
+suspend fun DarwinBlePeripheralService(service: BleServiceDescriptor): BlePeripheralService {
     val peripheralDelegate = BPeripheralManagerDelegate()
     val cbPeripheralManager = CBPeripheralManager(peripheralDelegate, null)
     peripheralDelegate.awaitPoweredOnState()
@@ -36,7 +35,7 @@ suspend fun DarwinBleServer(service: BleServiceDescriptor): BleServer {
         )
     )
 
-    return object : BleServer {
+    return object : BlePeripheralService {
         override val service: BleServiceDescriptor = service
 
         override suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {

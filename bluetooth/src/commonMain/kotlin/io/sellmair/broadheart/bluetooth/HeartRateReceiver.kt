@@ -11,13 +11,19 @@ import kotlinx.coroutines.flow.*
 import kotlin.time.TimeSource
 
 
+interface HeartRateSensorCentralService : BleCentralService
+
+suspend fun Ble.startHeartRateSensorCentralService(): HeartRateSensorCentralService {
+    TODO()
+}
+
 suspend fun Ble.receiveHeartRateMeasurements(): Flow<HeartRateMeasurement> {
-    return startClient(HeartRateBleService.service)
+    return startCentralService(HeartRateBleService.service)
         .peripherals
         .onEach { println("Found peripheral: ${it.peripheralId}") }
-        .map { it.connect() }
-        .flatMapMerge { connection ->
-            connection.getValue(heartRateCharacteristic).mapNotNull { data ->
+        .onEach { it.tryConnect() }
+        .flatMapMerge { peripheral ->
+            peripheral.getValue(heartRateCharacteristic).mapNotNull { data ->
                 if (data.isEmpty()) return@mapNotNull null
                 val isUInt16 = data[0] == 1.toByte()
                 val heartRateValue = if (isUInt16) getUShort(
@@ -29,9 +35,7 @@ suspend fun Ble.receiveHeartRateMeasurements(): Flow<HeartRateMeasurement> {
                     heartRate = HeartRate(heartRateValue),
                     receivedTime = TimeSource.Monotonic.markNow(),
                     sensorInfo = HeartRateSensorInfo(
-                        id = HeartRateSensorId(connection.peripheralId.value),
-                        address = null,
-                        vendor = HeartRateSensorInfo.Vendor.Unknown,
+                        id = HeartRateSensorId(peripheral.peripheralId.value),
                         rssi = null
                     )
                 )

@@ -5,29 +5,24 @@ package io.sellmair.broadheart.bluetooth
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.*
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
-import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import io.sellmair.broadheart.utils.distinct
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("MissingPermission")
-internal suspend fun AndroidBleClient(
+internal suspend fun AndroidBleCentralService(
     scope: CoroutineScope,
     context: Context,
     service: BleServiceDescriptor
-): BleClient {
+): BleCentralService {
     /* Wait for bluetooth permission */
     while (
         context.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
@@ -37,73 +32,54 @@ internal suspend fun AndroidBleClient(
     }
 
     val manager = context.getSystemService(BluetoothManager::class.java)
-    return object : BleClient {
+    val peripherals = BlePeripheralsContainer(context, scope, service)
+    return object : BleCentralService {
         override val service: BleServiceDescriptor = service
-        override val peripherals: Flow<BleDiscoveredPeripheral>
+        override val peripherals: Flow<BlePeripheral>
             get() = manager.scanForPeripherals(service)
-                .distinct { scanResult -> scanResult.device.peripheralId }
-                .map { scanResult ->
-                    object : BleDiscoveredPeripheral {
-                        override val rssi: Int get() = scanResult.rssi
-                        override val peripheralId: BlePeripheralId = scanResult.device.peripheralId
-                        override suspend fun connect(): BleClientConnection {
-                            return scanResult.device.connect(scope, context, service)
-                        }
-                    }
-                }
+                .map { scanResult -> peripherals.forScanResult(scanResult) }
+                .distinct()
     }
 }
 
 
-private val BluetoothDevice.peripheralId: BlePeripheralId get() = BlePeripheralId(address)
+private class BlePeripheralsContainer(
+    private val context: Context,
+    private val scope: CoroutineScope,
+    private val service: BleServiceDescriptor,
+) {
+    private val peripheralsById = mutableMapOf<BlePeripheral.Id, AndroidBleBlePeripheral>()
 
-@RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-private fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor): Flow<ScanResult> = callbackFlow {
-    val scanCallback = object : ScanCallback() {
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            Log.d("bluetooth", "onScanFailed(errorCode=$errorCode)")
-        }
-
-        override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            if (result == null) return
-            trySend(result)
-        }
+    fun forScanResult(result: ScanResult): BlePeripheral {
+        return peripheralsById.getOrPut(result.device.peripheralId) {
+            AndroidBleBlePeripheral(context, scope, service, result)
+        }.also { it.onScanResult(result) }
     }
-
-    val scanFilter = ScanFilter.Builder()
-        .setServiceUuid(ParcelUuid(service.uuid))
-        .build()
-
-    val scanSettings = ScanSettings.Builder()
-        .setLegacy(false)
-        .build()
-
-    adapter.bluetoothLeScanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
-    awaitClose { adapter.bluetoothLeScanner.stopScan(scanCallback) }
 }
 
-@RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-private fun BluetoothDevice.connect(
-    scope: CoroutineScope, context: Context, service: BleServiceDescriptor
-): AndroidBleClientConnection {
-    val connectedBluetoothDevice = AndroidBleClientConnection(scope, service, peripheralId)
-    connectGatt(context, true, connectedBluetoothDevice, BluetoothDevice.TRANSPORT_LE)
-    return connectedBluetoothDevice
-}
 
 @SuppressLint("MissingPermission")
-private class AndroidBleClientConnection(
+private class AndroidBleBlePeripheral(
+    private val context: Context,
     private val parentScope: CoroutineScope,
     private val service: BleServiceDescriptor,
-    override val peripheralId: BlePeripheralId
-) : BleClientConnection, BluetoothGattCallback() {
+    scanResult: ScanResult
+) : BlePeripheral, BluetoothGattCallback() {
 
     /* Coroutine scope alive while the bluetooth device is connected */
     private var connectedCoroutinesScope: CoroutineScope? = null
 
     private val onCharacteristicReadChannel = Channel<CharacteristicReadResult>()
+
     private val onDescriptorWriteChannel = Channel<Unit>()
+
+    private val _state = MutableStateFlow(
+        if (scanResult.isConnectable) BlePeripheral.State.Connectable
+        else BlePeripheral.State.Disconnected
+    )
+
+    override val state: StateFlow<BlePeripheral.State>
+        get() = _state.asStateFlow()
 
     private val valuesFlows = mutableMapOf<BleUUID, MutableStateFlow<ByteArray?>>()
 
@@ -115,9 +91,48 @@ private class AndroidBleClientConnection(
         return valueFlowOf(characteristic.uuid).filterNotNull()
     }
 
+    override val peripheralId: BlePeripheral.Id = scanResult.device.peripheralId
+
+    private val _rssi = MutableStateFlow(BlePeripheral.Rssi(scanResult.rssi))
+
+    private val device: BluetoothDevice = scanResult.device
+
+    private var gatt: BluetoothGatt? = null
+
+    override val rssi: StateFlow<BlePeripheral.Rssi>
+        get() = _rssi.asStateFlow()
+
+    override fun tryConnect() {
+        if (gatt == null) {
+            this.gatt = device.connectGatt(context, true, this)
+        }
+    }
+
+    override fun tryDisconnect() {
+        if (gatt != null) {
+            gatt?.close()
+            gatt = null
+        }
+    }
+
+    fun onScanResult(scanResult: ScanResult) {
+        check(this.device == scanResult.device)
+        this._rssi.value = BlePeripheral.Rssi(scanResult.rssi)
+        this._state.value = if (scanResult.isConnectable) BlePeripheral.State.Connectable
+        else BlePeripheral.State.Disconnected
+    }
+
     override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
         super.onConnectionStateChange(gatt, status, newState)
         connectedCoroutinesScope?.cancel()
+
+        _state.value = when (newState) {
+            BluetoothProfile.STATE_DISCONNECTED -> BlePeripheral.State.Connectable
+            BluetoothProfile.STATE_CONNECTING -> BlePeripheral.State.Connecting
+            BluetoothProfile.STATE_CONNECTED -> BlePeripheral.State.Connected
+            else -> state.value
+        }
+
         Log.d("bluetooth", "onConnectionStateChange(status=$status, newState=$newState)")
         if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
             /* Start bluetooth lifecycle */
