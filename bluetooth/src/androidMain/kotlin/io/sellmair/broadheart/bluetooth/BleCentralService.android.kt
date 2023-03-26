@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("MissingPermission")
 internal suspend fun BleCentralService(
@@ -150,18 +151,6 @@ private class AndroidBleBlePeripheral(
                 Log.d("ble", "Service '$service' not found in gatt $gatt")
             }
 
-            /* Read out all readable characteristics */
-            service.characteristics
-                .filter { it.isReadable }
-                .forEach { characteristic ->
-                    val bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(characteristic.uuid)
-                        ?: return@forEach run {
-                            Log.d("ble", "Characteristic '${characteristic}' not found in $bluetoothGattService")
-                        }
-
-                    valueFlowOf(characteristic.uuid).value = gatt.readCharacteristicValue(bluetoothGattCharacteristic)
-                }
-
             /* Enable notifications */
             service.characteristics
                 .filter { it.isNotificationsEnabled }
@@ -172,6 +161,22 @@ private class AndroidBleBlePeripheral(
                         }
                     gatt.enableNotifications(bluetoothGattCharacteristic)
                 }
+
+            /* Read out all readable characteristics */
+            while (isActive) {
+                service.characteristics
+                    .filter { it.isReadable }
+                    .forEach { characteristic ->
+                        val bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(characteristic.uuid)
+                            ?: return@forEach run {
+                                Log.d("ble", "Characteristic '${characteristic}' not found in $bluetoothGattService")
+                            }
+
+                        valueFlowOf(characteristic.uuid).value = gatt.readCharacteristicValue(bluetoothGattCharacteristic)
+                    }
+
+                delay(15.seconds)
+            }
         }
     }
 

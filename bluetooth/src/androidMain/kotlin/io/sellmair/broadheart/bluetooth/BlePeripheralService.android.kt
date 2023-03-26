@@ -55,17 +55,17 @@ internal suspend fun BlePeripheralService(
         bluetoothGattServer.close()
     }
 
-
     /* Start advertising */
 
     val advertiseCallback = object : AdvertiseCallback() {}
     manager.adapter.bluetoothLeAdvertiser.startAdvertising(
-        AdvertiseSettings.Builder().setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+        AdvertiseSettings.Builder().setAdvertiseMode(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
             .setConnectable(true)
             .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
             .build(),
         AdvertiseData.Builder()
             .addServiceUuid(ParcelUuid(UUID.fromString(HeartcastBleServiceConstants.serviceUuidString)))
+            .setIncludeDeviceName(true)
             .build(),
         advertiseCallback
     )
@@ -74,7 +74,7 @@ internal suspend fun BlePeripheralService(
         manager.adapter.bluetoothLeAdvertiser.stopAdvertising(advertiseCallback)
     }
 
-    return AndroidBleServer(
+    return AndroidBlePeripheralService(
         scope, service, manager, bluetoothGattServer, bluetoothGattServerCallback, bluetoothGattService
     )
 }
@@ -109,7 +109,7 @@ private class BluetoothGattServerCallback : android.bluetooth.BluetoothGattServe
 
 @SuppressLint("MissingPermission")
 @Suppress("DEPRECATION")
-private class AndroidBleServer(
+private class AndroidBlePeripheralService(
     scope: CoroutineScope,
     override val service: BleServiceDescriptor,
     private val manager: BluetoothManager,

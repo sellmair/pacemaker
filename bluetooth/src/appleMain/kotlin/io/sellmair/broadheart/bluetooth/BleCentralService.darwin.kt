@@ -1,9 +1,12 @@
 package io.sellmair.broadheart.bluetooth
 
 import io.sellmair.broadheart.bluetooth.BlePeripheral.State
+import io.sellmair.broadheart.bluetooth.PeripheralDelegate.BluetoothOperationRequest.EnableNotifications
+import io.sellmair.broadheart.bluetooth.PeripheralDelegate.BluetoothOperationRequest.ReadCharacteristicValue
 import io.sellmair.broadheart.utils.distinct
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
 import okio.ByteString.Companion.toByteString
 import platform.CoreBluetooth.*
@@ -50,7 +53,11 @@ private class DarwinBlePeripheral(
 
     private val peripheral = discoveredPeripheral.peripheral
 
+    private var peripheralDelegate: PeripheralDelegate? = null
+
     override val id: BlePeripheral.Id = discoveredPeripheral.peripheral.peripheralId
+
+    private var isReconnectEnabled = false
 
     private val valueFlows = mutableMapOf<BleUUID, MutableStateFlow<ByteArray?>>()
 
@@ -77,32 +84,53 @@ private class DarwinBlePeripheral(
             else -> if (discoveredPeripheral.isConnectable) State.Connectable
             else State.Disconnected
         }
+
+        println("BleCentralService: ${peripheral.peripheralId}: '${state.value}'")
+
+        if (
+            discoveredPeripheral.peripheral.state == CBPeripheralStateDisconnected &&
+            discoveredPeripheral.isConnectable &&
+            isReconnectEnabled
+        ) {
+            println("BleCentralService: ${peripheral.peripheralId}: reconnecting")
+            tryConnect()
+        }
     }
 
     override fun tryConnect() {
-        central.connectPeripheral(peripheral, mutableMapOf<Any?, Any>())
+        println("BleCentralService: ${peripheral.peripheralId}: tryConnect")
 
-        connectedCoroutineScope = object : CoroutineScope {
+        this.connectedCoroutineScope?.cancel()
+
+        val connectedCoroutineScope = object : CoroutineScope {
             override val coroutineContext: CoroutineContext = scope.coroutineContext + Job(scope.coroutineContext.job)
         }
+        this.connectedCoroutineScope = connectedCoroutineScope
 
-        connectedCoroutineScope?.launch {
+        connectedCoroutineScope.launch {
+            central.connectPeripheral(peripheral, mutableMapOf<Any?, Any>())
             centralDelegate.connectedPeripherals.first { it == peripheral }
-            val peripheralDelegate = PeripheralDelegate(scope, service, onValue = { uuid, value ->
+            val peripheralDelegate = PeripheralDelegate(connectedCoroutineScope, service, onValue = { uuid, value ->
                 stateFlowOf(uuid).value = value
             })
             peripheral.delegate = peripheralDelegate
             peripheral.discoverServices(listOf(service.uuid))
+            this@DarwinBlePeripheral.peripheralDelegate = peripheralDelegate
+            state.value = State.Connected
+            isReconnectEnabled = true
         }
 
-        connectedCoroutineScope?.coroutineContext?.job?.invokeOnCompletion {
+        connectedCoroutineScope.coroutineContext.job.invokeOnCompletion {
             central.cancelPeripheralConnection(peripheral)
             peripheral.delegate = null
+            isReconnectEnabled = false
         }
     }
 
     override fun tryDisconnect() {
         connectedCoroutineScope?.cancel()
+        connectedCoroutineScope = null
+        peripheralDelegate = null
     }
 }
 
@@ -140,11 +168,23 @@ private class CentralDelegate(private val scope: CoroutineScope) : NSObject(), C
     }
 
     override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
+        println("centralManager: didConnectPeripheral: ${didConnectPeripheral.peripheralId}")
         scope.launch {
+            println("centralManager: didConnectPeripheral: ${didConnectPeripheral.peripheralId} (sending event)")
             _connectedPeripherals.emit(didConnectPeripheral)
         }
     }
 
+    @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
+        println("centralManager:  didDisconnectPeripheral: ${didDisconnectPeripheral.peripheralId}")
+    }
+
+
+    @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+        println("centralManager: didFailToConnectPeripheral: ${didFailToConnectPeripheral.peripheralId} (${error?.localizedDescription})")
+    }
 
     suspend fun awaitStatePoweredOn() {
         state.filterNotNull().first { it == CBCentralManagerStatePoweredOn }
@@ -157,7 +197,26 @@ private class PeripheralDelegate(
     private val onValue: (uuid: BleUUID, value: ByteArray) -> Unit,
 ) : NSObject(), CBPeripheralDelegateProtocol {
 
-    private val readCharacteristicChannel = Channel<Unit>()
+    private val bluetoothOperationRequests = Channel<BluetoothOperationRequest>(Channel.UNLIMITED)
+
+    private val didUpdateValueForCharacteristicChannel = Channel<CBCharacteristic>()
+
+    private val didUpdateNotificationStateForCharacteristicChannel = Channel<CBCharacteristic>()
+
+    private sealed class BluetoothOperationRequest {
+        abstract val peripheral: CBPeripheral
+        abstract val characteristic: CBCharacteristic
+
+        data class ReadCharacteristicValue(
+            override val peripheral: CBPeripheral,
+            override val characteristic: CBCharacteristic
+        ) : BluetoothOperationRequest()
+
+        data class EnableNotifications(
+            override val peripheral: CBPeripheral,
+            override val characteristic: CBCharacteristic
+        ) : BluetoothOperationRequest()
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
@@ -169,6 +228,7 @@ private class PeripheralDelegate(
         peripheral.discoverCharacteristics(service.characteristics.map { it.uuid }, cbService)
     }
 
+
     @Suppress("UNCHECKED_CAST", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun peripheral(
         peripheral: CBPeripheral,
@@ -176,39 +236,37 @@ private class PeripheralDelegate(
         error: NSError?
     ) {
         if (didDiscoverCharacteristicsForService.UUID != service.uuid) return
+
         if (error != null) {
             println("didDiscoverCharacteristicsForService error: $error")
             return
         }
 
         scope.launch {
+            /* Enable notifications */
+            service.characteristics.filter { it.isNotificationsEnabled }.forEach { characteristic ->
+                val cbCharacteristic = (didDiscoverCharacteristicsForService.characteristics as List<CBCharacteristic>)
+                    .find { it.UUID == characteristic.uuid } ?: return@forEach
+                bluetoothOperationRequests.send(EnableNotifications(peripheral, cbCharacteristic))
+            }
 
             /* Read all readable characteristics eagerly */
             service.characteristics.filter { it.isReadable }.forEach { characteristic ->
                 val cbCharacteristic = (didDiscoverCharacteristicsForService.characteristics as List<CBCharacteristic>)
                     .find { it.UUID == characteristic.uuid } ?: return@forEach
-                peripheral.readValueForCharacteristic(cbCharacteristic)
-                readCharacteristicChannel.receive()
-            }
-
-            /* Enable notifications */
-            service.characteristics.filter { it.isNotificationsEnabled }.forEach { characteristic ->
-                val cbCharacteristic = (didDiscoverCharacteristicsForService.characteristics as List<CBCharacteristic>)
-                    .find { it.UUID == characteristic.uuid } ?: return@forEach
-                peripheral.setNotifyValue(true, cbCharacteristic)
+                bluetoothOperationRequests.send(ReadCharacteristicValue(peripheral, cbCharacteristic))
             }
         }
     }
 
-    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
     override fun peripheral(
         peripheral: CBPeripheral,
         didUpdateValueForCharacteristic: CBCharacteristic,
         error: NSError?
     ) {
-
         scope.launch {
-            readCharacteristicChannel.send(Unit)
+            didUpdateValueForCharacteristicChannel.send(didUpdateValueForCharacteristic)
         }
 
         if (error != null) {
@@ -219,6 +277,43 @@ private class PeripheralDelegate(
         val value = didUpdateValueForCharacteristic.value ?: return
         onValue(didUpdateValueForCharacteristic.UUID, value.toByteString().toByteArray())
     }
+
+
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
+    override fun peripheral(
+        peripheral: CBPeripheral,
+        didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?
+    ) {
+        scope.launch {
+            didUpdateNotificationStateForCharacteristicChannel.send(didUpdateNotificationStateForCharacteristic)
+        }
+
+        if (error != null) {
+            println("didUpdateNotificationStateForCharacteristic error: ${error.localizedDescription}")
+        }
+    }
+
+    init {
+        /* Action Handler */
+        scope.launch {
+            bluetoothOperationRequests.consumeEach { operation ->
+                when (operation) {
+                    is EnableNotifications -> {
+                        operation.peripheral.setNotifyValue(true, operation.characteristic)
+                        if (operation.peripheral != didUpdateValueForCharacteristicChannel.receive()) {
+                            println("Unexpected 'didUpdateValueForCharacteristicChannel' value")
+                        }
+                    }
+
+                    is ReadCharacteristicValue -> {
+                        operation.peripheral.readValueForCharacteristic(operation.characteristic)
+                        didUpdateValueForCharacteristicChannel.receiveAsFlow().first { it == operation.characteristic }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 private val CBPeripheral.peripheralId: BlePeripheral.Id get() = BlePeripheral.Id(this.identifier.UUIDString)

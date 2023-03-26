@@ -9,7 +9,6 @@ import android.os.IBinder
 import io.sellmair.broadheart.*
 import io.sellmair.broadheart.bluetooth.AndroidBle
 import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
-import io.sellmair.broadheart.bluetooth.receiveHeartcastBroadcastPackages
 import io.sellmair.broadheart.model.HeartRateMeasurement
 import io.sellmair.broadheart.model.HeartRateSensorInfo
 import io.sellmair.broadheart.model.User
@@ -94,23 +93,27 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         /* Receive broadcasts */
         launch {
-            ble.receiveHeartcastBroadcastPackages().collect { received ->
-                val user = User(
-                    isMe = false, id = received.userId, name = received.userName
-                )
-
-                userService.save(user)
-                userService.saveUpperHeartRateLimit(user, received.heartRateLimit)
-                userService.linkSensor(user, received.sensorId)
-
-                groupService.add(
-                    HeartRateMeasurement(
-                        heartRate = received.heartRate,
-                        sensorInfo = HeartRateSensorInfo(id = received.sensorId),
-                        receivedTime = received.receivedTime
+            bluetoothService
+                .peripherals
+                .filterIsInstance<BluetoothService.Peripheral.PacemakerApp>()
+                .flatMapMerge { it.broadcasts }
+                .collect { received ->
+                    val user = User(
+                        isMe = false, id = received.userId, name = received.userName
                     )
-                )
-            }
+
+                    userService.save(user)
+                    userService.saveUpperHeartRateLimit(user, received.heartRateLimit)
+                    userService.linkSensor(user, received.sensorId)
+
+                    groupService.add(
+                        HeartRateMeasurement(
+                            heartRate = received.heartRate,
+                            sensorInfo = HeartRateSensorInfo(id = received.sensorId),
+                            receivedTime = received.receivedTime
+                        )
+                    )
+                }
         }
     }
 
