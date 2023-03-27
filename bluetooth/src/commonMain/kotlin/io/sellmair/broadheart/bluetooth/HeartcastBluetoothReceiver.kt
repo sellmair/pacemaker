@@ -36,6 +36,7 @@ fun BleConnection.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPa
         launch {
             getValue(HeartcastBleService.userIdCharacteristic).collect {
                 userId = runCatching { UserId(Buffer().write(it).readLong()) }.getOrNull()
+                if (userId == null) println("Failed decoding userId")
                 emitIfPossible()
             }
         }
@@ -43,6 +44,7 @@ fun BleConnection.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPa
         launch {
             getValue(HeartcastBleService.sensorIdCharacteristic).collect {
                 sensorId = runCatching { HeartRateSensorId(it.decodeToString()) }.getOrNull()
+                if (sensorId == null) println("Failed decoding sensorId")
                 emitIfPossible()
             }
         }
@@ -50,6 +52,7 @@ fun BleConnection.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPa
         launch {
             getValue(HeartcastBleService.userNameCharacteristic).collect {
                 userName = runCatching { it.decodeToString() }.getOrNull()
+                if (userName == null) println("Failed decoding userName")
                 emitIfPossible()
             }
         }
@@ -57,6 +60,7 @@ fun BleConnection.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPa
         launch {
             getValue(HeartcastBleService.heartRateCharacteristic).collect {
                 heartRate = runCatching { HeartRate(Buffer().write(it).readInt()) }.getOrNull()
+                if (heartRate == null) println("Failed decoding heartRate")
                 emitIfPossible()
             }
         }
@@ -64,6 +68,7 @@ fun BleConnection.receiveHeartcastBroadcastPackages(): Flow<HeartcastBroadcastPa
         launch {
             getValue(HeartcastBleService.heartRateLimitCharacteristic).collect {
                 heartRateLimit = runCatching { HeartRate(Buffer().write(it).readInt()) }.getOrNull()
+                if (heartRateLimit == null) println("Failed decoding heartRateLimit")
                 emitIfPossible()
             }
         }

@@ -100,16 +100,29 @@ private class AndroidBleBlePeripheral(
         return valueFlowOf(characteristic.uuid).filterNotNull()
     }
 
-    fun writeValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
+    private val onCharacteristicWriteChannel = Channel<BluetoothGattCharacteristic>()
+
+    suspend fun writeValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
         // if (state.value != BlePeripheral.State.Connected) return
         println("Ble: 'central: writeValue' on ${characteristic.name}")
         val discoveredCharacteristic = discoveredCharacteristics.orEmpty()[characteristic.uuid] ?: return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             gatt?.writeCharacteristic(discoveredCharacteristic, value, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
+            onCharacteristicWriteChannel.receiveAsFlow().first { it == discoveredCharacteristic }
+
         } else {
             discoveredCharacteristic.value = value
             gatt?.writeCharacteristic(discoveredCharacteristic)
         }
+    }
+
+    override fun onCharacteristicWrite(
+        gatt: BluetoothGatt,
+        characteristic: BluetoothGattCharacteristic,
+        status: Int
+    ) {
+        super.onCharacteristicWrite(gatt, characteristic, status)
+        onCharacteristicWriteChannel.trySend(characteristic)
     }
 
     override val id: BleDeviceId = scanResult.device.deviceId

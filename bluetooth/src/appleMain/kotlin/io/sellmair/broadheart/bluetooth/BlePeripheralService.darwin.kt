@@ -79,7 +79,7 @@ private class CBPeripheralManagerDelegate : NSObject(), CBPeripheralManagerDeleg
     private val _state = MutableStateFlow<Long?>(null)
     val state: StateFlow<Long?> = _state.asStateFlow()
 
-    val connections = mutableMapOf<CBCentral, CentralConnection>()
+    val connections = mutableMapOf<BleDeviceId, CentralConnection>()
     val connectionsFlow = MutableSharedFlow<CentralConnection>(replay = Channel.UNLIMITED)
 
     val isReadyToUpdateSubscribersChannel = Channel<Unit>()
@@ -141,12 +141,17 @@ private class CBPeripheralManagerDelegate : NSObject(), CBPeripheralManagerDeleg
             println("peripheralManager: didReceiveWriteRequests: $writeRequest")
             writeRequest as CBATTRequest
 
-            val centralConnection = connections.getOrPut(writeRequest.central) {
-                CentralConnection(writeRequest.central)
+            val centralConnection = connections.getOrPut(writeRequest.central.deviceId) {
+                CentralConnection(writeRequest.central).also {
+                    check(connectionsFlow.tryEmit(it))
+                }
             }
 
+            val value = writeRequest.value?.toByteString()?.toByteArray()
+                ?: return@forEach println("Missing value for '${writeRequest.characteristic.value}'")
+
             centralConnection.valueFlowOf(writeRequest.characteristic.UUID)
-                .tryEmit(writeRequest.value?.toByteString()?.toByteArray() ?: return@forEach)
+                .tryEmit(value)
 
             peripheral.respondToRequest(writeRequest, CBATTErrorSuccess)
         }
