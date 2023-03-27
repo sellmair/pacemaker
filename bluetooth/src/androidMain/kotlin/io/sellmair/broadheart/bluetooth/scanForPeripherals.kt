@@ -9,8 +9,11 @@ import android.bluetooth.le.ScanSettings
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 
 @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
@@ -23,7 +26,7 @@ internal fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor):
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             if (result == null) return
-            trySend(result)
+            trySendBlocking(result)
         }
     }
 
@@ -32,9 +35,8 @@ internal fun BluetoothManager.scanForPeripherals(service: BleServiceDescriptor):
         .build()
 
     val scanSettings = ScanSettings.Builder()
-        .setLegacy(false)
         .build()
 
     adapter.bluetoothLeScanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
     awaitClose { adapter.bluetoothLeScanner.stopScan(scanCallback) }
-}
+}.buffer(Channel.CONFLATED)

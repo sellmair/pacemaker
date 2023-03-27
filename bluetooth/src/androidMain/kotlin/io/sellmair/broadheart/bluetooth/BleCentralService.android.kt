@@ -39,6 +39,7 @@ internal suspend fun BleCentralService(
         override val peripherals: Flow<BlePeripheral>
             get() = manager.scanForPeripherals(service)
                 .map { scanResult -> peripherals.forScanResult(scanResult) }
+                .flowOn(Dispatchers.Main.immediate)
                 .distinct()
 
         override suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
@@ -145,9 +146,8 @@ private class AndroidBleBlePeripheral(
     }
 
     override fun tryDisconnect() {
-        if (gatt != null) {
-            gatt?.close()
-            gatt = null
+        if (gatt != null && desireConnection) {
+            gatt?.disconnect()
             desireConnection = false
         }
     }
@@ -169,7 +169,7 @@ private class AndroidBleBlePeripheral(
         connectedCoroutinesScope?.cancel()
 
         _state.value = when (newState) {
-            BluetoothProfile.STATE_DISCONNECTED -> BlePeripheral.State.Connectable
+            BluetoothProfile.STATE_DISCONNECTED -> BlePeripheral.State.Disconnected
             BluetoothProfile.STATE_CONNECTING -> BlePeripheral.State.Connecting
             BluetoothProfile.STATE_CONNECTED -> BlePeripheral.State.Connected
             else -> state.value
@@ -183,6 +183,7 @@ private class AndroidBleBlePeripheral(
         }
 
         if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            this.gatt?.close()
             this.gatt = null
         }
     }
@@ -226,8 +227,6 @@ private class AndroidBleBlePeripheral(
 
                     gatt.enableNotifications(bluetoothGattCharacteristic)
                 }
-
-
         }
     }
 
