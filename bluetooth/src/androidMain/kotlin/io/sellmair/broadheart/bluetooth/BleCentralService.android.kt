@@ -101,7 +101,7 @@ private class AndroidBleBlePeripheral(
     }
 
     fun writeValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
-       // if (state.value != BlePeripheral.State.Connected) return
+        // if (state.value != BlePeripheral.State.Connected) return
         println("Ble: 'central: writeValue' on ${characteristic.name}")
         val discoveredCharacteristic = discoveredCharacteristics.orEmpty()[characteristic.uuid] ?: return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -167,6 +167,10 @@ private class AndroidBleBlePeripheral(
             /* Start bluetooth lifecycle */
             parentScope.coroutineContext.job.invokeOnCompletion { gatt.close() }
             gatt.discoverServices()
+        }
+
+        if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            this.gatt = null
         }
     }
 
