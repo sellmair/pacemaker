@@ -2,7 +2,7 @@ package io.sellmair.broadheart
 
 import io.sellmair.broadheart.ApplicationIntent.MainPageIntent
 import io.sellmair.broadheart.ApplicationIntent.SettingsPageIntent
-import io.sellmair.broadheart.BluetoothService.Peripheral.HeartRateSensor
+import io.sellmair.broadheart.BluetoothService.Device.HeartRateSensor
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.User
 import io.sellmair.broadheart.model.randomUserId
@@ -44,7 +44,7 @@ private class ApplicationViewModelImpl(
     override val group = groupService.group
 
     override val nearbyDevices: StateFlow<List<NearbyDeviceViewModel>> =
-        bluetoothService.allPeripherals
+        bluetoothService.allDevices
             .map { peripherals ->
                 peripherals
                     .filterIsInstance<HeartRateSensor>()

@@ -8,6 +8,7 @@ import android.bluetooth.*
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import io.sellmair.broadheart.utils.distinct
 import kotlinx.coroutines.*
@@ -15,7 +16,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("MissingPermission")
 internal suspend fun BleCentralService(
@@ -35,26 +35,35 @@ internal suspend fun BleCentralService(
     val peripherals = BlePeripheralsContainer(context, scope, service)
     return object : BleCentralService {
         override val service: BleServiceDescriptor = service
+
         override val peripherals: Flow<BlePeripheral>
             get() = manager.scanForPeripherals(service)
                 .map { scanResult -> peripherals.forScanResult(scanResult) }
                 .distinct()
+
+        override suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
+            peripherals.all.forEach { peripheral ->
+                peripheral.writeValue(characteristic, value)
+            }
+        }
     }
 }
-
 
 private class BlePeripheralsContainer(
     private val context: Context,
     private val scope: CoroutineScope,
     private val service: BleServiceDescriptor,
 ) {
-    private val peripheralsById = mutableMapOf<BlePeripheral.Id, AndroidBleBlePeripheral>()
+    private val peripheralsById = mutableMapOf<BleDeviceId, AndroidBleBlePeripheral>()
 
     fun forScanResult(result: ScanResult): BlePeripheral {
-        return peripheralsById.getOrPut(result.device.peripheralId) {
+        return peripheralsById.getOrPut(result.device.deviceId) {
+            println("Ble: ${service.name}: peripheral found: ${result.device.deviceId}")
             AndroidBleBlePeripheral(context, scope, service, result)
         }.also { it.onScanResult(result) }
     }
+
+    val all: List<AndroidBleBlePeripheral> get() = peripheralsById.values.toList()
 }
 
 
@@ -91,35 +100,55 @@ private class AndroidBleBlePeripheral(
         return valueFlowOf(characteristic.uuid).filterNotNull()
     }
 
-    override val id: BlePeripheral.Id = scanResult.device.peripheralId
+    fun writeValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
+       // if (state.value != BlePeripheral.State.Connected) return
+        println("Ble: 'central: writeValue' on ${characteristic.name}")
+        val discoveredCharacteristic = discoveredCharacteristics.orEmpty()[characteristic.uuid] ?: return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            gatt?.writeCharacteristic(discoveredCharacteristic, value, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT)
+        } else {
+            discoveredCharacteristic.value = value
+            gatt?.writeCharacteristic(discoveredCharacteristic)
+        }
+    }
 
-    private val _rssi = MutableStateFlow(BlePeripheral.Rssi(scanResult.rssi))
+    override val id: BleDeviceId = scanResult.device.deviceId
 
-    private val device: BluetoothDevice = scanResult.device
+    private val _rssi = MutableStateFlow(Rssi(scanResult.rssi))
+
+    private var device: BluetoothDevice = scanResult.device
 
     private var gatt: BluetoothGatt? = null
 
-    override val rssi: StateFlow<BlePeripheral.Rssi>
+    private var discoveredCharacteristics: Map<BleUUID, BluetoothGattCharacteristic>? = null
+
+    override val rssi: StateFlow<Rssi>
         get() = _rssi.asStateFlow()
 
+    private var desireConnection = false
+
     override fun tryConnect() {
-        if (gatt == null) {
-            this.gatt = device.connectGatt(context, true, this)
-        }
+        desireConnection = true
     }
 
     override fun tryDisconnect() {
         if (gatt != null) {
             gatt?.close()
             gatt = null
+            desireConnection = false
         }
     }
 
     fun onScanResult(scanResult: ScanResult) {
         check(this.device == scanResult.device)
-        this._rssi.value = BlePeripheral.Rssi(scanResult.rssi)
+        this.device = scanResult.device
+        this._rssi.value = Rssi(scanResult.rssi)
         this._state.value = if (scanResult.isConnectable) BlePeripheral.State.Connectable
         else BlePeripheral.State.Disconnected
+
+        if (scanResult.isConnectable && desireConnection && gatt == null) {
+            gatt = scanResult.device.connectGatt(context, false, this, BluetoothDevice.TRANSPORT_LE)
+        }
     }
 
     override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
@@ -133,7 +162,7 @@ private class AndroidBleBlePeripheral(
             else -> state.value
         }
 
-        Log.d("bluetooth", "onConnectionStateChange(status=$status, newState=$newState)")
+        Log.d("Ble", "onConnectionStateChange(gatt=${gatt.device.deviceId}, status=$status, newState=$newState)")
         if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
             /* Start bluetooth lifecycle */
             parentScope.coroutineContext.job.invokeOnCompletion { gatt.close() }
@@ -151,6 +180,24 @@ private class AndroidBleBlePeripheral(
                 Log.d("ble", "Service '$service' not found in gatt $gatt")
             }
 
+            discoveredCharacteristics = service.characteristics.mapNotNull { characteristic ->
+                characteristic.uuid to (bluetoothGattService.getCharacteristic(characteristic.uuid)
+                    ?: return@mapNotNull null)
+            }.toMap()
+
+            /* Read out all readable characteristics */
+            service.characteristics
+                .filter { it.isReadable }
+                .forEach { characteristic ->
+                    val bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(characteristic.uuid)
+                        ?: return@forEach run {
+                            Log.d("ble", "Characteristic '${characteristic}' not found in $bluetoothGattService")
+                        }
+
+                    val receivedValue = gatt.readCharacteristicValue(bluetoothGattCharacteristic)
+                    valueFlowOf(characteristic.uuid).value = receivedValue
+                }
+
             /* Enable notifications */
             service.characteristics
                 .filter { it.isNotificationsEnabled }
@@ -159,24 +206,11 @@ private class AndroidBleBlePeripheral(
                         ?: return@forEach run {
                             Log.d("ble", "Characteristic '${characteristic}' not found in $bluetoothGattService")
                         }
+
                     gatt.enableNotifications(bluetoothGattCharacteristic)
                 }
 
-            /* Read out all readable characteristics */
-            while (isActive) {
-                service.characteristics
-                    .filter { it.isReadable }
-                    .forEach { characteristic ->
-                        val bluetoothGattCharacteristic = bluetoothGattService.getCharacteristic(characteristic.uuid)
-                            ?: return@forEach run {
-                                Log.d("ble", "Characteristic '${characteristic}' not found in $bluetoothGattService")
-                            }
 
-                        valueFlowOf(characteristic.uuid).value = gatt.readCharacteristicValue(bluetoothGattCharacteristic)
-                    }
-
-                delay(15.seconds)
-            }
         }
     }
 
@@ -224,7 +258,9 @@ private class AndroidBleBlePeripheral(
     }
 
     private suspend fun BluetoothGatt.enableNotifications(characteristic: BluetoothGattCharacteristic) {
-        setCharacteristicNotification(characteristic, true)
+        if (!setCharacteristicNotification(characteristic, true)) {
+            println("Ble: Failed enabling notifications for '${characteristic.uuid}'")
+        }
         val ccdUUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
         val ccdDescriptor: BluetoothGattDescriptor = characteristic.getDescriptor(ccdUUID)
         ccdDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)

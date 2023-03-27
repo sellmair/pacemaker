@@ -5,6 +5,7 @@ internal object HeartcastBleService {
         name = "userId",
         uuid = BleUUID(HeartcastBleServiceConstants.userIdCharacteristicUuidString),
         isReadable = true,
+        isWritable = true,
         isNotificationsEnabled = false
     )
 
@@ -12,6 +13,7 @@ internal object HeartcastBleService {
         name = "userName",
         uuid = BleUUID(HeartcastBleServiceConstants.userNameCharacteristicUuidString),
         isReadable = true,
+        isWritable = true,
         isNotificationsEnabled = false
     )
 
@@ -19,6 +21,7 @@ internal object HeartcastBleService {
         name = "sensorId",
         uuid = BleUUID(HeartcastBleServiceConstants.sensorIdCharacteristicUuidString),
         isReadable = false,
+        isWritable = true,
         isNotificationsEnabled = true
     )
 
@@ -26,6 +29,7 @@ internal object HeartcastBleService {
         name = "heartRate",
         uuid = BleUUID(HeartcastBleServiceConstants.heartRateCharacteristicUuidString),
         isReadable = false,
+        isWritable = true,
         isNotificationsEnabled = true
     )
 
@@ -33,6 +37,7 @@ internal object HeartcastBleService {
         name = "heartRateLimit",
         uuid = BleUUID(HeartcastBleServiceConstants.heartRateLimitCharacteristicUuidString),
         isReadable = true,
+        isWritable = true,
         isNotificationsEnabled = true
     )
 

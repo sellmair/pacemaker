@@ -1,21 +1,29 @@
 package io.sellmair.broadheart
 
-import io.sellmair.broadheart.bluetooth.BlePeripheral
-import io.sellmair.broadheart.bluetooth.HeartcastBroadcastPackage
+import io.sellmair.broadheart.bluetooth.*
 import io.sellmair.broadheart.model.HeartRateMeasurement
+import io.sellmair.broadheart.model.HeartRateSensorId
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface BluetoothService {
-    val peripherals: SharedFlow<Peripheral>
-    val allPeripherals: SharedFlow<List<Peripheral>>
+    suspend fun heartcastBle(): HeartcastBle
+    val devices: SharedFlow<Device>
+    val allDevices: SharedFlow<List<Device>>
 
-    sealed interface Peripheral: BlePeripheral {
+    sealed interface Device {
 
-        interface HeartRateSensor : Peripheral {
+        interface HeartRateSensor : Device {
+            val id: HeartRateSensorId
             val measurements: SharedFlow<HeartRateMeasurement>
+            val rssi: StateFlow<Rssi>
+            val state: StateFlow<BlePeripheral.State>
+            fun tryConnect()
+            fun tryDisconnect()
         }
 
-        interface PacemakerApp : Peripheral {
+        interface PacemakerAppDevice : Device {
+            val id: BleDeviceId
             val broadcasts: SharedFlow<HeartcastBroadcastPackage>
         }
     }

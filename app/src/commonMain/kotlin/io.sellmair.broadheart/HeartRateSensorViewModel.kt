@@ -1,7 +1,7 @@
 package io.sellmair.broadheart
 
 import io.sellmair.broadheart.bluetooth.BlePeripheral
-import io.sellmair.broadheart.bluetooth.toHeartRateSensorId
+import io.sellmair.broadheart.bluetooth.Rssi
 import io.sellmair.broadheart.model.HeartRate
 import io.sellmair.broadheart.model.HeartRateSensorId
 import io.sellmair.broadheart.model.User
@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.stateIn
 internal class HeartRateSensorViewModelImpl(
     private val scope: CoroutineScope,
     private val userService: UserService,
-    private val heartRateSensor: BluetoothService.Peripheral.HeartRateSensor,
+    private val heartRateSensor: BluetoothService.Device.HeartRateSensor,
 ) : HeartRateSensorViewModel {
-    override val id: HeartRateSensorId = heartRateSensor.id.toHeartRateSensorId()
+    override val id: HeartRateSensorId = heartRateSensor.id
 
-    override val rssi: StateFlow<BlePeripheral.Rssi> = heartRateSensor.rssi
+    override val rssi: StateFlow<Rssi> = heartRateSensor.rssi
 
     override val state: StateFlow<BlePeripheral.State> = heartRateSensor.state
 

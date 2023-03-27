@@ -2,12 +2,14 @@
 
 package io.sellmair.broadheart
 
-import io.sellmair.broadheart.BluetoothService.Peripheral.HeartRateSensor
-import io.sellmair.broadheart.BluetoothService.Peripheral.PacemakerApp
+import io.sellmair.broadheart.BluetoothService.Device.HeartRateSensor
+import io.sellmair.broadheart.BluetoothService.Device.PacemakerAppDevice
 import io.sellmair.broadheart.bluetooth.*
 import io.sellmair.broadheart.model.HeartRateMeasurement
+import io.sellmair.broadheart.model.HeartRateSensorId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
@@ -17,7 +19,13 @@ fun BluetoothService(ble: Ble): BluetoothService {
 
 private class BluetoothServiceImpl(private val ble: Ble) : BluetoothService {
 
-    override val peripherals: SharedFlow<BluetoothService.Peripheral> = flowOf(
+    private val heartcastBle = ble.scope.async { HeartcastBle(ble) }
+
+    override suspend fun heartcastBle(): HeartcastBle {
+        return heartcastBle.await()
+    }
+
+    override val devices: SharedFlow<BluetoothService.Device> = flowOf(
         heartRateSensorPeripherals(),
         pacemakerPeripherals()
     ).flattenMerge()
@@ -25,8 +33,8 @@ private class BluetoothServiceImpl(private val ble: Ble) : BluetoothService {
         .onEach { println("BleService: discovered: $it") }
         .shareIn(ble.scope, SharingStarted.WhileSubscribed(), replay = Channel.UNLIMITED)
 
-    override val allPeripherals: SharedFlow<List<BluetoothService.Peripheral>> = peripherals
-        .runningFold(emptyList<BluetoothService.Peripheral>()) { list, peripheral -> list + peripheral }
+    override val allDevices: SharedFlow<List<BluetoothService.Device>> = devices
+        .runningFold(emptyList<BluetoothService.Device>()) { list, peripheral -> list + peripheral }
         .shareIn(ble.scope, SharingStarted.WhileSubscribed(), replay = Channel.UNLIMITED)
 
     private fun heartRateSensorPeripherals(): Flow<HeartRateSensor> = flow {
@@ -35,39 +43,50 @@ private class BluetoothServiceImpl(private val ble: Ble) : BluetoothService {
         })
     }
 
-    private fun pacemakerPeripherals(): Flow<PacemakerApp> = flow {
-        emitAll(ble.startHeartcastBleCentralService().peripherals.map { peripheral ->
-            PacemakerAppImpl(ble.scope, peripheral)
-        })
+    private fun pacemakerPeripherals(): Flow<PacemakerAppDevice> = flow {
+        emitAll(heartcastBle.await().connections.map { PacemakerAppDeviceImpl(ble.scope, it) })
     }
 }
 
 private class HeartRateSensorImpl(
     scope: CoroutineScope,
-    peripheral: HeartRateBlePeripheral
-) : HeartRateSensor, BlePeripheral by peripheral {
+    private val peripheral: HeartRateBlePeripheral
+) : HeartRateSensor {
+    override val id: HeartRateSensorId = peripheral.id.toHeartRateSensorId()
+
+    override val state: StateFlow<BlePeripheral.State>
+        get() = peripheral.state
+
+    override val rssi: StateFlow<Rssi>
+        get() = peripheral.rssi
 
     override val measurements: SharedFlow<HeartRateMeasurement> =
         peripheral.heartRateMeasurements.shareIn(scope, SharingStarted.Eagerly)
 
-    override fun toString(): String {
-        return "Heart Rate Sensor: $id"
-    }
-
-}
-
-private class PacemakerAppImpl(
-    scope: CoroutineScope,
-    peripheral: HeartcastBlePeripheral
-) : PacemakerApp, BlePeripheral by peripheral {
-    override val broadcasts: SharedFlow<HeartcastBroadcastPackage> =
-        peripheral.broadcasts.shareIn(scope, SharingStarted.Eagerly)
-
-    init {
+    override fun tryConnect() {
         peripheral.tryConnect()
     }
 
+    override fun tryDisconnect() {
+        peripheral.tryDisconnect()
+    }
+
     override fun toString(): String {
-        return "Pacemaker App: $id"
+        return "Heart Rate Sensor: $id"
+    }
+}
+
+private class PacemakerAppDeviceImpl(
+    scope: CoroutineScope,
+    private val connection: BleConnection,
+) : PacemakerAppDevice {
+
+    override val id: BleDeviceId = connection.id
+
+    override val broadcasts: SharedFlow<HeartcastBroadcastPackage> = connection.receiveHeartcastBroadcastPackages()
+        .shareIn(scope, SharingStarted.WhileSubscribed())
+
+    override fun toString(): String {
+        return "Pacemaker App: ${connection.id}"
     }
 }

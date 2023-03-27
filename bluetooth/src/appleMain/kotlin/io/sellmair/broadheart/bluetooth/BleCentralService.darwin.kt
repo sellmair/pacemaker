@@ -4,6 +4,7 @@ import io.sellmair.broadheart.bluetooth.BlePeripheral.State
 import io.sellmair.broadheart.bluetooth.PeripheralDelegate.BluetoothOperationRequest.EnableNotifications
 import io.sellmair.broadheart.bluetooth.PeripheralDelegate.BluetoothOperationRequest.ReadCharacteristicValue
 import io.sellmair.broadheart.utils.distinct
+import io.sellmair.broadheart.utils.toNSData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -14,6 +15,7 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
+import kotlin.native.internal.createCleaner
 
 
 suspend fun BleCentralService(scope: CoroutineScope, service: BleServiceDescriptor): BleCentralService {
@@ -21,23 +23,30 @@ suspend fun BleCentralService(scope: CoroutineScope, service: BleServiceDescript
     val central = CBCentralManager(centralDelegate, null)
     centralDelegate.awaitStatePoweredOn()
 
+
     central.scanForPeripheralsWithServices(listOf(service.uuid), mutableMapOf<Any?, Any>())
 
     return object : BleCentralService {
+        private val knownPeripherals = mutableMapOf<BleDeviceId, DarwinBlePeripheral>()
+
         override val service: BleServiceDescriptor = service
         override val peripherals: Flow<BlePeripheral>
             get() {
-                val peripherals = mutableMapOf<BlePeripheral.Id, DarwinBlePeripheral>()
-
                 return centralDelegate.peripherals
                     .map { discoveredPeripheral ->
-                        peripherals.getOrPut(discoveredPeripheral.peripheral.peripheralId) {
+                        knownPeripherals.getOrPut(discoveredPeripheral.peripheral.deviceId) {
                             DarwinBlePeripheral(scope, central, centralDelegate, service, discoveredPeripheral)
                         }.also { it.onDiscoveredPeripheral(discoveredPeripheral) }
                     }
                     .distinct()
                     .shareIn(scope, SharingStarted.Eagerly, Channel.UNLIMITED)
             }
+
+        override suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
+            knownPeripherals.values.forEach { peripheral ->
+                peripheral.writeValue(characteristic, value)
+            }
+        }
     }
 }
 
@@ -55,14 +64,16 @@ private class DarwinBlePeripheral(
 
     private var peripheralDelegate: PeripheralDelegate? = null
 
-    override val id: BlePeripheral.Id = discoveredPeripheral.peripheral.peripheralId
+    private var discoveredCharacteristics: Map<BleUUID, CBCharacteristic>? = null
+
+    override val id: BleDeviceId = discoveredPeripheral.peripheral.deviceId
 
     private var isReconnectEnabled = false
 
     private val valueFlows = mutableMapOf<BleUUID, MutableStateFlow<ByteArray?>>()
 
-    override val rssi: MutableStateFlow<BlePeripheral.Rssi> =
-        MutableStateFlow(BlePeripheral.Rssi(discoveredPeripheral.rssi))
+    override val rssi: MutableStateFlow<Rssi> =
+        MutableStateFlow(Rssi(discoveredPeripheral.rssi))
 
     override val state: MutableStateFlow<State> =
         MutableStateFlow(if (discoveredPeripheral.isConnectable) State.Disconnected else State.Connectable)
@@ -75,9 +86,17 @@ private class DarwinBlePeripheral(
         return stateFlowOf(characteristic.uuid).filterNotNull()
     }
 
+    fun writeValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
+        peripheral.writeValue(
+            value.toNSData(),
+            discoveredCharacteristics?.get(characteristic.uuid) ?: return,
+            CBCharacteristicWriteWithoutResponse
+        )
+    }
+
     fun onDiscoveredPeripheral(discoveredPeripheral: CentralDelegate.DiscoveredPeripheral) {
         check(peripheral == discoveredPeripheral.peripheral)
-        rssi.value = BlePeripheral.Rssi(discoveredPeripheral.rssi)
+        rssi.value = Rssi(discoveredPeripheral.rssi)
         state.value = when (discoveredPeripheral.peripheral.state) {
             CBPeripheralStateConnected -> State.Connected
             CBPeripheralStateConnecting -> State.Connecting
@@ -85,20 +104,18 @@ private class DarwinBlePeripheral(
             else State.Disconnected
         }
 
-        println("BleCentralService: ${peripheral.peripheralId}: '${state.value}'")
-
         if (
             discoveredPeripheral.peripheral.state == CBPeripheralStateDisconnected &&
             discoveredPeripheral.isConnectable &&
             isReconnectEnabled
         ) {
-            println("BleCentralService: ${peripheral.peripheralId}: reconnecting")
+            println("BleCentralService: ${peripheral.deviceId}: reconnecting")
             tryConnect()
         }
     }
 
     override fun tryConnect() {
-        println("BleCentralService: ${peripheral.peripheralId}: tryConnect")
+        println("BleCentralService: ${peripheral.deviceId}: tryConnect")
 
         this.connectedCoroutineScope?.cancel()
 
@@ -149,6 +166,10 @@ private class CentralDelegate(private val scope: CoroutineScope) : NSObject(), C
     private val _connectedPeripherals = MutableSharedFlow<CBPeripheral>()
     val connectedPeripherals = _connectedPeripherals.asSharedFlow()
 
+    @OptIn(ExperimentalStdlibApi::class)
+    @Suppress("Unused")
+    private val cleaner = createCleaner(Unit) { println("PeripheralDelegate cleaned.") }
+
     override fun centralManagerDidUpdateState(central: CBCentralManager) {
         state.value = central.state
     }
@@ -168,26 +189,30 @@ private class CentralDelegate(private val scope: CoroutineScope) : NSObject(), C
     }
 
     override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-        println("centralManager: didConnectPeripheral: ${didConnectPeripheral.peripheralId}")
+        println("centralManager: didConnectPeripheral: ${didConnectPeripheral.deviceId}")
         scope.launch {
-            println("centralManager: didConnectPeripheral: ${didConnectPeripheral.peripheralId} (sending event)")
+            println("centralManager: didConnectPeripheral: ${didConnectPeripheral.deviceId} (sending event)")
             _connectedPeripherals.emit(didConnectPeripheral)
         }
     }
 
     @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-        println("centralManager:  didDisconnectPeripheral: ${didDisconnectPeripheral.peripheralId}")
+        println("centralManager:  didDisconnectPeripheral: ${didDisconnectPeripheral.deviceId}")
     }
 
 
     @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-        println("centralManager: didFailToConnectPeripheral: ${didFailToConnectPeripheral.peripheralId} (${error?.localizedDescription})")
+        println("centralManager: didFailToConnectPeripheral: ${didFailToConnectPeripheral.deviceId} (${error?.localizedDescription})")
     }
 
     suspend fun awaitStatePoweredOn() {
         state.filterNotNull().first { it == CBCentralManagerStatePoweredOn }
+    }
+
+    init {
+        println("CentralDelegate allocated")
     }
 }
 
@@ -196,6 +221,10 @@ private class PeripheralDelegate(
     private val service: BleServiceDescriptor,
     private val onValue: (uuid: BleUUID, value: ByteArray) -> Unit,
 ) : NSObject(), CBPeripheralDelegateProtocol {
+
+    @OptIn(ExperimentalStdlibApi::class)
+    @Suppress("unused")
+    private val cleaner = createCleaner(Unit) { println("PeripheralDelegate cleaned.") }
 
     private val bluetoothOperationRequests = Channel<BluetoothOperationRequest>(Channel.UNLIMITED)
 
@@ -302,12 +331,15 @@ private class PeripheralDelegate(
                         operation.peripheral.setNotifyValue(true, operation.characteristic)
                         if (operation.peripheral != didUpdateValueForCharacteristicChannel.receive()) {
                             println("Unexpected 'didUpdateValueForCharacteristicChannel' value")
+                        } else {
+                            println("Enabled notifications for '${operation.characteristic.UUID}'")
                         }
                     }
 
                     is ReadCharacteristicValue -> {
                         operation.peripheral.readValueForCharacteristic(operation.characteristic)
                         didUpdateValueForCharacteristicChannel.receiveAsFlow().first { it == operation.characteristic }
+                        println("Received value for '${operation.characteristic.UUID}")
                     }
                 }
             }
@@ -316,4 +348,3 @@ private class PeripheralDelegate(
 
 }
 
-private val CBPeripheral.peripheralId: BlePeripheral.Id get() = BlePeripheral.Id(this.identifier.UUIDString)

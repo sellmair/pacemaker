@@ -11,23 +11,32 @@ interface Ble {
     suspend fun startCentralService(service: BleServiceDescriptor): BleCentralService
 }
 
-interface BlePeripheralService {
+interface BleService {
     val service: BleServiceDescriptor
     suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray)
+
 }
 
-interface BleCentralService {
-    val service: BleServiceDescriptor
+interface BlePeripheralService : BleService {
+    val centrals: Flow<BleConnection>
+}
+
+interface BleCentralService : BleService {
     val peripherals: Flow<BlePeripheral>
 }
 
-interface BlePeripheral {
-    @JvmInline
-    value class Id(val value: String)
+@JvmInline
+value class BleDeviceId(val value: String)
 
-    @JvmInline
-    value class Rssi(val value: Int)
+@JvmInline
+value class Rssi(val value: Int)
 
+interface BleConnection {
+    val id: BleDeviceId
+    fun getValue(characteristic: BleCharacteristicDescriptor): Flow<ByteArray>
+}
+
+interface BlePeripheral : BleConnection {
     enum class State {
         Disconnected,
         Connectable,
@@ -35,14 +44,10 @@ interface BlePeripheral {
         Connected
     }
 
-    val id: Id
     val rssi: StateFlow<Rssi>
     val state: StateFlow<State>
-
     fun tryConnect()
     fun tryDisconnect()
-
-    fun getValue(characteristic: BleCharacteristicDescriptor): Flow<ByteArray>
 }
 
 expect fun BleUUID(value: String): BleUUID
@@ -63,6 +68,7 @@ data class BleCharacteristicDescriptor(
     val name: String? = null,
     val uuid: BleUUID,
     val isReadable: Boolean = true,
+    val isWritable: Boolean = false,
     val isNotificationsEnabled: Boolean = false
 ) {
     override fun toString(): String {
