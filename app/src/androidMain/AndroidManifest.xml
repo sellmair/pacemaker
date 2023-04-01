@@ -1,4 +1,4 @@
-<manifest package="io.sellmair.broadheart" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="io.sellmair.pacemaker" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -45,14 +45,14 @@
     <application
             android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTask">
+        <activity android:name="io.sellmair.pacemaker.MainActivity" android:exported="true" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <service android:name=".backend.AndroidApplicationBackend"/>
+        <service android:name="io.sellmair.pacemaker.backend.AndroidApplicationBackend"/>
 
     </application>
 </manifest>

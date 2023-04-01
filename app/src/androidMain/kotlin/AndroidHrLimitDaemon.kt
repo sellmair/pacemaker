@@ -1,15 +1,15 @@
-package io.sellmair.broadheart.backend
+package io.sellmair.pacemaker.backend
 
 import android.app.Service
 import android.content.Context
 import android.os.CombinedVibration
 import android.os.VibrationEffect
 import android.os.VibratorManager
-import io.sellmair.broadheart.GroupMember
+import io.sellmair.pacemaker.GroupMember
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import io.sellmair.broadheart.GroupService
+import io.sellmair.pacemaker.GroupService
 
 fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupService) = launch {
     val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager

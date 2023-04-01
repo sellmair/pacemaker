@@ -1,9 +1,7 @@
-package io.sellmair.broadheart.utils
+package io.sellmair.pacemaker.utils
 
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCValues
-import okio.Buffer
-import okio.ByteString.Companion.toByteString
 import okio.FileSystem
 import platform.Foundation.NSData
 import platform.Foundation.create

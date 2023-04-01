@@ -1,14 +1,14 @@
 @file:Suppress("OPT_IN_USAGE")
 
-package io.sellmair.broadheart.spoof
+package io.sellmair.pacemaker.spoof
 
-import io.sellmair.broadheart.bluetooth.DarwinBle
-import io.sellmair.broadheart.bluetooth.HeartcastBluetoothSender
-import io.sellmair.broadheart.bluetooth.startHeartcastBleCentralService
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.model.HeartRateSensorId
-import io.sellmair.broadheart.model.User
-import io.sellmair.broadheart.model.UserId
+import io.sellmair.pacemaker.bluetooth.DarwinBle
+import io.sellmair.pacemaker.bluetooth.PacemakerBle
+import io.sellmair.pacemaker.bluetooth.receivePacemakerBroadcastPackages
+import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.model.HeartRateSensorId
+import io.sellmair.pacemaker.model.User
+import io.sellmair.pacemaker.model.UserId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.flatMapMerge
@@ -18,6 +18,7 @@ import platform.CoreFoundation.CFRunLoopRun
 import kotlin.math.roundToInt
 
 private val ble = DarwinBle(MainScope())
+
 
 fun main() {
     launchSendBroadcasts()
@@ -34,17 +35,17 @@ private fun launchSendBroadcasts() = MainScope().launch {
             name = "Felix Werner"
         )
 
-        val sender = HeartcastBluetoothSender(ble)
-        sender.updateUser(user)
+        val pacemakerBle = PacemakerBle(ble)
+        pacemakerBle.updateUser(user)
 
         while (isActive) {
             val line = readln()
             if (line.startsWith("l")) {
                 val heartRateLimit = line.removePrefix("l").toIntOrNull() ?: continue
-                sender.updateHeartRateLimit(HeartRate(heartRateLimit))
+                pacemakerBle.updateHeartRateLimit(HeartRate(heartRateLimit))
                 println("Updated spoof hr-limit: $heartRateLimit")
             } else {
-                sender.updateHeartHeart(
+                pacemakerBle.updateHeartHeart(
                     HeartRateSensorId("👻"), HeartRate(line.toIntOrNull() ?: continue)
                 )
                 println("Updated spoof hr: ${line.toIntOrNull()}")
@@ -55,10 +56,10 @@ private fun launchSendBroadcasts() = MainScope().launch {
 }
 
 private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
-    ble.startHeartcastBleCentralService().peripherals.flatMapMerge { peripheral ->
-        peripheral.tryConnect()
-        println("Found heartcast peripheral: ${peripheral.id}")
-        peripheral.broadcasts
+    val pacemakerBle = PacemakerBle(ble)
+    pacemakerBle.connections.flatMapMerge { connection ->
+        println("Found pacemaker peripheral: ${connection.id}")
+        connection.receivePacemakerBroadcastPackages()
     }.collect { pkg ->
         println("${pkg.userName}: ${pkg.heartRate.value.roundToInt()}/${pkg.heartRateLimit.value.roundToInt()}")
     }

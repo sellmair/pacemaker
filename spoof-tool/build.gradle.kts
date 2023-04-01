@@ -7,7 +7,6 @@ plugins {
 }
 
 kotlin {
-
     sourceSets.getByName("commonMain").dependencies {
         implementation(project(":bluetooth"))
         implementation(Dependencies.coroutinesCore)
@@ -16,7 +15,7 @@ kotlin {
 
     targets.withType<KotlinNativeTarget>().all {
         binaries.executable {
-            entryPoint("io.sellmair.broadheart.spoof.main")
+            entryPoint("io.sellmair.pacemaker.spoof.main")
             runTaskProvider?.configure {
                 this.workingDir(projectDir)
                 this.standardInput = System.`in`

@@ -1,13 +1,13 @@
 @file:OptIn(FlowPreview::class)
 
-package io.sellmair.broadheart.backend
+package io.sellmair.pacemaker.backend
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import io.sellmair.broadheart.*
-import io.sellmair.broadheart.bluetooth.AndroidBle
+import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.bluetooth.AndroidBle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
 import okio.Path.Companion.toOkioPath

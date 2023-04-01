@@ -1,5 +1,5 @@
-target 'Heartcast' do
+target 'Pacemaker' do
   use_frameworks!
   platform :ios, '14.1'
-  pod 'HC', :path => '../app'
+  pod 'PM', :path => '../app'
 end

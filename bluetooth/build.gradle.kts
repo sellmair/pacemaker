@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.sellmair.broadheart.bluetooth"
+    namespace = "io.sellmair.pacemaker.bluetooth"
 }
 
 kotlin.sourceSets.commonMain.get().dependencies {

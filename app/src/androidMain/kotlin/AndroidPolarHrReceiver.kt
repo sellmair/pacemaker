@@ -1,15 +1,15 @@
-package io.sellmair.broadheart.hrSensor
+package io.sellmair.pacemaker.hrSensor
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import com.polar.sdk.api.PolarBleApi
 import com.polar.sdk.api.PolarBleApiDefaultImpl
-import io.sellmair.broadheart.HeartRateReceiver
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.model.HeartRateMeasurement
-import io.sellmair.broadheart.model.HeartRateSensorId
-import io.sellmair.broadheart.model.HeartRateSensorInfo
+import io.sellmair.pacemaker.HeartRateReceiver
+import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.model.HeartRateMeasurement
+import io.sellmair.pacemaker.model.HeartRateSensorId
+import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

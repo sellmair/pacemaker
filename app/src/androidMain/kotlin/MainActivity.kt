@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalCoroutinesApi::class)
 
-package io.sellmair.broadheart
+package io.sellmair.pacemaker
 
 import android.Manifest
 import android.content.ComponentName
@@ -13,8 +13,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
-import io.sellmair.broadheart.backend.AndroidApplicationBackend
-import io.sellmair.broadheart.ui.ApplicationWindow
+import io.sellmair.pacemaker.backend.AndroidApplicationBackend
+import io.sellmair.pacemaker.ui.ApplicationWindow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext

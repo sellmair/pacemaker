@@ -1,9 +1,9 @@
 @file:OptIn(FlowPreview::class)
 
-package io.sellmair.broadheart.ui
+package io.sellmair.pacemaker.ui
 
-import io.sellmair.broadheart.*
-import io.sellmair.broadheart.bluetooth.DarwinBle
+import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.bluetooth.DarwinBle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import okio.Path.Companion.toPath

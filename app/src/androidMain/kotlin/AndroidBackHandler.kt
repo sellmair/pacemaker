@@ -1,8 +1,8 @@
-package io.sellmair.broadheart.ui
+package io.sellmair.pacemaker.ui
 
 import androidx.compose.runtime.Composable
 
 @Composable
-actual fun HCBackHandler(onBack: () -> Unit) {
+actual fun BackHandlerIfAny(onBack: () -> Unit) {
     androidx.activity.compose.BackHandler(onBack = onBack)
 }

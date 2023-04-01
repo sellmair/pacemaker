@@ -1,10 +1,10 @@
-package io.sellmair.broadheart.backend
+package io.sellmair.pacemaker.backend
 
 import android.app.*
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import io.sellmair.broadheart.model.HeartRate
-import io.sellmair.broadheart.MainActivity
+import io.sellmair.pacemaker.MainActivity
+import io.sellmair.pacemaker.model.HeartRate
 
 class AndroidHeartRateNotification(private val service: Service) {
 
@@ -31,7 +31,7 @@ class AndroidHeartRateNotification(private val service: Service) {
 
         return NotificationCompat.Builder(service, notificationChannel.id)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-            .setContentTitle("Heartcast")
+            .setContentTitle("Pacemaker")
             .setContentText("Running")
             .setContentIntent(pendingIntent)
             .setOngoing(true)

@@ -7,10 +7,10 @@ spoof-tool/spoof
 .DS_Store
 iosApp/Podfile.lock
 iosApp/Pods/*
-iosApp/Heartcast.xcworkspace/*
-iosApp/Heartcast.xcodeproj/*
-!iosApp/Heartcast.xcodeproj/project.pbxproj
-app/HC.podspec
+iosApp/Pacemaker.xcworkspace/*
+iosApp/Pacemaker.xcodeproj/*
+!iosApp/Pacemaker.xcodeproj/project.pbxproj
+app/PM.podspec
 
 # Addition
 /captures

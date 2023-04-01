@@ -1,4 +1,4 @@
-package io.sellmair.broadheart.utils
+package io.sellmair.pacemaker.utils
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

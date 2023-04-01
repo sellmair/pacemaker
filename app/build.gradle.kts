@@ -12,7 +12,7 @@ plugins {
 }
 
 android {
-    namespace = "io.sellmair.broadheart"
+    namespace = "io.sellmair.pacemaker"
 }
 
 kotlin {
@@ -64,13 +64,13 @@ kotlin {
 
     cocoapods {
         version = "2023.1"
-        name = "HC"
+        name = "PM"
         podfile = project.file("../iosApp/Podfile")
 
         framework {
-            homepage = "https://github.com/sellmair/broadheart"
+            homepage = "https://github.com/sellmair/pacemaker"
             summary = "Application Framework"
-            baseName = "HC"
+            baseName = "PM"
             isStatic = true
         }
     }
