@@ -6,22 +6,20 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface Ble {
     val scope: CoroutineScope
+    fun close()
     suspend fun createCentralService(service: BleServiceDescriptor): BleCentralService
     suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService
-    fun close()
 }
 
 interface BleWritable {
-    suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray)
+    suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray): BleQueue.Result<Unit>
 }
-
 
 class BleReceivedValue(
     val deviceId: BleDeviceId,
     val characteristic: BleCharacteristicDescriptor,
     val data: ByteArray
 )
-
 
 interface BleConnectable {
     enum class ConnectionState {
@@ -44,7 +42,7 @@ interface BleConnection : BleWritable {
     val service: BleServiceDescriptor
     val receivedValues: SharedFlow<BleReceivedValue>
 
-    suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor)
+    suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleQueue.Result<Unit>
     suspend fun requestRead(characteristic: BleCharacteristicDescriptor): BleQueue.Result<ByteArray>
 }
 

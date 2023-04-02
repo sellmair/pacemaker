@@ -16,9 +16,9 @@ class BleConnectionImpl(
     override val receivedValues: SharedFlow<BleReceivedValue>
         get() = controller.values
 
-    override suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor) {
-        if (!scope.isActive) return
-        queue enqueue EnableNotificationsBleOperation(controller.deviceId, characteristic) {
+    override suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleQueue.Result<Unit> {
+        if (!scope.isActive) BleQueue.Result.Failure.NotEnqueued
+        return queue enqueue EnableNotificationsBleOperation(controller.deviceId, characteristic) {
             controller.enableNotification(characteristic)
         }
     }
@@ -30,9 +30,11 @@ class BleConnectionImpl(
         }
     }
 
-    override suspend fun setValue(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
-        if (!scope.isActive) return
-        queue enqueue WriteCharacteristicBleOperation(controller.deviceId, characteristic) {
+    override suspend fun setValue(
+        characteristic: BleCharacteristicDescriptor, value: ByteArray
+    ): BleQueue.Result<Unit> {
+        if (!scope.isActive) return BleQueue.Result.Failure.NotEnqueued
+        return queue enqueue WriteCharacteristicBleOperation(controller.deviceId, characteristic) {
             controller.writeValue(characteristic, value)
         }
     }

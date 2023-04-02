@@ -36,7 +36,7 @@ internal class BlePeripheralServiceImpl(
                 controller.sendNotification(characteristic, value)
                 BleResult.Success
             }
-        }
+        } else BleQueue.Result.Success(Unit)
     }
 
     override suspend fun startAdvertising() {
