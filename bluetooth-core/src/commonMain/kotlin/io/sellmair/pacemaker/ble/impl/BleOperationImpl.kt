@@ -5,33 +5,29 @@ import io.sellmair.pacemaker.ble.*
 internal class ReadCharacteristicBleOperation(
     private val deviceId: BleDeviceId,
     private val characteristic: BleCharacteristicDescriptor,
-    private val triggerCharacteristicRead: suspend () -> Unit,
-    private val awaitResult: suspend () -> BleResult<ByteArray>
-) : BleOperation<ByteArray?> {
+    private val readCharacteristic: suspend () -> BleResult<ByteArray>
+) : BleOperation<ByteArray> {
 
     override val description: String
         get() = "'$deviceId': Read $characteristic'"
 
     override suspend fun BleQueue.Context.invoke(): BleResult<ByteArray> {
         check(characteristic.isReadable) { "Expected $characteristic to be readable" }
-        triggerCharacteristicRead()
-        return awaitResult()
+        return readCharacteristic()
     }
 }
 
 internal class WriteCharacteristicBleOperation(
     private val deviceId: BleDeviceId,
     private val characteristic: BleCharacteristicDescriptor,
-    private val triggerCharacteristicWrite: suspend () -> Unit,
-    private val awaitResult: suspend () -> BleSimpleResult,
+    private val writeCharacteristic: suspend () -> BleSimpleResult,
 ) : BleSimpleOperation {
     override val description: String
         get() = "'$deviceId': Write $characteristic"
 
     override suspend fun BleQueue.Context.invoke(): BleSimpleResult {
         check(characteristic.isWritable) { "Expected $characteristic to be writeable" }
-        triggerCharacteristicWrite()
-        return awaitResult()
+        return writeCharacteristic()
     }
 }
 
@@ -63,43 +59,64 @@ internal class StartAdvertisingBleOperation(
 internal class EnableNotificationsBleOperation(
     private val deviceId: BleDeviceId,
     private val characteristic: BleCharacteristicDescriptor,
-    private val triggerEnableNotifications: suspend () -> Unit,
-    private val awaitResult: suspend () -> BleSimpleResult
+    private val enableNotification: suspend () -> BleSimpleResult
 ) : BleSimpleOperation {
 
     override val description: String
         get() = "'$deviceId': Enable notifications on $characteristic"
 
     override suspend fun BleQueue.Context.invoke(): BleSimpleResult {
-        triggerEnableNotifications()
-        return awaitResult()
+        return enableNotification()
     }
 }
 
 internal class DiscoverServicesBleOperation(
     private val deviceId: BleDeviceId,
-    private val triggerDiscoverServices: suspend () -> Unit,
-    private val awaitResult: suspend () -> BleSimpleResult
+    private val discover: suspend () -> BleSimpleResult
 ) : BleSimpleOperation {
 
     override val description: String
         get() = "'$deviceId' Discover services'"
 
     override suspend fun BleQueue.Context.invoke(): BleResult<Unit> {
-        triggerDiscoverServices()
-        return awaitResult()
+        return discover()
+    }
+}
+
+internal class DiscoverCharacteristicsBleOperation(
+    private val deviceId: BleDeviceId,
+    private val discover: suspend () -> BleSimpleResult
+) : BleSimpleOperation {
+
+    override val description: String
+        get() = "'$deviceId' Discover characteristics'"
+
+    override suspend fun BleQueue.Context.invoke(): BleResult<Unit> {
+        return discover()
     }
 }
 
 internal class ConnectPeripheralBleOperation(
     private val deviceId: BleDeviceId,
-    private val connect: suspend () -> BleResult<BleConnectable.ConnectionState>
-) : BleOperation<BleConnectable.ConnectionState> {
+    private val connect: suspend () -> BleSimpleResult
+) : BleSimpleOperation {
     override val description: String
         get() = "'$deviceId': Connect"
 
-    override suspend fun BleQueue.Context.invoke(): BleResult<BleConnectable.ConnectionState> {
+    override suspend fun BleQueue.Context.invoke(): BleSimpleResult {
         return connect()
+    }
+}
+
+internal class DisconnectPeripheralBleOperation(
+    private val deviceId: BleDeviceId,
+    private val disconnect: suspend () -> BleSimpleResult
+) : BleSimpleOperation {
+    override val description: String
+        get() = "'$deviceId': Disconnect"
+
+    override suspend fun BleQueue.Context.invoke(): BleSimpleResult {
+        return disconnect()
     }
 }
 

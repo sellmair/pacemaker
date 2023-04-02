@@ -22,3 +22,17 @@ sealed class BleResult<out T> {
         val Success = Success(Unit)
     }
 }
+
+inline fun <T, R> BleResult<T>.map(mapper: (T) -> R): BleResult<R> {
+    return when (this) {
+        is BleResult.Success -> return BleResult.Success(mapper(value))
+        is BleResult.Failure -> this
+    }
+}
+
+inline fun <T, R> BleResult<T>.flatMap(mapper: (T) -> BleResult<R>): BleResult<R> {
+    return when (this) {
+        is BleResult.Success -> return mapper(value)
+        is BleResult.Failure -> this
+    }
+}

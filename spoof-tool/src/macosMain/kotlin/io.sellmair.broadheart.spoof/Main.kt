@@ -3,21 +3,27 @@
 package io.sellmair.pacemaker.spoof
 
 import io.sellmair.pacemaker.ble.Ble
-import io.sellmair.pacemaker.bluetooth.PacemakerBlePeripheralService
+import io.sellmair.pacemaker.bluetooth.PacemakerCentralService
+import io.sellmair.pacemaker.bluetooth.PacemakerPeripheralService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import kotlinx.coroutines.*
+import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.info
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopRun
 
 
 private val ble = Ble()
 
 fun main() {
-    launchSendBroadcasts()
-    /*launchReceiveBroadcasts()
-    launchReceiveHeartRates()*/
+    //launchSendBroadcasts()
+    launchReceiveBroadcasts()
+    /* launchReceiveHeartRates() */
     CFRunLoopRun()
 }
 
@@ -29,7 +35,7 @@ private fun launchSendBroadcasts() = MainScope().launch {
             name = "Felix Werner"
         )
 
-        val pacemakerPeripheral = PacemakerBlePeripheralService(ble)
+        val pacemakerPeripheral = PacemakerPeripheralService(ble)
         pacemakerPeripheral.setUser(user)
         pacemakerPeripheral.setHeartRateLimit(HeartRate(120))
         pacemakerPeripheral.startAdvertising()
@@ -49,6 +55,14 @@ private fun launchSendBroadcasts() = MainScope().launch {
         }
     }
 }
+
+private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
+    val pacemaker = PacemakerCentralService(ble)
+    pacemaker.connections.collect { connection ->
+        LogTag("spoof").info("Received connection ${connection.deviceId}")
+    }
+}
+
 /*
 private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
     val pacemakerBle = PacemakerBle(ble)

@@ -13,7 +13,7 @@ internal class BlePeripheralServiceImpl(
 
     private val characteristicValues = mutableMapOf<BleUUID, ByteArray>()
 
-    override val receivedWrites: SharedFlow<BlePeripheralService.ReceivedWrite> = controller.writeRequests
+    override val receivedWrites: SharedFlow<BleReceivedValue> = controller.writeRequests
         .consumeAsFlow()
         .mapNotNull { request -> handleWriteRequest(request) }
         .shareIn(queue.scope, SharingStarted.Eagerly)
@@ -46,7 +46,7 @@ internal class BlePeripheralServiceImpl(
         }
     }
 
-    private suspend fun handleWriteRequest(request: BlePeripheralController.WriteRequest): BlePeripheralService.ReceivedWrite? {
+    private suspend fun handleWriteRequest(request: BlePeripheralController.WriteRequest): BleReceivedValue? {
         val value = request.value
         if (value == null) {
             queue enqueue RespondToWriteRequestBleOperation(service, request.deviceId, request.characteristicUuid) {
@@ -70,7 +70,7 @@ internal class BlePeripheralServiceImpl(
             BleResult.Success
         }
 
-        return BlePeripheralService.ReceivedWrite(request.deviceId, characteristic, value)
+        return BleReceivedValue(request.deviceId, characteristic, value)
     }
 
     private suspend fun handleReadRequest(request: BlePeripheralController.ReadRequest) {

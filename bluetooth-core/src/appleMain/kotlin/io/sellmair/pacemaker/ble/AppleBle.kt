@@ -1,19 +1,23 @@
 package io.sellmair.pacemaker.ble
 
+import io.sellmair.pacemaker.ble.impl.BleCentralServiceImpl
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 
 fun Ble(): Ble = AppleBle()
 
 internal class AppleBle : Ble {
 
-    private val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
+    override val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
 
     private val queue = BleQueue(scope)
 
-    override suspend fun scanForPeripherals(service: BleServiceDescriptor): Flow<BleConnectable> {
-        TODO("Not yet implemented")
+    override suspend fun createCentralService(service: BleServiceDescriptor): BleCentralService {
+        return withContext(scope.coroutineContext) {
+            val centralHardware = AppleCentralHardware(scope, service)
+            val controller = AppleCentralController(scope, centralHardware)
+            BleCentralServiceImpl(scope, queue, controller, service)
+        }
     }
 
     override suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
@@ -28,3 +32,5 @@ internal class AppleBle : Ble {
         scope.cancel()
     }
 }
+
+

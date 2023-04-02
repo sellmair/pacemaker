@@ -26,6 +26,10 @@ interface BleQueue {
             object Timeout : Failure {
                 override fun toString(): String = "Timeout"
             }
+
+            object NotEnqueued : Failure {
+                override fun toString(): String = "NotEnqueued"
+            }
         }
     }
 
@@ -34,18 +38,26 @@ interface BleQueue {
     suspend infix fun <T> enqueue(operation: BleOperation<T>): Result<T>
 }
 
-fun <T, R> BleQueue.Result<T>.map(mapper: (T) -> R): BleQueue.Result<R> {
+inline fun <T, R> BleQueue.Result<T>.map(mapper: (T) -> R): BleQueue.Result<R> {
     return when (this) {
         is BleQueue.Result.Success<T> -> BleQueue.Result.Success(mapper(value))
         is BleQueue.Result.Failure -> this
     }
 }
 
-fun <T> BleQueue.Result<T>.invokeOnSuccess(action: (T) -> Unit): BleQueue.Result<T> {
+inline fun <T, R> BleQueue.Result<T>.flatMap(mapper: (T) -> BleQueue.Result<R>): BleQueue.Result<R> {
+    return when (this) {
+        is BleQueue.Result.Success<T> -> mapper(value)
+        is BleQueue.Result.Failure -> this
+    }
+}
+
+
+inline fun <T> BleQueue.Result<T>.invokeOnSuccess(action: (T) -> Unit): BleQueue.Result<T> {
     return apply { if (this is BleQueue.Result.Success<T>) action(value) }
 }
 
-fun <T> BleQueue.Result<T>.invokeOnFailure(action: (BleQueue.Result.Failure) -> Unit): BleQueue.Result<T> {
+inline fun <T> BleQueue.Result<T>.invokeOnFailure(action: (BleQueue.Result.Failure) -> Unit): BleQueue.Result<T> {
     return apply { if (this is BleQueue.Result.Failure) action(this) }
 }
 

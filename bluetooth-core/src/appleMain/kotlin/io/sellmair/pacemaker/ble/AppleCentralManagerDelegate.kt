@@ -21,7 +21,7 @@ internal class AppleCentralManagerDelegate(
 
     /* Did Update State */
 
-    private val state = MutableStateFlow<Long?>(null)
+    val state = MutableStateFlow<Long?>(null)
 
     override fun centralManagerDidUpdateState(central: CBCentralManager) {
         state.value = central.state
@@ -31,7 +31,10 @@ internal class AppleCentralManagerDelegate(
     /* Discover Peripherals */
 
     class DidDiscoverPeripheral(
-        central: CBCentralManager, peripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber
+        val central: CBCentralManager,
+        val peripheral: CBPeripheral,
+        val advertisementData: Map<Any?, *>,
+        val RSSI: NSNumber
     )
 
     val didDiscoverPeripheral = MutableSharedFlow<DidDiscoverPeripheral>()
@@ -54,7 +57,7 @@ internal class AppleCentralManagerDelegate(
 
     /* Did Connect Peripheral */
 
-    class DidConnectPeripheral(central: CBCentralManager, peripheral: CBPeripheral)
+    class DidConnectPeripheral(val central: CBCentralManager, val peripheral: CBPeripheral)
 
     val didConnectPeripheral = MutableSharedFlow<DidConnectPeripheral>()
 
@@ -69,7 +72,7 @@ internal class AppleCentralManagerDelegate(
     /* Did Fail to Connect to Peripheral */
 
     class DidFailConnectToPeripheral(
-        central: CBCentralManager, peripheral: CBPeripheral, error: NSError?
+        val central: CBCentralManager, val peripheral: CBPeripheral, val error: NSError?
     )
 
     val didFailConnectToPeripheral = MutableSharedFlow<DidFailConnectToPeripheral>()
@@ -86,7 +89,7 @@ internal class AppleCentralManagerDelegate(
 
     /* Did Disconnect Peripheral */
 
-    class DidDisconnectPeripheral(val central: CBCentralManager, peripheral: CBPeripheral, error: NSError?)
+    class DidDisconnectPeripheral(val central: CBCentralManager, val peripheral: CBPeripheral, val error: NSError?)
 
     val didDisconnectPeripheral = MutableSharedFlow<DidDisconnectPeripheral>()
 

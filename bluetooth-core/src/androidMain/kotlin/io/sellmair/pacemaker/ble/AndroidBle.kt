@@ -6,19 +6,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import java.io.Closeable
 
 internal class AndroidBle(
     private val context: Context
 ) : Ble, Closeable {
 
-    private val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
+    override val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
 
     private val queue = BleQueue(scope)
 
-    override suspend fun scanForPeripherals(service: BleServiceDescriptor): Flow<BleConnectable> {
-        TODO("Not yet implemented")
+    override suspend fun createCentralService(service: BleServiceDescriptor): BleCentralService {
+        TODO()
     }
 
     override suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
