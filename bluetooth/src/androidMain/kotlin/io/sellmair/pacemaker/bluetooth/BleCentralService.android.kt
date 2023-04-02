@@ -10,6 +10,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleUUID
 import io.sellmair.pacemaker.utils.distinct
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

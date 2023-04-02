@@ -9,6 +9,7 @@ import android.bluetooth.le.ScanSettings
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking

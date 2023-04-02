@@ -14,6 +14,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.ParcelUuid
 import android.util.Log
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleUUID
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel

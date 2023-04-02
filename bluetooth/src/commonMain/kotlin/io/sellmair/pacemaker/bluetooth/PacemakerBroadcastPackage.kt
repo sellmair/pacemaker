@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId

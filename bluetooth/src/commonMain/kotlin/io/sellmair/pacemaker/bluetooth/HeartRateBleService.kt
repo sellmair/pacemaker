@@ -1,5 +1,9 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleUUID
+
 internal object HeartRateBleService {
     val heartRateCharacteristic = BleCharacteristicDescriptor(
         name = "Heart Rate",

@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker.bluetooth
 
 import android.content.Context
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import kotlinx.coroutines.CoroutineScope
 
 class AndroidBle(override val scope: CoroutineScope, private val context: Context) : Ble {

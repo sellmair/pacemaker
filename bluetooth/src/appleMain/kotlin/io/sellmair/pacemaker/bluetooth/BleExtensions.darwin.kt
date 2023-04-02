@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleDeviceId
 import platform.CoreBluetooth.CBCentral
 import platform.CoreBluetooth.CBPeripheral
 

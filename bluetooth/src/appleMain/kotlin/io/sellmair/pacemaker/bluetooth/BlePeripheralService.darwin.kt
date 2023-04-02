@@ -2,6 +2,10 @@
 
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleUUID
 import io.sellmair.pacemaker.utils.toNSData
 import kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
 import kotlinx.coroutines.channels.Channel
@@ -16,6 +20,7 @@ import kotlin.native.internal.createCleaner
 suspend fun BlePeripheralService(service: BleServiceDescriptor): BlePeripheralService {
     val peripheralDelegate = CBPeripheralManagerDelegate()
     val cbPeripheralManager = CBPeripheralManager(peripheralDelegate, null)
+    cbPeripheralManager
     peripheralDelegate.awaitPoweredOnState()
 
     val cbService = CBMutableService(service.uuid, true)

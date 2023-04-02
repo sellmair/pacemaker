@@ -1,6 +1,16 @@
 package io.sellmair.pacemaker.utils
 
+import kotlin.reflect.KClass
+
 data class LogTag(val name: String) {
+    fun with(additional: String) = LogTag("$name | $additional")
+    fun forClass(clazz: KClass<*>) = with(clazz.simpleName.orEmpty())
+    inline fun <reified T> forClass() = forClass(T::class)
+
+    override fun toString(): String {
+        return name
+    }
+
     companion object
 }
 

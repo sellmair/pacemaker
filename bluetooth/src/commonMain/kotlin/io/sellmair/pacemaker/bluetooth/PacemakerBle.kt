@@ -5,10 +5,9 @@ package io.sellmair.pacemaker.bluetooth
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
+import io.sellmair.pacemaker.model.encodeToByteArray
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import okio.Buffer
-import kotlin.math.roundToInt
 
 interface PacemakerBle {
     val connections: Flow<BleConnection>
@@ -41,10 +40,7 @@ suspend fun PacemakerBle(ble: Ble): PacemakerBle {
         override suspend fun updateUser(user: User) {
             forService { service ->
                 service.setValue(PacemakerBleService.userNameCharacteristic, user.name.encodeToByteArray())
-                service.setValue(
-                    PacemakerBleService.userIdCharacteristic,
-                    Buffer().writeLong(user.id.value).readByteArray()
-                )
+                service.setValue(PacemakerBleService.userIdCharacteristic, user.id.encodeToByteArray())
             }
         }
 
@@ -52,7 +48,7 @@ suspend fun PacemakerBle(ble: Ble): PacemakerBle {
             forService { service ->
                 service.setValue(
                     PacemakerBleService.heartRateCharacteristic,
-                    Buffer().writeInt(heartRate.value.roundToInt()).readByteArray()
+                    heartRate.encodeToByteArray()
                 )
 
                 service.setValue(
@@ -66,7 +62,7 @@ suspend fun PacemakerBle(ble: Ble): PacemakerBle {
             forService { service ->
                 service.setValue(
                     PacemakerBleService.heartRateLimitCharacteristic,
-                    Buffer().writeInt(heartRate.value.roundToInt()).readByteArray()
+                    heartRate.encodeToByteArray()
                 )
             }
         }

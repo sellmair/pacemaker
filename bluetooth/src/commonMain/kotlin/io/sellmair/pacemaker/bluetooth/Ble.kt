@@ -1,5 +1,8 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,9 +29,6 @@ interface BleCentralService : BleService {
 }
 
 @JvmInline
-value class BleDeviceId(val value: String)
-
-@JvmInline
 value class Rssi(val value: Int)
 
 interface BleConnection {
@@ -50,28 +50,3 @@ interface BlePeripheral : BleConnection {
     fun tryDisconnect()
 }
 
-expect fun BleUUID(value: String): BleUUID
-
-expect class BleUUID
-
-data class BleServiceDescriptor(
-    val name: String? = null,
-    val uuid: BleUUID,
-    val characteristics: Set<BleCharacteristicDescriptor>
-) {
-    override fun toString(): String {
-        return "${BleServiceDescriptor::class.simpleName}(${name ?: uuid})"
-    }
-}
-
-data class BleCharacteristicDescriptor(
-    val name: String? = null,
-    val uuid: BleUUID,
-    val isReadable: Boolean = true,
-    val isWritable: Boolean = false,
-    val isNotificationsEnabled: Boolean = false
-) {
-    override fun toString(): String {
-        return "${BleCharacteristicDescriptor::class.simpleName}(${name ?: uuid})"
-    }
-}

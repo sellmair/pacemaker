@@ -7,7 +7,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
-import okio.Buffer
 import kotlin.time.TimeSource
 
 
@@ -35,7 +34,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
     coroutineScope {
         launch {
             getValue(PacemakerBleService.userIdCharacteristic).collect {
-                userId = runCatching { UserId(Buffer().write(it).readLong()) }.getOrNull()
+                userId = runCatching { UserId(it) }.getOrNull()
                 if (userId == null) println("Failed decoding userId")
                 emitIfPossible()
             }
@@ -59,7 +58,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
 
         launch {
             getValue(PacemakerBleService.heartRateCharacteristic).collect {
-                heartRate = runCatching { HeartRate(Buffer().write(it).readInt()) }.getOrNull()
+                heartRate = HeartRate(it)
                 if (heartRate == null) println("Failed decoding heartRate")
                 emitIfPossible()
             }
@@ -67,7 +66,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
 
         launch {
             getValue(PacemakerBleService.heartRateLimitCharacteristic).collect {
-                heartRateLimit = runCatching { HeartRate(Buffer().write(it).readInt()) }.getOrNull()
+                heartRateLimit = HeartRate(it)
                 if (heartRateLimit == null) println("Failed decoding heartRateLimit")
                 emitIfPossible()
             }

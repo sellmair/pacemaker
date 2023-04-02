@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import kotlinx.coroutines.CoroutineScope
 
 class DarwinBle(override val scope: CoroutineScope) : Ble {
