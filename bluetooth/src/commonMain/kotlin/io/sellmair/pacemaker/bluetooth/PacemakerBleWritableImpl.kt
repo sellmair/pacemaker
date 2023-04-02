@@ -10,16 +10,16 @@ internal class PacemakerBleWritableImpl(
     private val underlying: BleWritable
 ) : PacemakerBleWritable {
     override suspend fun setUser(user: User) {
-        underlying.setValue(PacemakerBleService.userNameCharacteristic, user.name.encodeToByteArray())
-        underlying.setValue(PacemakerBleService.userIdCharacteristic, user.id.encodeToByteArray())
+        underlying.setValue(PacemakerServiceDescriptors.userNameCharacteristic, user.name.encodeToByteArray())
+        underlying.setValue(PacemakerServiceDescriptors.userIdCharacteristic, user.id.encodeToByteArray())
     }
 
     override suspend fun setHeartRate(sensorId: HeartRateSensorId, heartRate: HeartRate) {
-        underlying.setValue(PacemakerBleService.sensorIdCharacteristic, sensorId.value.encodeToByteArray())
-        underlying.setValue(PacemakerBleService.heartRateCharacteristic, heartRate.encodeToByteArray())
+        underlying.setValue(PacemakerServiceDescriptors.sensorIdCharacteristic, sensorId.value.encodeToByteArray())
+        underlying.setValue(PacemakerServiceDescriptors.heartRateCharacteristic, heartRate.encodeToByteArray())
     }
 
     override suspend fun setHeartRateLimit(heartRate: HeartRate) {
-        underlying.setValue(PacemakerBleService.heartRateLimitCharacteristic, heartRate.encodeToByteArray())
+        underlying.setValue(PacemakerServiceDescriptors.heartRateLimitCharacteristic, heartRate.encodeToByteArray())
     }
 }

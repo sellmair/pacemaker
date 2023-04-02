@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface Ble {
     suspend fun scanForPeripherals(service: BleServiceDescriptor): Flow<BleConnectable>
     suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService
+    fun close()
 }
 
 interface BleWritable {

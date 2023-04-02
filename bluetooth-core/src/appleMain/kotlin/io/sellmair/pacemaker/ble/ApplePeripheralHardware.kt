@@ -1,6 +1,6 @@
 package io.sellmair.pacemaker.ble
 
-import io.sellmair.pacemaker.ble.PeripheralHardware.Companion.log
+import io.sellmair.pacemaker.ble.ApplePeripheralHardware.Companion.log
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
 import kotlinx.coroutines.CoroutineScope
@@ -9,22 +9,22 @@ import platform.CoreBluetooth.CBMutableService
 import platform.CoreBluetooth.CBPeripheralManager
 import platform.CoreBluetooth.CBPeripheralManagerStatePoweredOn
 
-internal class PeripheralHardware(
+internal class ApplePeripheralHardware(
     val manager: CBPeripheralManager,
-    val delegate: FlowPeripheralManagerDelegate,
+    val delegate: ApplePeripheralManagerDelegate,
     val service: CBMutableService,
     val serviceDescriptor: BleServiceDescriptor
 ) {
     companion object {
-        val log = LogTag.ble.forClass<PeripheralHardware>()
+        val log = LogTag.ble.forClass<ApplePeripheralHardware>()
     }
 }
 
-internal suspend fun PeripheralHardware(
+internal suspend fun ApplePeripheralHardware(
     scope: CoroutineScope,
     serviceDescriptor: BleServiceDescriptor
-): PeripheralHardware {
-    val managerDelegate = FlowPeripheralManagerDelegate(scope)
+): ApplePeripheralHardware {
+    val managerDelegate = ApplePeripheralManagerDelegate(scope)
     val manager = CBPeripheralManager(managerDelegate, null)
     /* Wait for bluetooth to power on */
     managerDelegate.state.first { it == CBPeripheralManagerStatePoweredOn }
@@ -35,7 +35,7 @@ internal suspend fun PeripheralHardware(
         log.error("Failed adding service $serviceDescriptor: ${error.localizedDescription}")
     }
 
-    return PeripheralHardware(
+    return ApplePeripheralHardware(
         manager = manager, delegate = managerDelegate, service = service, serviceDescriptor = serviceDescriptor
     )
 }

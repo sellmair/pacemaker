@@ -2,8 +2,8 @@
 
 package io.sellmair.pacemaker.spoof
 
-import io.sellmair.pacemaker.ble.AppleBle
-import io.sellmair.pacemaker.ble.impl.createPacemakerBlePeripheralService
+import io.sellmair.pacemaker.ble.Ble
+import io.sellmair.pacemaker.bluetooth.PacemakerBlePeripheralService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
@@ -12,8 +12,7 @@ import kotlinx.coroutines.*
 import platform.CoreFoundation.CFRunLoopRun
 
 
-private val applicationScope = Dispatchers.Main + SupervisorJob()
-private val ble = AppleBle(applicationScope)
+private val ble = Ble()
 
 fun main() {
     launchSendBroadcasts()
@@ -30,7 +29,7 @@ private fun launchSendBroadcasts() = MainScope().launch {
             name = "Felix Werner"
         )
 
-        val pacemakerPeripheral = ble.createPacemakerBlePeripheralService()
+        val pacemakerPeripheral = PacemakerBlePeripheralService(ble)
         pacemakerPeripheral.setUser(user)
         pacemakerPeripheral.setHeartRateLimit(HeartRate(120))
         pacemakerPeripheral.startAdvertising()

@@ -33,7 +33,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
 
     coroutineScope {
         launch {
-            getValue(PacemakerBleService.userIdCharacteristic).collect {
+            getValue(PacemakerServiceDescriptors.userIdCharacteristic).collect {
                 userId = runCatching { UserId(it) }.getOrNull()
                 if (userId == null) println("Failed decoding userId")
                 emitIfPossible()
@@ -41,7 +41,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         }
 
         launch {
-            getValue(PacemakerBleService.sensorIdCharacteristic).collect {
+            getValue(PacemakerServiceDescriptors.sensorIdCharacteristic).collect {
                 sensorId = runCatching { HeartRateSensorId(it.decodeToString()) }.getOrNull()
                 if (sensorId == null) println("Failed decoding sensorId")
                 emitIfPossible()
@@ -49,7 +49,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         }
 
         launch {
-            getValue(PacemakerBleService.userNameCharacteristic).collect {
+            getValue(PacemakerServiceDescriptors.userNameCharacteristic).collect {
                 userName = runCatching { it.decodeToString() }.getOrNull()
                 if (userName == null) println("Failed decoding userName")
                 emitIfPossible()
@@ -57,7 +57,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         }
 
         launch {
-            getValue(PacemakerBleService.heartRateCharacteristic).collect {
+            getValue(PacemakerServiceDescriptors.heartRateCharacteristic).collect {
                 heartRate = HeartRate(it)
                 if (heartRate == null) println("Failed decoding heartRate")
                 emitIfPossible()
@@ -65,7 +65,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         }
 
         launch {
-            getValue(PacemakerBleService.heartRateLimitCharacteristic).collect {
+            getValue(PacemakerServiceDescriptors.heartRateLimitCharacteristic).collect {
                 heartRateLimit = HeartRate(it)
                 if (heartRateLimit == null) println("Failed decoding heartRateLimit")
                 emitIfPossible()

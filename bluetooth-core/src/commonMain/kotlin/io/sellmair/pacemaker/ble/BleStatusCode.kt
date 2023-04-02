@@ -8,6 +8,7 @@ sealed interface BleStatusCode {
     val code: Int
 }
 
+val BleStatusCode.isSuccess get() = this == BleKnownStatusCode.Success
 fun BleStatusCode.toInt() = code
 fun BleStatusCode.toLong() = code.toLong()
 

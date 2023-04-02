@@ -1,12 +1,17 @@
 package io.sellmair.pacemaker.ble
 
+import android.content.Context
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import java.io.Closeable
 
-fun Ble(): Ble = AppleBle()
-
-internal class AppleBle : Ble {
+internal class AndroidBle(
+    private val context: Context
+) : Ble, Closeable {
 
     private val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
 
@@ -17,11 +22,9 @@ internal class AppleBle : Ble {
     }
 
     override suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
-        return withContext(scope.coroutineContext) {
-            val peripheralHardware = ApplePeripheralHardware(scope, service)
-            val peripheralController = ApplePeripheralController(scope, peripheralHardware)
-            BlePeripheralServiceImpl(queue, peripheralController, service)
-        }
+        val hardware = AndroidPeripheralHardware(context, scope, service)
+        val controller = AndroidPeripheralController(scope, hardware)
+        return BlePeripheralServiceImpl(queue, controller, service)
     }
 
     override fun close() {

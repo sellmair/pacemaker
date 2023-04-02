@@ -18,8 +18,8 @@ interface PacemakerBle {
 }
 
 suspend fun PacemakerBle(ble: BleV1): PacemakerBle {
-    val centralService = ble.startCentralService(PacemakerBleService.service)
-    val peripheralService = ble.startPeripheralService(PacemakerBleService.service)
+    val centralService = ble.startCentralService(PacemakerServiceDescriptors.service)
+    val peripheralService = ble.startPeripheralService(PacemakerServiceDescriptors.service)
 
     suspend fun forService(action: suspend (service: BleService) -> Unit) {
         action(peripheralService)
@@ -39,20 +39,20 @@ suspend fun PacemakerBle(ble: BleV1): PacemakerBle {
 
         override suspend fun updateUser(user: User) {
             forService { service ->
-                service.setValue(PacemakerBleService.userNameCharacteristic, user.name.encodeToByteArray())
-                service.setValue(PacemakerBleService.userIdCharacteristic, user.id.encodeToByteArray())
+                service.setValue(PacemakerServiceDescriptors.userNameCharacteristic, user.name.encodeToByteArray())
+                service.setValue(PacemakerServiceDescriptors.userIdCharacteristic, user.id.encodeToByteArray())
             }
         }
 
         override suspend fun updateHeartHeart(sensorId: HeartRateSensorId, heartRate: HeartRate) {
             forService { service ->
                 service.setValue(
-                    PacemakerBleService.heartRateCharacteristic,
+                    PacemakerServiceDescriptors.heartRateCharacteristic,
                     heartRate.encodeToByteArray()
                 )
 
                 service.setValue(
-                    PacemakerBleService.sensorIdCharacteristic,
+                    PacemakerServiceDescriptors.sensorIdCharacteristic,
                     sensorId.value.encodeToByteArray()
                 )
             }
@@ -61,7 +61,7 @@ suspend fun PacemakerBle(ble: BleV1): PacemakerBle {
         override suspend fun updateHeartRateLimit(heartRate: HeartRate) {
             forService { service ->
                 service.setValue(
-                    PacemakerBleService.heartRateLimitCharacteristic,
+                    PacemakerServiceDescriptors.heartRateLimitCharacteristic,
                     heartRate.encodeToByteArray()
                 )
             }

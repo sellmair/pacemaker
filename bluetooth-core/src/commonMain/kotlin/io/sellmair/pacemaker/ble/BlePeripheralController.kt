@@ -10,7 +10,9 @@ internal interface BlePeripheralController {
 
     suspend fun respond(request: ReadRequest, statusCode: BleStatusCode): Boolean
 
-    suspend fun respond(request: ReadRequest, value: ByteArray, statusCode: BleStatusCode = BleKnownStatusCode.Success)
+    suspend fun respond(
+        request: ReadRequest, value: ByteArray, statusCode: BleStatusCode = BleKnownStatusCode.Success
+    ): Boolean
 
     suspend fun sendNotification(characteristic: BleCharacteristicDescriptor, value: ByteArray)
 

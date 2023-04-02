@@ -4,7 +4,7 @@ import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BlePeripheralService
 
 suspend fun PacemakerBlePeripheralService(ble: Ble): PacemakerBlePeripheralService {
-    val service = ble.createPeripheralService(PacemakerBleService.service)
+    val service = ble.createPeripheralService(PacemakerServiceDescriptors.service)
     return PacemakerBlePeripheralService(service)
 }
 

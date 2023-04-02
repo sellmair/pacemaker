@@ -14,7 +14,7 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import kotlin.native.internal.createCleaner
 
-internal class FlowCentralManagerDelegate(
+internal class AppleCentralManagerDelegate(
     private val scope: CoroutineScope
 ) : NSObject(), CBCentralManagerDelegateProtocol {
     private val thisDelegate = this
@@ -104,7 +104,7 @@ internal class FlowCentralManagerDelegate(
     }
 
     companion object {
-        val log get() = LogTag.ble.forClass<FlowCentralManagerDelegate>()
+        val log get() = LogTag.ble.forClass<AppleCentralManagerDelegate>()
     }
 
     @OptIn(ExperimentalStdlibApi::class)

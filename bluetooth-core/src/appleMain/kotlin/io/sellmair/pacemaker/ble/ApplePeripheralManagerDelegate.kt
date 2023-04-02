@@ -14,7 +14,7 @@ import platform.Foundation.NSError
 import platform.darwin.NSObject
 import kotlin.native.internal.createCleaner
 
-internal class FlowPeripheralManagerDelegate(
+internal class ApplePeripheralManagerDelegate(
     private val scope: CoroutineScope
 ) : NSObject(), CBPeripheralManagerDelegateProtocol {
 
@@ -82,11 +82,11 @@ internal class FlowPeripheralManagerDelegate(
 
 
     companion object {
-        val log get() = LogTag.ble.forClass<FlowPeripheralManagerDelegate>()
+        val log get() = LogTag.ble.forClass<ApplePeripheralManagerDelegate>()
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     @Suppress("unused")
-    val cleaner = createCleaner(Unit) { FlowCentralManagerDelegate.log.debug("removed") }
+    val cleaner = createCleaner(Unit) { AppleCentralManagerDelegate.log.debug("removed") }
 
 }

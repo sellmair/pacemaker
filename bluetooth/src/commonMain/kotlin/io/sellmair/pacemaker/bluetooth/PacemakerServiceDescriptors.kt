@@ -4,7 +4,7 @@ import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
 import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import io.sellmair.pacemaker.ble.BleUUID
 
- internal object PacemakerBleService {
+ internal object PacemakerServiceDescriptors {
     val userIdCharacteristic = BleCharacteristicDescriptor(
         name = "userId",
         uuid = BleUUID(PacemakerBleServiceConstants.userIdCharacteristicUuidString),

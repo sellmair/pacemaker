@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.utils.toNSData
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -13,9 +14,9 @@ import platform.CoreBluetooth.CBAdvertisementDataServiceUUIDsKey
 import platform.CoreBluetooth.CBMutableCharacteristic
 import platform.Foundation.*
 
-internal class AppleBlePeripheralController(
+internal class ApplePeripheralController(
     scope: CoroutineScope,
-    private val hardware: PeripheralHardware
+    private val hardware: ApplePeripheralHardware
 ) : BlePeripheralController {
 
 
@@ -45,7 +46,7 @@ internal class AppleBlePeripheralController(
 
     override suspend fun respond(
         request: BlePeripheralController.ReadRequest, value: ByteArray, statusCode: BleStatusCode
-    ) {
+    ): Boolean {
         request as MyReadRequest
         val nsData = value.toNSData()
         val nsDataWithOffset = nsData.subdataWithRange(
@@ -53,6 +54,7 @@ internal class AppleBlePeripheralController(
         )
         request.underlying.setValue(nsDataWithOffset)
         hardware.manager.respondToRequest(request.underlying, statusCode.toLong())
+        return true
     }
 
     override suspend fun sendNotification(characteristic: BleCharacteristicDescriptor, value: ByteArray) {
@@ -87,8 +89,11 @@ internal class AppleBlePeripheralController(
     }
 
     init {
+        @OptIn(ExperimentalStdlibApi::class)
+        require(scope.coroutineContext[CoroutineDispatcher.Key] == Dispatchers.ble)
+
         /* Receive read requests */
-        scope.launch(Dispatchers.ble) {
+        scope.launch {
             hardware.delegate.didReceiveReadRequest.collect { didReceiveReadRequest ->
                 readRequests.send(MyReadRequest(didReceiveReadRequest.request))
             }
