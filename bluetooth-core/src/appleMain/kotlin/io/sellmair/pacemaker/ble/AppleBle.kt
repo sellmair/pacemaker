@@ -5,7 +5,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 
-class AppleBle(context: CoroutineContext) : Ble {
+fun Ble(context: CoroutineContext): Ble = AppleBle(context)
+
+internal class AppleBle(context: CoroutineContext) : Ble {
 
     private val scope = CoroutineScope(context + Dispatchers.ble + SupervisorJob(context.job))
 
@@ -21,6 +23,5 @@ class AppleBle(context: CoroutineContext) : Ble {
             val peripheralController = AppleBlePeripheralController(scope, peripheralHardware)
             BlePeripheralServiceImpl(queue, peripheralController, service)
         }
-
     }
 }

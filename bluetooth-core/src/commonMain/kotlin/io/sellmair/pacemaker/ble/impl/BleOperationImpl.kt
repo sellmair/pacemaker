@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker.ble.impl
 
 import io.sellmair.pacemaker.ble.*
-import io.sellmair.pacemaker.bluetooth.BlePeripheral
 
 internal class ReadCharacteristicBleOperation(
     private val deviceId: BleDeviceId,
@@ -94,15 +93,13 @@ internal class DiscoverServicesBleOperation(
 
 internal class ConnectPeripheralBleOperation(
     private val deviceId: BleDeviceId,
-    private val triggerConnect: suspend () -> Unit,
-    private val awaitResult: suspend () -> BleResult<BlePeripheral.State>
-) : BleOperation<BlePeripheral.State> {
+    private val connect: suspend () -> BleResult<BleConnectable.ConnectionState>
+) : BleOperation<BleConnectable.ConnectionState> {
     override val description: String
         get() = "'$deviceId': Connect"
 
-    override suspend fun BleQueue.Context.invoke(): BleResult<BlePeripheral.State> {
-        triggerConnect()
-        return awaitResult()
+    override suspend fun BleQueue.Context.invoke(): BleResult<BleConnectable.ConnectionState> {
+        return connect()
     }
 }
 

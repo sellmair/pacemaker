@@ -4,11 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "io.sellmair.pacemaker.bluetooth"
+    namespace = "io.sellmair.pacemaker.bluetooth.core"
 }
 
 kotlin.sourceSets.commonMain.get().dependencies {
-    api(project(":bluetooth-core"))
+    api(project(":models"))
+    api(project(":utils"))
+    api(Dependencies.coroutinesCore)
     implementation(Dependencies.okio)
 }
 

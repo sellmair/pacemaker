@@ -14,11 +14,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
-fun BluetoothService(ble: Ble): BluetoothService {
+fun BluetoothService(ble: BleV1): BluetoothService {
     return BluetoothServiceImpl(ble)
 }
 
-private class BluetoothServiceImpl(private val ble: Ble) : BluetoothService {
+private class BluetoothServiceImpl(private val ble: BleV1) : BluetoothService {
 
     private val pacemakerBle = ble.scope.async { PacemakerBle(ble) }
 

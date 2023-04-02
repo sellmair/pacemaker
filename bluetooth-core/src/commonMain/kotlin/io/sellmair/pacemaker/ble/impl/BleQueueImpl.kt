@@ -4,7 +4,6 @@ import io.sellmair.pacemaker.ble.BleOperation
 import io.sellmair.pacemaker.ble.BleQueue
 import io.sellmair.pacemaker.ble.BleResult
 import io.sellmair.pacemaker.ble.ble
-import io.sellmair.pacemaker.bluetooth.ble
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
 import io.sellmair.pacemaker.utils.warn

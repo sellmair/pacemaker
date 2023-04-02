@@ -46,5 +46,6 @@ dependencyResolutionManagement {
 include(":app")
 include(":models")
 include(":utils")
+include(":bluetooth-core")
 include(":bluetooth")
 include(":spoof-tool")

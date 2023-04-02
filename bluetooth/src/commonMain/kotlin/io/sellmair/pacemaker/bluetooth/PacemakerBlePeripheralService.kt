@@ -1,12 +1,10 @@
-package io.sellmair.pacemaker.ble.impl
+package io.sellmair.pacemaker.bluetooth
 
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BlePeripheralService
-import io.sellmair.pacemaker.ble.PacemakerBleWritable
-import io.sellmair.pacemaker.bluetooth.PacemakerBleService
 
-suspend fun Ble.createPacemakerBlePeripheralService(): PacemakerBlePeripheralService {
-    val service = createPeripheralService(PacemakerBleService.service)
+suspend fun PacemakerBlePeripheralService(ble: Ble): PacemakerBlePeripheralService {
+    val service = ble.createPeripheralService(PacemakerBleService.service)
     return PacemakerBlePeripheralService(service)
 }
 

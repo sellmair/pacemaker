@@ -6,7 +6,9 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlin.time.TimeSource
 
 interface HeartRateBleCentralService : BleCentralService {
@@ -17,7 +19,7 @@ interface HeartRateBlePeripheral : BlePeripheral {
     val heartRateMeasurements: Flow<HeartRateMeasurement>
 }
 
-suspend fun Ble.startHeartRateBleCentralService(): HeartRateBleCentralService {
+suspend fun BleV1.startHeartRateBleCentralService(): HeartRateBleCentralService {
     return HeartRateCentralServiceImpl(startCentralService(HeartRateBleService.service))
 }
 

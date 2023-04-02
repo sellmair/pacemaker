@@ -17,7 +17,7 @@ interface PacemakerBle {
     suspend fun updateHeartRateLimit(heartRate: HeartRate)
 }
 
-suspend fun PacemakerBle(ble: Ble): PacemakerBle {
+suspend fun PacemakerBle(ble: BleV1): PacemakerBle {
     val centralService = ble.startCentralService(PacemakerBleService.service)
     val peripheralService = ble.startPeripheralService(PacemakerBleService.service)
 

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.jvm.JvmInline
 
-interface Ble {
+interface BleV1 {
     val scope: CoroutineScope
     suspend fun startPeripheralService(service: BleServiceDescriptor): BlePeripheralService
     suspend fun startCentralService(service: BleServiceDescriptor): BleCentralService

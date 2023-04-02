@@ -1,6 +1,5 @@
 package io.sellmair.pacemaker.ble
 
-import io.sellmair.pacemaker.bluetooth.deviceId
 import io.sellmair.pacemaker.utils.toNSData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

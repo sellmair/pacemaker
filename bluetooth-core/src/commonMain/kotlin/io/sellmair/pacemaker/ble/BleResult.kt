@@ -19,6 +19,6 @@ sealed class BleResult<out T> {
     }
 
     companion object {
-        val Success = BleResult.Success(Unit)
+        val Success = Success(Unit)
     }
 }

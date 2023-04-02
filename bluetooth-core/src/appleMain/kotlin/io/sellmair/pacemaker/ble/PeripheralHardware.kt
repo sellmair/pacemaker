@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.ble.PeripheralHardware.Companion.log
-import io.sellmair.pacemaker.bluetooth.ble
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
 import kotlinx.coroutines.CoroutineScope

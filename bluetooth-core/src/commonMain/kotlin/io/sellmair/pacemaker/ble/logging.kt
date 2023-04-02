@@ -1,4 +1,4 @@
-package io.sellmair.pacemaker.bluetooth
+package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.utils.LogTag
 
