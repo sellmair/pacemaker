@@ -9,9 +9,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import java.io.Closeable
 
-internal class AndroidBle(
-    private val context: Context
-) : Ble, Closeable {
+fun AndroidBle(context: Context): Ble = AndroidBleImpl(context)
+
+private class AndroidBleImpl(private val context: Context) : Ble, Closeable {
 
     override val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
 

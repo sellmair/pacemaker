@@ -1,6 +1,6 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.bluetooth.BlePeripheral
+import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.bluetooth.Rssi
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
@@ -16,7 +16,7 @@ sealed interface NearbyDeviceViewModel {
 }
 
 interface HeartRateSensorViewModel : NearbyDeviceViewModel {
-    val state: StateFlow<BlePeripheral.State>
+    val state: StateFlow<BleConnectable.ConnectionState>
     fun tryConnect()
     fun tryDisconnect()
 }

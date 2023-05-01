@@ -1,4 +1,4 @@
-@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
+@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "unused")
 
 package io.sellmair.pacemaker.ble
 

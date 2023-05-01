@@ -28,6 +28,7 @@ interface BleConnectable {
         Connected
     }
 
+    val deviceId: BleDeviceId
     val service: BleServiceDescriptor
 
     val connection: SharedFlow<BleConnection>

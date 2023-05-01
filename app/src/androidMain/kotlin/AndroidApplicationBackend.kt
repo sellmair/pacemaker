@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import io.sellmair.pacemaker.*
-import io.sellmair.pacemaker.bluetooth.AndroidBleV1
+import io.sellmair.pacemaker.ble.AndroidBle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
 import okio.Path.Companion.toOkioPath
@@ -23,8 +23,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val groupService: GroupService
     ) : Binder(), ApplicationBackend
 
-    private val ble by lazy { AndroidBleV1(this, this) }
-
+    private val ble by lazy { AndroidBle(this) }
 
     override val bluetoothService by lazy { BluetoothService(ble) }
 

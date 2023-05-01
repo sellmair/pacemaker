@@ -1,30 +1,29 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.bluetooth.BlePeripheral
+import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.bluetooth.Rssi
+import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 internal class HeartRateSensorViewModelImpl(
     private val scope: CoroutineScope,
     private val userService: UserService,
     private val heartRateSensor: BluetoothService.Device.HeartRateSensor,
 ) : HeartRateSensorViewModel {
-    override val id: HeartRateSensorId = heartRateSensor.id
+    override val id: HeartRateSensorId = heartRateSensor.deviceId.toHeartRateSensorId()
 
-    override val rssi: StateFlow<Rssi> = heartRateSensor.rssi
+    // TODO
+    override val rssi: StateFlow<Rssi?> = MutableStateFlow(null)
 
-    override val state: StateFlow<BlePeripheral.State> = heartRateSensor.state
+    override val state: StateFlow<BleConnectable.ConnectionState> = heartRateSensor.connectionState
 
     override val heartRate: StateFlow<HeartRate?> =
-        heartRateSensor.measurements.map { it.heartRate }.stateIn(scope, WhileSubscribed(), null)
+        heartRateSensor.heartRate.map { it.heartRate }.stateIn(scope, WhileSubscribed(), null)
 
     override val associatedUser: StateFlow<User?> = flow {
         emit(userService.findUser(id))
@@ -38,10 +37,10 @@ internal class HeartRateSensorViewModelImpl(
         .stateIn(scope, WhileSubscribed(), null)
 
     override fun tryConnect() {
-        heartRateSensor.tryConnect()
+        heartRateSensor.connectIfPossible(true)
     }
 
     override fun tryDisconnect() {
-        heartRateSensor.tryDisconnect()
+        heartRateSensor.connectIfPossible(false)
     }
 }

@@ -22,7 +22,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     /* Connecting our hr receiver with the group service */
     val hrMeasurements = bluetoothService.devices
         .filterIsInstance<BluetoothService.Device.HeartRateSensor>()
-        .flatMapMerge { it.measurements }
+        .flatMapMerge { it.heartRate }
         .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
         .onEach { groupService.invalidate() }
         .shareIn(scope, SharingStarted.WhileSubscribed())
@@ -41,12 +41,13 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
 
     /* Start broadcasting my own state to other participant  */
     scope.launch {
+
         hrMeasurements.collect { hrMeasurement ->
             val user = userService.currentUser()
-            bluetoothService.pacemakerBle().updateUser(user)
-            bluetoothService.pacemakerBle().updateHeartHeart(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
+            bluetoothService.pacemaker().setUser(user)
+            bluetoothService.pacemaker().setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
             userService.findUpperHeartRateLimit(user)?.let { heartRateLimit ->
-                bluetoothService.pacemakerBle().updateHeartRateLimit(heartRateLimit)
+                bluetoothService.pacemaker().setHeartRateLimit(heartRateLimit)
             }
         }
     }

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent
 import io.sellmair.pacemaker.HeartRateSensorViewModel
 import io.sellmair.pacemaker.NearbyDeviceViewModel
-import io.sellmair.pacemaker.bluetooth.BlePeripheral
+import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
@@ -129,8 +129,9 @@ internal fun NearbyDeviceCard(
                 if (device is HeartRateSensorViewModel) {
                     val deviceState = device.state.collectAsState().value
 
-                    if (deviceState == BlePeripheral.State.Connectable) {
+                    if (deviceState != BleConnectable.ConnectionState.Connected) {
                         ElevatedButton(
+                            enabled = deviceState == BleConnectable.ConnectionState.Disconnected,
                             onClick = { device.tryConnect() },
                             colors = ButtonDefaults.elevatedButtonColors(
                                 containerColor = me.displayColor.copy(lightness = .97f).toColor()
@@ -142,7 +143,7 @@ internal fun NearbyDeviceCard(
                         }
                     }
 
-                    if (deviceState == BlePeripheral.State.Connected) {
+                    if (deviceState == BleConnectable.ConnectionState.Connected) {
                         ElevatedButton(
                             onClick = { device.tryDisconnect() },
                             colors = ButtonDefaults.elevatedButtonColors(

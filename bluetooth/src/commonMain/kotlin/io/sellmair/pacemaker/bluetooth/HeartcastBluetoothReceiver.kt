@@ -1,14 +1,17 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.pacemaker.ble.BleConnection
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateCharacteristic
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateLimitCharacteristic
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.sensorIdCharacteristic
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userIdCharacteristic
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userNameCharacteristic
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.launch
 import kotlin.time.TimeSource
-
 
 fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
     var userId: UserId? = null
@@ -21,7 +24,7 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         send(
             PacemakerBroadcastPackage(
                 receivedTime = TimeSource.Monotonic.markNow(),
-                deviceId = id,
+                deviceId = deviceId,
                 userId = userId ?: UserId(0),
                 sensorId = sensorId ?: return,
                 userName = userName ?: "n/a",
@@ -31,42 +34,34 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         )
     }
 
-    coroutineScope {
-        launch {
-            getValue(PacemakerServiceDescriptors.userIdCharacteristic).collect {
-                userId = runCatching { UserId(it) }.getOrNull()
+    receivedValues.collect { value ->
+        when (value.characteristic) {
+            userIdCharacteristic -> {
+                userId = runCatching { UserId(value.data) }.getOrNull()
                 if (userId == null) println("Failed decoding userId")
                 emitIfPossible()
             }
-        }
 
-        launch {
-            getValue(PacemakerServiceDescriptors.sensorIdCharacteristic).collect {
-                sensorId = runCatching { HeartRateSensorId(it.decodeToString()) }.getOrNull()
+            sensorIdCharacteristic -> {
+                sensorId = runCatching { HeartRateSensorId(value.data.decodeToString()) }.getOrNull()
                 if (sensorId == null) println("Failed decoding sensorId")
                 emitIfPossible()
             }
-        }
 
-        launch {
-            getValue(PacemakerServiceDescriptors.userNameCharacteristic).collect {
-                userName = runCatching { it.decodeToString() }.getOrNull()
+            userNameCharacteristic -> {
+                userName = runCatching { value.data.decodeToString() }.getOrNull()
                 if (userName == null) println("Failed decoding userName")
                 emitIfPossible()
             }
-        }
 
-        launch {
-            getValue(PacemakerServiceDescriptors.heartRateCharacteristic).collect {
-                heartRate = HeartRate(it)
+            heartRateCharacteristic -> {
+                heartRate = HeartRate(value.data)
                 if (heartRate == null) println("Failed decoding heartRate")
                 emitIfPossible()
             }
-        }
 
-        launch {
-            getValue(PacemakerServiceDescriptors.heartRateLimitCharacteristic).collect {
-                heartRateLimit = HeartRate(it)
+            heartRateLimitCharacteristic -> {
+                heartRateLimit = HeartRate(value.data)
                 if (heartRateLimit == null) println("Failed decoding heartRateLimit")
                 emitIfPossible()
             }

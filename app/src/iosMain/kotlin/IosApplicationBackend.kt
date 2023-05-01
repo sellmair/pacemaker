@@ -3,7 +3,7 @@
 package io.sellmair.pacemaker.ui
 
 import io.sellmair.pacemaker.*
-import io.sellmair.pacemaker.bluetooth.DarwinBleV1
+import io.sellmair.pacemaker.ble.AppleBle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import okio.Path.Companion.toPath
@@ -16,7 +16,7 @@ class IosApplicationBackend : ApplicationBackend {
 
     private val coroutineScope = MainScope()
 
-    private val ble = DarwinBleV1(coroutineScope)
+    private val ble = AppleBle()
 
     override val bluetoothService: BluetoothService by lazy { BluetoothService(ble) }
 

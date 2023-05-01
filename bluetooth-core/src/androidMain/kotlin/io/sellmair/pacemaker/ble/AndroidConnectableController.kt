@@ -20,7 +20,6 @@ internal class AndroidConnectableController(
 ) : BleConnectableController {
     override val deviceId: BleDeviceId = hardware.device.deviceId
 
-
     private val valuesFromRead = hardware.callback
         .onCharacteristicRead
         .mapNotNull { read ->
@@ -41,7 +40,10 @@ internal class AndroidConnectableController(
 
     override val rssi: SharedFlow<Int> = MutableStateFlow(-1)
 
-    override val isConnected: StateFlow<Boolean> = MutableStateFlow(false)
+    override val isConnected: StateFlow<Boolean> = hardware.callback.onConnectionStateChange
+        .map { change -> change.newState == BluetoothGatt.STATE_CONNECTED && BleStatusCode(change.status).isSuccess }
+        .distinctUntilChanged()
+        .stateIn(scope, SharingStarted.Eagerly, false)
 
     private var gatt: BluetoothGatt? = null
 

@@ -4,26 +4,33 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.BluetoothService.Device.HeartRateSensor
 import io.sellmair.pacemaker.BluetoothService.Device.PacemakerAppDevice
+import io.sellmair.pacemaker.ble.Ble
+import io.sellmair.pacemaker.ble.BleConnection
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.bluetooth.*
-import io.sellmair.pacemaker.model.HeartRateMeasurement
-import io.sellmair.pacemaker.model.HeartRateSensorId
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-fun BluetoothService(ble: BleV1): BluetoothService {
+fun BluetoothService(
+    ble: Ble
+): BluetoothService {
     return BluetoothServiceImpl(ble)
 }
 
-private class BluetoothServiceImpl(private val ble: BleV1) : BluetoothService {
+private class BluetoothServiceImpl(
+    private val ble: Ble
+) : BluetoothService {
 
-    private val pacemakerBle = ble.scope.async { PacemakerBle(ble) }
+    private val pacemakerCentral = ble.scope.async { PacemakerCentralService(ble) }
 
-    override suspend fun pacemakerBle(): PacemakerBle {
-        return pacemakerBle.await()
+    private val pacemakerPeripheral = ble.scope.async { PacemakerPeripheralService(ble) }
+
+    override suspend fun pacemaker(): PacemakerBleWritable {
+        // TODO: Write to central!
+        return pacemakerPeripheral.await()
     }
 
     override val devices: SharedFlow<BluetoothService.Device> = flowOf(
@@ -39,55 +46,42 @@ private class BluetoothServiceImpl(private val ble: BleV1) : BluetoothService {
         .shareIn(ble.scope, SharingStarted.WhileSubscribed(), replay = Channel.UNLIMITED)
 
     private fun heartRateSensorPeripherals(): Flow<HeartRateSensor> = flow {
-        emitAll(ble.startHeartRateBleCentralService().peripherals.map { peripheral ->
-            HeartRateSensorImpl(ble.scope, peripheral)
+        emitAll(BluetoothHeartRateSensorService(ble).sensors.map { sensor ->
+            HeartRateSensorImpl(sensor)
         })
     }
 
     private fun pacemakerPeripherals(): Flow<PacemakerAppDevice> = flow {
-        emitAll(pacemakerBle.await().connections.map { PacemakerAppDeviceImpl(ble.scope, it) })
+        emitAll(pacemakerCentral.await().connections.map { connection ->
+            PacemakerAppDeviceImpl(connection)
+        })
+    }
+
+    init {
+        ble.scope.launch {
+            pacemakerPeripheral.await().startAdvertising()
+        }
     }
 }
 
 private class HeartRateSensorImpl(
-    scope: CoroutineScope,
-    private val peripheral: HeartRateBlePeripheral
-) : HeartRateSensor {
-    override val id: HeartRateSensorId = peripheral.id.toHeartRateSensorId()
-
-    override val state: StateFlow<BlePeripheral.State>
-        get() = peripheral.state
-
-    override val rssi: StateFlow<Rssi>
-        get() = peripheral.rssi
-
-    override val measurements: SharedFlow<HeartRateMeasurement> =
-        peripheral.heartRateMeasurements.shareIn(scope, SharingStarted.Eagerly)
-
-    override fun tryConnect() {
-        peripheral.tryConnect()
-    }
-
-    override fun tryDisconnect() {
-        peripheral.tryDisconnect()
-    }
-
+    private val sensor: BluetoothHeartRateSensor
+) : HeartRateSensor, BluetoothHeartRateSensor by sensor {
     override fun toString(): String {
-        return "Heart Rate Sensor: $id"
+        return "Heart Rate Sensor: ${sensor.deviceId}"
     }
 }
 
 private class PacemakerAppDeviceImpl(
-    scope: CoroutineScope,
     private val connection: BleConnection,
 ) : PacemakerAppDevice {
 
-    override val id: BleDeviceId = connection.id
+    override val id: BleDeviceId = connection.deviceId
 
     override val broadcasts: SharedFlow<PacemakerBroadcastPackage> = connection.receivePacemakerBroadcastPackages()
-        .shareIn(scope, SharingStarted.WhileSubscribed())
+        .shareIn(connection.scope, SharingStarted.WhileSubscribed())
 
     override fun toString(): String {
-        return "Pacemaker App: ${connection.id}"
+        return "Pacemaker App: ${connection.deviceId}"
     }
 }
