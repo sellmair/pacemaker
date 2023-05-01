@@ -17,7 +17,6 @@ import kotlin.native.internal.createCleaner
 suspend fun BlePeripheralService(service: BleServiceDescriptor): BlePeripheralService {
     val peripheralDelegate = CBPeripheralManagerDelegate()
     val cbPeripheralManager = CBPeripheralManager(peripheralDelegate, null)
-    cbPeripheralManager
     peripheralDelegate.awaitPoweredOnState()
 
     val cbService = CBMutableService(service.uuid, true)
