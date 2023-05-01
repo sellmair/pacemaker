@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker.ble
 
 import android.content.Context
+import io.sellmair.pacemaker.ble.impl.BleCentralServiceImpl
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,9 @@ internal class AndroidBle(
     private val queue = BleQueue(scope)
 
     override suspend fun createCentralService(service: BleServiceDescriptor): BleCentralService {
-        TODO()
+        val hardware = AndroidCentralHardware(context)
+        val controller: BleCentralController = AndroidCentralController(scope, hardware, service)
+        return BleCentralServiceImpl(scope, queue, controller, service)
     }
 
     override suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
