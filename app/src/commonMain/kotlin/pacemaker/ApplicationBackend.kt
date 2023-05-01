@@ -55,14 +55,9 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
 
     /* Receive broadcasts */
     scope.launch {
-        bluetoothService
-            .devices
-            .filterIsInstance<BluetoothService.Device.PacemakerAppDevice>()
-            .flatMapMerge { it.broadcasts }
+        bluetoothService.broadcasts
             .collect { received ->
-                val user = User(
-                    isMe = false, id = received.userId, name = received.userName
-                )
+                val user = User(isMe = false, id = received.userId, name = received.userName)
 
                 userService.save(user)
                 userService.saveUpperHeartRateLimit(user, received.heartRateLimit)

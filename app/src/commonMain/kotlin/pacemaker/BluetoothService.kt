@@ -11,6 +11,7 @@ interface BluetoothService {
     val devices: SharedFlow<Device>
     val allDevices: SharedFlow<List<Device>>
 
+    val broadcasts: SharedFlow<PacemakerBroadcastPackage>
 
     sealed interface Device {
 

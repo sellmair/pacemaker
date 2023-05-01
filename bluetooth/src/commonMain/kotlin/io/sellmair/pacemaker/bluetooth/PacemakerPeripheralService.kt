@@ -12,6 +12,8 @@ class PacemakerPeripheralService(
     private val underlying: BlePeripheralService
 ) : PacemakerBleWritable by PacemakerBleWritableImpl(underlying) {
     suspend fun startAdvertising() = underlying.startAdvertising()
+
+    val broadcasts = underlying.receivedWrites.receivePacemakerBroadcastPackages()
 }
 
 

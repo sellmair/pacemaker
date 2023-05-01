@@ -1,6 +1,8 @@
 package io.sellmair.pacemaker.bluetooth
 
 import io.sellmair.pacemaker.ble.BleConnection
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleReceivedValue
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateCharacteristic
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateLimitCharacteristic
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.sensorIdCharacteristic
@@ -13,14 +15,27 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlin.time.TimeSource
 
-fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
-    var userId: UserId? = null
-    var sensorId: HeartRateSensorId? = null
-    var userName: String? = null
-    var heartRate: HeartRate? = null
-    var heartRateLimit: HeartRate? = null
+fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = receivedValues
+    .receivePacemakerBroadcastPackages()
 
-    suspend fun emitIfPossible() {
+fun Flow<BleReceivedValue>.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
+
+    class State(
+        val deviceId: BleDeviceId,
+        var userId: UserId? = null,
+        var sensorId: HeartRateSensorId? = null,
+        var userName: String? = null,
+        var heartRate: HeartRate? = null,
+        var heartRateLimit: HeartRate? = null
+    )
+
+    val states = mutableMapOf<BleDeviceId, State>()
+
+    fun stateOf(deviceId: BleDeviceId): State {
+        return states.getOrPut(deviceId) { State(deviceId) }
+    }
+
+    suspend fun State.emitIfPossible() {
         send(
             PacemakerBroadcastPackage(
                 receivedTime = TimeSource.Monotonic.markNow(),
@@ -34,36 +49,38 @@ fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPa
         )
     }
 
-    receivedValues.collect { value ->
-        when (value.characteristic) {
-            userIdCharacteristic -> {
-                userId = runCatching { UserId(value.data) }.getOrNull()
-                if (userId == null) println("Failed decoding userId")
-                emitIfPossible()
-            }
+    collect { value ->
+        with(stateOf(value.deviceId)) {
+            when (value.characteristic) {
+                userIdCharacteristic -> {
+                    userId = runCatching { UserId(value.data) }.getOrNull()
+                    if (userId == null) println("Failed decoding userId")
+                    emitIfPossible()
+                }
 
-            sensorIdCharacteristic -> {
-                sensorId = runCatching { HeartRateSensorId(value.data.decodeToString()) }.getOrNull()
-                if (sensorId == null) println("Failed decoding sensorId")
-                emitIfPossible()
-            }
+                sensorIdCharacteristic -> {
+                    sensorId = runCatching { HeartRateSensorId(value.data.decodeToString()) }.getOrNull()
+                    if (sensorId == null) println("Failed decoding sensorId")
+                    emitIfPossible()
+                }
 
-            userNameCharacteristic -> {
-                userName = runCatching { value.data.decodeToString() }.getOrNull()
-                if (userName == null) println("Failed decoding userName")
-                emitIfPossible()
-            }
+                userNameCharacteristic -> {
+                    userName = runCatching { value.data.decodeToString() }.getOrNull()
+                    if (userName == null) println("Failed decoding userName")
+                    emitIfPossible()
+                }
 
-            heartRateCharacteristic -> {
-                heartRate = HeartRate(value.data)
-                if (heartRate == null) println("Failed decoding heartRate")
-                emitIfPossible()
-            }
+                heartRateCharacteristic -> {
+                    heartRate = HeartRate(value.data)
+                    if (heartRate == null) println("Failed decoding heartRate")
+                    emitIfPossible()
+                }
 
-            heartRateLimitCharacteristic -> {
-                heartRateLimit = HeartRate(value.data)
-                if (heartRateLimit == null) println("Failed decoding heartRateLimit")
-                emitIfPossible()
+                heartRateLimitCharacteristic -> {
+                    heartRateLimit = HeartRate(value.data)
+                    if (heartRateLimit == null) println("Failed decoding heartRateLimit")
+                    emitIfPossible()
+                }
             }
         }
     }

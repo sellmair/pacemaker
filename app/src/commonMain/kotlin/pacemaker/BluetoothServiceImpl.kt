@@ -50,6 +50,15 @@ private class BluetoothServiceImpl(
         .runningFold(emptyList<BluetoothService.Device>()) { list, peripheral -> list + peripheral }
         .shareIn(ble.scope, SharingStarted.WhileSubscribed(), replay = Channel.UNLIMITED)
 
+    override val broadcasts: SharedFlow<PacemakerBroadcastPackage> = flowOf(
+        devices
+            .filterIsInstance<PacemakerAppDevice>()
+            .flatMapMerge { it.broadcasts },
+        flow { emitAll(pacemakerPeripheral.await().broadcasts) }
+    ).flattenMerge()
+        .shareIn(ble.scope, SharingStarted.Eagerly)
+
+
     private fun heartRateSensorPeripherals(): Flow<HeartRateSensor> = flow {
         emitAll(BluetoothHeartRateSensorService(ble).sensors.map { sensor ->
             HeartRateSensorImpl(sensor)
@@ -58,7 +67,7 @@ private class BluetoothServiceImpl(
 
     private fun pacemakerPeripherals(): Flow<PacemakerAppDevice> = flow {
         emitAll(pacemakerCentral.await().connections.map { connection ->
-            PacemakerAppDeviceImpl(connection)
+            PacemakerPeripheralAppDeviceImpl(connection)
         })
     }
 
@@ -81,7 +90,7 @@ private class HeartRateSensorImpl(
     }
 }
 
-private class PacemakerAppDeviceImpl(
+private class PacemakerPeripheralAppDeviceImpl(
     private val connection: BleConnection,
 ) : PacemakerAppDevice {
 
@@ -94,3 +103,7 @@ private class PacemakerAppDeviceImpl(
         return "Pacemaker App: ${connection.deviceId}"
     }
 }
+
+private class PacemakerCentralAppDeviceImpl(
+    private val id: BleDeviceId
+)
