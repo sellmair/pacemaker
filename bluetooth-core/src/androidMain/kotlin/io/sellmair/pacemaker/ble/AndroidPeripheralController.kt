@@ -132,7 +132,7 @@ internal class AndroidPeripheralController(
                     }
                 } else {
                     if (connectedDevices.remove(event.device)) {
-                        log.info("Device disconnected: ${event.device.deviceId} ($status)")
+                        log.info("Device disconnected: ${event.device.deviceId} (status=$status), newState=${event.newState}")
                     }
                 }
             }

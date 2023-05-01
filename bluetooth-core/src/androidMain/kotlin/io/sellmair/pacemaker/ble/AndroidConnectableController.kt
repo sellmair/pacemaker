@@ -7,6 +7,7 @@ import android.bluetooth.*
 import android.os.Build
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
+import io.sellmair.pacemaker.utils.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -48,12 +49,13 @@ internal class AndroidConnectableController(
     private var gatt: BluetoothGatt? = null
 
     override suspend fun connect(): BleSimpleResult {
+        log.info("$deviceId: connect() ($service)")
         if (gatt != null) {
             gatt?.disconnect()
             gatt?.close()
         }
 
-        gatt = hardware.device.connectGatt(hardware.context, true, hardware.callback, BluetoothDevice.TRANSPORT_LE)
+        gatt = hardware.device.connectGatt(hardware.context, false, hardware.callback, BluetoothDevice.TRANSPORT_LE)
         return hardware.callback.onConnectionStateChange.mapNotNull { connectionStateChange ->
             val statusCode = BleStatusCode(connectionStateChange.status)
 

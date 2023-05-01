@@ -6,6 +6,11 @@ import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.encodeToByteArray
 
+
+fun PacemakerBleWritable(underlying: BleWritable): PacemakerBleWritable {
+    return PacemakerBleWritableImpl(underlying)
+}
+
 internal class PacemakerBleWritableImpl(
     private val underlying: BleWritable
 ) : PacemakerBleWritable {

@@ -119,7 +119,7 @@ internal fun NearbyDeviceCard(
                         tint = device.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
-                    Text("${rssi.value} db")
+                    Text("${rssi} db")
                 }
             }
 

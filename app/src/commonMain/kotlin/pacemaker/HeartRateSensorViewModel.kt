@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ble.BleConnectable
-import io.sellmair.pacemaker.bluetooth.Rssi
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
@@ -18,7 +17,7 @@ internal class HeartRateSensorViewModelImpl(
     override val id: HeartRateSensorId = heartRateSensor.deviceId.toHeartRateSensorId()
 
     // TODO
-    override val rssi: StateFlow<Rssi?> = MutableStateFlow(null)
+    override val rssi: StateFlow<Int?> = MutableStateFlow(null)
 
     override val state: StateFlow<BleConnectable.ConnectionState> = heartRateSensor.connectionState
 

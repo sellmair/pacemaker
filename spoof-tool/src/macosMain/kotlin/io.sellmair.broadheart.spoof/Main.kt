@@ -2,7 +2,7 @@
 
 package io.sellmair.pacemaker.spoof
 
-import io.sellmair.pacemaker.ble.Ble
+import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.PacemakerCentralService
 import io.sellmair.pacemaker.bluetooth.PacemakerPeripheralService
 import io.sellmair.pacemaker.model.HeartRate
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopRun
 
 
-private val ble = Ble()
+private val ble = AppleBle()
 
 fun main() {
     //launchSendBroadcasts()

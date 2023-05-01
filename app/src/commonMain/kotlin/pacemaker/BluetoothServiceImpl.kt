@@ -7,7 +7,10 @@ import io.sellmair.pacemaker.BluetoothService.Device.PacemakerAppDevice
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BleConnection
 import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.ble
 import io.sellmair.pacemaker.bluetooth.*
+import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.info
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -29,16 +32,18 @@ private class BluetoothServiceImpl(
     private val pacemakerPeripheral = ble.scope.async { PacemakerPeripheralService(ble) }
 
     override suspend fun pacemaker(): PacemakerBleWritable {
-        // TODO: Write to central!
-        return pacemakerPeripheral.await()
+        val writable = pacemakerCentral.await().currentConnections()
+            .map { connection -> PacemakerBleWritable(connection) }
+            .plus(pacemakerPeripheral.await())
+
+        return PacemakerBleWritable(ble.scope, writable)
     }
 
     override val devices: SharedFlow<BluetoothService.Device> = flowOf(
         heartRateSensorPeripherals(),
         pacemakerPeripherals()
     ).flattenMerge()
-        .onStart { println("BleService: started scanning for peripherals") }
-        .onEach { println("BleService: discovered: $it") }
+        .onEach { log.info("Discovered: $it") }
         .shareIn(ble.scope, SharingStarted.WhileSubscribed(), replay = Channel.UNLIMITED)
 
     override val allDevices: SharedFlow<List<BluetoothService.Device>> = devices
@@ -61,6 +66,10 @@ private class BluetoothServiceImpl(
         ble.scope.launch {
             pacemakerPeripheral.await().startAdvertising()
         }
+    }
+
+    companion object {
+        val log = LogTag.ble.forClass<BluetoothService>()
     }
 }
 
