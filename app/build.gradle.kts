@@ -33,13 +33,13 @@ kotlin {
         /* Utils */
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
-        implementation("org.jetbrains.kotlinx:atomicfu:0.20.0")
+        implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
     }
 
     sourceSets.androidMain.get().dependencies {
         /* androidx */
-        implementation("androidx.activity:activity-compose:1.7.0-rc01")
-        implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
+        implementation("androidx.activity:activity-compose:1.7.1")
+        implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
 
         /* Polar SDK and dependencies */
         implementation("com.github.polarofficial:polar-ble-sdk:4.0.0")
@@ -53,8 +53,8 @@ kotlin {
 
     sourceSets.invokeWhenCreated("androidDebug") {
         dependencies {
-            implementation("androidx.compose.ui:ui-tooling:1.3.3")
-            implementation("androidx.compose.ui:ui-test-manifest:1.3.3")
+            implementation("androidx.compose.ui:ui-tooling:1.4.3")
+            implementation("androidx.compose.ui:ui-test-manifest:1.4.3")
         }
     }
 
@@ -77,5 +77,5 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.6-dev-k1.8.21-290a127309e")
+    kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.7")
 }
