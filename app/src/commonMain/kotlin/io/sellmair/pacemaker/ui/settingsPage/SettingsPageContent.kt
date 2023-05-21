@@ -67,8 +67,7 @@ internal fun SettingsPageDevicesList(
 
                 CatImage(
                     Modifier.fillMaxWidth()
-                        .height(256.dp)
-                        .align(Alignment.CenterHorizontally)
+                        .height(200.dp)
                 )
 
                 Column(
@@ -96,6 +95,9 @@ internal fun SettingsPageDevicesList(
                         modifier = Modifier.size(24.dp),
                         strokeWidth = 1.dp
                     )
+
+                    Spacer(Modifier.height(128.dp))
+
                 }
             }
 
