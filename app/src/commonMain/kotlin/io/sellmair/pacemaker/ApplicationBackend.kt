@@ -5,6 +5,9 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import io.sellmair.pacemaker.model.User
+import io.sellmair.pacemaker.service.BluetoothService
+import io.sellmair.pacemaker.service.GroupService
+import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*

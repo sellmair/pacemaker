@@ -1,6 +1,7 @@
-package io.sellmair.pacemaker
+package io.sellmair.pacemaker.service.impl
 
 import io.sellmair.pacemaker.model.*
+import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.utils.defaultFileSystem
 import io.sellmair.pacemaker.utils.readUtf8OrNull
 import kotlinx.coroutines.*

@@ -1,14 +1,15 @@
 @file:OptIn(FlowPreview::class)
 
-package io.sellmair.pacemaker
+package io.sellmair.pacemaker.service.impl
 
-import io.sellmair.pacemaker.BluetoothService.Device.HeartRateSensor
-import io.sellmair.pacemaker.BluetoothService.Device.PacemakerAppDevice
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BleConnection
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.ble.ble
 import io.sellmair.pacemaker.bluetooth.*
+import io.sellmair.pacemaker.service.BluetoothService
+import io.sellmair.pacemaker.service.BluetoothService.Device.HeartRateSensor
+import io.sellmair.pacemaker.service.BluetoothService.Device.PacemakerAppDevice
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.info
 import kotlinx.coroutines.FlowPreview

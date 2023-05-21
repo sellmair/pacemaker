@@ -1,4 +1,4 @@
-package io.sellmair.pacemaker
+package io.sellmair.pacemaker.service
 
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.bluetooth.BluetoothHeartRateSensor

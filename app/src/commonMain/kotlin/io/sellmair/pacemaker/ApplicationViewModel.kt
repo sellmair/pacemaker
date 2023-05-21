@@ -2,10 +2,13 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ApplicationIntent.MainPageIntent
 import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent
-import io.sellmair.pacemaker.BluetoothService.Device.HeartRateSensor
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.randomUserId
+import io.sellmair.pacemaker.service.BluetoothService
+import io.sellmair.pacemaker.service.BluetoothService.Device.HeartRateSensor
+import io.sellmair.pacemaker.service.GroupService
+import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel

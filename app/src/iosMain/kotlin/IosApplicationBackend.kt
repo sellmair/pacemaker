@@ -2,8 +2,15 @@
 
 package io.sellmair.pacemaker.ui
 
-import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AppleBle
+import io.sellmair.pacemaker.launchApplicationBackend
+import io.sellmair.pacemaker.service.BluetoothService
+import io.sellmair.pacemaker.service.GroupService
+import io.sellmair.pacemaker.service.UserService
+import io.sellmair.pacemaker.service.impl.BluetoothService
+import io.sellmair.pacemaker.service.impl.GroupServiceImpl
+import io.sellmair.pacemaker.service.impl.StoredUserService
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import okio.Path.Companion.toPath
@@ -28,7 +35,7 @@ class IosApplicationBackend : ApplicationBackend {
     }
 
     override val groupService: GroupService by lazy {
-        DefaultGroupService(userService)
+        GroupServiceImpl(userService)
     }
 
 

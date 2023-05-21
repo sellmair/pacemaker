@@ -59,7 +59,7 @@ kotlin {
     }
 
     sourceSets.androidInstrumentedTest.get().dependencies {
-        implementation("androidx.compose.ui:ui-test-junit4")
+        implementation("androidx.compose.ui:ui-test-junit4:1.4.3")
     }
 
     cocoapods {

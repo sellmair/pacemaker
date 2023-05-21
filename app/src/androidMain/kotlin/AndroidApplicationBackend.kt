@@ -6,8 +6,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AndroidBle
+import io.sellmair.pacemaker.launchApplicationBackend
+import io.sellmair.pacemaker.service.BluetoothService
+import io.sellmair.pacemaker.service.GroupService
+import io.sellmair.pacemaker.service.UserService
+import io.sellmair.pacemaker.service.impl.BluetoothService
+import io.sellmair.pacemaker.service.impl.GroupServiceImpl
+import io.sellmair.pacemaker.service.impl.StoredUserService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
 import okio.Path.Companion.toOkioPath
@@ -33,7 +40,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         StoredUserService(this, filesDir.resolve("userService").toOkioPath())
     }
 
-    override val groupService by lazy { DefaultGroupService(userService) }
+    override val groupService by lazy { GroupServiceImpl(userService) }
 
     override fun onCreate() {
         super.onCreate()

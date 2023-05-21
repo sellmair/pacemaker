@@ -129,7 +129,7 @@ internal fun NearbyDeviceCard(
                 if (device is HeartRateSensorViewModel) {
                     val deviceState = device.state.collectAsState().value
 
-                    if (deviceState != BleConnectable.ConnectionState.Connected) {
+                    if (deviceState != BleConnectable.ConnectionState.Connected && user != null) {
                         ElevatedButton(
                             enabled = deviceState == BleConnectable.ConnectionState.Disconnected,
                             onClick = { device.tryConnect() },
@@ -191,6 +191,9 @@ internal fun NearbyDeviceCard(
                     ElevatedButton(
                         onClick = {
                             onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
+                            if (device is HeartRateSensorViewModel) {
+                                device.tryDisconnect()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -204,6 +207,9 @@ internal fun NearbyDeviceCard(
                         onClick = {
                             onEvent(SettingsPageIntent.DeleteAdhocUser(user))
                             onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
+                            if (device is HeartRateSensorViewModel) {
+                                device.tryDisconnect()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
