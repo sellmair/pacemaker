@@ -61,8 +61,7 @@ internal fun SettingsPageDevicesList(
         if (nearbyDevices.isEmpty()) {
 
             Column(
-                Modifier.fillMaxHeight()
-                    .offset(y = -64.dp),
+                Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.Center,
             ) {
 

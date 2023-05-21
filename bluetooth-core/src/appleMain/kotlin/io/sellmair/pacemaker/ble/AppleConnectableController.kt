@@ -16,6 +16,8 @@ internal class AppleConnectableController(
     private val connectableHardware: AppleConnectableHardware,
 ) : BleConnectableController {
 
+    override val deviceName: String? = connectableHardware.peripheral.name
+
     override val deviceId: BleDeviceId = connectableHardware.peripheral.deviceId
 
     override val isConnected = MutableStateFlow(false)

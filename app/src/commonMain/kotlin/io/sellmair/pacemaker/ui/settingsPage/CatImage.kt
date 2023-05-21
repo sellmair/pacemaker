@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-expect fun CatImage(modifier: Modifier = Modifier)
+internal expect fun CatImage(modifier: Modifier = Modifier)
