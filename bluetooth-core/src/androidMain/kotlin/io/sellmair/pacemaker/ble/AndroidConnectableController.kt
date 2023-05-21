@@ -19,6 +19,9 @@ internal class AndroidConnectableController(
     private val service: BleServiceDescriptor,
     private val hardware: AndroidConnectableHardware,
 ) : BleConnectableController {
+
+    override val deviceName: String? = hardware.device.name
+
     override val deviceId: BleDeviceId = hardware.device.deviceId
 
     private val valuesFromRead = hardware.callback

@@ -15,6 +15,8 @@ internal class BleConnectableImpl(
     override val service: BleServiceDescriptor,
 ) : BleConnectable {
 
+    override val deviceName: String? = controller.deviceName
+
     override val deviceId: BleDeviceId = controller.deviceId
 
     override val connectionState = MutableStateFlow(Disconnected)

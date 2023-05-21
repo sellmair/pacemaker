@@ -28,6 +28,7 @@ interface BleConnectable {
         Connected
     }
 
+    val deviceName: String?
     val deviceId: BleDeviceId
     val service: BleServiceDescriptor
 

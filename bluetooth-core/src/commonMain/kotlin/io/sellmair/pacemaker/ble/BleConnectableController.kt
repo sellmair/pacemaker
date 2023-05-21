@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface BleConnectableController {
 
+    val deviceName: String?
+
     val deviceId: BleDeviceId
 
     val values: SharedFlow<BleReceivedValue>

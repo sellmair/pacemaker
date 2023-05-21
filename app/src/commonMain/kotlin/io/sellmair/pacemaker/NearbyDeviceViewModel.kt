@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 sealed interface NearbyDeviceViewModel {
     val id: HeartRateSensorId
+    val name: String?
     val heartRate: StateFlow<HeartRate?>
     val rssi: StateFlow<Int?>
     val associatedUser: StateFlow<User?>

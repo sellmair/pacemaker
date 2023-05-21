@@ -40,6 +40,7 @@ internal fun NearbyDeviceCard(
     val currentHeartRate = device.heartRate.collectAsState().value
     val heartRateLimit = device.associatedHeartRateLimit.collectAsState().value
     val sensorId = device.id
+    val sensorName = device.name
     val rssi = device.rssi.collectAsState().value
 
     var contextMenuOpen by remember { mutableStateOf(false) }
@@ -109,7 +110,7 @@ internal fun NearbyDeviceCard(
                     tint = device.displayColorLight.toColor(),
                     modifier = Modifier.size(12.dp)
                 )
-                Text(sensorId.value)
+                Text(sensorName ?: sensorId.value)
                 Spacer(modifier = Modifier.width(8.dp))
 
 

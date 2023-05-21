@@ -16,6 +16,8 @@ internal class HeartRateSensorViewModelImpl(
     private val userService: UserService,
     private val heartRateSensor: BluetoothService.Device.HeartRateSensor,
 ) : HeartRateSensorViewModel {
+
+    override val name: String? = heartRateSensor.deviceName
     override val id: HeartRateSensorId = heartRateSensor.deviceId.toHeartRateSensorId()
 
     // TODO
