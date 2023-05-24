@@ -1,6 +1,7 @@
+@file:OptIn(FlowPreview::class)
+
 package io.sellmair.pacemaker.bluetooth
 
-import io.sellmair.pacemaker.ble.BleConnection
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.ble.BleReceivedValue
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateCharacteristic
@@ -11,14 +12,20 @@ import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userNameChara
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlin.time.TimeSource
 
-fun BleConnection.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = receivedValues
-    .receivePacemakerBroadcastPackages()
+fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
+    return newConnections.flatMapMerge { connection -> connection.broadcastPackages() }
+}
 
-fun Flow<BleReceivedValue>.receivePacemakerBroadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
+fun PacemakerBluetoothConnection.broadcastPackages(): Flow<PacemakerBroadcastPackage> = receivedValues
+    .broadcastPackages()
+
+internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
 
     class State(
         val deviceId: BleDeviceId,

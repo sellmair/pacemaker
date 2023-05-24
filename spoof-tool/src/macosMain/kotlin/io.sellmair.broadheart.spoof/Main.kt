@@ -3,8 +3,8 @@
 package io.sellmair.pacemaker.spoof
 
 import io.sellmair.pacemaker.ble.AppleBle
-import io.sellmair.pacemaker.bluetooth.PacemakerCentralService
-import io.sellmair.pacemaker.bluetooth.PacemakerPeripheralService
+import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
+
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
@@ -35,30 +35,35 @@ private fun launchSendBroadcasts() = MainScope().launch {
             name = "Felix Werner"
         )
 
-        val pacemakerPeripheral = PacemakerPeripheralService(ble)
-        pacemakerPeripheral.setUser(user)
-        pacemakerPeripheral.setHeartRateLimit(HeartRate(120))
-        pacemakerPeripheral.startAdvertising()
+        val pacemakerPeripheral = PacemakerBluetoothService(ble)
+        pacemakerPeripheral.write {
+            setUser(user)
+            setHeartRateLimit(HeartRate(120))
+        }
+
 
         while (isActive) {
             val line = readln()
             if (line.startsWith("l")) {
                 val heartRateLimit = line.removePrefix("l").toIntOrNull() ?: continue
-                pacemakerPeripheral.setHeartRateLimit(HeartRate(heartRateLimit))
-                println("Updated spoof hr-limit: $heartRateLimit")
+                pacemakerPeripheral.write {
+                    setHeartRateLimit(HeartRate(heartRateLimit))
+                    println("Updated spoof hr-limit: $heartRateLimit")
+                }
+
             } else {
-                pacemakerPeripheral.setHeartRate(
-                    HeartRateSensorId("👻"), HeartRate(line.toIntOrNull() ?: continue)
-                )
-                println("Updated spoof hr: ${line.toIntOrNull()}")
+                pacemakerPeripheral.write {
+                    setHeartRate(HeartRateSensorId("👻"), HeartRate(line.toIntOrNull() ?: return@write))
+                    println("Updated spoof hr: ${line.toIntOrNull()}")
+                }
             }
         }
     }
 }
 
 private fun launchReceiveBroadcasts() = MainScope().launch(Dispatchers.Default) {
-    val pacemaker = PacemakerCentralService(ble)
-    pacemaker.connections.collect { connection ->
+    val pacemaker = PacemakerBluetoothService(ble)
+    pacemaker.newConnections.collect { connection ->
         LogTag("spoof").info("Received connection ${connection.deviceId}")
     }
 }

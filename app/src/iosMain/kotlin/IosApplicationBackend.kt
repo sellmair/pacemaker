@@ -4,6 +4,7 @@ package io.sellmair.pacemaker.ui
 
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AppleBle
+import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.GroupService
@@ -13,6 +14,7 @@ import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -24,6 +26,8 @@ class IosApplicationBackend : ApplicationBackend {
     private val coroutineScope = MainScope()
 
     private val ble = AppleBle()
+
+    override val pacemakerBluetoothService = coroutineScope.async { PacemakerBluetoothService(ble) }
 
     override val bluetoothService: BluetoothService by lazy { BluetoothService(ble) }
 
