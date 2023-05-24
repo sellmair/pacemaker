@@ -1,4 +1,3 @@
-@file:OptIn(FlowPreview::class)
 
 package io.sellmair.pacemaker.backend
 
@@ -8,6 +7,7 @@ import android.os.Binder
 import android.os.IBinder
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AndroidBle
+import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.GroupService
@@ -25,12 +25,17 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
     inner class MainServiceBinder(
+        override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,
         override val bluetoothService: BluetoothService,
         override val userService: UserService,
         override val groupService: GroupService
     ) : Binder(), ApplicationBackend
 
     private val ble by lazy { AndroidBle(this) }
+
+    override val pacemakerBluetoothService = async {
+        PacemakerBluetoothService(ble)
+    }
 
     override val bluetoothService by lazy { BluetoothService(ble) }
 
@@ -71,6 +76,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         return MainServiceBinder(
             userService = userService,
             groupService = groupService,
+            pacemakerBluetoothService = pacemakerBluetoothService,
             bluetoothService = bluetoothService
         )
     }

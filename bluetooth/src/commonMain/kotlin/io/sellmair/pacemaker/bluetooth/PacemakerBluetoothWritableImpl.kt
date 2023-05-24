@@ -7,13 +7,7 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.encodeToByteArray
 
 
-fun PacemakerBleWritable(underlying: BleWritable): PacemakerBleWritable {
-    return PacemakerBleWritableImpl(underlying)
-}
-
-internal class PacemakerBleWritableImpl(
-    private val underlying: BleWritable
-) : PacemakerBleWritable {
+internal fun PacemakerBluetoothWritable(underlying: BleWritable) = object : PacemakerBluetoothWritable {
     override suspend fun setUser(user: User) {
         underlying.setValue(PacemakerServiceDescriptors.userNameCharacteristic, user.name.encodeToByteArray())
         underlying.setValue(PacemakerServiceDescriptors.userIdCharacteristic, user.id.encodeToByteArray())
