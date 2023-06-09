@@ -6,17 +6,15 @@ import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import kotlinx.coroutines.flow.StateFlow
 
-sealed interface NearbyDeviceViewModel {
+interface HeartRateSensorViewModel {
     val id: HeartRateSensorId
     val name: String?
     val heartRate: StateFlow<HeartRate?>
     val rssi: StateFlow<Int?>
+    val state: StateFlow<BleConnectable.ConnectionState>
     val associatedUser: StateFlow<User?>
     val associatedHeartRateLimit: StateFlow<HeartRate?>
-}
 
-interface HeartRateSensorViewModel : NearbyDeviceViewModel {
-    val state: StateFlow<BleConnectable.ConnectionState>
     fun tryConnect()
     fun tryDisconnect()
 }

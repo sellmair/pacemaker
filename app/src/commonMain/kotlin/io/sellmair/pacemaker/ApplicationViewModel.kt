@@ -2,25 +2,32 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ApplicationIntent.MainPageIntent
 import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent
+import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.randomUserId
-import io.sellmair.pacemaker.service.BluetoothService
-import io.sellmair.pacemaker.service.BluetoothService.Device.HeartRateSensor
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 interface ApplicationViewModel {
     val me: StateFlow<User?>
     val group: StateFlow<Group?>
-    val nearbyDevices: StateFlow<List<NearbyDeviceViewModel>>
+    val nearbyDevices: StateFlow<List<HeartRateSensorViewModel>>
     fun send(intent: ApplicationIntent)
 }
 
@@ -29,7 +36,7 @@ fun ApplicationViewModel(
     backend: ApplicationBackend,
 ): ApplicationViewModel {
     return ApplicationViewModelImpl(
-        coroutineScope, backend.userService, backend.groupService, backend.bluetoothService
+        coroutineScope, backend.userService, backend.groupService, backend.heartRateSensorBluetoothService
     )
 }
 
@@ -37,7 +44,7 @@ private class ApplicationViewModelImpl(
     scope: CoroutineScope,
     private val userService: UserService,
     private val groupService: GroupService,
-    private val bluetoothService: BluetoothService,
+    private val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
 ) : ApplicationViewModel {
 
     private val intentQueue = Channel<ApplicationIntent>(Channel.UNLIMITED)
@@ -46,13 +53,14 @@ private class ApplicationViewModelImpl(
 
     override val group = groupService.group
 
-    override val nearbyDevices: StateFlow<List<NearbyDeviceViewModel>> =
-        bluetoothService.allDevices
-            .map { peripherals ->
-                peripherals
-                    .filterIsInstance<HeartRateSensor>()
-                    .map { sensor -> HeartRateSensorViewModelImpl(scope, userService, sensor) }
-            }.stateIn(scope, SharingStarted.WhileSubscribed(), emptyList())
+    override val nearbyDevices: StateFlow<List<HeartRateSensorViewModel>> =
+        flow { emitAll(heartRateSensorBluetoothService.await().allSensorsNearby) }
+            .map { nearbySensors ->
+                nearbySensors.map { sensor ->
+                    HeartRateSensorViewModelImpl(scope, userService, sensor)
+                }
+            }
+            .stateIn(scope, SharingStarted.WhileSubscribed(), emptyList())
 
 
     override fun send(intent: ApplicationIntent) {

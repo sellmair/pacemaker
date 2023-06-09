@@ -9,7 +9,14 @@ import io.sellmair.pacemaker.bluetooth.PacemakerCentralBluetoothService.Companio
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds

@@ -54,7 +54,7 @@ internal fun ApplicationWindow(
             me?.let { me ->
                 SettingsPage(
                     me = me,
-                    nearbyDevices = nearbyDevices,
+                    heartRateSensors = nearbyDevices,
                     onCloseSettingsPage = { route = Route.MainPage },
                     onIntent = viewModel::send
                 )

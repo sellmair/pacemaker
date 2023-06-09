@@ -2,24 +2,29 @@
 
 package io.sellmair.pacemaker
 
+import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.bluetooth.broadcastPackages
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
-    val bluetoothService: BluetoothService
+    val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
     val userService: UserService
     val groupService: GroupService
 }
@@ -27,12 +32,11 @@ interface ApplicationBackend {
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
 
     /* Connecting our hr receiver with the group service */
-    val hrMeasurements = bluetoothService.devices
-        .filterIsInstance<BluetoothService.Device.HeartRateSensor>()
-        .flatMapMerge { it.heartRate }
-        .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
-        .onEach { groupService.invalidate() }
-        .shareIn(scope, SharingStarted.WhileSubscribed())
+    val hrMeasurements = flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
+            .flatMapMerge { sensor -> sensor.heartRate }
+            .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
+            .onEach { groupService.invalidate() }
+            .shareIn(scope, SharingStarted.WhileSubscribed())
 
     /*
      Regularly call the updateState w/o measurements, to invalidate old ones, in case
