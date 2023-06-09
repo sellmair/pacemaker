@@ -1,7 +1,7 @@
 package io.sellmair.pacemaker.ui
 
 import io.sellmair.pacemaker.GroupMember
-import io.sellmair.pacemaker.NearbyDeviceViewModel
+import io.sellmair.pacemaker.HeartRateSensorViewModel
 import io.sellmair.pacemaker.model.User
 import kotlin.math.absoluteValue
 
@@ -43,14 +43,14 @@ val GroupMember.displayColorLight: HSLColor
             lightness = .75f
         )
 
-val NearbyDeviceViewModel.displayColor: HSLColor
+val HeartRateSensorViewModel.displayColor: HSLColor
     get() = this.associatedUser.value?.displayColor ?: HSLColor(
         hue = this.id.value.hashCode().toFloat().absoluteValue % 360f,
         saturation = .5f,
         lightness = .4f
     )
 
-val NearbyDeviceViewModel.displayColorLight: HSLColor
+val HeartRateSensorViewModel.displayColorLight: HSLColor
     get() = this.associatedUser.value?.displayColorLight ?: HSLColor(
         hue = this.id.value.hashCode().toFloat().absoluteValue % 360f,
         saturation = .7f,

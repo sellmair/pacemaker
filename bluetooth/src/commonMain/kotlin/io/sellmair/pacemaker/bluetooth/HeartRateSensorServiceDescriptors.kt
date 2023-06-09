@@ -4,7 +4,7 @@ import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
 import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import io.sellmair.pacemaker.ble.BleUUID
 
-internal object HeartRateBleService {
+internal object HeartRateSensorServiceDescriptors {
     val heartRateCharacteristic = BleCharacteristicDescriptor(
         name = "Heart Rate",
         uuid = BleUUID("00002a37-0000-1000-8000-00805f9b34fb"),

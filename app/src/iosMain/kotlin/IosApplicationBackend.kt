@@ -6,7 +6,6 @@ import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
-import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.service.impl.BluetoothService

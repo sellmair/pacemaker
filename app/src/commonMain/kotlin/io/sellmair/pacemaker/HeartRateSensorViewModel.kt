@@ -1,20 +1,24 @@
 package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ble.BleConnectable
+import io.sellmair.pacemaker.bluetooth.HeartRateSensor
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 internal class HeartRateSensorViewModelImpl(
     private val scope: CoroutineScope,
     private val userService: UserService,
-    private val heartRateSensor: BluetoothService.Device.HeartRateSensor,
+    private val heartRateSensor: HeartRateSensor,
 ) : HeartRateSensorViewModel {
 
     override val name: String? = heartRateSensor.deviceName

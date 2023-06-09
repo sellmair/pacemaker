@@ -1,4 +1,3 @@
-
 package io.sellmair.pacemaker.backend
 
 import android.app.Service
@@ -7,16 +6,21 @@ import android.os.Binder
 import android.os.IBinder
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AndroidBle
+import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
-import io.sellmair.pacemaker.service.BluetoothService
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.service.impl.BluetoothService
 import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 
@@ -26,9 +30,9 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     inner class MainServiceBinder(
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,
-        override val bluetoothService: BluetoothService,
+        override val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
         override val userService: UserService,
-        override val groupService: GroupService
+        override val groupService: GroupService,
     ) : Binder(), ApplicationBackend
 
     private val ble by lazy { AndroidBle(this) }
@@ -37,7 +41,9 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         PacemakerBluetoothService(ble)
     }
 
-    override val bluetoothService by lazy { BluetoothService(ble) }
+    override val heartRateSensorBluetoothService = async {
+        HeartRateSensorBluetoothService(ble)
+    }
 
     private val notification = AndroidHeartRateNotification(this)
 
@@ -77,7 +83,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
             userService = userService,
             groupService = groupService,
             pacemakerBluetoothService = pacemakerBluetoothService,
-            bluetoothService = bluetoothService
+            heartRateSensorBluetoothService = heartRateSensorBluetoothService,
         )
     }
 }

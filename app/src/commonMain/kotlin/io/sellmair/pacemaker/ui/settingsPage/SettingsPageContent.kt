@@ -1,7 +1,16 @@
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -13,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.ApplicationIntent
-import io.sellmair.pacemaker.NearbyDeviceViewModel
+import io.sellmair.pacemaker.HeartRateSensorViewModel
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.toColor
@@ -21,7 +30,7 @@ import io.sellmair.pacemaker.ui.toColor
 @Composable
 internal fun SettingsPageContent(
     me: User,
-    nearbyDevices: List<NearbyDeviceViewModel>,
+    heartRateSensors: List<HeartRateSensorViewModel>,
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
     onCloseSettingsPage: () -> Unit
 ) {
@@ -37,7 +46,7 @@ internal fun SettingsPageContent(
         Box(Modifier.padding(horizontal = 24.dp)) {
             SettingsPageDevicesList(
                 me = me,
-                nearbyDevices = nearbyDevices,
+                heartRateSensors = heartRateSensors,
                 onIntent = onIntent
             )
         }
@@ -47,7 +56,7 @@ internal fun SettingsPageContent(
 @Composable
 internal fun SettingsPageDevicesList(
     me: User,
-    nearbyDevices: List<NearbyDeviceViewModel>,
+    heartRateSensors: List<HeartRateSensorViewModel>,
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
@@ -58,7 +67,7 @@ internal fun SettingsPageDevicesList(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (nearbyDevices.isEmpty()) {
+        if (heartRateSensors.isEmpty()) {
 
             Column(
                 Modifier.fillMaxHeight(),
@@ -104,14 +113,14 @@ internal fun SettingsPageDevicesList(
         }
 
         LazyColumn {
-            items(nearbyDevices) { sensor ->
+            items(heartRateSensors) { sensor ->
                 Box(
                     modifier = Modifier
                         .animateContentSize()
                 ) {
-                    NearbyDeviceCard(
+                    HeartRateSensorCard(
                         me = me,
-                        device = sensor,
+                        heartRateSensor = sensor,
                         onEvent = onIntent
                     )
                 }

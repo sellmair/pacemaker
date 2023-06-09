@@ -1,14 +1,34 @@
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.CellTower
 import androidx.compose.material.icons.outlined.Sensors
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent
 import io.sellmair.pacemaker.HeartRateSensorViewModel
-import io.sellmair.pacemaker.NearbyDeviceViewModel
 import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
@@ -31,17 +50,17 @@ import io.sellmair.pacemaker.ui.widget.UserHead
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun NearbyDeviceCard(
+internal fun HeartRateSensorCard(
     me: User,
-    device: NearbyDeviceViewModel,
+    heartRateSensor: HeartRateSensorViewModel,
     onEvent: (SettingsPageIntent) -> Unit = {}
 ) {
-    val user = device.associatedUser.collectAsState().value
-    val currentHeartRate = device.heartRate.collectAsState().value
-    val heartRateLimit = device.associatedHeartRateLimit.collectAsState().value
-    val sensorId = device.id
-    val sensorName = device.name
-    val rssi = device.rssi.collectAsState().value
+    val user = heartRateSensor.associatedUser.collectAsState().value
+    val currentHeartRate = heartRateSensor.heartRate.collectAsState().value
+    val heartRateLimit = heartRateSensor.associatedHeartRateLimit.collectAsState().value
+    val sensorId = heartRateSensor.id
+    val sensorName = heartRateSensor.name
+    val rssi = heartRateSensor.rssi.collectAsState().value
 
     var contextMenuOpen by remember { mutableStateOf(false) }
     ElevatedCard(
@@ -79,7 +98,7 @@ internal fun NearbyDeviceCard(
                 if (currentHeartRate != null) {
                     Icon(
                         Icons.Default.Favorite, "HR",
-                        tint = device.displayColorLight.toColor(),
+                        tint = heartRateSensor.displayColorLight.toColor(),
                         modifier = Modifier
                             .size(12.dp)
                     )
@@ -89,7 +108,7 @@ internal fun NearbyDeviceCard(
                 if (heartRateLimit != null) {
                     Icon(
                         Icons.Default.Warning, "HR Limit",
-                        tint = device.displayColorLight.toColor(),
+                        tint = heartRateSensor.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
                     Text(heartRateLimit.toString())
@@ -100,14 +119,14 @@ internal fun NearbyDeviceCard(
                     modifier = Modifier
                         .height(20.dp)
                         .width(1.dp)
-                        .background(device.displayColor.toColor())
+                        .background(heartRateSensor.displayColor.toColor())
                 )
                 Spacer(modifier = Modifier.width(8.dp))
 
 
                 Icon(
                     Icons.Outlined.Sensors, "HR Limit",
-                    tint = device.displayColorLight.toColor(),
+                    tint = heartRateSensor.displayColorLight.toColor(),
                     modifier = Modifier.size(12.dp)
                 )
                 Text(sensorName ?: sensorId.value)
@@ -117,7 +136,7 @@ internal fun NearbyDeviceCard(
                 if (rssi != null) {
                     Icon(
                         Icons.Outlined.CellTower, "Signal Strength",
-                        tint = device.displayColorLight.toColor(),
+                        tint = heartRateSensor.displayColorLight.toColor(),
                         modifier = Modifier.size(12.dp)
                     )
                     Text("${rssi} db")
@@ -127,34 +146,32 @@ internal fun NearbyDeviceCard(
             if (contextMenuOpen) {
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (device is HeartRateSensorViewModel) {
-                    val deviceState = device.state.collectAsState().value
+                val deviceState = heartRateSensor.state.collectAsState().value
 
-                    if (deviceState != BleConnectable.ConnectionState.Connected && user != null) {
-                        ElevatedButton(
-                            enabled = deviceState == BleConnectable.ConnectionState.Disconnected,
-                            onClick = { device.tryConnect() },
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = me.displayColor.copy(lightness = .97f).toColor()
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text("Connect to Sensor")
-                        }
+                if (deviceState != BleConnectable.ConnectionState.Connected && user != null) {
+                    ElevatedButton(
+                        enabled = deviceState == BleConnectable.ConnectionState.Disconnected,
+                        onClick = { heartRateSensor.tryConnect() },
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = me.displayColor.copy(lightness = .97f).toColor()
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text("Connect to Sensor")
                     }
+                }
 
-                    if (deviceState == BleConnectable.ConnectionState.Connected) {
-                        ElevatedButton(
-                            onClick = { device.tryDisconnect() },
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = me.displayColor.copy(lightness = .97f).toColor()
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text("Disconnect from Sensor")
-                        }
+                if (deviceState == BleConnectable.ConnectionState.Connected) {
+                    ElevatedButton(
+                        onClick = { heartRateSensor.tryDisconnect() },
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = me.displayColor.copy(lightness = .97f).toColor()
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text("Disconnect from Sensor")
                     }
                 }
 
@@ -192,9 +209,7 @@ internal fun NearbyDeviceCard(
                     ElevatedButton(
                         onClick = {
                             onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
-                            if (device is HeartRateSensorViewModel) {
-                                device.tryDisconnect()
-                            }
+                            heartRateSensor.tryDisconnect()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -208,9 +223,7 @@ internal fun NearbyDeviceCard(
                         onClick = {
                             onEvent(SettingsPageIntent.DeleteAdhocUser(user))
                             onEvent(SettingsPageIntent.UnlinkSensor(sensorId))
-                            if (device is HeartRateSensorViewModel) {
-                                device.tryDisconnect()
-                            }
+                            heartRateSensor.tryDisconnect()
                         },
                         modifier = Modifier
                             .fillMaxWidth()

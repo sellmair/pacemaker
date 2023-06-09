@@ -6,7 +6,6 @@ import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.LogTag

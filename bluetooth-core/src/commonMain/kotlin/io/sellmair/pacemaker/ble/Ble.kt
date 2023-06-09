@@ -44,6 +44,7 @@ interface BleConnection : BleWritable {
     val service: BleServiceDescriptor
     val receivedValues: SharedFlow<BleReceivedValue>
 
+
     suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleQueue.Result<Unit>
     suspend fun requestRead(characteristic: BleCharacteristicDescriptor): BleQueue.Result<ByteArray>
 }
