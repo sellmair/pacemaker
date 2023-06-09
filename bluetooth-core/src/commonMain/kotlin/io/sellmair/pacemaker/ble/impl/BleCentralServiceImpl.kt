@@ -1,6 +1,11 @@
 package io.sellmair.pacemaker.ble.impl
 
-import io.sellmair.pacemaker.ble.*
+import io.sellmair.pacemaker.ble.BleCentralController
+import io.sellmair.pacemaker.ble.BleCentralService
+import io.sellmair.pacemaker.ble.BleConnectable
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleQueue
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,7 +19,7 @@ internal class BleCentralServiceImpl(
     private val service: BleServiceDescriptor
 ) : BleCentralService {
 
-    private val connectablesById = mutableMapOf<BleDeviceId, BleConnectableImpl>()
+    private val connectableById = mutableMapOf<BleDeviceId, BleConnectableImpl>()
 
     override val connectables: MutableSharedFlow<BleConnectable> = MutableSharedFlow(replay = Channel.UNLIMITED)
 
@@ -25,7 +30,7 @@ internal class BleCentralServiceImpl(
     init {
         scope.launch {
             controller.scanResults.consumeAsFlow().collect { result ->
-                connectablesById.getOrPut(result.deviceId) {
+                connectableById.getOrPut(result.deviceId) {
                     BleConnectableImpl(
                         scope, queue, controller.createConnectableController(result), service
                     ).also { newConnectable ->
