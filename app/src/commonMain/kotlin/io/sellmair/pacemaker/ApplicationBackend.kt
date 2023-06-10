@@ -33,10 +33,10 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
 
     /* Connecting our hr receiver with the group service */
     val hrMeasurements = flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
-            .flatMapMerge { sensor -> sensor.heartRate }
-            .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
-            .onEach { groupService.invalidate() }
-            .shareIn(scope, SharingStarted.WhileSubscribed())
+        .flatMapMerge { sensor -> sensor.heartRate }
+        .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
+        .onEach { groupService.invalidate() }
+        .shareIn(scope, SharingStarted.WhileSubscribed())
 
     /*
      Regularly call the updateState w/o measurements, to invalidate old ones, in case
@@ -54,6 +54,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launch {
         hrMeasurements.collect { hrMeasurement ->
             val user = userService.currentUser()
+            if (user != userService.findUser(hrMeasurement.sensorInfo)) return@collect
             pacemakerBluetoothService.await().write {
                 setUser(user)
                 setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)

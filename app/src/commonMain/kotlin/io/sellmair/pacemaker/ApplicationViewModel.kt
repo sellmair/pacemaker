@@ -2,6 +2,7 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ApplicationIntent.MainPageIntent
 import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent
+import io.sellmair.pacemaker.bluetooth.HeartRateSensor
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
@@ -27,7 +28,7 @@ import kotlin.math.absoluteValue
 interface ApplicationViewModel {
     val me: StateFlow<User?>
     val group: StateFlow<Group?>
-    val nearbyDevices: StateFlow<List<HeartRateSensorViewModel>>
+    val heartRateSensorViewModels: StateFlow<List<HeartRateSensorViewModel>>
     fun send(intent: ApplicationIntent)
 }
 
@@ -53,11 +54,15 @@ private class ApplicationViewModelImpl(
 
     override val group = groupService.group
 
-    override val nearbyDevices: StateFlow<List<HeartRateSensorViewModel>> =
+    private val viewModelsBySensors = mutableMapOf<HeartRateSensor, HeartRateSensorViewModel>()
+
+    override val heartRateSensorViewModels: StateFlow<List<HeartRateSensorViewModel>> =
         flow { emitAll(heartRateSensorBluetoothService.await().allSensorsNearby) }
             .map { nearbySensors ->
                 nearbySensors.map { sensor ->
-                    HeartRateSensorViewModelImpl(scope, userService, sensor)
+                    viewModelsBySensors.getOrPut(sensor) {
+                        HeartRateSensorViewModelImpl(scope, userService, sensor)
+                    }
                 }
             }
             .stateIn(scope, SharingStarted.WhileSubscribed(), emptyList())

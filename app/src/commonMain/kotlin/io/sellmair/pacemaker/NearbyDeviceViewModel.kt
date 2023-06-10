@@ -11,7 +11,7 @@ interface HeartRateSensorViewModel {
     val name: String?
     val heartRate: StateFlow<HeartRate?>
     val rssi: StateFlow<Int?>
-    val state: StateFlow<BleConnectable.ConnectionState>
+    val connectionState: StateFlow<BleConnectable.ConnectionState>
     val associatedUser: StateFlow<User?>
     val associatedHeartRateLimit: StateFlow<HeartRate?>
 

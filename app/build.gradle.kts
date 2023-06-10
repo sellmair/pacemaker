@@ -24,7 +24,6 @@ kotlin {
         /* COMPOSE */
         implementation(compose.ui)
         implementation(compose.foundation)
-        implementation(compose.material)
         implementation(compose.runtime)
 
         implementation(compose.material3)
@@ -38,16 +37,17 @@ kotlin {
 
     sourceSets.androidMain.get().dependencies {
         /* androidx */
-        implementation("androidx.activity:activity-compose:1.7.1")
+        implementation("androidx.activity:activity-compose:1.7.2")
         implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+        implementation(compose.preview)
 
         /* Polar SDK and dependencies */
         implementation("com.github.polarofficial:polar-ble-sdk:4.0.0")
-        implementation("io.reactivex.rxjava3:rxjava:3.1.5")
+        implementation("io.reactivex.rxjava3:rxjava:3.1.6")
         implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
 
         /* kotlinx */
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.4")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.1")
 
     }
 

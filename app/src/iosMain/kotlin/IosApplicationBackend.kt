@@ -4,11 +4,11 @@ package io.sellmair.pacemaker.ui
 
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AppleBle
+import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.service.impl.BluetoothService
 import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
 import kotlinx.coroutines.FlowPreview
@@ -28,7 +28,7 @@ class IosApplicationBackend : ApplicationBackend {
 
     override val pacemakerBluetoothService = coroutineScope.async { PacemakerBluetoothService(ble) }
 
-    override val bluetoothService: BluetoothService by lazy { BluetoothService(ble) }
+    override val heartRateSensorBluetoothService = coroutineScope.async { HeartRateSensorBluetoothService(ble) }
 
     override val userService: UserService by lazy {
         val fileManager = NSFileManager.defaultManager()

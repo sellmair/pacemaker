@@ -1,6 +1,5 @@
 package io.sellmair.pacemaker.ui.settingsPage
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +42,7 @@ internal fun SettingsPageContent(
 
         Spacer(Modifier.height(24.dp))
 
-        Box(Modifier.padding(horizontal = 24.dp)) {
+        Box {
             SettingsPageDevicesList(
                 me = me,
                 heartRateSensors = heartRateSensors,
@@ -61,6 +60,7 @@ internal fun SettingsPageDevicesList(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Text(
+            modifier = Modifier.padding(horizontal = 24.dp),
             text = "Nearby Devices",
             fontWeight = FontWeight.Bold
         )
@@ -115,12 +115,11 @@ internal fun SettingsPageDevicesList(
         LazyColumn {
             items(heartRateSensors) { sensor ->
                 Box(
-                    modifier = Modifier
-                        .animateContentSize()
+                    modifier = Modifier.padding(24.dp)
                 ) {
                     HeartRateSensorCard(
                         me = me,
-                        heartRateSensor = sensor,
+                        viewModel = sensor,
                         onEvent = onIntent
                     )
                 }
