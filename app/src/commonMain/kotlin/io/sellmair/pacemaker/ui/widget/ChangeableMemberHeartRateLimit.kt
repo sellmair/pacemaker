@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onPlaced
@@ -49,10 +50,26 @@ internal fun ChangeableMemberHeartRateLimit(
     side: ScaleSide = if (user.isMe) ScaleSide.Right else ScaleSide.Left,
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
+    ChangeableMemberHeartRateLimit(
+        color = user.displayColorLight.toColor(),
+        heartRateLimit = heartRateLimit,
+        range = range,
+        horizontalCenterBias = horizontalCenterBias,
+        side = side,
+        onLimitChanged = onLimitChanged
+    )
+}
 
-
+@Composable
+internal fun ChangeableMemberHeartRateLimit(
+    color: Color,
+    heartRateLimit: HeartRate,
+    range: ClosedRange<HeartRate>,
+    horizontalCenterBias: Float = .5f,
+    side: ScaleSide = ScaleSide.Right,
+    onLimitChanged: (HeartRate) -> Unit = {}
+) {
     var myHeartRateLimit by remember { mutableStateOf(heartRateLimit) }
-
     var isDragging: Boolean by remember { mutableStateOf(false) }
     var parentSize: IntSize? = null
 
@@ -84,12 +101,12 @@ internal fun ChangeableMemberHeartRateLimit(
                     .fillMaxWidth(.3f)
                     .height(if (isDragging) 2.dp else 1.5.dp)
             ) {
-                drawRect(SolidColor(user.displayColorLight.toColor()))
+                drawRect(SolidColor(color))
             }
 
             Box(modifier = Modifier.size(if (isDragging) 30.dp else 20.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawCircle(SolidColor(user.displayColorLight.toColor()))
+                    drawCircle(SolidColor(color))
                 }
             }
         }
