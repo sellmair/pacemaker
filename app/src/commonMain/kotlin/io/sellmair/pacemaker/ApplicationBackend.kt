@@ -54,7 +54,6 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launch {
         hrMeasurements.collect { hrMeasurement ->
             val user = userService.currentUser()
-            if (user != userService.findUser(hrMeasurement.sensorInfo)) return@collect
             pacemakerBluetoothService.await().write {
                 setUser(user)
                 setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)

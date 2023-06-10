@@ -78,11 +78,11 @@ class StoredUserService(
         }
     }
 
-    override suspend fun findUser(sensorId: HeartRateSensorId): User? {
+    override suspend fun findUser(sensorId: HeartRateSensorId): User {
         return withLock {
             val userId = userIdBySensorId[sensorId] ?: return@withLock null
             users[userId]
-        }
+        } ?: currentUser()
     }
 
     override suspend fun findUpperHeartRateLimit(user: User): HeartRate? {

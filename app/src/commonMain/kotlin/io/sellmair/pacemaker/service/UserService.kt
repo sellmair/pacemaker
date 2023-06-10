@@ -14,8 +14,8 @@ interface UserService {
     suspend fun unlinkSensor(sensorId: HeartRateSensorId)
     suspend fun saveUpperHeartRateLimit(user: User, limit: HeartRate)
 
-    suspend fun findUser(sensorInfo: HeartRateSensorInfo): User? = findUser(sensorInfo.id)
-    suspend fun findUser(sensorId: HeartRateSensorId): User?
+    suspend fun findUser(sensorInfo: HeartRateSensorInfo): User = findUser(sensorInfo.id)
+    suspend fun findUser(sensorId: HeartRateSensorId): User
     suspend fun findUpperHeartRateLimit(user: User): HeartRate?
 
     val onChange: Flow<Unit>
