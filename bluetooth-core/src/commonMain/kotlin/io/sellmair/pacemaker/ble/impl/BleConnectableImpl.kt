@@ -20,6 +20,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -48,6 +49,11 @@ internal class BleConnectableImpl(
         .filterNotNull()
         .shareIn(scope, SharingStarted.Eagerly)
 
+
+    private val _rssi = MutableStateFlow<Int?>(null)
+
+    override val rssi = _rssi.asStateFlow()
+
     override fun connectIfPossible(connect: Boolean) {
         connectIfPossible.value = connect
         if (!connect) {
@@ -60,6 +66,7 @@ internal class BleConnectableImpl(
     }
 
     suspend fun onScanResult(result: BleCentralController.ScanResult) {
+        _rssi.value = result.rssi
         if (connectIfPossible.value && connectionState.value == Disconnected && result.isConnectable) {
             connectionState.value = BleConnectable.ConnectionState.Connecting
             queue enqueue ConnectPeripheralBleOperation(controller.deviceId) connect@{

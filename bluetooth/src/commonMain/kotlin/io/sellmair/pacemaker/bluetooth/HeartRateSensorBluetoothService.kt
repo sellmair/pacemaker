@@ -68,6 +68,7 @@ private class HeartRateSensorImpl(
             sensorInfo = HeartRateSensorInfo(
                 id = delegate.deviceId.toHeartRateSensorId(),
                 rssi = null
+
             ),
             receivedTime = TimeSource.Monotonic.markNow()
         )

@@ -2,10 +2,13 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.bluetooth.HeartRateSensor
+import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
+import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.ui.ui
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +31,9 @@ interface HeartRateSensorConnectionViewModel {
  * within this actor incorporating ui events
  */
 class HeartRateRateSensorConnectionViewModelImpl(
-    scope: CoroutineScope,
-    private val sensor: HeartRateSensor
+    private val scope: CoroutineScope,
+    private val sensor: HeartRateSensor,
+    private val userService: UserService,
 ) : HeartRateSensorConnectionViewModel {
     private val connectionStateImpl = MutableStateFlow<BleConnectable.ConnectionState?>(null)
 
@@ -57,11 +61,23 @@ class HeartRateRateSensorConnectionViewModelImpl(
 
     override fun onConnectClicked() {
         events.trySend(Event.UIEvent.ConnectClicked)
-        sensor.connectIfPossible(true)    }
+        sensor.connectIfPossible(true)
+        scope.launch(Dispatchers.Main.immediate) {
+            if (userService.findUser(sensor.deviceId.toHeartRateSensorId()) == null) {
+                userService.linkSensor(userService.currentUser(), sensor.deviceId.toHeartRateSensorId())
+            }
+        }
+    }
 
     override fun onDisconnectClicked() {
         events.trySend(Event.UIEvent.DisconnectClicked)
-        sensor.connectIfPossible(false)    }
+        sensor.connectIfPossible(false)
+        scope.launch(Dispatchers.Main.immediate) {
+            if(userService.findUser(sensor.deviceId.toHeartRateSensorId())?.isMe == true) {
+                userService.unlinkSensor(sensor.deviceId.toHeartRateSensorId())
+            }
+        }
+    }
 
     init {
         scope.launch {

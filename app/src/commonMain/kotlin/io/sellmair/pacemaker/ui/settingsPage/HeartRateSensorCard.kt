@@ -4,7 +4,7 @@ package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.outlined.CellTower
@@ -43,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -144,31 +148,12 @@ internal fun HeartRateSensorCard(
 
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(modifier = Modifier.animateContentSize()) {
-                        if (associatedUser != null && associatedUser.isAdhoc) {
-                            var userName by remember { mutableStateOf(associatedUser.name) }
-                            BasicTextField(
-                                value = associatedUser.name,
-                                textStyle = TextStyle(
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = Color.White
-                                ),
-                                singleLine = true,
-                                onValueChange = { newName ->
-                                    userName = newName
-                                    onEvent(UpdateAdhocUser(associatedUser.copy(name = newName)))
-                                }
-                            )
-                        }
-
-                        Text(
-                            text = sensorName ?: sensorId.value,
-                            color = Color.White,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = if (associatedUser?.isAdhoc == true) 12.sp else 18.sp
-                        )
-                    }
+                    HeartRateCardTitle(
+                        sensorName = sensorName,
+                        sensorId = sensorId,
+                        associatedUser = associatedUser,
+                        onEvent = onEvent
+                    )
 
                     Spacer(Modifier.weight(1f))
 
@@ -203,15 +188,15 @@ internal fun HeartRateSensorCard(
                 Spacer(Modifier.height(8.dp))
 
                 SensorLiveInformation(
-                    visible = rssi != null,
-                    icon = Icons.Outlined.CellTower,
-                    text = "$rssi db"
-                )
-
-                SensorLiveInformation(
                     visible = heartRate != null && connectionState == Connected,
                     icon = Icons.Outlined.FavoriteBorder,
                     text = "${heartRate?.value?.roundToInt() ?: ""}"
+                )
+
+                SensorLiveInformation(
+                    visible = rssi != null,
+                    icon = Icons.Outlined.CellTower,
+                    text = "$rssi db"
                 )
 
                 SensorLiveInformation(
@@ -240,6 +225,7 @@ internal fun HeartRateSensorCard(
                                 if (associatedUser?.isAdhoc == true) {
                                     onEvent(DeleteAdhocUser(associatedUser))
                                     adhocUserViewVisible = false
+                                    onDisconnectClicked()
                                 } else {
                                     onEvent(CreateAdhocUser(sensorId))
                                     adhocUserViewVisible = true
@@ -327,6 +313,62 @@ internal fun SensorLiveInformation(
                 fontSize = 12.sp
             )
         }
+    }
+}
+
+@Composable
+internal fun HeartRateCardTitle(
+    sensorName: String?,
+    sensorId: HeartRateSensorId,
+    associatedUser: User?,
+    onEvent: (ApplicationIntent.SettingsPageIntent) -> Unit
+) {
+    Column {
+        AnimatedVisibility(
+            visible = associatedUser != null,
+            enter = expandVertically(clip = false) + fadeIn(),
+            exit = shrinkVertically(clip = false) + fadeOut()
+        ) {
+            /* Remember last non null user */
+            val userState = remember { mutableStateOf(associatedUser) }
+            if(associatedUser != null) userState.value = associatedUser
+            val user = userState.value?: return@AnimatedVisibility
+
+            var userName by remember { mutableStateOf(user.name) }
+
+            val customTextSelectionColors = TextSelectionColors(
+                handleColor = Color.White,
+                backgroundColor = Color.White.copy(alpha = 0.4f)
+            )
+
+            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                BasicTextField(
+                    readOnly = !user.isAdhoc,
+                    value = user.name,
+                    cursorBrush = SolidColor(Color.White),
+                    textStyle = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White
+                    ),
+                    singleLine = true,
+                    decorationBox = { it() },
+                    onValueChange = { newName ->
+                        userName = newName
+                        onEvent(UpdateAdhocUser(user.copy(name = newName)))
+                    }
+                )
+            }
+        }
+
+        val labelTextSize by animateFloatAsState(if (associatedUser != null) 12f else 18f)
+
+        Text(
+            text = sensorName ?: sensorId.value,
+            color = Color.White,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = labelTextSize.sp
+        )
     }
 }
 
