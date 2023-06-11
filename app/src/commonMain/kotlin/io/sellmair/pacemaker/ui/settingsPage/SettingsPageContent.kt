@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package io.sellmair.pacemaker.ui.settingsPage
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,62 +70,69 @@ internal fun SettingsPageDevicesList(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (heartRateSensors.isEmpty()) {
 
-            Column(
-                Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-            ) {
+        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                CatImage(
-                    Modifier.fillMaxWidth()
-                        .height(200.dp)
-                )
+            if (heartRateSensors.isEmpty()) {
+                item(key = "empty placeholder") {
+                    Spacer(Modifier.height(48.dp))
+                    Column(
+                        Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center,
+                    ) {
 
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(Modifier.height(24.dp))
+                        CatImage(
+                            Modifier.fillMaxWidth()
+                                .height(200.dp)
+                        )
+
+                        Column(
+                            Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(Modifier.height(24.dp))
 
 
-                    Text(
-                        "Searching for nearby devices",
-                        fontSize = 12.sp
-                    )
+                            Text(
+                                "Searching for nearby devices",
+                                fontSize = 12.sp
+                            )
 
-                    Text(
-                        "Please stand by 👍",
-                        fontSize = 8.sp,
-                        fontWeight = FontWeight.Light
-                    )
+                            Text(
+                                "Please stand by 👍",
+                                fontSize = 8.sp,
+                                fontWeight = FontWeight.Light
+                            )
 
-                    Spacer(Modifier.height(24.dp))
+                            Spacer(Modifier.height(24.dp))
 
-                    CircularProgressIndicator(
-                        color = me.displayColor.toColor(),
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 1.dp
-                    )
-
-                    Spacer(Modifier.height(128.dp))
-
+                        }
+                    }
                 }
             }
 
-        }
-
-        LazyColumn {
-            items(heartRateSensors) { sensor ->
+            items(heartRateSensors, key = { it.id.value }) { sensor ->
                 Box(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(24.dp).animateItemPlacement()
                 ) {
                     HeartRateSensorCard(
                         me = me,
                         viewModel = sensor,
-                        onEvent = onIntent
+                        onEvent = onIntent,
                     )
                 }
+            }
+
+            item(key = "Progress") {
+                Spacer(Modifier.height(24.dp))
+
+                CircularProgressIndicator(
+                    color = me.displayColor.toColor(),
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 1.dp
+                )
+
+                Spacer(Modifier.height(128.dp))
             }
         }
     }
