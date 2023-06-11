@@ -36,6 +36,8 @@ interface BleConnectable {
     val connectionState: StateFlow<ConnectionState>
     val connectIfPossible: StateFlow<Boolean>
     fun connectIfPossible(connect: Boolean)
+
+    val rssi: StateFlow<Int?>
 }
 
 interface BleConnection : BleWritable {

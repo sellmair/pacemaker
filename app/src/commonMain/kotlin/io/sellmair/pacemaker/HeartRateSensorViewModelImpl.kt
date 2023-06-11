@@ -11,7 +11,6 @@ import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -29,7 +28,7 @@ internal class HeartRateSensorViewModelImpl(
     override val name: String? = heartRateSensor.deviceName
     override val id: HeartRateSensorId = heartRateSensor.deviceId.toHeartRateSensorId()
 
-    override val rssi: StateFlow<Int?> = MutableStateFlow(null)
+    override val rssi: StateFlow<Int?> = heartRateSensor.rssi
 
     override val heartRate: StateFlow<HeartRate?> =
         heartRateSensor.heartRate.map { it.heartRate }.stateIn(scope, WhileSubscribed(), null)
@@ -53,5 +52,5 @@ internal class HeartRateSensorViewModelImpl(
         }
         .stateIn(scope, WhileSubscribed(), null)
 
-    override val connection = HeartRateRateSensorConnectionViewModelImpl(scope, heartRateSensor)
+    override val connection = HeartRateRateSensorConnectionViewModelImpl(scope, heartRateSensor, userService)
 }
