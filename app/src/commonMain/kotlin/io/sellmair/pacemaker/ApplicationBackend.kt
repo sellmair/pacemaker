@@ -54,7 +54,8 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     /* Start broadcasting my own state to other participant  */
     scope.launch {
         hrMeasurements.collect { hrMeasurement ->
-            val user = userService.currentUser()
+            val user = userService.findUser(hrMeasurement.sensorInfo.id) ?: return@collect
+            if (!user.isMe) return@collect
             pacemakerBluetoothService.await().write {
                 setUser(user)
                 setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
