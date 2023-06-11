@@ -5,6 +5,7 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.bluetooth.broadcastPackages
+import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import io.sellmair.pacemaker.model.User
@@ -82,5 +83,15 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
                 )
             )
         }
+    }
+
+    /* Auto connect to hr sensors */
+    scope.launch {
+        heartRateSensorBluetoothService.await().newSensorsNearby
+            .collect { sensor ->
+                if (userService.findUser(sensor.deviceId.toHeartRateSensorId())?.isMe == true) {
+                    sensor.connectIfPossible(true)
+                }
+            }
     }
 }

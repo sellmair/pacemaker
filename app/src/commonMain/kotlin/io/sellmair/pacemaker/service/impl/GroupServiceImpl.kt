@@ -53,6 +53,7 @@ private suspend fun calculateGroupState(
     val memberStates = measurementsWithinLastMinute
         .map { hrMeasurement ->
             val user = foreignStates.find { it.sensorInfo?.id == hrMeasurement.sensorInfo.id }?.user
+                ?: userService.findUser(hrMeasurement.sensorInfo.id)
             GroupMember(
                 user = user,
                 currentHeartRate = hrMeasurement.heartRate,
