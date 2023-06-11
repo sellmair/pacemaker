@@ -90,12 +90,12 @@ internal fun HeartRateSensorCard(
         heartRate = viewModel.heartRate.collectAsState().value,
         associatedUser = viewModel.associatedUser.collectAsState().value,
         associatedHeartRateLimit = viewModel.associatedHeartRateLimit.collectAsState().value,
-        connectIfPossible = viewModel.connectIfPossible.collectAsState().value,
-        connectionState = viewModel.connectionState.collectAsState().value,
+        connectIfPossible = viewModel.connection.connectIfPossible.collectAsState().value,
+        connectionState = viewModel.connection.connectionState.collectAsState().value,
         modifier = modifier,
         onEvent = onEvent,
-        onConnectClicked = { viewModel.tryConnect() },
-        onDisconnectClicked = { viewModel.tryDisconnect() }
+        onConnectClicked = { viewModel.connection.onConnectClicked() },
+        onDisconnectClicked = { viewModel.connection.onDisconnectClicked() }
     )
 }
 
@@ -321,7 +321,6 @@ internal fun SensorLiveInformation(
     }
 }
 
-
 @Composable
 internal fun ConnectDisconnectButton(
     color: HSLColor,
@@ -361,4 +360,3 @@ internal fun ConnectDisconnectButton(
         }
     }
 }
-

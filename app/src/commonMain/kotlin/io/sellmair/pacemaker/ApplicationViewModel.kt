@@ -61,7 +61,7 @@ private class ApplicationViewModelImpl(
             .map { nearbySensors ->
                 nearbySensors.map { sensor ->
                     viewModelsBySensors.getOrPut(sensor) {
-                        HeartRateSensorViewModelImpl(scope, userService, sensor)
+                        HeartRateSensorViewModelImpl(scope, sensor, userService)
                     }
                 }
             }
