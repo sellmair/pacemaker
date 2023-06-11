@@ -1,6 +1,5 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
@@ -11,11 +10,7 @@ interface HeartRateSensorViewModel {
     val name: String?
     val heartRate: StateFlow<HeartRate?>
     val rssi: StateFlow<Int?>
-    val connectIfPossible: StateFlow<Boolean>
-    val connectionState: StateFlow<BleConnectable.ConnectionState?>
     val associatedUser: StateFlow<User?>
     val associatedHeartRateLimit: StateFlow<HeartRate?>
-
-    fun tryConnect()
-    fun tryDisconnect()
+    val connection: HeartRateSensorConnectionViewModel
 }
