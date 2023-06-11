@@ -90,6 +90,7 @@ internal fun HeartRateSensorCard(
         heartRate = viewModel.heartRate.collectAsState().value,
         associatedUser = viewModel.associatedUser.collectAsState().value,
         associatedHeartRateLimit = viewModel.associatedHeartRateLimit.collectAsState().value,
+        connectIfPossible = viewModel.connectIfPossible.collectAsState().value,
         connectionState = viewModel.connectionState.collectAsState().value,
         modifier = modifier,
         onEvent = onEvent,
@@ -109,7 +110,8 @@ internal fun HeartRateSensorCard(
     heartRate: HeartRate?,
     associatedUser: User?,
     associatedHeartRateLimit: HeartRate?,
-    connectionState: ConnectionState,
+    connectIfPossible: Boolean,
+    connectionState: ConnectionState?,
     modifier: Modifier = Modifier,
     onEvent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
     onConnectClicked: () -> Unit = {},
@@ -163,7 +165,7 @@ internal fun HeartRateSensorCard(
 
                     Box {
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = connectionState != Connected,
+                            visible = !connectIfPossible,
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
@@ -175,7 +177,7 @@ internal fun HeartRateSensorCard(
                         }
 
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = connectionState == Connected,
+                            visible = connectIfPossible,
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
@@ -323,16 +325,17 @@ internal fun SensorLiveInformation(
 @Composable
 internal fun ConnectDisconnectButton(
     color: HSLColor,
-    connectionState: ConnectionState,
+    connectionState: ConnectionState?,
     onConnectClicked: () -> Unit,
     onDisconnectClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         modifier = modifier.animateContentSize(),
-        enabled = connectionState != Connecting,
+        enabled = connectionState != null && connectionState != Connecting,
         onClick = onClick@{
             when (connectionState) {
+                null -> Unit
                 Disconnected -> onConnectClicked()
                 Connecting -> Unit
                 Connected -> onDisconnectClicked()
@@ -346,7 +349,7 @@ internal fun ConnectDisconnectButton(
         val lightColor = color.copy(lightness = .95f)
 
         when (connectionState) {
-            Disconnected -> Text("Connect", color = lightColor.toColor())
+            null, Disconnected -> Text("Connect", color = lightColor.toColor())
 
             Connecting -> CircularProgressIndicator(
                 color = lightColor.toColor(),

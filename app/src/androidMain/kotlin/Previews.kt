@@ -24,6 +24,7 @@ fun HeartRateSensorPreview() {
         heartRate = HeartRate(64f),
         associatedUser = null,
         associatedHeartRateLimit = null,
+        connectIfPossible = false,
         connectionState = BleConnectable.ConnectionState.Disconnected
     )
 }
