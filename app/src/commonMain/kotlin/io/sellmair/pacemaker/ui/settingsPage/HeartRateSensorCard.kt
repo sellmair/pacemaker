@@ -1,13 +1,18 @@
 @file:OptIn(ExperimentalAnimationApi::class)
+@file:Suppress("OPT_IN_USAGE")
 
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -72,7 +77,10 @@ import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
 import io.sellmair.pacemaker.ui.widget.ScaleSide
+import kotlinx.coroutines.flow.debounce
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
@@ -91,7 +99,10 @@ internal fun HeartRateSensorCard(
         associatedUser = viewModel.associatedUser.collectAsState().value,
         associatedHeartRateLimit = viewModel.associatedHeartRateLimit.collectAsState().value,
         connectIfPossible = viewModel.connection.connectIfPossible.collectAsState().value,
-        connectionState = viewModel.connection.connectionState.collectAsState().value,
+        connectionState = viewModel.connection.connectionState
+            .debounce { if (it in setOf(Disconnected, Connected)) 500.milliseconds else 0.seconds }
+            .collectAsState(Disconnected)
+            .value,
         modifier = modifier,
         onEvent = onEvent,
         onConnectClicked = { viewModel.connection.onConnectClicked() },
@@ -330,7 +341,7 @@ internal fun ConnectDisconnectButton(
     modifier: Modifier = Modifier
 ) {
     Button(
-        modifier = modifier.animateContentSize(),
+        modifier = modifier,
         enabled = connectionState != null && connectionState != Connecting,
         onClick = onClick@{
             when (connectionState) {
@@ -347,16 +358,34 @@ internal fun ConnectDisconnectButton(
     ) {
         val lightColor = color.copy(lightness = .95f)
 
-        when (connectionState) {
-            null, Disconnected -> Text("Connect", color = lightColor.toColor())
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            AnimatedVisibility(
+                visible = connectionState == null || connectionState == Disconnected,
+                enter = expandHorizontally(),
+                exit = shrinkHorizontally()
+            ) {
+                Text("Connect", color = lightColor.toColor())
+            }
 
-            Connecting -> CircularProgressIndicator(
-                color = lightColor.toColor(),
-                modifier = Modifier.size(14.dp),
-                strokeWidth = 2.dp
-            )
+            AnimatedVisibility(
+                visible = connectionState == Connected,
+                enter = expandHorizontally(),
+                exit = shrinkHorizontally()
+            ) {
+                Text("Disconnect", color = lightColor.copy(saturation = 0.1f).toColor())
+            }
 
-            Connected -> Text("Disconnect", color = lightColor.copy(saturation = 0.1f).toColor())
+            AnimatedVisibility(
+                visible = connectionState == Connecting,
+                enter = fadeIn() + expandIn(),
+                exit = fadeOut() + shrinkOut()
+            ) {
+                CircularProgressIndicator(
+                    color = lightColor.toColor(),
+                    modifier = Modifier.size(14.dp),
+                    strokeWidth = 2.dp
+                )
+            }
         }
     }
 }
