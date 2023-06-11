@@ -1,5 +1,4 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-@file:Suppress("OPT_IN_USAGE")
+@file:OptIn(ExperimentalAnimationApi::class, FlowPreview::class)
 
 package io.sellmair.pacemaker.ui.settingsPage
 
@@ -77,6 +76,7 @@ import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
 import io.sellmair.pacemaker.ui.widget.ScaleSide
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -144,7 +144,6 @@ internal fun HeartRateSensorCard(
 
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     Column(modifier = Modifier.animateContentSize()) {
                         if (associatedUser != null && associatedUser.isAdhoc) {
                             var userName by remember { mutableStateOf(associatedUser.name) }
@@ -169,7 +168,6 @@ internal fun HeartRateSensorCard(
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = if (associatedUser?.isAdhoc == true) 12.sp else 18.sp
                         )
-
                     }
 
                     Spacer(Modifier.weight(1f))
