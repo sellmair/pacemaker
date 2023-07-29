@@ -17,11 +17,11 @@ kotlin.targetHierarchy.custom {
     common {
         group("nonAndroid") {
             withCompilations { true }
-            withoutCompilations { it.target.platformType == KotlinPlatformType.androidJvm }
+            excludeCompilations { it.target.platformType == KotlinPlatformType.androidJvm }
         }
 
         group("jvmAndAndroid") {
-            withAndroid()
+            withAndroidTarget()
             withJvm()
         }
     }

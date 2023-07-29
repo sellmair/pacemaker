@@ -102,6 +102,7 @@
 				B07ED25629BF9C21008A106B /* Sources */,
 				B07ED25729BF9C21008A106B /* Frameworks */,
 				B07ED25829BF9C21008A106B /* Resources */,
+				5DE2E9C6F6892075816688DC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -158,6 +159,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5DE2E9C6F6892075816688DC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AA3495ADA9984FDA120BB08C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

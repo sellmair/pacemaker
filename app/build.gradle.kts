@@ -32,7 +32,7 @@ kotlin {
         /* Utils */
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
-        implementation("org.jetbrains.kotlinx:atomicfu:0.20.2")
+        implementation("org.jetbrains.kotlinx:atomicfu:0.21.0")
     }
 
     sourceSets.androidMain.get().dependencies {
@@ -77,5 +77,5 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.7")
+    //kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.7")
 }

@@ -12,7 +12,7 @@ plugins {
 
 kotlin {
     plugins.withType<AndroidBasePlugin>().configureEach {
-        android()
+        androidTarget()
     }
 
     iosX64()
@@ -25,7 +25,7 @@ kotlin {
         common {
             group("mobile") {
                 group("ios")
-                withAndroid()
+                withAndroidTarget()
                 withJvm()
             }
         }
@@ -33,6 +33,7 @@ kotlin {
 
     sourceSets.all {
         languageSettings.optIn("kotlin.time.ExperimentalTime")
+        languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
     }
 
     jvmToolchain(8)
