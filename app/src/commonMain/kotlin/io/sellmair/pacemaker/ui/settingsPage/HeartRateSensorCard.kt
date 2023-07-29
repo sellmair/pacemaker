@@ -216,42 +216,54 @@ internal fun HeartRateSensorCard(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 
-                        IconButton(
-                            modifier = Modifier.animateEnterExit(
-                                exit = slideOutHorizontally { -it } + fadeOut(),
-                                enter = slideInHorizontally { -it } + fadeIn()
-                            ),
-                            onClick = {
-                                if (associatedUser?.isAdhoc == true) {
-                                    onEvent(DeleteAdhocUser(associatedUser))
-                                    adhocUserViewVisible = false
-                                    onDisconnectClicked()
-                                } else {
-                                    onEvent(CreateAdhocUser(sensorId))
-                                    adhocUserViewVisible = true
-                                }
-                            },
-                        ) {
-                            Icon(
-                                if (associatedUser?.isAdhoc == true) Icons.Outlined.PersonRemove
-                                else Icons.Outlined.PersonAdd,
-                                contentDescription = null,
-                                tint = me.displayColorLight.copy(lightness = .95f).toColor()
-                            )
+                        /*
+                        Connect/Disconnect as 'adhoc' user
+                         */
+                        AnimatedVisibility(visible = associatedUser == null || associatedUser.isAdhoc) {
+                            IconButton(
+                                modifier = Modifier.animateEnterExit(
+                                    exit = slideOutHorizontally { -it } + fadeOut(),
+                                    enter = slideInHorizontally { -it } + fadeIn()
+                                ),
+                                onClick = {
+                                    if (associatedUser?.isAdhoc == true) {
+                                        onEvent(DeleteAdhocUser(associatedUser))
+                                        adhocUserViewVisible = false
+                                        onDisconnectClicked()
+                                    } else {
+                                        onEvent(CreateAdhocUser(sensorId))
+                                        adhocUserViewVisible = true
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    if (associatedUser?.isAdhoc == true) Icons.Outlined.PersonRemove
+                                    else Icons.Outlined.PersonAdd,
+                                    contentDescription = null,
+                                    tint = me.displayColorLight.copy(lightness = .95f).toColor()
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.weight(1f))
 
-                        ConnectDisconnectButton(
-                            modifier = Modifier.animateEnterExit(
-                                exit = slideOutHorizontally { it } + fadeOut(),
-                                enter = slideInHorizontally { it } + fadeIn()
-                            ),
-                            color = me.displayColor,
-                            connectionState = connectionState,
-                            onConnectClicked = onConnectClicked,
-                            onDisconnectClicked = onDisconnectClicked
-                        )
+                        /*
+                        Connect/Disconnect to 'me' (aka my account)
+                         */
+                        AnimatedVisibility(
+                            visible = associatedUser == null || associatedUser.isMe
+                        ) {
+                            ConnectDisconnectButton(
+                                modifier = Modifier.animateEnterExit(
+                                    exit = slideOutHorizontally { it } + fadeOut(),
+                                    enter = slideInHorizontally { it } + fadeIn()
+                                ),
+                                color = me.displayColor,
+                                connectionState = connectionState,
+                                onConnectClicked = onConnectClicked,
+                                onDisconnectClicked = onDisconnectClicked
+                            )
+                        }
                     }
                 }
 
@@ -331,8 +343,8 @@ internal fun HeartRateCardTitle(
         ) {
             /* Remember last non null user */
             val userState = remember { mutableStateOf(associatedUser) }
-            if(associatedUser != null) userState.value = associatedUser
-            val user = userState.value?: return@AnimatedVisibility
+            if (associatedUser != null) userState.value = associatedUser
+            val user = userState.value ?: return@AnimatedVisibility
 
             var userName by remember { mutableStateOf(user.name) }
 
