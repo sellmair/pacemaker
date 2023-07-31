@@ -2,7 +2,9 @@ package io.sellmair.pacemaker.service.impl
 
 import io.sellmair.pacemaker.Group
 import io.sellmair.pacemaker.GroupMember
+import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateMeasurement
+import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
@@ -65,5 +67,18 @@ private suspend fun calculateGroupState(
         .distinctBy { it.user ?: it.sensorInfo?.id }
 
 
-    return Group(memberStates)
+    return Group(
+        memberStates + GroupMember(
+            user = User(
+                isMe = false,
+                id = UserId(2411L),
+                name = "Sebastian Sellmair",
+                isAdhoc = false,
+                imageUrl = null
+            ),
+            currentHeartRate = HeartRate(120),
+            heartRateLimit = HeartRate(140),
+            sensorInfo = null
+        )
+    )
 }

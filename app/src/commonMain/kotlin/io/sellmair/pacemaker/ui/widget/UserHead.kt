@@ -10,12 +10,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.ui.displayColor
-import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.GroupMember
+import io.sellmair.pacemaker.model.nameAbbreviation
+import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.toColor
 
 @Composable
@@ -47,7 +48,9 @@ internal fun UserHead(
         Text(
             text = abbreviation,
             color = Color.White,
-            fontSize = 10.sp
+            fontSize = 10.sp,
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center,
         )
     }
 }
