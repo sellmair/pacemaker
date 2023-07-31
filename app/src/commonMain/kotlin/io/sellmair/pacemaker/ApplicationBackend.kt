@@ -45,7 +45,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
      */
     scope.launch {
         while (true) {
-            delay(30.seconds)
+            delay(1.seconds)
             groupService.invalidate()
         }
     }
