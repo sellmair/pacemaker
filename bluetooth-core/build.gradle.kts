@@ -7,13 +7,16 @@ android {
     namespace = "io.sellmair.pacemaker.bluetooth.core"
 }
 
-kotlin.sourceSets.commonMain.get().dependencies {
-    api(project(":models"))
-    api(project(":utils"))
-    api(Dependencies.coroutinesCore)
-    implementation(Dependencies.okio)
-}
+kotlin {
+    androidTarget()
+    sourceSets.commonMain.get().dependencies {
+        api(project(":models"))
+        api(project(":utils"))
+        api(Dependencies.coroutinesCore)
+        implementation(Dependencies.okio)
+    }
 
-kotlin.sourceSets.androidMain.get().dependencies {
-    implementation("androidx.annotation:annotation:1.6.0")
+    sourceSets.androidMain.get().dependencies {
+        implementation("androidx.annotation:annotation:1.7.0")
+    }
 }

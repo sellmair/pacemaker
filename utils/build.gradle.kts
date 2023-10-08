@@ -12,6 +12,7 @@ android {
 }
 
 kotlin.jvm()
+kotlin.androidTarget()
 
 kotlin.targetHierarchy.custom {
     common {
