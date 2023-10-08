@@ -3,3 +3,7 @@ plugins {
     id("android-conventions")
     id("com.android.application")
 }
+
+kotlin {
+    androidTarget()
+}

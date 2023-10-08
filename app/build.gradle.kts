@@ -37,8 +37,8 @@ kotlin {
 
     sourceSets.androidMain.get().dependencies {
         /* androidx */
-        implementation("androidx.activity:activity-compose:1.7.2")
-        implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+        implementation("androidx.activity:activity-compose:1.8.0")
+        implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
         implementation(compose.preview)
 
         /* Polar SDK and dependencies */
@@ -53,13 +53,13 @@ kotlin {
 
     sourceSets.invokeWhenCreated("androidDebug") {
         dependencies {
-            implementation("androidx.compose.ui:ui-tooling:1.4.3")
-            implementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+            implementation("androidx.compose.ui:ui-tooling:1.5.3")
+            implementation("androidx.compose.ui:ui-test-manifest:1.5.3")
         }
     }
 
     sourceSets.androidInstrumentedTest.get().dependencies {
-        implementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+        implementation("androidx.compose.ui:ui-test-junit4:1.5.3")
     }
 
     cocoapods {
