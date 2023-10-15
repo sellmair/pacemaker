@@ -1,9 +1,12 @@
-@file:Suppress("OPT_IN_USAGE")
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    id("kmp-conventions")
+    id("pacemaker-application")
+}
+
+pacemaker {
+    macos()
 }
 
 kotlin {

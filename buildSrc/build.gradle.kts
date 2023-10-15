@@ -3,8 +3,6 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
         mavenContent {
             includeGroupByRegex(".*compose.*")
@@ -17,12 +15,15 @@ repositories {
             includeGroupByRegex(".*android.*")
         }
     }
+
+    mavenCentral()
+    gradlePluginPortal()
 }
 
-
 dependencies {
-    val kotlinVersion = "1.9.20-Beta2"
-    implementation("org.jetbrains.compose:compose-gradle-plugin:1.5.10-beta02")
+    val kotlinVersion = "1.9.20-RC"
+    implementation("org.jetbrains.compose:compose-gradle-plugin:1.5.10-rc01")
     implementation(kotlin("gradle-plugin:$kotlinVersion"))
+    implementation(kotlin("serialization:1.9.0"))
     implementation("com.android.tools.build:gradle:8.1.2")
 }

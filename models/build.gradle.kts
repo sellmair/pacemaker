@@ -1,11 +1,13 @@
 plugins {
-    id("kmp-library-conventions")
-    kotlin("plugin.serialization")
+    id("pacemaker-library")
 }
 
-kotlin {
-    sourceSets.commonMain.get().dependencies {
-        api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
-        api(Dependencies.okio)
+pacemaker {
+    jvm()
+    ios()
+    macos()
+
+    features {
+        kotlinxSerialisation()
     }
 }
