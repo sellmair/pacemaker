@@ -4,23 +4,23 @@ import kotlin.test.*
 
 class ContextTest {
 
-    object StringKey : Context.Key<String>
+    object StringKey : Configuration.Key<String>
 
-    object StringKeyWithDefault : Context.Key.WithDefault<String> {
+    object StringKeyWithDefault : Configuration.Key.WithDefault<String> {
         override val default: String = "foo"
     }
 
-    internal data class MyElement(val value: Int) : Context.Element<MyElement> {
-        override val key: Context.Key<MyElement> = Key
+    internal data class MyElement(val value: Int) : Configuration.Element<MyElement> {
+        override val key: Configuration.Key<MyElement> = Key
 
-        companion object Key : Context.Key.WithDefault<MyElement> {
+        companion object Key : Configuration.Key.WithDefault<MyElement> {
             override val default: MyElement = MyElement(0)
         }
     }
 
     @Test
     fun `test - empty context`() {
-        val empty = Context.empty
+        val empty = Configuration.empty
         assertTrue(StringKey !in empty)
         assertTrue(StringKeyWithDefault !in empty)
         assertTrue(MyElement !in empty)
@@ -32,7 +32,7 @@ class ContextTest {
 
     @Test
     fun `test - adding elements to empty context`() {
-        val empty = Context.empty
+        val empty = Configuration.empty
         val context0 = empty.plus(StringKey, "value0")
         assertEquals("value0", context0[StringKey])
 
@@ -50,7 +50,7 @@ class ContextTest {
 
     @Test
     fun `test - creating non-empty context`() {
-        val context = Context(MyElement(1), StringKeyWithDefault plus "bar")
+        val context = Configuration(MyElement(1), StringKeyWithDefault plus "bar")
         assertEquals(MyElement(1), context[MyElement])
         assertEquals("bar", context[StringKeyWithDefault])
         assertNull(context[StringKey])
@@ -58,8 +58,8 @@ class ContextTest {
 
     @Test
     fun `test - merging two context`() {
-        val contextA = Context(MyElement(1), StringKey plus "stringKeyValueA", StringKeyWithDefault plus "stringKeyWithDefaultValueA")
-        val contextB = Context(MyElement(2), StringKey plus "stringKeyValueB")
+        val contextA = Configuration(MyElement(1), StringKey plus "stringKeyValueA", StringKeyWithDefault plus "stringKeyWithDefaultValueA")
+        val contextB = Configuration(MyElement(2), StringKey plus "stringKeyValueB")
 
         run {
             val merged = contextA + contextB

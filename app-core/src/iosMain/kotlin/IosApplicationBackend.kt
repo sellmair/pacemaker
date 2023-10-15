@@ -7,8 +7,9 @@ import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
+import io.sellmair.pacemaker.utils.Configuration
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -18,29 +19,27 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-class IosApplicationBackend : ApplicationBackend {
-
-    private val coroutineScope = MainScope()
+class IosApplicationBackend : ApplicationBackend, Configuration by Configuration(), CoroutineScope by MainScope() {
 
     private val ble = AppleBle()
 
-    override val pacemakerBluetoothService = coroutineScope.async { PacemakerBluetoothService(ble) }
+    override val pacemakerBluetoothService = async { PacemakerBluetoothService(ble) }
 
-    override val heartRateSensorBluetoothService = coroutineScope.async { HeartRateSensorBluetoothService(ble) }
+    override val heartRateSensorBluetoothService = async { HeartRateSensorBluetoothService(ble) }
 
     override val userService: UserService by lazy {
         val fileManager = NSFileManager.defaultManager()
         val documents = fileManager.URLsForDirectory(NSDocumentDirectory, NSUserDomainMask).first() as NSURL
         val root = documents.path!!.toPath().resolve("users")
-        StoredUserService(coroutineScope, root)
+        StoredUserService(this, root)
     }
 
     override val groupService: GroupService by lazy {
-        GroupServiceImpl(userService)
+        GroupService(userService)
     }
 
 
     init {
-        launchApplicationBackend(coroutineScope)
+        launchApplicationBackend(this)
     }
 }

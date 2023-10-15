@@ -1,7 +1,7 @@
 package io.sellmair.pacemaker.ui
 
-import io.sellmair.pacemaker.GroupMember
 import io.sellmair.pacemaker.HeartRateSensorViewModel
+import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.User
 import kotlin.math.absoluteValue
 
@@ -25,23 +25,11 @@ val User.displayColor: HSLColor
         lightness = .4f
     )
 
+val UserState.displayColor: HSLColor
+    get() = user.displayColor
 
-val GroupMember.displayColor: HSLColor
-    get() = user?.displayColor ?: HSLColor(
-        hue = (this.sensorInfo?.id?.value?.hashCode() ?: 0).toFloat().absoluteValue % 360f,
-        saturation = .5f,
-        lightness = .4f
-    )
-
-
-
-val GroupMember.displayColorLight: HSLColor
-    get() = user?.displayColorLight
-        ?: HSLColor(
-            hue = (this.sensorInfo?.id?.value?.hashCode() ?: 0).toFloat().absoluteValue % 360f,
-            saturation = .7f,
-            lightness = .75f
-        )
+val UserState.displayColorLight: HSLColor
+    get() = user.displayColorLight
 
 val HeartRateSensorViewModel.displayColor: HSLColor
     get() = this.associatedUser.value?.displayColor ?: HSLColor(

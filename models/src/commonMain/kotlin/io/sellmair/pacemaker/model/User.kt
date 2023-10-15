@@ -8,7 +8,6 @@ data class User(
     val id: UserId,
     val name: String,
     val isAdhoc: Boolean = false,
-    val imageUrl: String? = null
 )
 
 val User.nameAbbreviation: String

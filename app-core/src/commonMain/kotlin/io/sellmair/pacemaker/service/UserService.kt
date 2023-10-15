@@ -3,6 +3,7 @@ package io.sellmair.pacemaker.service
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
+import io.sellmair.pacemaker.model.UserId
 import kotlinx.coroutines.flow.Flow
 
 interface UserService {
@@ -13,8 +14,9 @@ interface UserService {
     suspend fun unlinkSensor(sensorId: HeartRateSensorId)
     suspend fun saveUpperHeartRateLimit(user: User, limit: HeartRate)
 
+    suspend fun findUser(userId: UserId): User?
     suspend fun findUser(sensorId: HeartRateSensorId): User?
-    suspend fun findUpperHeartRateLimit(user: User): HeartRate?
+    suspend fun findHeartRateLimit(user: User): HeartRate?
 
     val onChange: Flow<Unit>
 }

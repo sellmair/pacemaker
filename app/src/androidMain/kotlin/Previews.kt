@@ -16,7 +16,6 @@ fun HeartRateSensorPreview() {
             id = UserId(0),
             name = "Sebastian Sellmair",
             isAdhoc = false,
-            imageUrl = null
         ),
         sensorName = "Polar H10 8B18CA22",
         sensorId = HeartRateSensorId("this is a sensor id"),

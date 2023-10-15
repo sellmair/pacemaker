@@ -15,18 +15,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.model.nameAbbreviation
-import io.sellmair.pacemaker.GroupMember
+import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.ui.toColor
 
 @Composable
 internal fun UserHead(
-    memberState: GroupMember,
+    userState: UserState,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
 ) {
     UserHead(
-        abbreviation = memberState.user?.nameAbbreviation ?: "?",
-        color = memberState.displayColor.toColor(),
+        abbreviation = userState.user?.nameAbbreviation ?: "?",
+        color = userState.displayColor.toColor(),
         modifier = modifier,
         size = size
     )

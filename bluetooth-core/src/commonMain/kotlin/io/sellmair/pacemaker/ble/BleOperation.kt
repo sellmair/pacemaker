@@ -1,6 +1,6 @@
 package io.sellmair.pacemaker.ble
 
-import io.sellmair.pacemaker.utils.Context
+import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.CoroutineScope
 
 typealias BleSimpleOperation = BleOperation<Unit>
@@ -12,7 +12,7 @@ interface BleOperation<out T> {
 
 internal suspend infix fun <T> BleQueue.enqueue(operation: BleOperation<T>): BleResult<T> {
     return this.enqueue(
-        context = Context(BleQueue.OperationTitle(operation.description)),
+        configuration = Configuration(BleQueue.OperationTitle(operation.description)),
         action = { with(operation) { invoke() } }
     )
 }

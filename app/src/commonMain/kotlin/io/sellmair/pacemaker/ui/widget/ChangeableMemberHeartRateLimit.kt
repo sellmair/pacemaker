@@ -18,12 +18,12 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
-import io.sellmair.pacemaker.GroupMember
+import io.sellmair.pacemaker.UserState
 import kotlin.math.roundToInt
 
 @Composable
 internal fun ChangeableMemberHeartRateLimit(
-    state: GroupMember,
+    state: UserState,
     range: ClosedRange<HeartRate>,
     horizontalCenterBias: Float = .5f,
     side: ScaleSide = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left,

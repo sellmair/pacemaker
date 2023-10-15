@@ -2,10 +2,13 @@ package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.ble.impl.BleCentralServiceImpl
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
+import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.*
 
+context(Configuration)
 fun AppleBle(): Ble = AppleBleImpl()
 
+context(Configuration)
 private class AppleBleImpl : Ble {
 
     override val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())

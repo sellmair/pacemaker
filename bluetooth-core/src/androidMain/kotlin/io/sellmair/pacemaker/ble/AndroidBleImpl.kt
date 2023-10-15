@@ -3,14 +3,18 @@ package io.sellmair.pacemaker.ble
 import android.content.Context
 import io.sellmair.pacemaker.ble.impl.BleCentralServiceImpl
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
+import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.*
 import java.io.Closeable
 
+context(Configuration)
 fun AndroidBle(context: Context): Ble = AndroidBleImpl(context)
 
+context(Configuration)
 private class AndroidBleImpl(private val context: Context) : Ble, Closeable {
 
-    override val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val coroutineScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1) + SupervisorJob())
 
     private val queue = BleQueue(coroutineScope.coroutineContext.job)
 

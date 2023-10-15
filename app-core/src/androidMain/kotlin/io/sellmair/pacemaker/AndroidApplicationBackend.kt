@@ -9,14 +9,14 @@ import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
+import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
 import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 
-class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
+class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope, Configuration by Configuration() {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
@@ -43,7 +43,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         StoredUserService(this, filesDir.resolve("userService").toOkioPath())
     }
 
-    override val groupService by lazy { GroupServiceImpl(userService) }
+    override val groupService by lazy { GroupService(userService) }
 
     override fun onCreate() {
         super.onCreate()
@@ -53,10 +53,10 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         /* Update notification showing current users heart rate */
         launch {
             groupService.group
-                .mapNotNull { it.members.find { it.user?.isMe == true } }
+                .mapNotNull { it.members.find { it.user.isMe } }
                 .collect { currentUserState ->
                     notification.update(
-                        currentUserState.currentHeartRate ?: return@collect,
+                        currentUserState.heartRate,
                         currentUserState.heartRateLimit ?: return@collect
                     )
                 }

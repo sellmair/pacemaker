@@ -1,21 +1,13 @@
 package io.sellmair.pacemaker.service.impl
 
-import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.model.HeartRateSensorId
-import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.model.randomUserId
+import io.sellmair.pacemaker.model.*
 import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.utils.defaultFileSystem
 import io.sellmair.pacemaker.utils.readUtf8OrNull
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.builtins.ListSerializer
@@ -86,6 +78,10 @@ class StoredUserService(
         }
     }
 
+    override suspend fun findUser(userId: UserId): User? {
+        return withLock { users[userId] }
+    }
+
     override suspend fun findUser(sensorId: HeartRateSensorId): User? {
         return withLock {
             val userId = userIdBySensorId[sensorId] ?: return@withLock null
@@ -93,7 +89,7 @@ class StoredUserService(
         }
     }
 
-    override suspend fun findUpperHeartRateLimit(user: User): HeartRate? {
+    override suspend fun findHeartRateLimit(user: User): HeartRate? {
         return withLock {
             heartRateLimitByUserId[user.id]
         }

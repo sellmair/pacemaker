@@ -13,10 +13,8 @@ import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
@@ -31,19 +29,8 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     val hrMeasurements = flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
         .flatMapMerge { sensor -> sensor.heartRate }
         .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
-        .onEach { groupService.invalidate() }
         .shareIn(scope, SharingStarted.WhileSubscribed())
 
-    /*
-     Regularly call the updateState w/o measurements, to invalidate old ones, in case
-     no measurements arrive
-     */
-    scope.launch {
-        while (true) {
-            delay(30.seconds)
-            groupService.invalidate()
-        }
-    }
 
 
     /* Start broadcasting my own state to other participant  */
@@ -54,7 +41,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
             pacemakerBluetoothService.await().write {
                 setUser(user)
                 setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
-                userService.findUpperHeartRateLimit(user)?.let { heartRateLimit ->
+                userService.findHeartRateLimit(user)?.let { heartRateLimit ->
                     setHeartRateLimit(heartRateLimit)
                 }
             }

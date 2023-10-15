@@ -69,7 +69,6 @@ private class ApplicationViewModelImpl(
         is MainPageIntent.UpdateHeartRateLimit -> {
             val me = userService.currentUser()
             userService.saveUpperHeartRateLimit(me, intent.heartRateLimit)
-            groupService.invalidate()
         }
 
         is SettingsPageIntent.LinkSensor -> {
@@ -96,22 +95,18 @@ private class ApplicationViewModelImpl(
             userService.save(adhocUser)
             userService.linkSensor(adhocUser, intent.sensor)
             userService.saveUpperHeartRateLimit(adhocUser, HeartRate(130))
-            groupService.invalidate()
         }
 
         is SettingsPageIntent.UpdateAdhocUser -> {
             userService.save(intent.user)
-            groupService.invalidate()
         }
 
         is SettingsPageIntent.DeleteAdhocUser -> {
             userService.delete(intent.user)
-            groupService.invalidate()
         }
 
         is SettingsPageIntent.UpdateAdhocUserLimit -> {
             userService.saveUpperHeartRateLimit(intent.user, intent.limit)
-            groupService.invalidate()
         }
     }
 
@@ -123,7 +118,6 @@ private class ApplicationViewModelImpl(
             intentQueue.consumeEach { intent ->
                 process(intent)
                 _me.value = userService.currentUser()
-                groupService.invalidate()
             }
         }
     }

@@ -44,9 +44,9 @@ internal class HeartRateSensorViewModelImpl(
         .flatMapLatest { user ->
             if (user == null) flowOf<HeartRate?>(null)
             else flow {
-                emit(userService.findUpperHeartRateLimit(user))
+                emit(userService.findHeartRateLimit(user))
                 userService.onChange.collect {
-                    emit(userService.findUpperHeartRateLimit(user))
+                    emit(userService.findHeartRateLimit(user))
                 }
             }
         }

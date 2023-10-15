@@ -11,15 +11,15 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
-import io.sellmair.pacemaker.GroupMember
+import io.sellmair.pacemaker.UserState
 
 @Composable
 internal fun MemberHeartRateLimit(
-    memberState: GroupMember,
+    userState: UserState,
     range: ClosedRange<HeartRate>
 ) {
-    val user = memberState.user ?: return
-    val heartRateLimit = memberState.heartRateLimit ?: return
+    val user = userState.user ?: return
+    val heartRateLimit = userState.heartRateLimit ?: return
     OnHeartRateScalePosition(heartRateLimit, range, side = ScaleSide.Left) {
         Canvas(
             modifier = Modifier
