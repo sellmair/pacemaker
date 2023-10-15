@@ -11,12 +11,13 @@ import android.os.ParcelUuid
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
 import io.sellmair.pacemaker.utils.info
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.util.*
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 @SuppressLint("MissingPermission")
 internal class AndroidPeripheralController(
@@ -161,8 +162,6 @@ internal class AndroidPeripheralController(
     }
 
     init {
-        @OptIn(ExperimentalStdlibApi::class)
-        require(scope.coroutineContext[CoroutineDispatcher.Key] == Dispatchers.ble)
 
         /* Receive read requests */
         scope.launch {

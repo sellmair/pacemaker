@@ -18,11 +18,11 @@ suspend fun PacemakerBluetoothService(ble: Ble): PacemakerBluetoothService {
     return object : PacemakerBluetoothService {
         override val newConnections: SharedFlow<PacemakerBluetoothConnection> =
             flowOf(peripheral.newConnections, central.newConnections).flattenMerge()
-                .shareIn(ble.scope, SharingStarted.Eagerly)
+                .shareIn(ble.coroutineScope, SharingStarted.Eagerly)
 
         override val allConnections: SharedFlow<List<PacemakerBluetoothConnection>> =
             flowOf(peripheral.allConnections, central.allConnections)
-                .flattenMerge().shareIn(ble.scope, SharingStarted.Eagerly)
+                .flattenMerge().shareIn(ble.coroutineScope, SharingStarted.Eagerly)
 
         override fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
             peripheral.write(write)

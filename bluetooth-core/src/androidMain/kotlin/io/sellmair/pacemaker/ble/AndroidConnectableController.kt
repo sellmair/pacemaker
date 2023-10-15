@@ -1,4 +1,4 @@
-@file:OptIn(FlowPreview::class)
+@file:OptIn(ExperimentalCoroutinesApi::class)
 
 package io.sellmair.pacemaker.ble
 
@@ -9,13 +9,13 @@ import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
 import io.sellmair.pacemaker.utils.info
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
 
 @SuppressLint("MissingPermission")
 internal class AndroidConnectableController(
-    private val scope: CoroutineScope,
+    scope: CoroutineScope,
     private val service: BleServiceDescriptor,
     private val hardware: AndroidConnectableHardware,
 ) : BleConnectableController {
@@ -51,7 +51,7 @@ internal class AndroidConnectableController(
 
     private var gatt: BluetoothGatt? = null
 
-    override suspend fun connect(): BleSimpleResult {
+    override suspend fun connect(): BleUnit {
         log.info("$deviceId: connect() ($service)")
         if (gatt != null) {
             gatt?.disconnect()
@@ -64,44 +64,44 @@ internal class AndroidConnectableController(
 
             if (statusCode.isSuccess && connectionStateChange.newState == BluetoothGatt.STATE_CONNECTED) {
                 log.debug("'$deviceId': Connection state changed: 'Connected'")
-                return@mapNotNull BleSimpleResult.Success
+                return@mapNotNull BleSuccess()
             }
 
             if (!statusCode.isSuccess) {
-                return@mapNotNull BleResult.Failure.Message("'$deviceId: Failed connecting: status=$statusCode")
+                return@mapNotNull BleFailure.Message("'$deviceId: Failed connecting: status=$statusCode")
             }
 
             null
         }.first()
     }
 
-    override suspend fun disconnect(): BleSimpleResult {
-        val gatt = gatt ?: return BleSimpleResult.Success
+    override suspend fun disconnect(): BleUnit {
+        val gatt = gatt ?: return BleSuccess()
         gatt.disconnect()
         hardware.callback.onConnectionStateChange.first()
         gatt.close()
-        return BleSimpleResult.Success
+        return BleSuccess()
     }
 
-    override suspend fun discoverService(): BleSimpleResult {
-        val gatt = gatt ?: return BleResult.Failure.Message("No 'gatt' connected")
+    override suspend fun discoverService(): BleUnit {
+        val gatt = gatt ?: return BleFailure.Message("No 'gatt' connected")
         gatt.discoverServices()
         val status = BleStatusCode(hardware.callback.onServicesDiscovered.first().status)
-        return if (status.isSuccess) BleSimpleResult.Success
-        else BleResult.Failure.Code(status)
+        return if (status.isSuccess) BleSuccess()
+        else BleFailure.StatusCode(status)
     }
 
-    override suspend fun discoverCharacteristics(): BleSimpleResult {
+    override suspend fun discoverCharacteristics(): BleUnit {
         /* Android does not have a dedicated function for this */
         return requireGattService().map { }
     }
 
     @Suppress("DEPRECATION")
-    override suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleSimpleResult {
+    override suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleUnit {
         val gatt = requireGatt().getOr { return it }
         val characteristic = requireGattCharacteristic(characteristicDescriptor).getOr { return it }
         if (!gatt.setCharacteristicNotification(characteristic, true)) {
-            return BleResult.Failure.Message("'setCharacteristicNotification' failed for $characteristic")
+            return BleFailure.Message("'setCharacteristicNotification' failed for $characteristic")
         }
 
         val ccdUUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
@@ -117,19 +117,19 @@ internal class AndroidConnectableController(
         val gatt = requireGatt().getOr { return it }
         val characteristic = requireGattCharacteristic(characteristicDescriptor).getOr { return it }
         if (!gatt.readCharacteristic(characteristic)) {
-            return BleResult.Failure.Message("Failed reading '$characteristicDescriptor")
+            return BleFailure.Message("Failed reading '$characteristicDescriptor")
         }
 
         val read = hardware.callback.onCharacteristicRead.first { it.characteristic == characteristic }
         val statusCode = BleStatusCode(read.status)
-        if (!statusCode.isSuccess) return BleResult.Failure.Code(statusCode)
-        return BleResult(read.value)
+        if (!statusCode.isSuccess) return BleFailure.StatusCode(statusCode)
+        return BleSuccess(read.value)
     }
 
     override suspend fun writeValue(
         characteristicDescriptor: BleCharacteristicDescriptor,
         value: ByteArray
-    ): BleSimpleResult {
+    ): BleUnit {
         val gatt = requireGatt().getOr { return it }
         val characteristic = requireGattCharacteristic(characteristicDescriptor).getOr { return it }
 
@@ -147,16 +147,16 @@ internal class AndroidConnectableController(
 
 
     private fun requireGatt(): BleResult<BluetoothGatt> {
-        val gatt = this.gatt ?: return BleResult.Failure.Message("Missing 'gatt'. Is device connected?")
-        return BleResult.Success(gatt)
+        val gatt = this.gatt ?: return BleFailure.Message("Missing 'gatt'. Is device connected?")
+        return BleSuccess(gatt)
     }
 
     private fun requireGattService(): BleResult<BluetoothGattService> {
         return requireGatt().flatMap { gatt ->
             @Suppress("EQUALITY_NOT_APPLICABLE") // TODO: Create ticket!
             val service = gatt.services.find { it.uuid == service.uuid }
-            return if (service == null) BleResult.Failure.Message("Missing '$service' in 'gatt'")
-            else BleResult.Success(service)
+            return if (service == null) BleFailure.Message("Missing '$service' in 'gatt'")
+            else BleSuccess(service)
         }
     }
 
@@ -164,8 +164,8 @@ internal class AndroidConnectableController(
         descriptor: BleCharacteristicDescriptor
     ): BleResult<BluetoothGattCharacteristic> = requireGattService().flatMap { service ->
         val characteristic = service.getCharacteristic(descriptor.uuid)
-            ?: return@flatMap BleResult.Failure.Message("Missing $descriptor in gatt service")
-        BleResult.Success(characteristic)
+            ?: return@flatMap BleFailure.Message("Missing $descriptor in gatt service")
+        BleSuccess(characteristic)
     }
 
     companion object {

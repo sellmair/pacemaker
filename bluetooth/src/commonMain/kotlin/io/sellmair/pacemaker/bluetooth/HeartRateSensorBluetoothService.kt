@@ -37,9 +37,9 @@ suspend fun HeartRateSensorBluetoothService(ble: Ble): HeartRateSensorBluetoothS
     val allSensorsNearby = MutableStateFlow<List<HeartRateSensor>>(emptyList())
 
     val newSensorsNearby = central.connectables
-        .map { connectable -> HeartRateSensorImpl(ble.scope, connectable) }
+        .map { connectable -> HeartRateSensorImpl(ble.coroutineScope, connectable) }
         .onEach { sensor -> allSensorsNearby.value += sensor }
-        .shareIn(ble.scope, SharingStarted.Eagerly)
+        .shareIn(ble.coroutineScope, SharingStarted.Eagerly)
 
     central.startScanning()
 

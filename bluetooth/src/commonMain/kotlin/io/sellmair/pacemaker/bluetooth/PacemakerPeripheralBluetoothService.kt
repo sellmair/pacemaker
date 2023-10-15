@@ -20,7 +20,7 @@ internal suspend fun PacemakerPeripheralBluetoothService(ble: Ble): PacemakerPer
     val allConnections = MutableStateFlow<List<PeripheralPacemakerBluetoothConnection>>(emptyList())
 
     suspend fun createNewConnection(id: BleDeviceId): PeripheralPacemakerBluetoothConnection {
-        val connection = PeripheralPacemakerBluetoothConnection(id, ble.scope)
+        val connection = PeripheralPacemakerBluetoothConnection(id, ble.coroutineScope)
         connectionsById[id] = connection
         connection.coroutineContext.job.invokeOnCompletion {
             connectionsById.remove(id)
@@ -37,7 +37,7 @@ internal suspend fun PacemakerPeripheralBluetoothService(ble: Ble): PacemakerPer
         connection.receivedValues.emit(value)
     }
 
-    ble.scope.launch {
+    ble.coroutineScope.launch {
         service.receivedWrites.collect(::onReceivedValue)
     }
 
@@ -48,7 +48,7 @@ internal suspend fun PacemakerPeripheralBluetoothService(ble: Ble): PacemakerPer
         override val allConnections: SharedFlow<List<PacemakerBluetoothConnection>> = allConnections
 
         override fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
-            ble.scope.launch { PacemakerBluetoothWritable(service).write() }
+            ble.coroutineScope.launch { PacemakerBluetoothWritable(service).write() }
         }
     }
 }

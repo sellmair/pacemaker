@@ -1,9 +1,9 @@
 package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.utils.toNSData
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -20,6 +20,7 @@ internal class ApplePeripheralController(
 ) : BlePeripheralController {
 
 
+    @OptIn(BetaInteropApi::class)
     override fun startAdvertising() {
         val serviceName = hardware.serviceDescriptor.name
         val serviceUUID = hardware.serviceDescriptor.uuid
@@ -44,6 +45,7 @@ internal class ApplePeripheralController(
         return true
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     override suspend fun respond(
         request: BlePeripheralController.ReadRequest, value: ByteArray, statusCode: BleStatusCode
     ): Boolean {
@@ -89,9 +91,6 @@ internal class ApplePeripheralController(
     }
 
     init {
-        @OptIn(ExperimentalStdlibApi::class)
-        require(scope.coroutineContext[CoroutineDispatcher.Key] == Dispatchers.ble)
-
         /* Receive read requests */
         scope.launch {
             hardware.delegate.didReceiveReadRequest.collect { didReceiveReadRequest ->

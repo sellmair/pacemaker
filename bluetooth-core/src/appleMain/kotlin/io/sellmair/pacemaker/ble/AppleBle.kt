@@ -8,28 +8,28 @@ fun AppleBle(): Ble = AppleBleImpl()
 
 private class AppleBleImpl : Ble {
 
-    override val scope = CoroutineScope(Dispatchers.ble + SupervisorJob())
+    override val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    private val queue = BleQueue(scope)
+    private val queue = BleQueue(coroutineScope.coroutineContext.job)
 
     override suspend fun createCentralService(service: BleServiceDescriptor): BleCentralService {
-        return withContext(scope.coroutineContext) {
-            val centralHardware = AppleCentralHardware(scope, service)
-            val controller = AppleCentralController(scope, centralHardware)
-            BleCentralServiceImpl(scope, queue, controller, service)
+        return withContext(coroutineScope.coroutineContext) {
+            val centralHardware = AppleCentralHardware(coroutineScope, service)
+            val controller = AppleCentralController(coroutineScope, centralHardware)
+            BleCentralServiceImpl(coroutineScope, queue, controller, service)
         }
     }
 
     override suspend fun createPeripheralService(service: BleServiceDescriptor): BlePeripheralService {
-        return withContext(scope.coroutineContext) {
-            val peripheralHardware = ApplePeripheralHardware(scope, service)
-            val peripheralController = ApplePeripheralController(scope, peripheralHardware)
-            BlePeripheralServiceImpl(queue, peripheralController, service)
+        return withContext(coroutineScope.coroutineContext) {
+            val peripheralHardware = ApplePeripheralHardware(coroutineScope, service)
+            val peripheralController = ApplePeripheralController(coroutineScope, peripheralHardware)
+            BlePeripheralServiceImpl(queue, peripheralController, service, coroutineScope)
         }
     }
 
     override fun close() {
-        scope.cancel()
+        coroutineScope.cancel()
     }
 }
 

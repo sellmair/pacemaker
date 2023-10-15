@@ -1,7 +1,7 @@
+@file:Suppress("unused")
+
 package io.sellmair.pacemaker.ble
 
-import io.sellmair.pacemaker.utils.LogTag
-import io.sellmair.pacemaker.utils.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,6 @@ import platform.CoreBluetooth.CBPeripheralManagerDelegateProtocol
 import platform.CoreBluetooth.CBService
 import platform.Foundation.NSError
 import platform.darwin.NSObject
-import kotlin.native.internal.createCleaner
 
 internal class ApplePeripheralManagerDelegate(
     private val scope: CoroutineScope
@@ -79,14 +78,5 @@ internal class ApplePeripheralManagerDelegate(
             thisDelegate.didAddService.emit(DidAddService(peripheral, didAddService, error))
         }
     }
-
-
-    companion object {
-        val log get() = LogTag.ble.forClass<ApplePeripheralManagerDelegate>()
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    @Suppress("unused")
-    val cleaner = createCleaner(Unit) { AppleCentralManagerDelegate.log.debug("removed") }
 
 }

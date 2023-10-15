@@ -1,74 +1,102 @@
 package io.sellmair.pacemaker.ble
 
-import io.sellmair.pacemaker.ble.impl.BleQueueImpl
-import kotlinx.coroutines.CoroutineScope
+import io.sellmair.pacemaker.ble.BleQueue.Timeout
+import io.sellmair.pacemaker.utils.Context
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-fun BleQueue(scope: CoroutineScope, operationTimeout: Duration = 30.seconds): BleQueue =
-    BleQueueImpl(scope, operationTimeout)
 
-interface BleQueue {
-    val scope: CoroutineScope
+/**
+ * Queue used for processing all bluetooth operations.
+ * This queue will run all dispatched/[enqueue]ed events on a single
+ * loop on a given dispatcher.
+ *
+ * The timeout can be overwritten using [Timeout]
+ */
+internal class BleQueue(
+    job: Job,
+    private val context: Context = Context.empty,
+) {
 
-    sealed interface Result<out T> {
-        data class Success<T>(val value: T) : Result<T>
+    /**
+     * Timeout used for any given operation:
+     * Can be passed by [BleQueue.context] or for each individual [BleQueue.enqueue] 'context
+     */
+    data class Timeout(val value: Duration) : Context.Element<Timeout> {
+        override val key: Context.Key<Timeout> = Key
 
-        sealed interface Failure : Result<Nothing> {
-            data class Ble(val reason: BleResult.Failure) : Failure {
-                override fun toString(): String = "Ble($reason)"
-            }
-
-            data class Error(val reason: Throwable) : Failure {
-                override fun toString(): String = "Error(${reason.message})"
-            }
-
-            object Timeout : Failure {
-                override fun toString(): String = "Timeout"
-            }
-
-            object NotEnqueued : Failure {
-                override fun toString(): String = "NotEnqueued"
-            }
+        companion object Key : Context.Key.WithDefault<Timeout> {
+            override val default: Timeout = Timeout(30.seconds)
         }
     }
 
-    interface Context : CoroutineScope
+    /**
+     * Title for a given operation
+     */
+    internal class OperationTitle(val value: String) : Context.Element<OperationTitle> {
+        override val key: Context.Key<OperationTitle> = Key
 
-    suspend infix fun <T> enqueue(operation: BleOperation<T>): Result<T>
-}
+        companion object Key : Context.Key<OperationTitle>
+    }
 
-inline fun <T, R> BleQueue.Result<T>.map(mapper: (T) -> R): BleQueue.Result<R> {
-    return when (this) {
-        is BleQueue.Result.Success<T> -> BleQueue.Result.Success(mapper(value))
-        is BleQueue.Result.Failure -> this
+    /**
+     * Can be used to overwrite/extend the dispatcher used for the queue to process
+     * incoming operations/actions
+     */
+    data class QueueDispatcher(val dispatcher: CoroutineDispatcher) : Context.Element<QueueDispatcher> {
+        override val key: Context.Key<QueueDispatcher> = Key
+
+        @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+        companion object Key : Context.Key.WithDefault<QueueDispatcher> {
+            private val dispatcher: CoroutineDispatcher by lazy { newSingleThreadContext("BleQueue") }
+            override val default: QueueDispatcher = QueueDispatcher(dispatcher)
+        }
+    }
+
+    suspend fun <T> enqueue(
+        context: Context = Context.empty, action: suspend CoroutineScope.() -> BleResult<T>
+    ): BleResult<T> {
+        check(executor.isActive) { "${BleQueue::class.simpleName}: Expected executor.isActive" }
+        val operation = Operation(this.context + context, action)
+        queue.send(operation)
+        val result = operation.await()
+        return result
+    }
+
+    private class Operation<T>(
+        val context: Context,
+        val action: suspend CoroutineScope.() -> BleResult<T>,
+    ) {
+        private val result = CompletableDeferred<BleResult<T>>()
+        fun complete(result: BleResult<T>) = this.result.complete(result)
+        suspend fun await() = result.await()
+    }
+
+    private val coroutineScope = CoroutineScope(Job(job) + context[QueueDispatcher].dispatcher)
+
+    private val queue = Channel<Operation<*>>()
+
+    private val executor = coroutineScope.launch {
+        suspend fun <T> Operation<T>.execute() {
+            val timeoutDuration = context[Timeout].value
+            val result = try {
+                withTimeout(timeoutDuration) {
+                    coroutineScope {
+                        action()
+                    }
+                }
+            } catch (t: TimeoutCancellationException) {
+                BleFailure.Timeout(timeoutDuration)
+            } catch (t: Throwable) {
+                BleFailure.Error(t)
+            }
+
+            complete(result)
+        }
+
+        queue.consumeEach { operation -> operation.execute() }
     }
 }
-
-inline fun <T, R> BleQueue.Result<T>.flatMap(mapper: (T) -> BleQueue.Result<R>): BleQueue.Result<R> {
-    return when (this) {
-        is BleQueue.Result.Success<T> -> mapper(value)
-        is BleQueue.Result.Failure -> this
-    }
-}
-
-
-inline fun <T> BleQueue.Result<T>.invokeOnSuccess(action: (T) -> Unit): BleQueue.Result<T> {
-    return apply { if (this is BleQueue.Result.Success<T>) action(value) }
-}
-
-inline fun <T> BleQueue.Result<T>.invokeOnFailure(action: (BleQueue.Result.Failure) -> Unit): BleQueue.Result<T> {
-    return apply { if (this is BleQueue.Result.Failure) action(this) }
-}
-
-fun <T> BleQueue.Result<T>.fold(
-    onSuccess: (T) -> Unit = {},
-    onFailure: (BleQueue.Result.Failure) -> Unit = {}
-): Unit {
-    return when (this) {
-        is BleQueue.Result.Success<T> -> onSuccess(value)
-        is BleQueue.Result.Failure -> onFailure(this)
-    }
-}
-
-

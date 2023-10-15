@@ -1,32 +1,12 @@
 package io.sellmair.pacemaker.ble.impl
 
-import io.sellmair.pacemaker.ble.BleCentralController
-import io.sellmair.pacemaker.ble.BleConnectable
+import io.sellmair.pacemaker.ble.*
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connected
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Disconnected
-import io.sellmair.pacemaker.ble.BleConnectableController
-import io.sellmair.pacemaker.ble.BleConnection
-import io.sellmair.pacemaker.ble.BleDeviceId
-import io.sellmair.pacemaker.ble.BleQueue
-import io.sellmair.pacemaker.ble.BleServiceDescriptor
-import io.sellmair.pacemaker.ble.BleSimpleResult
-import io.sellmair.pacemaker.ble.ble
-import io.sellmair.pacemaker.ble.invokeOnFailure
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.info
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 internal class BleConnectableImpl(
     private val scope: CoroutineScope,
@@ -70,7 +50,7 @@ internal class BleConnectableImpl(
         if (connectIfPossible.value && connectionState.value == Disconnected && result.isConnectable) {
             connectionState.value = BleConnectable.ConnectionState.Connecting
             queue enqueue ConnectPeripheralBleOperation(controller.deviceId) connect@{
-                if (controller.isConnected.value) return@connect BleSimpleResult.Success
+                if (controller.isConnected.value) return@connect BleSuccess()
                 controller.connect()
             }
         }
@@ -78,10 +58,10 @@ internal class BleConnectableImpl(
 
     private suspend fun createNewConnection(): BleConnection? {
         queue.enqueue(DiscoverServicesBleOperation(controller.deviceId, controller::discoverService))
-            .invokeOnFailure { return null }
+            .getOr { return null }
 
         queue.enqueue(DiscoverCharacteristicsBleOperation(controller.deviceId, controller::discoverCharacteristics))
-            .invokeOnFailure { return null }
+            .getOr { return null }
 
         val connectionScope = CoroutineScope(scope.coroutineContext + Job(scope.coroutineContext.job))
         return BleConnectionImpl(connectionScope, queue, controller, service)

@@ -34,7 +34,7 @@ internal class AppleConnectableController(
 
     override val rssi: MutableStateFlow<Int> = MutableStateFlow(-1)
 
-    override suspend fun connect(): BleSimpleResult {
+    override suspend fun connect(): BleResult<Unit> {
         centralHardware.manager.connectPeripheral(connectableHardware.peripheral, mapOf<Any?, Any>())
         val didConnectFlow = centralHardware.delegate.didConnectPeripheral
             .filter { it.peripheral == connectableHardware.peripheral }
@@ -45,32 +45,32 @@ internal class AppleConnectableController(
         val result = flowOf(didConnectFlow, didFailFlow).flattenMerge().first()
 
         if (result is AppleCentralManagerDelegate.DidFailConnectToPeripheral) {
-            return BleResult.Failure.Message(result.error?.localizedDescription ?: "N/A")
+            return BleFailure.Message(result.error?.localizedDescription ?: "N/A")
         }
 
         if (result is AppleCentralManagerDelegate.DidConnectPeripheral) {
-            return BleResult.Success
+            return BleSuccess()
         }
 
         throw IllegalStateException("Unexpected result type")
     }
 
-    override suspend fun disconnect(): BleSimpleResult {
+    override suspend fun disconnect(): BleResult<Unit> {
         centralHardware.manager.cancelPeripheralConnection(connectableHardware.peripheral)
-        return BleSimpleResult.Success
+        return BleSuccess()
     }
 
-    override suspend fun discoverService(): BleSimpleResult {
+    override suspend fun discoverService(): BleResult<Unit> {
         connectableHardware.peripheral.discoverServices(listOf(connectableHardware.serviceDescriptor.uuid))
         val result = connectableHardware.delegate.didDiscoverServices.first()
-        return if (result.error == null) BleSimpleResult.Success
-        else BleResult.Failure.Message(result.error.localizedDescription)
+        return if (result.error == null) BleSuccess()
+        else BleFailure.Message(result.error.localizedDescription)
     }
 
-    override suspend fun discoverCharacteristics(): BleSimpleResult {
+    override suspend fun discoverCharacteristics(): BleResult<Unit> {
         val service = connectableHardware.peripheral.services.orEmpty().map { it as CBService }.find { service ->
             service.UUID == connectableHardware.serviceDescriptor.uuid
-        } ?: return BleResult.Failure.Message("${connectableHardware.serviceDescriptor} not found")
+        } ?: return BleFailure.Message("${connectableHardware.serviceDescriptor} not found")
 
         connectableHardware.peripheral.discoverCharacteristics(
             connectableHardware.serviceDescriptor.characteristics.map { it.uuid }, service
@@ -80,16 +80,16 @@ internal class AppleConnectableController(
             .first { it.service == service }
 
         if (result.error != null) {
-            return BleResult.Failure.Message(result.error.localizedDescription)
+            return BleFailure.Message(result.error.localizedDescription)
         }
 
-        return BleResult.Success
+        return BleSuccess()
     }
 
-    override suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleSimpleResult {
+    override suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleResult<Unit> {
         return resolve(characteristicDescriptor).map { characteristic ->
             connectableHardware.peripheral.setNotifyValue(true, characteristic)
-            return BleSimpleResult.Success
+            return BleSuccess()
         }
     }
 
@@ -99,17 +99,17 @@ internal class AppleConnectableController(
             val result = connectableHardware.delegate.didUpdateValue.first { it.characteristic == characteristic }
             val value = characteristic.value
             if (result.error != null) {
-                BleResult.Failure.Message(result.error.localizedDescription)
+                BleFailure.Message(result.error.localizedDescription)
             } else if (value == null) {
-                BleResult.Failure.Message("No data received")
-            } else BleResult.Success(value.toByteString().toByteArray())
+                BleFailure.Message("No data received")
+            } else BleSuccess(value.toByteString().toByteArray())
         }
     }
 
     override suspend fun writeValue(
         characteristicDescriptor: BleCharacteristicDescriptor,
         value: ByteArray
-    ): BleSimpleResult {
+    ): BleResult<Unit> {
         return resolve(characteristicDescriptor).flatMap { characteristic ->
             connectableHardware.peripheral.writeValue(
                 value.toNSData(),
@@ -118,24 +118,24 @@ internal class AppleConnectableController(
             )
             val result = connectableHardware.delegate.didWriteValue.first { it.characteristic == characteristic }
             if (result.error != null) {
-                BleResult.Failure.Message(result.error.localizedDescription)
-            } else BleSimpleResult.Success
+                BleFailure.Message(result.error.localizedDescription)
+            } else BleSuccess()
         }
     }
 
     private fun resolve(serviceDescriptor: BleServiceDescriptor): BleResult<CBService> {
         val service = connectableHardware.peripheral.services.orEmpty().map { it as CBService }.find { service ->
             service.UUID == serviceDescriptor.uuid
-        } ?: return BleResult.Failure.Message("${connectableHardware.serviceDescriptor} not found")
-        return BleResult.Success(service)
+        } ?: return BleFailure.Message("${connectableHardware.serviceDescriptor} not found")
+        return BleSuccess(service)
     }
 
     private fun resolve(characteristicDescriptor: BleCharacteristicDescriptor): BleResult<CBCharacteristic> {
         return resolve(connectableHardware.serviceDescriptor).flatMap { service ->
             val characteristic = service.characteristics.orEmpty().map { it as CBCharacteristic }
                 .find { it.UUID == characteristicDescriptor.uuid }
-                ?: return@flatMap BleResult.Failure.Message("$characteristicDescriptor not found")
-            BleResult.Success(characteristic)
+                ?: return@flatMap BleFailure.Message("$characteristicDescriptor not found")
+            BleSuccess(characteristic)
         }
     }
 

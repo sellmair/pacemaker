@@ -14,7 +14,12 @@ class PacemakerExtension(
     private val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
 
     fun jvm() {
-        kotlin.jvm()
+        kotlin {
+            jvm()
+            sourceSets.jvmTest.dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
     }
 
     fun ios() {

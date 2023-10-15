@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.isActive
 
-class BleConnectionImpl(
+internal class BleConnectionImpl(
     override val scope: CoroutineScope,
     private val queue: BleQueue,
     private val controller: BleConnectableController,
@@ -16,15 +16,15 @@ class BleConnectionImpl(
     override val receivedValues: SharedFlow<BleReceivedValue>
         get() = controller.values
 
-    override suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleQueue.Result<Unit> {
-        if (!scope.isActive) BleQueue.Result.Failure.NotEnqueued
+    override suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleResult<Unit> {
+        if (!scope.isActive) BleFailure.Rejected
         return queue enqueue EnableNotificationsBleOperation(controller.deviceId, characteristic) {
             controller.enableNotification(characteristic)
         }
     }
 
-    override suspend fun requestRead(characteristic: BleCharacteristicDescriptor): BleQueue.Result<ByteArray> {
-        if (!scope.isActive) return BleQueue.Result.Failure.NotEnqueued
+    override suspend fun requestRead(characteristic: BleCharacteristicDescriptor): BleResult<ByteArray> {
+        if (!scope.isActive) return BleFailure.Rejected
         return queue enqueue ReadCharacteristicBleOperation(controller.deviceId, characteristic) {
             controller.readValue(characteristic)
         }
@@ -32,8 +32,8 @@ class BleConnectionImpl(
 
     override suspend fun setValue(
         characteristic: BleCharacteristicDescriptor, value: ByteArray
-    ): BleQueue.Result<Unit> {
-        if (!scope.isActive) return BleQueue.Result.Failure.NotEnqueued
+    ): BleResult<Unit> {
+        if (!scope.isActive) return BleFailure.Rejected
         return queue enqueue WriteCharacteristicBleOperation(controller.deviceId, characteristic) {
             controller.writeValue(characteristic, value)
         }

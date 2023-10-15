@@ -69,7 +69,7 @@ internal suspend fun PacemakerCentralBluetoothService(ble: Ble): PacemakerCentra
         .onEach(::onConnection)
         .map(::PacemakerConnection)
         .onEach(::onPacemakerConnection)
-        .shareIn(ble.scope, SharingStarted.Eagerly)
+        .shareIn(ble.coroutineScope, SharingStarted.Eagerly)
 
     service.startScanning()
 

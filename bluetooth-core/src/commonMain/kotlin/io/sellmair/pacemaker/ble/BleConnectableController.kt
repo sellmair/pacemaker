@@ -15,18 +15,18 @@ interface BleConnectableController {
 
     val isConnected: StateFlow<Boolean>
 
-    suspend fun connect(): BleSimpleResult
+    suspend fun connect(): BleUnit
 
-    suspend fun disconnect(): BleSimpleResult
+    suspend fun disconnect(): BleUnit
 
-    suspend fun discoverService(): BleSimpleResult
+    suspend fun discoverService(): BleUnit
 
-    suspend fun discoverCharacteristics(): BleSimpleResult
+    suspend fun discoverCharacteristics(): BleUnit
 
-    suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleSimpleResult
+    suspend fun enableNotification(characteristicDescriptor: BleCharacteristicDescriptor): BleResult<Unit>
 
     suspend fun readValue(characteristicDescriptor: BleCharacteristicDescriptor): BleResult<ByteArray>
 
-    suspend fun writeValue(characteristicDescriptor: BleCharacteristicDescriptor, value: ByteArray): BleSimpleResult
+    suspend fun writeValue(characteristicDescriptor: BleCharacteristicDescriptor, value: ByteArray): BleResult<Unit>
 
 }
