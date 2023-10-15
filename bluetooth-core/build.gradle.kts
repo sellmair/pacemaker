@@ -1,22 +1,19 @@
 plugins {
-    id("kmp-library-conventions")
-    id("com.android.library")
+    id("pacemaker-library")
 }
 
-android {
-    namespace = "io.sellmair.pacemaker.bluetooth.core"
+pacemaker {
+    android()
+    ios()
+    macos()
 }
 
 kotlin {
-    androidTarget()
-    sourceSets.commonMain.get().dependencies {
+    sourceSets.commonMain.dependencies {
         api(project(":models"))
-        api(project(":utils"))
-        api(Dependencies.coroutinesCore)
-        implementation(Dependencies.okio)
     }
 
-    sourceSets.androidMain.get().dependencies {
+    sourceSets.androidMain.dependencies {
         implementation("androidx.annotation:annotation:1.7.0")
     }
 }

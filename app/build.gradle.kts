@@ -1,17 +1,21 @@
-@file:Suppress("UnstableApiUsage", "OPT_IN_IS_NOT_ENABLED")
-@file:OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class, ExperimentalKotlinGradlePluginApi::class)
 @file:SuppressLint("TestManifestGradleConfiguration")
 
 import android.annotation.SuppressLint
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    id("kmp-application-conventions")
+    id("pacemaker-application")
     id("org.jetbrains.compose")
     kotlin("native.cocoapods")
 }
 
-android {
+pacemaker {
+    ios()
+    android()
+}
+
+extensions.configure(ApplicationExtension::class) {
     namespace = "io.sellmair.pacemaker"
 }
 
@@ -47,10 +51,11 @@ kotlin {
         implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
 
         /* kotlinx */
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
 
     }
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     sourceSets.invokeWhenCreated("androidDebug") {
         dependencies {
             implementation("androidx.compose.ui:ui-tooling:1.5.3")
@@ -58,7 +63,7 @@ kotlin {
         }
     }
 
-    sourceSets.androidInstrumentedTest.get().dependencies {
+    sourceSets.getByName("androidInstrumentedTest").dependencies {
         implementation("androidx.compose.ui:ui-test-junit4:1.5.3")
     }
 
@@ -74,8 +79,4 @@ kotlin {
             isStatic = true
         }
     }
-}
-
-compose {
-    //kotlinCompilerPlugin.set("androidx.compose.compiler:compiler:1.4.7")
 }
