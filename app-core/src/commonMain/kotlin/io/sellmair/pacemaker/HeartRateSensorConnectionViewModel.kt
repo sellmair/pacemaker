@@ -3,10 +3,9 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.bluetooth.HeartRateSensor
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
-import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.ui.ui
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
+import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -111,6 +110,6 @@ class HeartRateRateSensorConnectionViewModelImpl(
     }
 
     companion object {
-        val log = LogTag.ui.forClass<HeartRateRateSensorConnectionViewModelImpl>()
+        val log = LogTag.appCore.forClass<HeartRateRateSensorConnectionViewModelImpl>()
     }
 }

@@ -15,11 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.sellmair.pacemaker.GroupMember
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.GroupMember
 import kotlinx.coroutines.launch
 
 /* How can this be done using remember? 🤷 */
@@ -28,11 +28,11 @@ private val animationByUser = mutableMapOf<UserId?, Animatable<Float, AnimationV
 @Composable
 internal fun MemberHeartRateIndicator(member: GroupMember, range: ClosedRange<HeartRate>) {
     val side = if (member.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
-    if (member.currentHeartRate == null) return
+    val memberCurrentHeartRate = member.currentHeartRate ?: return
 
-    val animatedHeartRate = animationByUser.getOrPut(member.user?.id) { Animatable(member.currentHeartRate.value) }
+    val animatedHeartRate = animationByUser.getOrPut(member.user?.id) { Animatable(memberCurrentHeartRate.value) }
     rememberCoroutineScope().launch {
-        animatedHeartRate.animateTo(member.currentHeartRate.value)
+        animatedHeartRate.animateTo(memberCurrentHeartRate.value)
     }
 
     /* Can be null for myself */
@@ -50,8 +50,8 @@ internal fun MemberHeartRateIndicator(member: GroupMember, range: ClosedRange<He
                     .padding(horizontal = 4.dp)
             )
 
-            if (member.heartRateLimit != null) {
-                if (member.currentHeartRate > member.heartRateLimit) {
+            member.heartRateLimit?.let { memberHeartRateLimit ->
+                if (memberCurrentHeartRate > memberHeartRateLimit) {
                     Icon(
                         Icons.Default.Warning, "Too high",
                         modifier = Modifier.size(12.dp),

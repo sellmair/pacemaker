@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker.ui
 
+import IosApplicationBackend
 import androidx.compose.ui.window.ComposeUIViewController
 import io.sellmair.pacemaker.ApplicationViewModel
 import kotlinx.coroutines.MainScope

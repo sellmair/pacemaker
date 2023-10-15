@@ -1,26 +1,18 @@
-package io.sellmair.pacemaker.backend
+package io.sellmair.pacemaker
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AndroidBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
-import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.service.impl.GroupServiceImpl
 import io.sellmair.pacemaker.service.impl.StoredUserService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 
@@ -72,6 +64,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
         launchApplicationBackend(this)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

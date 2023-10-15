@@ -1,9 +1,10 @@
-package io.sellmair.pacemaker.backend
+package io.sellmair.pacemaker
 
-import android.app.*
-import android.content.Intent
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import androidx.core.app.NotificationCompat
-import io.sellmair.pacemaker.MainActivity
 import io.sellmair.pacemaker.model.HeartRate
 
 class AndroidHeartRateNotification(private val service: Service) {
@@ -26,14 +27,16 @@ class AndroidHeartRateNotification(private val service: Service) {
     }
 
     private fun createDefaultNotification(): NotificationCompat.Builder {
+        /*
         val notificationIntent = Intent(service, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(service, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+         */
 
         return NotificationCompat.Builder(service, notificationChannel.id)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setContentTitle("Pacemaker")
             .setContentText("Running")
-            .setContentIntent(pendingIntent)
+            //.setContentIntent(pendingIntent)
             .setOngoing(true)
     }
 

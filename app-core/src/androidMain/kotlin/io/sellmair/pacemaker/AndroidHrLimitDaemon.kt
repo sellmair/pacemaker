@@ -1,4 +1,4 @@
-package io.sellmair.pacemaker.backend
+package io.sellmair.pacemaker
 
 import android.app.Service
 import android.content.Context
@@ -10,8 +10,6 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
-import io.sellmair.pacemaker.Group
-import io.sellmair.pacemaker.GroupMember
 import io.sellmair.pacemaker.service.GroupService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async

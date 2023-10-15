@@ -1,7 +1,5 @@
 @file:OptIn(FlowPreview::class)
 
-package io.sellmair.pacemaker.ui
-
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService

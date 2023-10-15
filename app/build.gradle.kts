@@ -21,9 +21,7 @@ extensions.configure(ApplicationExtension::class) {
 
 kotlin {
     sourceSets.commonMain.get().dependencies {
-        api(project(":models"))
-        api(project(":utils"))
-        api(project(":bluetooth"))
+       implementation(project(":app-core"))
 
         /* COMPOSE */
         implementation(compose.ui)
@@ -34,8 +32,6 @@ kotlin {
         implementation(compose.materialIconsExtended)
 
         /* Utils */
-        implementation(Dependencies.coroutinesCore)
-        implementation(Dependencies.okio)
         implementation("org.jetbrains.kotlinx:atomicfu:0.22.0")
     }
 

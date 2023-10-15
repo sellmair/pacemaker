@@ -9,18 +9,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.GroupMember
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.GroupMember
 
 @Composable
 internal fun MemberHeartRateLimit(
     memberState: GroupMember,
     range: ClosedRange<HeartRate>
 ) {
-    if (memberState.user == null) return
-    if (memberState.heartRateLimit == null) return
-    OnHeartRateScalePosition(memberState.heartRateLimit, range, side = ScaleSide.Left) {
+    val user = memberState.user ?: return
+    val heartRateLimit = memberState.heartRateLimit ?: return
+    OnHeartRateScalePosition(heartRateLimit, range, side = ScaleSide.Left) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth(.4f)
@@ -28,7 +28,7 @@ internal fun MemberHeartRateLimit(
         ) {
             drawRect(
                 Brush.linearGradient(
-                    listOf(Color.Transparent, memberState.user.displayColorLight.toColor()),
+                    listOf(Color.Transparent, user.displayColorLight.toColor()),
                 )
             )
         }

@@ -14,11 +14,11 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.GroupMember
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.GroupMember
 import kotlin.math.roundToInt
 
 @Composable
@@ -29,11 +29,11 @@ internal fun ChangeableMemberHeartRateLimit(
     side: ScaleSide = if (state.user?.isMe == true) ScaleSide.Right else ScaleSide.Left,
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
-    if (state.user == null) return
-    if (state.heartRateLimit == null) return
+    val user = state.user ?: return
+    val heartRateLimit = state.heartRateLimit ?:  return
     ChangeableMemberHeartRateLimit(
-        user = state.user,
-        heartRateLimit = state.heartRateLimit,
+        user = user,
+        heartRateLimit = heartRateLimit,
         range = range,
         horizontalCenterBias = horizontalCenterBias,
         side = side,

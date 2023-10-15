@@ -1,4 +1,4 @@
-<manifest package="io.sellmair.pacemaker"
+<manifest
           xmlns:android="http://schemas.android.com/apk/res/android"
 >
 
@@ -31,35 +31,8 @@
             android:name="android.permission.BLUETOOTH_ADMIN"
             android:maxSdkVersion="30"/>
 
-    <!-- Polar SDK needs the fine location permission to get results for Bluetooth scan. Request
-    fine location permission on devices with API 30 (Android Q). Note, if your application
-    needs location for other purposes than bluetooth then remove android:maxSdkVersion="30"-->
-    <uses-permission
-            android:name="android.permission.ACCESS_FINE_LOCATION"
-            android:maxSdkVersion="30"/>
 
-    <!-- The coarse location permission is needed, if fine location permission is requested. Request
-      coarse location permission on devices with API 30 (Android Q). Note, if your application
-     needs location for other purposes than bluetooth then remove android:maxSdkVersion="30" -->
-    <uses-permission
-            android:name="android.permission.ACCESS_COARSE_LOCATION"
-            android:maxSdkVersion="30"/>
-
-    <application
-            android:theme="@style/AppTheme"
-            android:icon="@mipmap/ic_launcher"
-            android:label="Pacemaker"
-    >
-
-        <activity android:name="io.sellmair.pacemaker.MainActivity" android:exported="true"
-                  android:launchMode="singleTask">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
+    <application>
         <service
                 android:name="io.sellmair.pacemaker.AndroidApplicationBackend"
                 android:foregroundServiceType="health|connectedDevice"

@@ -13,10 +13,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
-import io.sellmair.pacemaker.backend.AndroidApplicationBackend
 import io.sellmair.pacemaker.ui.ApplicationWindow
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
 
 
