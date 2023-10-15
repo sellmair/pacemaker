@@ -36,7 +36,7 @@ kotlin {
         /* Utils */
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
-        implementation("org.jetbrains.kotlinx:atomicfu:0.21.0")
+        implementation("org.jetbrains.kotlinx:atomicfu:0.22.0")
     }
 
     sourceSets.androidMain.get().dependencies {
@@ -44,15 +44,6 @@ kotlin {
         implementation("androidx.activity:activity-compose:1.8.0")
         implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
         implementation(compose.preview)
-
-        /* Polar SDK and dependencies */
-        implementation("com.github.polarofficial:polar-ble-sdk:4.0.0")
-        implementation("io.reactivex.rxjava3:rxjava:3.1.6")
-        implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-
-        /* kotlinx */
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
-
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)

@@ -19,13 +19,6 @@ dependencyResolutionManagement {
             }
         }
 
-        /* Only used for polar SDK */
-        maven("https://jitpack.io") {
-            mavenContent {
-                includeGroup("com.github.polarofficial")
-            }
-        }
-
         maven("https://androidx.dev/storage/compose-compiler/repository") {
             mavenContent {
                 includeGroupByRegex("androidx.compose.*")
