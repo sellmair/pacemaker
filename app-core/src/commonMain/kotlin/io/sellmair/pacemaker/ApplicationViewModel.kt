@@ -37,7 +37,7 @@ fun ApplicationViewModel(
 private class ApplicationViewModelImpl(
     scope: CoroutineScope,
     private val userService: UserService,
-    private val groupService: GroupService,
+    groupService: GroupService,
     private val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
 ) : ApplicationViewModel {
 

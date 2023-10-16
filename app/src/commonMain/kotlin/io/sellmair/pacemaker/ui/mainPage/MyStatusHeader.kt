@@ -30,7 +30,7 @@ internal fun MyStatusHeader(
     onSettingsClicked: () -> Unit
 ) {
     val myState = state?.members.orEmpty()
-        .find { groupMemberState -> groupMemberState.user?.isMe == true }
+        .find { groupMemberState -> groupMemberState.user.isMe }
 
     Box {
         Column(

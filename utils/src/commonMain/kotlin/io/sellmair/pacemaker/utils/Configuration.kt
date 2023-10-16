@@ -45,13 +45,6 @@ interface Configuration {
 
 fun Configuration.currentConfiguration() = this
 
-fun Configuration.withConfiguration(configuration: Configuration, action: Configuration.() -> Unit) {
-    val newConfiguration = currentConfiguration() + configuration
-    with(newConfiguration) {
-        action()
-    }
-}
-
 private class ConfigurationImpl private constructor(
     private val elements: Map<Configuration.Key<*>, Any>
 ) : Configuration {

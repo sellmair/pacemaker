@@ -15,11 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
-import io.sellmair.pacemaker.UserState
 import kotlinx.coroutines.launch
 
 /* How can this be done using remember? 🤷 */
@@ -27,10 +27,10 @@ private val animationByUser = mutableMapOf<UserId?, Animatable<Float, AnimationV
 
 @Composable
 internal fun MemberHeartRateIndicator(member: UserState, range: ClosedRange<HeartRate>) {
-    val side = if (member.user?.isMe == true) ScaleSide.Right else ScaleSide.Left
-    val memberCurrentHeartRate = member.heartRate ?: return
+    val side = if (member.user.isMe) ScaleSide.Right else ScaleSide.Left
+    val memberCurrentHeartRate = member.heartRate
 
-    val animatedHeartRate = animationByUser.getOrPut(member.user?.id) { Animatable(memberCurrentHeartRate.value) }
+    val animatedHeartRate = animationByUser.getOrPut(member.user.id) { Animatable(memberCurrentHeartRate.value) }
     rememberCoroutineScope().launch {
         animatedHeartRate.animateTo(memberCurrentHeartRate.value)
     }

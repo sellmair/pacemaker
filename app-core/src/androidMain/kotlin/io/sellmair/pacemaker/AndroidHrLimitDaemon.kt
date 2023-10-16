@@ -66,7 +66,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
                             "You are at " +
                                 "${criticalStates.singleOrNull()?.heartRate?.value?.roundToInt()} bpm"
                         } else criticalStates.joinToString(", ") {
-                            "${it.user?.name} is at ${it.heartRate?.value?.roundToInt()} bpm"
+                            "${it.user.name} is at ${it.heartRate.value.roundToInt()} bpm"
                         }
                     }"
 
@@ -82,7 +82,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
             delay(1.minutes)
             launch textToSpeech@{
                 val speaker = textToSpeech.await() ?: return@textToSpeech
-                val me = group?.members.orEmpty().firstOrNull { it.user?.isMe == true }
+                val me = group?.members.orEmpty().firstOrNull { it.user.isMe }
                 val heartRate = me?.heartRate?.value?.roundToInt() ?: return@textToSpeech
                 val limit = me.heartRateLimit?.value?.roundToInt() ?: return@textToSpeech
                 val message = "Your heart rate is at: $heartRate. The current limit is: $limit"
@@ -95,7 +95,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
     groupService.group.collect { state ->
         group = state
         criticalUserStates = state.members.filter { memberState ->
-            val currentHeartRate = memberState.heartRate ?: return@filter false
+            val currentHeartRate = memberState.heartRate
             val currentHeartRateLimit = memberState.heartRateLimit ?: return@filter false
             currentHeartRate > currentHeartRateLimit
         }
