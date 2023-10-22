@@ -4,7 +4,8 @@ import io.sellmair.pacemaker.Group
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.utils.Configuration
+import io.sellmair.pacemaker.utils.ConfigurationKey
+import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
-context(Configuration, CoroutineScope)
+context(CoroutineScope)
 fun GroupService(
     userService: UserService
 ): GroupService = GroupServiceImpl(userService)
@@ -24,12 +25,12 @@ interface GroupService {
     val group: StateFlow<Group>
     fun add(measurement: HeartRateMeasurement)
 
-    object KeepMeasurementDuration : Configuration.Key.WithDefault<Duration> {
+    object KeepMeasurementDuration : ConfigurationKey.WithDefault<Duration> {
         override val default: Duration = 1.minutes
     }
 }
 
-context(Configuration, CoroutineScope)
+context(CoroutineScope)
 private class GroupServiceImpl(
     private val userService: UserService
 ) : GroupService {
@@ -74,7 +75,7 @@ private class GroupServiceImpl(
 
                         /* Schedule invalidation of measurement after certain amount of time */
                         launch {
-                            delay(get(GroupService.KeepMeasurementDuration))
+                            delay(GroupService.KeepMeasurementDuration.value())
                             events.send(Event.DiscardMeasurement(user.id, event.measurement))
                         }
                     }

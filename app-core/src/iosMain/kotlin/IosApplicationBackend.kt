@@ -8,7 +8,6 @@ import io.sellmair.pacemaker.launchApplicationBackend
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.service.impl.StoredUserService
-import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
@@ -19,7 +18,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-class IosApplicationBackend : ApplicationBackend, Configuration by Configuration(), CoroutineScope by MainScope() {
+class IosApplicationBackend : ApplicationBackend, CoroutineScope by MainScope() {
 
     private val ble = AppleBle()
 

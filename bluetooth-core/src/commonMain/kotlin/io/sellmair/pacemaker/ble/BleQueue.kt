@@ -1,11 +1,12 @@
 package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.ble.BleQueue.Timeout
-import io.sellmair.pacemaker.utils.Configuration
-import io.sellmair.pacemaker.utils.currentConfiguration
+import io.sellmair.pacemaker.utils.ConfigurationKey
+import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -17,48 +18,42 @@ import kotlin.time.Duration.Companion.seconds
  *
  * The timeout can be overwritten using [Timeout]
  */
-context(Configuration)
-internal class BleQueue(job: Job) {
+internal class BleQueue(context: CoroutineContext) {
 
     /**
-     * Timeout used for any given operation:
-     * Can be passed by [BleQueue.context] or for each individual [BleQueue.enqueue] 'context
+     * Timeout used for any given operation
      */
-    data class Timeout(val value: Duration) : Configuration.Element<Timeout> {
-        override val key: Configuration.Key<Timeout> = Key
-
-        companion object Key : Configuration.Key.WithDefault<Timeout> {
-            override val default: Timeout = Timeout(30.seconds)
-        }
+    object Timeout : ConfigurationKey.WithDefault<Duration> {
+        override val default: Duration = 30.seconds
     }
 
     /**
      * Title for a given operation
      */
-    internal class OperationTitle(val value: String) : Configuration.Element<OperationTitle> {
-        override val key: Configuration.Key<OperationTitle> = Key
-
-        companion object Key : Configuration.Key<OperationTitle>
-    }
+    internal object OperationTitle : ConfigurationKey<String>
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-    object QueueDispatcher : Configuration.Key.WithDefault<CoroutineDispatcher> {
+    object QueueDispatcher : ConfigurationKey.WithDefault<CoroutineDispatcher> {
         override val default: CoroutineDispatcher by lazy { newSingleThreadContext("BleQueue") }
     }
 
-    suspend fun <T> enqueue(
-        configuration: Configuration = Configuration.empty,
-        action: suspend CoroutineScope.() -> BleResult<T>
-    ): BleResult<T> {
+    suspend fun <T> enqueue(action: suspend CoroutineScope.() -> BleResult<T>): BleResult<T> {
         check(executor.isActive) { "${BleQueue::class.simpleName}: Expected executor.isActive" }
-        val operation = Operation(currentConfiguration() + configuration, action)
+
+        val operation = Operation(
+            title = OperationTitle.value(),
+            timeout = Timeout.value(),
+            action = action
+        )
+
         queue.send(operation)
         val result = operation.await()
         return result
     }
 
     private class Operation<T>(
-        val configuration: Configuration,
+        val title: String?,
+        val timeout: Duration,
         val action: suspend CoroutineScope.() -> BleResult<T>,
     ) {
         private val result = CompletableDeferred<BleResult<T>>()
@@ -66,21 +61,20 @@ internal class BleQueue(job: Job) {
         suspend fun await() = result.await()
     }
 
-    private val coroutineScope = CoroutineScope(Job(job) + get(QueueDispatcher))
+    private val coroutineScope = CoroutineScope(Job(context.job))
 
     private val queue = Channel<Operation<*>>()
 
     private val executor = coroutineScope.launch {
         suspend fun <T> Operation<T>.execute() {
-            val timeoutDuration = configuration[Timeout].value
             val result = try {
-                withTimeout(timeoutDuration) {
+                withTimeout(timeout) {
                     coroutineScope {
                         action()
                     }
                 }
             } catch (t: TimeoutCancellationException) {
-                BleFailure.Timeout(timeoutDuration)
+                BleFailure.Timeout(timeout)
             } catch (t: Throwable) {
                 BleFailure.Error(t)
             }
@@ -88,6 +82,8 @@ internal class BleQueue(job: Job) {
             complete(result)
         }
 
-        queue.consumeEach { operation -> operation.execute() }
+        withContext(QueueDispatcher.value()) {
+            queue.consumeEach { operation -> operation.execute() }
+        }
     }
 }

@@ -10,13 +10,12 @@ import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.service.GroupService
 import io.sellmair.pacemaker.service.UserService
 import io.sellmair.pacemaker.service.impl.StoredUserService
-import io.sellmair.pacemaker.utils.Configuration
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.mapNotNull
 import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 
-class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope, Configuration by Configuration() {
+class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
