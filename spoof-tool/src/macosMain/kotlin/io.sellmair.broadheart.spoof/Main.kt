@@ -7,7 +7,6 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.utils.Configuration
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.info
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +16,7 @@ import kotlinx.coroutines.launch
 import platform.CoreFoundation.CFRunLoopRun
 
 
-private val ble = with(Configuration()) {
-    AppleBle()
-}
+private val ble = AppleBle()
 
 
 fun main() {
