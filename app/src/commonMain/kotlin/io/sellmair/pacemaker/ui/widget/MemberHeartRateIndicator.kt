@@ -27,7 +27,7 @@ private val animationByUser = mutableMapOf<UserId?, Animatable<Float, AnimationV
 
 @Composable
 internal fun MemberHeartRateIndicator(member: UserState, range: ClosedRange<HeartRate>) {
-    val side = if (member.user.isMe) ScaleSide.Right else ScaleSide.Left
+    val side = if (member.isMe) ScaleSide.Right else ScaleSide.Left
     val memberCurrentHeartRate = member.heartRate
 
     val animatedHeartRate = animationByUser.getOrPut(member.user.id) { Animatable(memberCurrentHeartRate.value) }

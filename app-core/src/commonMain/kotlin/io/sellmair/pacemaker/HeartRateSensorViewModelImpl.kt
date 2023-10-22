@@ -7,14 +7,12 @@ import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -33,22 +31,13 @@ internal class HeartRateSensorViewModelImpl(
     override val heartRate: StateFlow<HeartRate?> =
         heartRateSensor.heartRate.map { it.heartRate }.stateIn(scope, WhileSubscribed(), null)
 
-    override val associatedUser: StateFlow<User?> = flow {
-        emit(userService.findUser(id))
-        userService.onChange.collect {
-            emit(userService.findUser(id))
-        }
-    }.stateIn(scope, WhileSubscribed(), null)
+    override val associatedUser: StateFlow<User?> =  userService.findUserFlow(id)
+        .stateIn(scope, WhileSubscribed(), null)
 
     override val associatedHeartRateLimit: StateFlow<HeartRate?> = associatedUser
         .flatMapLatest { user ->
             if (user == null) flowOf<HeartRate?>(null)
-            else flow {
-                emit(userService.findHeartRateLimit(user))
-                userService.onChange.collect {
-                    emit(userService.findHeartRateLimit(user))
-                }
-            }
+            else userService.findHeartRateLimitFlow(user)
         }
         .stateIn(scope, WhileSubscribed(), null)
 

@@ -2,9 +2,19 @@ package io.sellmair.pacemaker.ui.widget
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
 import kotlin.math.roundToInt
@@ -26,13 +35,12 @@ internal fun ChangeableMemberHeartRateLimit(
     state: UserState,
     range: ClosedRange<HeartRate>,
     horizontalCenterBias: Float = .5f,
-    side: ScaleSide = if (state.user.isMe) ScaleSide.Right else ScaleSide.Left,
+    side: ScaleSide = if (state.isMe) ScaleSide.Right else ScaleSide.Left,
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
-    val user = state.user
     val heartRateLimit = state.heartRateLimit ?:  return
     ChangeableMemberHeartRateLimit(
-        user = user,
+        user = state,
         heartRateLimit = heartRateLimit,
         range = range,
         horizontalCenterBias = horizontalCenterBias,
@@ -43,7 +51,7 @@ internal fun ChangeableMemberHeartRateLimit(
 
 @Composable
 internal fun ChangeableMemberHeartRateLimit(
-    user: User,
+    user: UserState,
     heartRateLimit: HeartRate,
     range: ClosedRange<HeartRate>,
     horizontalCenterBias: Float = .5f,

@@ -4,12 +4,12 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import app.cash.sqldelight.async.coroutines.synchronous
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import io.sellmair.pacemaker.ble.AndroidBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
-import io.sellmair.pacemaker.service.GroupService
-import io.sellmair.pacemaker.service.UserService
-import io.sellmair.pacemaker.service.impl.StoredUserService
+import io.sellmair.pacemaker.sql.PacemakerDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import okio.Path.Companion.toOkioPath
 import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
@@ -45,7 +44,10 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     private val notification = AndroidHeartRateNotification(this)
 
     override val userService: UserService by lazy {
-        StoredUserService(this, filesDir.resolve("userService").toOkioPath())
+        val driver = AndroidSqliteDriver(
+            schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
+        )
+        SqliteUserService(PacemakerDatabase(driver))
     }
 
     override val groupService by lazy { GroupService(userService) }
@@ -58,7 +60,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         /* Update notification showing current users heart rate */
         launch {
             groupService.group
-                .mapNotNull { it.members.find { it.user.isMe } }
+                .mapNotNull { it.members.find { it.isMe } }
                 .collect { currentUserState ->
                     notification.update(
                         currentUserState.heartRate,

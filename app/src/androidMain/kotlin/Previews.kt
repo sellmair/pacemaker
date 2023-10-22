@@ -12,7 +12,6 @@ import io.sellmair.pacemaker.ui.settingsPage.HeartRateSensorCard
 fun HeartRateSensorPreview() {
     HeartRateSensorCard(
         me = User(
-            isMe = true,
             id = UserId(0),
             name = "Sebastian Sellmair",
             isAdhoc = false,

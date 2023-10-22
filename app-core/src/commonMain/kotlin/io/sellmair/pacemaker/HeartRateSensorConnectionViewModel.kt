@@ -5,7 +5,6 @@ import io.sellmair.pacemaker.bluetooth.HeartRateSensor
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
-import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -63,7 +62,7 @@ class HeartRateRateSensorConnectionViewModelImpl(
         sensor.connectIfPossible(true)
         scope.launch(Dispatchers.Main.immediate) {
             if (userService.findUser(sensor.deviceId.toHeartRateSensorId()) == null) {
-                userService.linkSensor(userService.currentUser(), sensor.deviceId.toHeartRateSensorId())
+                userService.linkSensor(userService.me(), sensor.deviceId.toHeartRateSensorId())
             }
         }
     }
@@ -72,7 +71,7 @@ class HeartRateRateSensorConnectionViewModelImpl(
         events.trySend(Event.UIEvent.DisconnectClicked)
         sensor.connectIfPossible(false)
         scope.launch(Dispatchers.Main.immediate) {
-            if(userService.findUser(sensor.deviceId.toHeartRateSensorId())?.isMe == true) {
+            if (userService.findUser(sensor.deviceId.toHeartRateSensorId()) == userService.me()) {
                 userService.unlinkSensor(sensor.deviceId.toHeartRateSensorId())
             }
         }

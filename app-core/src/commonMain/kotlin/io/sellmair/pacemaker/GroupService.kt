@@ -1,17 +1,20 @@
-package io.sellmair.pacemaker.service
+package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.Group
-import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -52,11 +55,14 @@ private class GroupServiceImpl(
     init {
         val measurements = hashMapOf<UserId, HeartRateMeasurement>()
 
+        val meUserId = async { userService.me().id }
+
         suspend fun emitGroup() {
             val userStates = measurements.mapNotNull { (userId, measurement) ->
                 val user = userService.findUser(userId) ?: return@mapNotNull null
                 UserState(
                     user = user,
+                    isMe = meUserId.await() == user.id,
                     heartRate = measurement.heartRate,
                     heartRateLimit = userService.findHeartRateLimit(user)
                 )

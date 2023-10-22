@@ -7,14 +7,19 @@ import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.randomUserId
-import io.sellmair.pacemaker.service.GroupService
-import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -67,8 +72,8 @@ private class ApplicationViewModelImpl(
 
     private suspend fun process(intent: ApplicationIntent): Unit = when (intent) {
         is MainPageIntent.UpdateHeartRateLimit -> {
-            val me = userService.currentUser()
-            userService.saveUpperHeartRateLimit(me, intent.heartRateLimit)
+            val me = userService.me()
+            userService.saveHeartRateLimit(me, intent.heartRateLimit)
         }
 
         is SettingsPageIntent.LinkSensor -> {
@@ -80,44 +85,43 @@ private class ApplicationViewModelImpl(
         }
 
         is SettingsPageIntent.UpdateMe -> {
-            userService.save(intent.user)
+            userService.saveUser(intent.user)
             _me.value = intent.user
         }
 
         is SettingsPageIntent.CreateAdhocUser -> {
             val id = randomUserId()
             val adhocUser = User(
-                isMe = false,
                 id = id,
                 name = "Adhoc ${id.value.absoluteValue % 1000}",
                 isAdhoc = true
             )
-            userService.save(adhocUser)
+            userService.saveUser(adhocUser)
             userService.linkSensor(adhocUser, intent.sensor)
-            userService.saveUpperHeartRateLimit(adhocUser, HeartRate(130))
+            userService.saveHeartRateLimit(adhocUser, HeartRate(130))
         }
 
         is SettingsPageIntent.UpdateAdhocUser -> {
-            userService.save(intent.user)
+            userService.saveUser(intent.user)
         }
 
         is SettingsPageIntent.DeleteAdhocUser -> {
-            userService.delete(intent.user)
+            userService.deleteUser(intent.user)
         }
 
         is SettingsPageIntent.UpdateAdhocUserLimit -> {
-            userService.saveUpperHeartRateLimit(intent.user, intent.limit)
+            userService.saveHeartRateLimit(intent.user, intent.limit)
         }
     }
 
     init {
         scope.launch(Dispatchers.Main.immediate) {
             println("Launched user load")
-            _me.value = userService.currentUser()
+            _me.value = userService.me()
             println("Loaded user: ${_me.value}")
             intentQueue.consumeEach { intent ->
                 process(intent)
-                _me.value = userService.currentUser()
+                _me.value = userService.me()
             }
         }
     }

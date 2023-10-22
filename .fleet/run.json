@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "android-app",
+            "name": "Pacemaker (Pixel)",
+            "module": "pacemaker.app.main",
+            "destination": "Google Pixel 7",
+        },
+    ]
+}

@@ -9,11 +9,15 @@ import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.service.GroupService
-import io.sellmair.pacemaker.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
 interface ApplicationBackend {
@@ -25,6 +29,9 @@ interface ApplicationBackend {
 
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
 
+    val meUserId = scope.async { userService.me().id }
+    suspend fun User.isMe(): Boolean = this.id == meUserId.await()
+
     /* Connecting our hr receiver with the group service */
     val hrMeasurements = flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
         .flatMapMerge { sensor -> sensor.heartRate }
@@ -32,12 +39,11 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
         .shareIn(scope, SharingStarted.WhileSubscribed())
 
 
-
     /* Start broadcasting my own state to other participant  */
     scope.launch {
         hrMeasurements.collect { hrMeasurement ->
             val user = userService.findUser(hrMeasurement.sensorInfo.id) ?: return@collect
-            if (!user.isMe) return@collect
+            if (!user.isMe()) return@collect
             pacemakerBluetoothService.await().write {
                 setUser(user)
                 setHeartRate(hrMeasurement.sensorInfo.id, hrMeasurement.heartRate)
@@ -48,14 +54,13 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
         }
     }
 
-
     /* Receive broadcasts */
     scope.launch {
         pacemakerBluetoothService.await().broadcastPackages().collect { received ->
-            val user = User(isMe = false, id = received.userId, name = received.userName)
+            val user = User(id = received.userId, name = received.userName)
 
-            userService.save(user)
-            userService.saveUpperHeartRateLimit(user, received.heartRateLimit)
+            userService.saveUser(user)
+            userService.saveHeartRateLimit(user, received.heartRateLimit)
             userService.linkSensor(user, received.sensorId)
 
             groupService.add(
@@ -72,7 +77,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launch {
         heartRateSensorBluetoothService.await().newSensorsNearby
             .collect { sensor ->
-                if (userService.findUser(sensor.deviceId.toHeartRateSensorId())?.isMe == true) {
+                if (userService.findUser(sensor.deviceId.toHeartRateSensorId())?.isMe() == true) {
                     sensor.connectIfPossible(true)
                 }
             }

@@ -1,7 +1,13 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -30,7 +36,7 @@ internal fun MyStatusHeader(
     onSettingsClicked: () -> Unit
 ) {
     val myState = state?.members.orEmpty()
-        .find { groupMemberState -> groupMemberState.user.isMe }
+        .find { groupMemberState -> groupMemberState.isMe }
 
     Box {
         Column(

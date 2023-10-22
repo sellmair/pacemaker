@@ -26,4 +26,5 @@ dependencies {
     implementation(kotlin("gradle-plugin:$kotlinVersion"))
     implementation(kotlin("serialization:1.9.0"))
     implementation("com.android.tools.build:gradle:8.1.2")
+    implementation("app.cash.sqldelight:gradle-plugin:2.0.0")
 }

@@ -10,12 +10,11 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
-import io.sellmair.pacemaker.service.GroupService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.roundToInt
@@ -62,7 +61,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
                     val speaker = textToSpeech.await() ?: return@textToSpeech
                     if (speaker.isSpeaking) return@textToSpeech
                     val message = "Slow down! ${
-                        if (criticalStates.singleOrNull()?.user?.isMe == true) {
+                        if (criticalStates.singleOrNull()?.isMe == true) {
                             "You are at " +
                                 "${criticalStates.singleOrNull()?.heartRate?.value?.roundToInt()} bpm"
                         } else criticalStates.joinToString(", ") {
@@ -82,7 +81,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
             delay(1.minutes)
             launch textToSpeech@{
                 val speaker = textToSpeech.await() ?: return@textToSpeech
-                val me = group?.members.orEmpty().firstOrNull { it.user.isMe }
+                val me = group?.members.orEmpty().firstOrNull { it.isMe }
                 val heartRate = me?.heartRate?.value?.roundToInt() ?: return@textToSpeech
                 val limit = me.heartRateLimit?.value?.roundToInt() ?: return@textToSpeech
                 val message = "Your heart rate is at: $heartRate. The current limit is: $limit"
