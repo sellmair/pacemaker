@@ -14,7 +14,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.ApplicationWindow
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
@@ -47,6 +51,16 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.action == AndroidHeartRateNotification.stopAction) {
+            unbindService(mainServiceConnection)
+            stopService(Intent(this, AndroidApplicationBackend::class.java))
+            finish()
+        }
+    }
+
+
     private inner class ApplicationBackendConnection : ServiceConnection {
 
         private val _backend = MutableStateFlow<ApplicationBackend?>(null)
@@ -74,7 +88,6 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(mainServiceConnection)
         cancel()
     }
 }

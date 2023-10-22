@@ -1,16 +1,25 @@
 package io.sellmair.pacemaker
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.Service
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import io.sellmair.pacemaker.model.HeartRate
 
 class AndroidHeartRateNotification(private val service: Service) {
 
-    private companion object {
+    companion object {
         const val notificationId = 1
         const val notificationChannelId = "Service Notification Channel"
         const val notificationChannelName = "Service Status"
+
+        const val openActivityRequestCode = 0
+        const val stopAppRequestCode = 1
+        const val stopAction = "Action: Stop"
     }
 
     private val notificationManager by lazy {
@@ -25,15 +34,25 @@ class AndroidHeartRateNotification(private val service: Service) {
     }
 
     private fun createDefaultNotification(): NotificationCompat.Builder {
-        val notificationIntent = Intent(service, Class.forName("io.sellmair.pacemaker.MainActivity"))
-        val pendingIntent = PendingIntent.getActivity(service, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+        val mainActivityClz = Class.forName("io.sellmair.pacemaker.MainActivity")
 
+        val notificationIntent = Intent(service, mainActivityClz)
+        val contentPendingIntent = PendingIntent.getActivity(
+            service, openActivityRequestCode, notificationIntent, FLAG_IMMUTABLE
+        )
+
+        val stopIntent = Intent(service, mainActivityClz)
+        stopIntent.setAction(stopAction)
+        val stopPendingIntent = PendingIntent.getActivity(
+            service, stopAppRequestCode, stopIntent, FLAG_IMMUTABLE
+        )
 
         return NotificationCompat.Builder(service, notificationChannel.id)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setContentTitle("Pacemaker")
             .setContentText("Running")
-            .setContentIntent(pendingIntent)
+            .setContentIntent(contentPendingIntent)
+            .addAction(NotificationCompat.Action.Builder(null, "stop", stopPendingIntent).build())
             .setOngoing(true)
     }
 
