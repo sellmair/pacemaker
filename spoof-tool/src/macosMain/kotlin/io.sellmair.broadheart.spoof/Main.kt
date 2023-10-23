@@ -29,7 +29,6 @@ fun main() {
 private fun launchSendBroadcasts() = MainScope().launch {
     MainScope().launch(Dispatchers.Default) {
         val user = User(
-            isMe = true,
             id = UserId(2412),
             name = "Felix Werner"
         )

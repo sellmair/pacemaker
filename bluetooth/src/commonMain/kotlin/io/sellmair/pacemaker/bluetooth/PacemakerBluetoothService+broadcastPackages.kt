@@ -16,7 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlin.time.TimeSource
+import kotlinx.datetime.Clock
 
 fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
     return newConnections.flatMapMerge { connection -> connection.broadcastPackages() }
@@ -45,7 +45,7 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
     suspend fun State.emitIfPossible() {
         send(
             PacemakerBroadcastPackage(
-                receivedTime = TimeSource.Monotonic.markNow(),
+                receivedTime = Clock.System.now(),
                 deviceId = deviceId,
                 userId = userId ?: UserId(0),
                 sensorId = sensorId ?: return,

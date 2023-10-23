@@ -1,11 +1,12 @@
+
 import app.cash.sqldelight.gradle.SqlDelightExtension
+import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-import org.jetbrains.kotlinx.serialization.gradle.SerializationGradleSubplugin
 
 class PacemakerExtension(
     private val project: Project,
@@ -42,6 +43,15 @@ class PacemakerExtension(
             namespace = "io.sellmair.${project.name.replace("-", ".")}"
             defaultConfig {
                 minSdk = 31
+            }
+
+            if (this is ApplicationExtension) {
+                packaging {
+                    resources {
+                        /* https://github.com/Kotlin/kotlinx-atomicfu/pull/344 */
+                        excludes.add("META-INF/versions/9/previous-compilation-data.bin")
+                    }
+                }
             }
         }
     }
@@ -81,15 +91,6 @@ class PacemakerExtension(
     }
 
     inner class FeaturesDsl {
-        fun kotlinxSerialisation() {
-            project.plugins.apply(SerializationGradleSubplugin::class.java)
-            kotlin.apply {
-                sourceSets.commonMain.dependencies {
-                    api(Dependencies.kotlinxSerializationJson)
-                }
-            }
-        }
-
         fun useSqlDelight(configure: SqlDelightExtension.() -> Unit) {
             project.plugins.apply("app.cash.sqldelight")
             kotlin {

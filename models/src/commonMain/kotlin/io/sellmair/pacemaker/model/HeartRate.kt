@@ -1,11 +1,9 @@
 package io.sellmair.pacemaker.model
 
-import kotlinx.serialization.Serializable
 import okio.Buffer
 import kotlin.jvm.JvmInline
 import kotlin.math.roundToInt
 
-@Serializable
 @JvmInline
 value class HeartRate(val value: Float) : Comparable<HeartRate> {
     constructor(value: Int) : this(value.toFloat())

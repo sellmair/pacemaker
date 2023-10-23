@@ -1,10 +1,8 @@
 package io.sellmair.pacemaker.model
 
-import kotlinx.serialization.Serializable
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-@Serializable
 data class User(
     val id: UserId,
     val name: String,

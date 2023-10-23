@@ -4,10 +4,10 @@ import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
-import kotlin.time.TimeMark
+import kotlinx.datetime.Instant
 
 data class PacemakerBroadcastPackage(
-    val receivedTime: TimeMark,
+    val receivedTime: Instant,
     val deviceId: BleDeviceId,
     val userId: UserId,
     val userName: String,

@@ -3,4 +3,4 @@ package io.sellmair.pacemaker.model
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class HeartRateSensorId(val value: String)
+value class SessionId(val value: Long)

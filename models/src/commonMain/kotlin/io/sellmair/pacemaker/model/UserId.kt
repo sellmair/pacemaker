@@ -1,11 +1,9 @@
 package io.sellmair.pacemaker.model
 
-import kotlinx.serialization.Serializable
 import okio.Buffer
 import kotlin.jvm.JvmInline
 import kotlin.random.Random
 
-@Serializable
 @JvmInline
 value class UserId(val value: Long)
 

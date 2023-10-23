@@ -17,6 +17,7 @@ kotlin {
 
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
+        implementation(Dependencies.kotlinxDatetime)
     }
 
     sourceSets.commonTest.dependencies {

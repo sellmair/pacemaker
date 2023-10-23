@@ -6,8 +6,4 @@ pacemaker {
     jvm()
     ios()
     macos()
-
-    features {
-        kotlinxSerialisation()
-    }
 }

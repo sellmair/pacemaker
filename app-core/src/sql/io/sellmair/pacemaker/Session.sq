@@ -1,0 +1,41 @@
+CREATE TABLE db_session (
+    id INTEGER PRIMARY KEY NOT NULL,
+    start_time TEXT NOT NULL,
+    end_time TEXT
+);
+
+CREATE TABLE db_heart_rate_measurement(
+    session_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    time TEXT NOT NULL,
+    heart_rate REAL NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES db_user(id),
+    FOREIGN KEY (session_id) REFERENCES db_session(id)
+);
+
+CREATE INDEX db_heart_rate_measurement_session_index ON db_heart_rate_measurement(session_id);
+
+CREATE INDEX db_heart_rate_measurement_user_index ON db_heart_rate_measurement(user_id);
+
+newSession:
+INSERT INTO db_session(start_time) VALUES (?);
+
+lastSessionId:
+SELECT last_insert_rowid();
+
+endSession:
+UPDATE db_session SET end_time=? WHERE id =?;
+
+allSessions:
+SELECT * FROM db_session;
+
+saveHeartRateMeasurement:
+INSERT INTO db_heart_rate_measurement(
+    session_id,
+    user_id,
+    time,
+    heart_rate
+) VALUES (?, ?, ?, ?);
+
+findHeartRateMeasurements:
+SELECT * FROM db_heart_rate_measurement WHERE session_id=?;

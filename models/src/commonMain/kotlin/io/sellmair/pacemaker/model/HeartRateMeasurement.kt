@@ -1,11 +1,9 @@
 package io.sellmair.pacemaker.model
 
-import kotlinx.serialization.Serializable
-import kotlin.time.TimeMark
+import kotlinx.datetime.Instant
 
-@Serializable
 data class HeartRateMeasurement(
     val heartRate: HeartRate,
     val sensorInfo: HeartRateSensorInfo,
-    val receivedTime: TimeMark
+    val receivedTime: Instant
 )
