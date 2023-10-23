@@ -63,7 +63,7 @@ kotlin {
             homepage = "https://github.com/sellmair/pacemaker"
             summary = "Application Framework"
             baseName = "PM"
-            isStatic = true
+            linkerOpts("-lsqlite3")
         }
     }
 }

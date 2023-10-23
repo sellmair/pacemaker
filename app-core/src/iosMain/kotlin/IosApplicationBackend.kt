@@ -1,22 +1,17 @@
-@file:OptIn(FlowPreview::class)
-
+import app.cash.sqldelight.async.coroutines.synchronous
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import io.sellmair.pacemaker.ApplicationBackend
+import io.sellmair.pacemaker.GroupService
+import io.sellmair.pacemaker.SqliteUserService
+import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
-import io.sellmair.pacemaker.GroupService
-import io.sellmair.pacemaker.UserService
-import io.sellmair.pacemaker.StoredUserService
+import io.sellmair.pacemaker.sql.PacemakerDatabase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import okio.Path.Companion.toPath
-import platform.Foundation.NSDocumentDirectory
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSURL
-import platform.Foundation.NSUserDomainMask
 
 class IosApplicationBackend : ApplicationBackend, CoroutineScope by MainScope() {
 
@@ -27,10 +22,9 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope by MainScope() 
     override val heartRateSensorBluetoothService = async { HeartRateSensorBluetoothService(ble) }
 
     override val userService: UserService by lazy {
-        val fileManager = NSFileManager.defaultManager()
-        val documents = fileManager.URLsForDirectory(NSDocumentDirectory, NSUserDomainMask).first() as NSURL
-        val root = documents.path!!.toPath().resolve("users")
-        StoredUserService(this, root)
+        SqliteUserService(
+            PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema.synchronous(), "app.db"))
+        )
     }
 
     override val groupService: GroupService by lazy {

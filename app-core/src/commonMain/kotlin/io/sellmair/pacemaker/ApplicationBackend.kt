@@ -36,7 +36,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     val hrMeasurements = flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
         .flatMapMerge { sensor -> sensor.heartRate }
         .onEach { hrMeasurement -> groupService.add(hrMeasurement) }
-        .shareIn(scope, SharingStarted.WhileSubscribed())
+        .shareIn(scope, SharingStarted.Eagerly)
 
 
     /* Start broadcasting my own state to other participant  */

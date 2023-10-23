@@ -11,12 +11,12 @@
 		B07ED26029BF9C21008A106B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07ED25F29BF9C21008A106B /* ContentView.swift */; };
 		B07ED26229BF9C22008A106B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07ED26129BF9C22008A106B /* Assets.xcassets */; };
 		B07ED26529BF9C22008A106B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07ED26429BF9C22008A106B /* Preview Assets.xcassets */; };
-		BC8AD28183DDC4D518F9CBB9 /* Pods_Pacemaker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4738431E737FB4502A1095 /* Pods_Pacemaker.framework */; };
+		FF3D6CAD5DC179096D34E0D4 /* libPods-Pacemaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0AC847B3E25068E21E64E639 /* Pods-Pacemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.release.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.release.xcconfig"; sourceTree = "<group>"; };
-		6C4738431E737FB4502A1095 /* Pods_Pacemaker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pacemaker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pacemaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C79BEBC2FD91B0DF012A22F /* Pods-Pacemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.debug.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.debug.xcconfig"; sourceTree = "<group>"; };
 		B07ED25A29BF9C21008A106B /* Pacemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pacemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B07ED25D29BF9C21008A106B /* PacemakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerApp.swift; sourceTree = "<group>"; };
@@ -30,7 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC8AD28183DDC4D518F9CBB9 /* Pods_Pacemaker.framework in Frameworks */,
+				FF3D6CAD5DC179096D34E0D4 /* libPods-Pacemaker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,7 +40,7 @@
 		60658279AC0A7A6AC483D624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6C4738431E737FB4502A1095 /* Pods_Pacemaker.framework */,
+				1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -103,6 +103,7 @@
 				B07ED25729BF9C21008A106B /* Frameworks */,
 				B07ED25829BF9C21008A106B /* Resources */,
 				5DE2E9C6F6892075816688DC /* [CP] Copy Pods Resources */,
+				90DB4FA7AA7DE12ACF36AE92 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -174,6 +175,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		90DB4FA7AA7DE12ACF36AE92 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AA3495ADA9984FDA120BB08C /* [CP] Check Pods Manifest.lock */ = {
@@ -355,6 +373,14 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"PM\"",
+					"-lsqlite3",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -384,6 +410,14 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-framework",
+					"\"PM\"",
+					"-lsqlite3",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
