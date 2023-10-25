@@ -18,6 +18,7 @@
 		0AC847B3E25068E21E64E639 /* Pods-Pacemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.release.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.release.xcconfig"; sourceTree = "<group>"; };
 		1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pacemaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C79BEBC2FD91B0DF012A22F /* Pods-Pacemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.debug.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.debug.xcconfig"; sourceTree = "<group>"; };
+		B071979C2AE9711E00E53800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B07ED25A29BF9C21008A106B /* Pacemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pacemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B07ED25D29BF9C21008A106B /* PacemakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerApp.swift; sourceTree = "<group>"; };
 		B07ED25F29BF9C21008A106B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,6 +67,7 @@
 		B07ED25C29BF9C21008A106B /* Pacemaker */ = {
 			isa = PBXGroup;
 			children = (
+				B071979C2AE9711E00E53800 /* Info.plist */,
 				B07ED25D29BF9C21008A106B /* PacemakerApp.swift */,
 				B07ED25F29BF9C21008A106B /* ContentView.swift */,
 				B07ED26129BF9C22008A106B /* Assets.xcassets */,
@@ -364,6 +366,10 @@
 				DEVELOPMENT_TEAM = R58Q77NDGL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pacemaker/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -401,6 +407,10 @@
 				DEVELOPMENT_TEAM = R58Q77NDGL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pacemaker/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
