@@ -10,6 +10,7 @@ import io.sellmair.pacemaker.ble.AndroidBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.sql.PacemakerDatabase
+import io.sellmair.pacemaker.utils.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus()
 
     inner class MainServiceBinder(
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,
@@ -50,7 +51,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         SqliteUserService(PacemakerDatabase(driver))
     }
 
-    override val groupService by lazy { GroupService(userService) }
+    override val groupService by lazy { launchGroupService(userService) }
 
     override fun onCreate() {
         super.onCreate()

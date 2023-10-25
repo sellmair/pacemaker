@@ -7,7 +7,6 @@ import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.ble.BleReceivedValue
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorServiceDescriptors.heartRateCharacteristic
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.model.HeartRateMeasurement
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +27,7 @@ interface HeartRateSensorBluetoothService {
 }
 
 interface HeartRateSensor : BleConnectable {
-    val heartRate: SharedFlow<HeartRateMeasurement>
+    val heartRate: SharedFlow<HeartRateSensorMeasurement>
 }
 
 suspend fun HeartRateSensorBluetoothService(ble: Ble): HeartRateSensorBluetoothService {
@@ -55,15 +54,15 @@ private class HeartRateSensorImpl(
 ) : HeartRateSensor,
     BleConnectable by delegate {
 
-    override val heartRate: SharedFlow<HeartRateMeasurement> = delegate.connection
+    override val heartRate: SharedFlow<HeartRateSensorMeasurement> = delegate.connection
         .onEach { connection -> connection.enableNotifications(heartRateCharacteristic) }
         .flatMapLatest { connection -> connection.receivedValues }
         .filter { it.characteristic == heartRateCharacteristic }
         .mapNotNull { received -> heartRateMeasurement(received) }
         .shareIn(scope, SharingStarted.Eagerly)
 
-    fun heartRateMeasurement(received: BleReceivedValue): HeartRateMeasurement? {
-        return HeartRateMeasurement(
+    fun heartRateMeasurement(received: BleReceivedValue): HeartRateSensorMeasurement? {
+        return HeartRateSensorMeasurement(
             heartRate = decodeHeartRate(received.data) ?: return null,
             sensorInfo = HeartRateSensorInfo(
                 id = delegate.deviceId.toHeartRateSensorId(),

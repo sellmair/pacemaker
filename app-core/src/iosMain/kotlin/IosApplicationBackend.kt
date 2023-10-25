@@ -8,12 +8,18 @@ import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
+import io.sellmair.pacemaker.launchGroupService
 import io.sellmair.pacemaker.sql.PacemakerDatabase
+import io.sellmair.pacemaker.utils.EventBus
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlin.coroutines.CoroutineContext
 
-class IosApplicationBackend : ApplicationBackend, CoroutineScope by MainScope() {
+class IosApplicationBackend : ApplicationBackend, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus()
 
     private val ble = AppleBle()
 
@@ -28,7 +34,7 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope by MainScope() 
     }
 
     override val groupService: GroupService by lazy {
-        GroupService(userService)
+        launchGroupService(userService)
     }
 
 

@@ -1,8 +1,12 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.model.HeartRateMeasurement
+import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
+import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
+import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
+import io.sellmair.pacemaker.utils.events
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,97 +20,100 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
-context(CoroutineScope)
-fun GroupService(
-    userService: UserService
-): GroupService = GroupServiceImpl(userService)
 
 interface GroupService {
     val group: StateFlow<Group>
-    fun add(measurement: HeartRateMeasurement)
 
     object KeepMeasurementDuration : ConfigurationKey.WithDefault<Duration> {
         override val default: Duration = 1.minutes
     }
 }
 
-context(CoroutineScope)
-private class GroupServiceImpl(
-    private val userService: UserService
-) : GroupService {
-    private val groupImpl = MutableStateFlow(Group())
-    override val group: StateFlow<Group> = groupImpl.asStateFlow()
+fun CoroutineScope.launchGroupService(
+    userService: UserService
+): GroupService {
+    val group = MutableStateFlow(Group())
+    val actorIn = Channel<ActorIn>(Channel.UNLIMITED)
+    val measurements = hashMapOf<UserId, ActorIn.AddMeasurement>()
+    val meUserId = async { userService.me().id }
 
-    sealed class Event {
-        data class AddMeasurement(val measurement: HeartRateMeasurement) : Event()
-        data class DiscardMeasurement(val userId: UserId, val measurement: HeartRateMeasurement) : Event()
-        data object RecalculateGroup : Event()
-    }
-
-    private val events = Channel<Event>(Channel.UNLIMITED)
-
-    override fun add(measurement: HeartRateMeasurement) {
-        events.trySend(Event.AddMeasurement(measurement))
-    }
-
-    init {
-        val measurements = hashMapOf<UserId, HeartRateMeasurement>()
-
-        val meUserId = async { userService.me().id }
-
-        suspend fun emitGroup() {
-            val userStates = measurements.mapNotNull { (userId, measurement) ->
-                val user = userService.findUser(userId) ?: return@mapNotNull null
-                UserState(
-                    user = user,
-                    isMe = meUserId.await() == user.id,
-                    heartRate = measurement.heartRate,
-                    heartRateLimit = userService.findHeartRateLimit(user)
-                )
-            }
-
-            groupImpl.value = Group(userStates)
+    suspend fun updateAndEmitGroup() {
+        val userStates = measurements.mapNotNull { (userId, measurement) ->
+            val user = userService.findUser(userId) ?: return@mapNotNull null
+            UserState(
+                user = user,
+                isMe = meUserId.await() == user.id,
+                heartRate = measurement.heartRate,
+                heartRateLimit = userService.findHeartRateLimit(user)
+            )
         }
 
-        launch(Dispatchers.Main.immediate) {
-            events.consumeEach { event ->
-                when (event) {
-                    is Event.AddMeasurement -> {
-                        val user = userService.findUser(event.measurement.sensorInfo.id) ?: return@consumeEach
-                        measurements[user.id] = event.measurement
-                        emitGroup()
+        group.value = Group(userStates)
+    }
 
-                        /* Schedule invalidation of measurement after certain amount of time */
-                        launch {
-                            delay(GroupService.KeepMeasurementDuration.value())
-                            events.send(Event.DiscardMeasurement(user.id, event.measurement))
-                        }
-                    }
+    /* Main actor */
+    launch(Dispatchers.Main.immediate) {
+        actorIn.consumeEach { event ->
+            when (event) {
+                is ActorIn.AddMeasurement -> {
+                    val user = userService.findUser(event.sensorId) ?: return@consumeEach
+                    measurements[user.id] = event
+                    updateAndEmitGroup()
 
-                    is Event.DiscardMeasurement -> {
-                        /* Measurement has not been updated, but is now discared */
-                        if (measurements[event.userId] == event.measurement) {
-                            measurements.remove(event.userId)
-                            emitGroup()
-                        }
+                    /* Schedule invalidation of measurement after certain amount of time */
+                    launch {
+                        delay(GroupService.KeepMeasurementDuration.value())
+                        actorIn.send(ActorIn.DiscardMeasurement(user.id, event))
                     }
+                }
 
-                    is Event.RecalculateGroup -> {
-                        emitGroup()
+                is ActorIn.DiscardMeasurement -> {
+                    /* Measurement has not been updated, but is now discared */
+                    if (measurements[event.userId] == event.measurement) {
+                        measurements.remove(event.userId)
+                        updateAndEmitGroup()
                     }
+                }
+
+                is ActorIn.RecalculateGroup -> {
+                    updateAndEmitGroup()
                 }
             }
         }
     }
 
-    init {
-        launch(Dispatchers.Main.immediate) {
-            userService.onChange
-                .onEach { events.send(Event.RecalculateGroup) }
-                .collect()
+    /* Check for changes in UserService and refresh the group */
+    launch(Dispatchers.Main.immediate) {
+        userService.onChange
+            .onEach { actorIn.send(ActorIn.RecalculateGroup) }
+            .collect()
+    }
+
+    /* Listen for incoming HeartRate measurements */
+    launch {
+        events<HeartRateMeasurementEvent> { event ->
+            actorIn.send(ActorIn.AddMeasurement(event.heartRate, event.sensorId, event.time))
         }
     }
+
+    /* Listen for incoming Pacemaker Broadcasts measurements */
+    launch {
+        events<PacemakerBroadcastPackageEvent> { event ->
+            actorIn.send(ActorIn.AddMeasurement(event.pkg.heartRate, event.pkg.sensorId, event.pkg.receivedTime))
+        }
+    }
+
+    return object : GroupService {
+        override val group: StateFlow<Group> = group.asStateFlow()
+    }
+}
+
+private sealed class ActorIn {
+    data class AddMeasurement(val heartRate: HeartRate, val sensorId: HeartRateSensorId, val time: Instant) : ActorIn()
+    data class DiscardMeasurement(val userId: UserId, val measurement: AddMeasurement) : ActorIn()
+    data object RecalculateGroup : ActorIn()
 }
