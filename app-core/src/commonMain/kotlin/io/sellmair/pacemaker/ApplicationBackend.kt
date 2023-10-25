@@ -10,6 +10,8 @@ import io.sellmair.pacemaker.bluetooth.broadcastPackages
 import io.sellmair.pacemaker.bluetooth.toEvent
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.User
+import io.sellmair.pacemaker.utils.EventBus
+import io.sellmair.pacemaker.utils.StateBus
 import io.sellmair.pacemaker.utils.emit
 import io.sellmair.pacemaker.utils.events
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +28,8 @@ interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
     val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
     val userService: UserService
-    val groupService: GroupService
+    val stateBus: StateBus
+    val eventBus: EventBus
 }
 
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {

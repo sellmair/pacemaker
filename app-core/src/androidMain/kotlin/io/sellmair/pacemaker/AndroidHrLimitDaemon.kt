@@ -10,6 +10,7 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
+import io.sellmair.pacemaker.utils.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -22,7 +23,8 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 
-fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupService) = launch {
+context (Context, CoroutineScope)
+fun launchHrLimitDaemon(context: Context) = launch {
     val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
     val textToSpeech = async {
@@ -32,7 +34,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
     }
 
 
-    var group: Group? = null
+    var group: GroupState? = null
     var criticalUserStates = listOf<UserState>()
 
 
@@ -91,7 +93,7 @@ fun CoroutineScope.launchHrLimitDaemon(context: Context, groupService: GroupServ
     }
 
     /* Collect critical member states */
-    groupService.group.collect { state ->
+    GroupState.get().collect { state ->
         group = state
         criticalUserStates = state.members.filter { memberState ->
             val currentHeartRate = memberState.heartRate

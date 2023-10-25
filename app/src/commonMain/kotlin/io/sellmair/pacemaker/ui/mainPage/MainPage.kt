@@ -1,12 +1,12 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.runtime.Composable
+import io.sellmair.pacemaker.GroupState
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.Group
 
 @Composable
 internal fun MainPage(
-    groupState: Group?,
+    groupState: GroupState?,
     onSettingsClicked: () -> Unit,
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}
 ) {

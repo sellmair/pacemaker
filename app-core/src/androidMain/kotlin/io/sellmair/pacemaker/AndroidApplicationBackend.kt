@@ -11,26 +11,33 @@ import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.EventBus
+import io.sellmair.pacemaker.utils.StateBus
+import io.sellmair.pacemaker.utils.eventBus
+import io.sellmair.pacemaker.utils.stateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus() + StateBus()
 
     inner class MainServiceBinder(
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,
         override val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
         override val userService: UserService,
-        override val groupService: GroupService,
-    ) : Binder(), ApplicationBackend
+    ) : Binder(), ApplicationBackend {
+        override val eventBus get() = coroutineContext.eventBus
+        override val stateBus get() = coroutineContext.stateBus
+    }
+
+    override val eventBus: EventBus = coroutineContext.eventBus
+
+    override val stateBus: StateBus = coroutineContext.stateBus
 
     private val ble by lazy { AndroidBle(this) }
 
@@ -51,28 +58,14 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         SqliteUserService(PacemakerDatabase(driver))
     }
 
-    override val groupService by lazy { launchGroupService(userService) }
 
     override fun onCreate() {
         super.onCreate()
         notification.startForeground()
-        launchHrLimitDaemon(this, groupService)
-
-        /* Update notification showing current users heart rate */
-        launch {
-            groupService.group
-                .mapNotNull { it.members.find { it.isMe } }
-                .collect { currentUserState ->
-                    notification.update(
-                        currentUserState.heartRate,
-                        currentUserState.heartRateLimit ?: return@collect
-                    )
-                }
-        }
-
+        launchHrLimitDaemon(this)
+        launchGroupStateActor(userService)
         launchApplicationBackend(this)
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -82,7 +75,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override fun onBind(intent: Intent?): IBinder {
         return MainServiceBinder(
             userService = userService,
-            groupService = groupService,
             pacemakerBluetoothService = pacemakerBluetoothService,
             heartRateSensorBluetoothService = heartRateSensorBluetoothService,
         )

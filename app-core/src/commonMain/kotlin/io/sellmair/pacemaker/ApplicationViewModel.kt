@@ -25,7 +25,7 @@ import kotlin.math.absoluteValue
 
 interface ApplicationViewModel {
     val me: StateFlow<User?>
-    val group: StateFlow<Group?>
+    val group: StateFlow<GroupState?>
     val heartRateSensorViewModels: StateFlow<List<HeartRateSensorViewModel>>
     fun send(intent: ApplicationIntent)
 }
@@ -35,22 +35,22 @@ fun ApplicationViewModel(
     backend: ApplicationBackend,
 ): ApplicationViewModel {
     return ApplicationViewModelImpl(
-        coroutineScope, backend.userService, backend.groupService, backend.heartRateSensorBluetoothService
+        coroutineScope, backend.userService, backend.heartRateSensorBluetoothService,
+        backend.stateBus.getState(GroupState)
     )
 }
 
 private class ApplicationViewModelImpl(
     scope: CoroutineScope,
     private val userService: UserService,
-    groupService: GroupService,
     private val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
+    override val group: StateFlow<GroupState>
 ) : ApplicationViewModel {
 
     private val intentQueue = Channel<ApplicationIntent>(Channel.UNLIMITED)
     private val _me = MutableStateFlow<User?>(null)
     override val me = _me.asStateFlow()
 
-    override val group = groupService.group
 
     private val viewModelsBySensors = mutableMapOf<HeartRateSensor, HeartRateSensorViewModel>()
 

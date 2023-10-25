@@ -6,7 +6,9 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
+import io.sellmair.pacemaker.utils.State
 import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.plusAssign
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,29 +16,32 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
+data class GroupState(val members: List<UserState> = emptyList()) : Iterable<UserState>, State {
+    override fun iterator(): Iterator<UserState> {
+        return members.listIterator()
+    }
 
-interface GroupService {
-    val group: StateFlow<Group>
+    companion object Key : State.Key<GroupState> {
+        override val default = GroupState(emptyList())
+    }
 
     object KeepMeasurementDuration : ConfigurationKey.WithDefault<Duration> {
         override val default: Duration = 1.minutes
     }
 }
 
-fun CoroutineScope.launchGroupService(
+context (CoroutineScope)
+internal fun launchGroupStateActor(
     userService: UserService
-): GroupService {
-    val group = MutableStateFlow(Group())
+) {
     val actorIn = Channel<ActorIn>(Channel.UNLIMITED)
     val measurements = hashMapOf<UserId, ActorIn.AddMeasurement>()
     val meUserId = async { userService.me().id }
@@ -52,7 +57,7 @@ fun CoroutineScope.launchGroupService(
             )
         }
 
-        group.value = Group(userStates)
+        GroupState += GroupState(userStates)
     }
 
     /* Main actor */
@@ -66,7 +71,7 @@ fun CoroutineScope.launchGroupService(
 
                     /* Schedule invalidation of measurement after certain amount of time */
                     launch {
-                        delay(GroupService.KeepMeasurementDuration.value())
+                        delay(GroupState.KeepMeasurementDuration.value())
                         actorIn.send(ActorIn.DiscardMeasurement(user.id, event))
                     }
                 }
@@ -88,9 +93,9 @@ fun CoroutineScope.launchGroupService(
 
     /* Check for changes in UserService and refresh the group */
     launch(Dispatchers.Main.immediate) {
-        userService.onChange
-            .onEach { actorIn.send(ActorIn.RecalculateGroup) }
-            .collect()
+        userService.onChange.collect {
+            actorIn.send(ActorIn.RecalculateGroup)
+        }
     }
 
     /* Listen for incoming HeartRate measurements */
@@ -105,10 +110,6 @@ fun CoroutineScope.launchGroupService(
         events<PacemakerBroadcastPackageEvent> { event ->
             actorIn.send(ActorIn.AddMeasurement(event.pkg.heartRate, event.pkg.sensorId, event.pkg.receivedTime))
         }
-    }
-
-    return object : GroupService {
-        override val group: StateFlow<Group> = group.asStateFlow()
     }
 }
 

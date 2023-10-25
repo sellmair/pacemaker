@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.Group
+import io.sellmair.pacemaker.GroupState
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
@@ -32,7 +32,7 @@ import io.sellmair.pacemaker.ui.toColor
 
 @Composable
 internal fun MyStatusHeader(
-    state: Group?,
+    state: GroupState?,
     onSettingsClicked: () -> Unit
 ) {
     val myState = state?.members.orEmpty()
