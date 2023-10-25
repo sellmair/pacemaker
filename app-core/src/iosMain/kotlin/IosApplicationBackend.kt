@@ -27,6 +27,7 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
 
     override val heartRateSensorBluetoothService = async { HeartRateSensorBluetoothService(ble) }
 
+
     override val userService: UserService by lazy {
         SqliteUserService(
             PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema.synchronous(), "app.db"))
@@ -37,6 +38,7 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
         launchGroupService(userService)
     }
 
+    private val hrDeamon = async { launchHrLimitDaemon(groupService) }
 
     init {
         launchApplicationBackend(this)

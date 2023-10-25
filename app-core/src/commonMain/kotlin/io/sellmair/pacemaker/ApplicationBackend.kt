@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+
 interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
     val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
