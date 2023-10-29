@@ -38,18 +38,18 @@ SELECT * FROM db_user_settings WHERE user_id = ?;
 findUserSettingsForMe:
 SELECT * FROM db_user WHERE id = 0;
 
-
 saveUser:
 INSERT OR REPLACE INTO db_user VALUES ?;
 
 saveUserSettings:
 INSERT OR REPLACE INTO db_user_settings VALUES ?;
 
+saveHeartRateLimit:
+INSERT OR REPLACE INTO db_user_settings(id, user_id, heart_rate_limit)
+ VALUES ((SELECT id FROM db_user_settings WHERE user_id = ?),?, ?);
+
 saveSensor:
 INSERT OR REPLACE INTO db_sensor VALUES ?;
-
-updateHeartRateLimit:
-UPDATE db_user_settings SET heart_rate_limit=? WHERE user_id =?;
 
 deleteUser:
 DELETE FROM db_user WHERE db_user.id = ?;

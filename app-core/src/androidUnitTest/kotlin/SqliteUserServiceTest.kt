@@ -7,8 +7,11 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.invoke
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -20,6 +23,7 @@ class SqliteUserServiceTest {
         PacemakerDatabase.Schema.create(driver).await()
         val database = PacemakerDatabase(driver)
         return SqliteUserService(database)
+
     }
 
     @Test
@@ -69,5 +73,46 @@ class SqliteUserServiceTest {
 
         service.unlinkSensor(sensor)
         assertNull(service.findUser(sensor))
+    }
+
+    @Test
+    fun `test - save and find heart rate limit`() = runTest {
+        val service = service()
+        val user = User(UserId(2), "foo")
+        service.saveUser(user)
+        assertNull(service.findHeartRateLimit(user))
+
+        service.saveHeartRateLimit(user, HeartRate(140))
+        assertEquals(HeartRate(140), service.findHeartRateLimit(user))
+
+        service.saveHeartRateLimit(user, HeartRate(135))
+        assertEquals(HeartRate(135), service.findHeartRateLimit(user))
+    }
+
+    @Test
+    fun `test - heart rate flow`() = runTest {
+        val service = service()
+        val user = User(UserId(1), "Sarah")
+        service.saveUser(user)
+
+        val heartRateLimits = mutableListOf<HeartRate?>()
+
+        val collectJob = launch(start = CoroutineStart.UNDISPATCHED) {
+            service.findHeartRateLimitFlow(user).collect { limit ->
+                heartRateLimits.add(limit)
+            }
+        }
+
+        assertEquals(listOf(null), heartRateLimits.toList())
+
+        service.saveHeartRateLimit(user, HeartRate(120))
+        yield()
+        assertEquals(listOf(null, HeartRate(120)), heartRateLimits.toList())
+
+        service.saveHeartRateLimit(user, HeartRate(135))
+        yield()
+        assertEquals(listOf(null, HeartRate(120), HeartRate(135)), heartRateLimits.toList())
+
+        collectJob.cancel()
     }
 }

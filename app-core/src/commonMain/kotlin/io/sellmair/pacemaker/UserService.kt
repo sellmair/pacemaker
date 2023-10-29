@@ -20,7 +20,6 @@ interface UserService {
     suspend fun linkSensor(user: User, sensorId: HeartRateSensorId)
     suspend fun unlinkSensor(sensorId: HeartRateSensorId)
 
-
     suspend fun findHeartRateLimit(user: User): HeartRate?
     fun findHeartRateLimitFlow(user: User): Flow<HeartRate?>
     suspend fun saveHeartRateLimit(user: User, limit: HeartRate)

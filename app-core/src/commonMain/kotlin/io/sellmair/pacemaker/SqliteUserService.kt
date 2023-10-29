@@ -50,9 +50,10 @@ internal class SqliteUserService(private val database: PacemakerDatabase) : User
     }
 
     override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) = transaction {
-        database.userQueries.updateHeartRateLimit(
+        database.userQueries.saveHeartRateLimit(
+            user_id_ = user.id.value,
+            user_id = user.id.value,
             heart_rate_limit = limit.value.toDouble(),
-            user_id = user.id.value
         )
     }
 
