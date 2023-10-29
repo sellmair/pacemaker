@@ -1,5 +1,3 @@
-@file:Suppress("OPT_IN_USAGE")
-
 package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
@@ -24,4 +22,8 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchPacemakerBroadcastReceiver(userService, pacemakerBluetoothService)
     scope.launchHeartRateSensorMeasurement(heartRateSensorBluetoothService)
     scope.launchHeartRateSensorAutoConnector(userService, heartRateSensorBluetoothService)
+    scope.launchCriticalGroupStateActor()
+    launchPlatform(scope)
 }
+
+expect fun ApplicationBackend.launchPlatform(scope: CoroutineScope)

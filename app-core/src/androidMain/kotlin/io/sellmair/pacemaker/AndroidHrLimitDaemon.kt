@@ -5,8 +5,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.os.CombinedVibration
-import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
@@ -37,20 +35,6 @@ fun launchHrLimitDaemon(context: Context) = launch {
     var group: GroupState? = null
     var criticalUserStates = listOf<UserState>()
 
-
-    /* Vibrate on any critical member state */
-    launch {
-        while (true) {
-            delay(1000)
-            if (criticalUserStates.isNotEmpty()) {
-                vibratorManager.vibrate(
-                    CombinedVibration.createParallel(
-                        VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
-                    )
-                )
-            }
-        }
-    }
 
     /* Text To Speech: Tell user who is over the limit */
     @Suppress("DEPRECATION")
