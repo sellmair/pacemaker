@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
 
-internal class SqliteUserService(private val database: PacemakerDatabase) : UserService {
+internal class SqlUserService(private val database: PacemakerDatabase) : UserService {
     override suspend fun me(): User = transaction {
         val me = database.userQueries.findMe().executeAsOneOrNull()
         if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)

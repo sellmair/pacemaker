@@ -11,9 +11,12 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.ApplicationWindow
+import io.sellmair.pacemaker.ui.LocalEventBus
+import io.sellmair.pacemaker.ui.LocalStateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +49,12 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         setContent {
             val backend = mainServiceConnection.backend.collectAsState().value
             if (backend != null) {
-                ApplicationWindow(ApplicationViewModel(this.lifecycleScope, backend))
+                CompositionLocalProvider(
+                    LocalStateBus provides backend.stateBus,
+                    LocalEventBus provides backend.eventBus
+                ) {
+                    ApplicationWindow(ApplicationViewModel(this.lifecycleScope, backend))
+                }
             }
         }
     }

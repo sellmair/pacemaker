@@ -23,15 +23,18 @@ import io.sellmair.pacemaker.ApplicationViewModel
 import io.sellmair.pacemaker.ui.mainPage.MainPage
 import io.sellmair.pacemaker.ui.settingsPage.SettingsPage
 
+
 @Composable
 internal fun ApplicationWindow(
     viewModel: ApplicationViewModel
 ) {
+
+
     MaterialTheme {
         var route by remember { mutableStateOf(Route.MainPage) }
         val groupState by viewModel.group.collectAsState(null)
         val nearbyDevices by viewModel.heartRateSensorViewModels.collectAsState()
-        val me by viewModel.me.collectAsState()
+        val meState by viewModel.me.collectAsState()
 
         Box(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(
@@ -40,6 +43,7 @@ internal fun ApplicationWindow(
                 exit = slideOutHorizontally(tween(500)) + fadeOut(tween(250))
             ) {
                 MainPage(
+                    meState = meState,
                     groupState = groupState,
                     onSettingsClicked = { route = Route.SettingsPage },
                     onMyHeartRateLimitChanged = { newHeartRateLimit ->
@@ -59,12 +63,12 @@ internal fun ApplicationWindow(
                         .background(Color.White)
                 )
 
-                if (me == null) {
+                if (meState == null) {
                     println("Missing: me")
                 }
-                me?.let { me ->
+                meState?.let { me ->
                     SettingsPage(
-                        me = me,
+                        me = me.me,
                         heartRateSensors = nearbyDevices,
                         onCloseSettingsPage = { route = Route.MainPage },
                         onIntent = viewModel::send

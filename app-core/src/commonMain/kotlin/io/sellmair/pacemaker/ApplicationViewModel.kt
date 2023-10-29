@@ -12,10 +12,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -24,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 interface ApplicationViewModel {
-    val me: StateFlow<User?>
+    val me: StateFlow<MeState?>
     val group: StateFlow<GroupState?>
     val heartRateSensorViewModels: StateFlow<List<HeartRateSensorViewModel>>
     fun send(intent: ApplicationIntent)
@@ -36,6 +34,7 @@ fun ApplicationViewModel(
 ): ApplicationViewModel {
     return ApplicationViewModelImpl(
         coroutineScope, backend.userService, backend.heartRateSensorBluetoothService,
+        backend.stateBus.getState(MeState),
         backend.stateBus.getState(GroupState)
     )
 }
@@ -44,13 +43,11 @@ private class ApplicationViewModelImpl(
     scope: CoroutineScope,
     private val userService: UserService,
     private val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
+    override val me: StateFlow<MeState?>,
     override val group: StateFlow<GroupState>
 ) : ApplicationViewModel {
 
     private val intentQueue = Channel<ApplicationIntent>(Channel.UNLIMITED)
-    private val _me = MutableStateFlow<User?>(null)
-    override val me = _me.asStateFlow()
-
 
     private val viewModelsBySensors = mutableMapOf<HeartRateSensor, HeartRateSensorViewModel>()
 
@@ -86,7 +83,6 @@ private class ApplicationViewModelImpl(
 
         is SettingsPageIntent.UpdateMe -> {
             userService.saveUser(intent.user)
-            _me.value = intent.user
         }
 
         is SettingsPageIntent.CreateAdhocUser -> {
@@ -116,12 +112,8 @@ private class ApplicationViewModelImpl(
 
     init {
         scope.launch(Dispatchers.Main.immediate) {
-            println("Launched user load")
-            _me.value = userService.me()
-            println("Loaded user: ${_me.value}")
             intentQueue.consumeEach { intent ->
                 process(intent)
-                _me.value = userService.me()
             }
         }
     }

@@ -1,5 +1,5 @@
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import io.sellmair.pacemaker.SqliteUserService
+import io.sellmair.pacemaker.SqlUserService
 import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
@@ -16,13 +16,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class SqliteUserServiceTest {
+class SqlUserServiceTest {
 
-    private suspend fun service(): SqliteUserService {
+    private suspend fun service(): SqlUserService {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         PacemakerDatabase.Schema.create(driver).await()
         val database = PacemakerDatabase(driver)
-        return SqliteUserService(database)
+        return SqlUserService(database)
 
     }
 

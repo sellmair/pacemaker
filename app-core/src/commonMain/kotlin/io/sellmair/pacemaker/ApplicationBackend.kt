@@ -10,6 +10,7 @@ import kotlinx.coroutines.Deferred
 interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
     val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
+    val sessionService: SessionService
     val userService: UserService
     val stateBus: StateBus
     val eventBus: EventBus
@@ -23,6 +24,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchHeartRateSensorMeasurement(heartRateSensorBluetoothService)
     scope.launchHeartRateSensorAutoConnector(userService, heartRateSensorBluetoothService)
     scope.launchCriticalGroupStateActor()
+    scope.launchSessionActor(userService, sessionService)
     launchPlatform(scope)
 }
 

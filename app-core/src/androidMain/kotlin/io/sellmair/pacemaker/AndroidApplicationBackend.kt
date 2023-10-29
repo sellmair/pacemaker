@@ -30,6 +30,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,
         override val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
         override val userService: UserService,
+        override val sessionService: SessionService,
     ) : Binder(), ApplicationBackend {
         override val eventBus get() = coroutineContext.eventBus
         override val stateBus get() = coroutineContext.stateBus
@@ -51,11 +52,20 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     private val notification = AndroidHeartRateNotification(this)
 
-    override val userService: UserService by lazy {
-        val driver = AndroidSqliteDriver(
-            schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
+    private val pacemakerDatabase by lazy {
+        PacemakerDatabase(
+            AndroidSqliteDriver(
+                schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
+            )
         )
-        SqlUserService(PacemakerDatabase(driver))
+    }
+
+    override val userService: UserService by lazy {
+        SqlUserService(pacemakerDatabase)
+    }
+
+    override val sessionService: SessionService by lazy {
+        SqlSessionService(pacemakerDatabase)
     }
 
 
@@ -74,6 +84,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override fun onBind(intent: Intent?): IBinder {
         return MainServiceBinder(
             userService = userService,
+            sessionService = sessionService,
             pacemakerBluetoothService = pacemakerBluetoothService,
             heartRateSensorBluetoothService = heartRateSensorBluetoothService,
         )

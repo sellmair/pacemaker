@@ -4,18 +4,19 @@ CREATE TABLE db_session (
     end_time TEXT
 );
 
-CREATE TABLE db_heart_rate_measurement(
+CREATE TABLE db_session_heart_rate(
     session_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     time TEXT NOT NULL,
     heart_rate REAL NOT NULL,
+    heart_rate_limit REAL,
     FOREIGN KEY (user_id) REFERENCES db_user(id),
     FOREIGN KEY (session_id) REFERENCES db_session(id)
 );
 
-CREATE INDEX db_heart_rate_measurement_session_index ON db_heart_rate_measurement(session_id);
+CREATE INDEX db_heart_rate_measurement_session_index ON db_session_heart_rate(session_id);
 
-CREATE INDEX db_heart_rate_measurement_user_index ON db_heart_rate_measurement(user_id);
+CREATE INDEX db_heart_rate_measurement_user_index ON db_session_heart_rate(user_id);
 
 newSession:
 INSERT INTO db_session(start_time) VALUES (?);
@@ -30,12 +31,13 @@ allSessions:
 SELECT * FROM db_session;
 
 saveHeartRateMeasurement:
-INSERT INTO db_heart_rate_measurement(
+INSERT INTO db_session_heart_rate(
     session_id,
     user_id,
     time,
-    heart_rate
-) VALUES (?, ?, ?, ?);
+    heart_rate,
+    heart_rate_limit
+) VALUES (?, ?, ?, ?, ?);
 
 findHeartRateMeasurements:
-SELECT * FROM db_heart_rate_measurement WHERE session_id=?;
+SELECT * FROM db_session_heart_rate WHERE session_id=?;

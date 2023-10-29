@@ -24,19 +24,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.GroupState
+import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
 
-
 @Composable
 internal fun MyStatusHeader(
-    state: GroupState?,
+    state: MeState?,
     onSettingsClicked: () -> Unit
 ) {
-    val myState = state?.members.orEmpty()
-        .find { groupMemberState -> groupMemberState.isMe }
 
     Box {
         Column(
@@ -59,8 +56,17 @@ internal fun MyStatusHeader(
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
             ) {
+
+
+                state?.me?.let { me ->
+                    SessionStartStopButton(
+                         Modifier.align(Alignment.CenterStart)
+                    )
+                }
+
+
                 Text(
-                    myState?.heartRate?.toString() ?: "🤷‍♂️",
+                    state?.heartRate?.toString() ?: "🤷‍♂️",
                     fontWeight = FontWeight.Black,
                     fontSize = 48.sp,
                     modifier = Modifier
@@ -70,7 +76,7 @@ internal fun MyStatusHeader(
 
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = myState?.displayColor?.toColor() ?: Color.Gray
+                        containerColor = state?.me?.displayColor?.toColor() ?: Color.Gray
                     ),
                     onClick = onSettingsClicked,
                     modifier = Modifier
@@ -81,19 +87,19 @@ internal fun MyStatusHeader(
                 }
             }
 
-            if (myState?.heartRateLimit != null)
+            if (state?.heartRateLimit != null)
                 Text(
-                    myState.heartRateLimit.toString(),
+                    state.heartRateLimit.toString(),
                     Modifier.offset(y = (-4).dp),
                     fontWeight = FontWeight.Light,
                     fontSize = 10.sp,
-                    color = myState.displayColor.toColor()
+                    color = state.me.displayColor.toColor()
                 )
 
             Icon(
                 Icons.Outlined.FavoriteBorder, "Heart",
                 Modifier.offset(y = (-4).dp),
-                tint = myState?.displayColorLight?.toColor() ?: Color.Gray
+                tint = state?.me?.displayColorLight?.toColor() ?: Color.Gray
             )
         }
     }

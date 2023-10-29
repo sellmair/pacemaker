@@ -1,9 +1,12 @@
 package io.sellmair.pacemaker.ui
 
 import IosApplicationBackend
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
 import io.sellmair.pacemaker.ApplicationViewModel
 import kotlinx.coroutines.MainScope
+
+private val backend by lazy { IosApplicationBackend() }
 
 private val viewModel by lazy { ApplicationViewModel(MainScope(), IosApplicationBackend()) }
 
@@ -11,6 +14,11 @@ private val viewModel by lazy { ApplicationViewModel(MainScope(), IosApplication
 @Suppress("Unused") // Entry point for iOS application!
 object IosPacemakerViewController {
     fun create() = ComposeUIViewController {
-        ApplicationWindow(viewModel)
+        CompositionLocalProvider(
+            LocalEventBus provides backend.eventBus,
+            LocalStateBus provides backend.stateBus
+        ) {
+            ApplicationWindow(viewModel)
+        }
     }
 }

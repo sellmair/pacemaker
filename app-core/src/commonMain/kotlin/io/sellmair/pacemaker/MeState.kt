@@ -52,7 +52,7 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
 
     /* Update MeState */
     launch {
-        var values = Values()
+        var values = Values(me = userService.me())
 
         valuesChannel.consumeEach { update ->
             values = Values(
