@@ -5,6 +5,16 @@
             "name": "Pacemaker (Pixel)",
             "module": "pacemaker.app.main",
             "destination": "Google Pixel 7",
+        },
+        {
+            "type": "xcode-app",
+            "name": "Pacemaker (iPhone)",
+            "buildTarget": {
+                "project": "Pacemaker",
+                "target": "Pacemaker",
+            },
+            "configuration": "Debug",
+            "destination": "Sebastian’s iPhone",
         }
     ]
 }
