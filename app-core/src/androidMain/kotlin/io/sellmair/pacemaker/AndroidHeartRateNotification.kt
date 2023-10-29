@@ -1,17 +1,13 @@
 package io.sellmair.pacemaker
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.app.Service
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.utils.get
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 class AndroidHeartRateNotification(private val service: Service) {
@@ -67,17 +63,16 @@ class AndroidHeartRateNotification(private val service: Service) {
 
         /* Update notification showing current users heart rate */
         launch {
-            GroupState.get().mapNotNull { it.members.find { it.isMe } }
-                .collect { currentUserState ->
-                    update(
-                        currentUserState.heartRate,
-                        currentUserState.heartRateLimit ?: return@collect
-                    )
-                }
+            MeState.get().filterNotNull().collect { meState ->
+                update(
+                    meState.heartRate ?: return@collect,
+                    meState.heartRateLimit
+                )
+            }
         }
     }
 
-    fun update(myHeartRate: HeartRate, myHeartRateLimit: HeartRate) {
+    private fun update(myHeartRate: HeartRate, myHeartRateLimit: HeartRate) {
         notificationManager.notify(
             notificationId, createDefaultNotification()
                 .setContentText("Current HR: $myHeartRate Limit: $myHeartRateLimit")

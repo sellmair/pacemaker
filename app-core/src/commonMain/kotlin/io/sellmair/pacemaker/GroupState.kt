@@ -38,8 +38,7 @@ data class GroupState(val members: List<UserState> = emptyList()) : Iterable<Use
     }
 }
 
-context (CoroutineScope)
-internal fun launchGroupStateActor(
+internal fun CoroutineScope.launchGroupStateActor(
     userService: UserService
 ) {
     val actorIn = Channel<ActorIn>(Channel.UNLIMITED)

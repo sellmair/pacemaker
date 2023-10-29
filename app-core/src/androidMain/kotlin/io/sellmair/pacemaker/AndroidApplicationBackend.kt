@@ -63,7 +63,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         super.onCreate()
         notification.startForeground()
         launchHrLimitDaemon(this)
-        launchGroupStateActor(userService)
         launchApplicationBackend(this)
     }
 

@@ -47,7 +47,7 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
             PacemakerBroadcastPackage(
                 receivedTime = Clock.System.now(),
                 deviceId = deviceId,
-                userId = userId ?: UserId(0),
+                userId = userId ?: return,
                 sensorId = sensorId ?: return,
                 userName = userName ?: "n/a",
                 heartRate = heartRate ?: return,

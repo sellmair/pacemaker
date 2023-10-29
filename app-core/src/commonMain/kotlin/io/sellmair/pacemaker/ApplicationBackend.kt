@@ -37,6 +37,9 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     val meUserId = scope.async { userService.me().id }
     suspend fun User.isMe(): Boolean = this.id == meUserId.await()
 
+    scope.launchGroupStateActor(userService)
+    scope.launchMeStateActor(userService)
+
     /* Connecting our hr receiver and emit hr measurement events  */
     flow { emitAll(heartRateSensorBluetoothService.await().newSensorsNearby) }
         .flatMapMerge { sensor -> sensor.heartRate }
