@@ -2,7 +2,7 @@
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import io.sellmair.pacemaker.ApplicationBackend
-import io.sellmair.pacemaker.SqliteUserService
+import io.sellmair.pacemaker.SqlUserService
 import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
@@ -34,7 +34,7 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
     override val heartRateSensorBluetoothService = async { HeartRateSensorBluetoothService(ble) }
 
     override val userService: UserService by lazy {
-        SqliteUserService(
+        SqlUserService(
             PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema.synchronous(), "app.db"))
         )
     }

@@ -55,7 +55,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         val driver = AndroidSqliteDriver(
             schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
         )
-        SqliteUserService(PacemakerDatabase(driver))
+        SqlUserService(PacemakerDatabase(driver))
     }
 
 
