@@ -21,14 +21,6 @@ import io.sellmair.pacemaker.ble.BleUUID
         isNotificationsEnabled = false
     )
 
-    val sensorIdCharacteristic = BleCharacteristicDescriptor(
-        name = "sensorId",
-        uuid = BleUUID(PacemakerServiceConstants.sensorIdCharacteristicUuidString),
-        isReadable = false,
-        isWritable = true,
-        isNotificationsEnabled = true
-    )
-
     val heartRateCharacteristic = BleCharacteristicDescriptor(
         name = "heartRate",
         uuid = BleUUID(PacemakerServiceConstants.heartRateCharacteristicUuidString),
@@ -51,7 +43,6 @@ import io.sellmair.pacemaker.ble.BleUUID
         characteristics = setOf(
             userIdCharacteristic,
             userNameCharacteristic,
-            sensorIdCharacteristic,
             heartRateCharacteristic,
             heartRateLimitCharacteristic
         )

@@ -3,12 +3,16 @@
 package io.sellmair.pacemaker.bluetooth
 
 import io.sellmair.pacemaker.ble.Ble
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.shareIn
 
 interface PacemakerBluetoothService {
     val newConnections: SharedFlow<PacemakerBluetoothConnection>
     val allConnections: SharedFlow<List<PacemakerBluetoothConnection>>
-    fun write(write: suspend PacemakerBluetoothWritable.() -> Unit)
+    suspend fun write(write: suspend PacemakerBluetoothWritable.() -> Unit)
 }
 
 suspend fun PacemakerBluetoothService(ble: Ble): PacemakerBluetoothService {
@@ -24,7 +28,7 @@ suspend fun PacemakerBluetoothService(ble: Ble): PacemakerBluetoothService {
             flowOf(peripheral.allConnections, central.allConnections)
                 .flattenMerge().shareIn(ble.coroutineScope, SharingStarted.Eagerly)
 
-        override fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
+        override suspend fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
             peripheral.write(write)
             central.write(write)
         }

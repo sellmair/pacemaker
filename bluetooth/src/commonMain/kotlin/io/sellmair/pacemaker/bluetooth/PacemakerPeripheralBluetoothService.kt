@@ -3,10 +3,15 @@ package io.sellmair.pacemaker.bluetooth
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.ble.BleReceivedValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.minutes
 
@@ -47,8 +52,8 @@ internal suspend fun PacemakerPeripheralBluetoothService(ble: Ble): PacemakerPer
         override val newConnections: SharedFlow<PacemakerBluetoothConnection> = newConnections
         override val allConnections: SharedFlow<List<PacemakerBluetoothConnection>> = allConnections
 
-        override fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
-            ble.coroutineScope.launch { PacemakerBluetoothWritable(service).write() }
+        override suspend fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) {
+             PacemakerBluetoothWritable(service).write()
         }
     }
 }

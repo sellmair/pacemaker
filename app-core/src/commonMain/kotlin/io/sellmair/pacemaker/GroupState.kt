@@ -1,9 +1,10 @@
 package io.sellmair.pacemaker
 
+import io.sellmair.pacemaker.ActorIn.AddMeasurement
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.model.HeartRateSensorId
+import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
 import io.sellmair.pacemaker.utils.State
@@ -63,21 +64,20 @@ internal fun CoroutineScope.launchGroupStateActor(
     launch(Dispatchers.Main.immediate) {
         actorIn.consumeEach { event ->
             when (event) {
-                is ActorIn.AddMeasurement -> {
-                    val user = userService.findUser(event.sensorId) ?: return@consumeEach
-                    measurements[user.id] = event
+                is AddMeasurement -> {
+                    measurements[event.user.id] = event
                     updateAndEmitGroup()
 
                     /* Schedule invalidation of measurement after certain amount of time */
                     launch {
                         delay(GroupState.KeepMeasurementDuration.value())
-                        actorIn.send(ActorIn.DiscardMeasurement(user.id, event))
+                        actorIn.send(ActorIn.Discard(event.user.id, event))
                     }
                 }
 
-                is ActorIn.DiscardMeasurement -> {
+                is ActorIn.Discard -> {
                     /* Measurement has not been updated, but is now discared */
-                    if (measurements[event.userId] == event.measurement) {
+                    if (measurements[event.userId] == event.message) {
                         measurements.remove(event.userId)
                         updateAndEmitGroup()
                     }
@@ -100,20 +100,22 @@ internal fun CoroutineScope.launchGroupStateActor(
     /* Listen for incoming HeartRate measurements */
     launch {
         events<HeartRateMeasurementEvent> { event ->
-            actorIn.send(ActorIn.AddMeasurement(event.heartRate, event.sensorId, event.time))
+            val user = userService.findUser(event.sensorId) ?: return@events
+            actorIn.send(AddMeasurement(event.heartRate, user, event.time))
         }
     }
 
     /* Listen for incoming Pacemaker Broadcasts measurements */
     launch {
         events<PacemakerBroadcastPackageEvent> { event ->
-            actorIn.send(ActorIn.AddMeasurement(event.pkg.heartRate, event.pkg.sensorId, event.pkg.receivedTime))
+            val user = userService.findUser(event.pkg.userId) ?: return@events
+            actorIn.send(AddMeasurement(event.pkg.heartRate, user, event.pkg.receivedTime))
         }
     }
 }
 
 private sealed class ActorIn {
-    data class AddMeasurement(val heartRate: HeartRate, val sensorId: HeartRateSensorId, val time: Instant) : ActorIn()
-    data class DiscardMeasurement(val userId: UserId, val measurement: AddMeasurement) : ActorIn()
+    data class AddMeasurement(val heartRate: HeartRate, val user: User, val time: Instant) : ActorIn()
+    data class Discard(val userId: UserId, val message: ActorIn) : ActorIn()
     data object RecalculateGroup : ActorIn()
 }

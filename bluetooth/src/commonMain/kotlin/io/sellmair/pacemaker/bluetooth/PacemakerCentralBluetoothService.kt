@@ -8,6 +8,7 @@ import io.sellmair.pacemaker.ble.ble
 import io.sellmair.pacemaker.bluetooth.PacemakerCentralBluetoothService.Companion.log
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -38,9 +39,10 @@ internal suspend fun PacemakerCentralBluetoothService(ble: Ble): PacemakerCentra
                 PacemakerServiceDescriptors.service.characteristics
                     .filter { it.isReadable }
                     .forEach { readableCharacteristic -> connection.requestRead(readableCharacteristic) }
-                delay(15.seconds)
+                delay(60.seconds)
             }
         }
+
 
         /* Enable notifications for all characteristics that support it */
         connection.scope.launch {
@@ -76,9 +78,10 @@ internal suspend fun PacemakerCentralBluetoothService(ble: Ble): PacemakerCentra
     return object : PacemakerCentralBluetoothService {
         override val newConnections: SharedFlow<PacemakerBluetoothConnection> = newConnections
         override val allConnections: StateFlow<List<PacemakerBluetoothConnection>> = allConnections
-        override fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) =
+        override suspend fun write(write: suspend PacemakerBluetoothWritable.() -> Unit) = coroutineScope {
             allConnections.value.forEach { connection ->
                 connection.launch { connection.write() }
             }
+        }
     }
 }

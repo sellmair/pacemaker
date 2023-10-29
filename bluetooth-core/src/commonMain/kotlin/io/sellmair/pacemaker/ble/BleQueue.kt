@@ -2,10 +2,24 @@ package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.ble.BleQueue.Timeout
 import io.sellmair.pacemaker.utils.ConfigurationKey
+import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.debug
 import io.sellmair.pacemaker.utils.value
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -24,7 +38,7 @@ internal class BleQueue(context: CoroutineContext) {
      * Timeout used for any given operation
      */
     object Timeout : ConfigurationKey.WithDefault<Duration> {
-        override val default: Duration = 30.seconds
+        override val default: Duration = 10.seconds
     }
 
     /**
@@ -79,6 +93,7 @@ internal class BleQueue(context: CoroutineContext) {
                 BleFailure.Error(t)
             }
 
+            LogTag.ble.with("queue").debug("Operation: ${this.title}: $result")
             complete(result)
         }
 
