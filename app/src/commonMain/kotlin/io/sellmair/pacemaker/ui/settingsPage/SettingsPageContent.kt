@@ -34,13 +34,11 @@ internal fun SettingsPageContent(
     me: User,
     heartRateSensors: List<HeartRateSensorViewModel>,
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
-    onCloseSettingsPage: () -> Unit
 ) {
     Column(Modifier.fillMaxSize()) {
         SettingsPageHeader(
             me = me,
             onIntent = onIntent,
-            onCloseSettingsPage = onCloseSettingsPage
         )
 
         Spacer(Modifier.height(24.dp))

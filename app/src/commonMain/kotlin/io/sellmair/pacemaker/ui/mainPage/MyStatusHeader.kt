@@ -1,18 +1,9 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,10 +21,7 @@ import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
 
 @Composable
-internal fun MyStatusHeader(
-    state: MeState?,
-    onSettingsClicked: () -> Unit
-) {
+internal fun MyStatusHeader(state: MeState?) {
 
     Box {
         Column(
@@ -56,14 +44,11 @@ internal fun MyStatusHeader(
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
             ) {
-
-
                 state?.me?.let { me ->
                     SessionStartStopButton(
                          Modifier.align(Alignment.CenterStart)
                     )
                 }
-
 
                 Text(
                     state?.heartRate?.toString() ?: "🤷‍♂️",
@@ -73,18 +58,6 @@ internal fun MyStatusHeader(
                         .padding(top = 8.dp)
                         .align(Alignment.Center)
                 )
-
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = state?.me?.displayColor?.toColor() ?: Color.Gray
-                    ),
-                    onClick = onSettingsClicked,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(24.dp),
-                ) {
-                    Icon(Icons.Default.Settings, "Settings")
-                }
             }
 
             if (state?.heartRateLimit != null)

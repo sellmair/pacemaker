@@ -9,7 +9,6 @@ import io.sellmair.pacemaker.model.HeartRate
 internal fun MainPage(
     meState: MeState?,
     groupState: GroupState?,
-    onSettingsClicked: () -> Unit,
     onMyHeartRateLimitChanged: (HeartRate) -> Unit = {}
 ) {
     GroupHeartRateOverview(
@@ -18,6 +17,5 @@ internal fun MainPage(
     )
     MyStatusHeader(
         state = meState,
-        onSettingsClicked = onSettingsClicked
     )
 }

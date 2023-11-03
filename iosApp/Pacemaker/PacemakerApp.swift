@@ -11,7 +11,6 @@ import SwiftUI
 struct PacemakerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
-        }
+            ContentView().edgesIgnoringSafeArea([.bottom, .top]) }
     }
 }

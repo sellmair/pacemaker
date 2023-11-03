@@ -26,7 +26,6 @@ import io.sellmair.pacemaker.ui.widget.UserHead
 internal fun SettingsPageHeader(
     me: User,
     onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
-    onCloseSettingsPage: () -> Unit
 ) {
     var userName by remember { mutableStateOf(me.name) }
 
@@ -35,17 +34,6 @@ internal fun SettingsPageHeader(
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        IconButton(onClick = onCloseSettingsPage) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = me.displayColor.toColor(),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(horizontal = 8.dp)
-            )
-        }
-
         BasicTextField(
             modifier = Modifier
                 .weight(1f)
