@@ -1,11 +1,9 @@
 package io.sellmair.pacemaker
 
-import android.app.Service
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
 import io.sellmair.pacemaker.utils.get
@@ -13,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Locale
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.roundToInt
@@ -23,8 +21,6 @@ import kotlin.time.Duration.Companion.seconds
 
 context (Context, CoroutineScope)
 fun launchHrLimitDaemon(context: Context) = launch {
-    val vibratorManager = context.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-
     val textToSpeech = async {
         TextToSpeech(context)?.apply {
             language = Locale.US

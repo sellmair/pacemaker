@@ -42,6 +42,7 @@ import kotlin.time.Duration.Companion.milliseconds
 fun SessionStartStopButton(modifier: Modifier = Modifier) {
     val meState by MeState.collectAsState()
     val activeSessionState by ActiveSessionState.collectAsState()
+
     val eventBus = LocalEventBus.current
     val coroutineScope = rememberCoroutineScope()
 
