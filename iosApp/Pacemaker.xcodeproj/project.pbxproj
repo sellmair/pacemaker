@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,9 +15,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0AC847B3E25068E21E64E639 /* Pods-Pacemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.release.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.release.xcconfig"; sourceTree = "<group>"; };
 		1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pacemaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9C79BEBC2FD91B0DF012A22F /* Pods-Pacemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.debug.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.debug.xcconfig"; sourceTree = "<group>"; };
+		1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.release.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.release.xcconfig"; sourceTree = "<group>"; };
+		511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.debug.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.debug.xcconfig"; sourceTree = "<group>"; };
 		B071979C2AE9711E00E53800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B07ED25A29BF9C21008A106B /* Pacemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pacemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B07ED25D29BF9C21008A106B /* PacemakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerApp.swift; sourceTree = "<group>"; };
@@ -46,13 +46,62 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		75B3E0F5D5F59509048A1980 /* Target Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				75B3E21257C32531DC305639 /* PM */,
+				75B3E6AD3EBDD1159E736CB9 /* Pods-Pacemaker */,
+			);
+			path = "Target Support Files";
+			sourceTree = "<group>";
+		};
+		75B3E21257C32531DC305639 /* PM */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = PM;
+			sourceTree = "<group>";
+		};
+		75B3E6AD3EBDD1159E736CB9 /* Pods-Pacemaker */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Pods-Pacemaker";
+			sourceTree = "<group>";
+		};
+		75B3EAA887AB77F7E3B8E44F /* Local Podspecs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Local Podspecs";
+			sourceTree = "<group>";
+		};
+		75B3EB14C3164D48B1E555D8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				75B3ECF718073DE915A6DBF9 /* Headers */,
+				75B3EAA887AB77F7E3B8E44F /* Local Podspecs */,
+				75B3E0F5D5F59509048A1980 /* Target Support Files */,
+				511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */,
+				1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		75B3ECF718073DE915A6DBF9 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		B07ED25129BF9C21008A106B = {
 			isa = PBXGroup;
 			children = (
 				B07ED25C29BF9C21008A106B /* Pacemaker */,
 				B07ED25B29BF9C21008A106B /* Products */,
-				E77E32CF3E2A8A19D4BE0EC7 /* Pods */,
 				60658279AC0A7A6AC483D624 /* Frameworks */,
+				75B3EB14C3164D48B1E555D8 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,15 +131,6 @@
 				B07ED26429BF9C22008A106B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		E77E32CF3E2A8A19D4BE0EC7 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				9C79BEBC2FD91B0DF012A22F /* Pods-Pacemaker.debug.xcconfig */,
-				0AC847B3E25068E21E64E639 /* Pods-Pacemaker.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,7 +172,7 @@
 				};
 			};
 			buildConfigurationList = B07ED25529BF9C21008A106B /* Build configuration list for PBXProject "Pacemaker" */;
-			compatibilityVersion = "Xcode 15.0";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -356,7 +396,7 @@
 		};
 		B07ED26929BF9C22008A106B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9C79BEBC2FD91B0DF012A22F /* Pods-Pacemaker.debug.xcconfig */;
+			baseConfigurationReference = 511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -402,7 +442,7 @@
 		};
 		B07ED26A29BF9C22008A106B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0AC847B3E25068E21E64E639 /* Pods-Pacemaker.release.xcconfig */;
+			baseConfigurationReference = 1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
