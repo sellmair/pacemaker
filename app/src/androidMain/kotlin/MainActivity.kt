@@ -16,7 +16,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.ApplicationWindow
 import io.sellmair.pacemaker.ui.LocalEventBus
@@ -40,8 +39,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
+        enableEdgeToEdge(SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK))
 
         coroutineContext = Dispatchers.Main + Job()
 
