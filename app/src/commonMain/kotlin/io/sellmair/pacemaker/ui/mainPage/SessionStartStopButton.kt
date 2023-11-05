@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -84,7 +84,7 @@ fun SessionStartStopButton(
             .animateContentSize()
     ) {
         Icon(
-            imageVector = if (session != null) Icons.Default.StopCircle else Icons.Default.PlayCircle,
+            imageVector = if (session != null) Icons.Default.StopCircle else Icons.Default.RadioButtonChecked,
             contentDescription = "Start Session"
         )
 
