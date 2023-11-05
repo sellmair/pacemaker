@@ -99,14 +99,14 @@ internal class SqlUserService(private val database: PacemakerDatabase) : UserSer
     override val onChange = MutableSharedFlow<Unit>()
 }
 
-private fun User.toDbUser(): Db_user {
+internal fun User.toDbUser(): Db_user {
     return Db_user(id = id.value, name = name, is_adhoc = if (isAdhoc) 1 else 0)
 }
 
-private fun Db_user.toUser(): User {
+internal fun Db_user.toUser(): User {
     return User(id = UserId(id), name = name, isAdhoc = is_adhoc > 0)
 }
 
-private fun FindUserBySensorId.toUser(): User {
+internal fun FindUserBySensorId.toUser(): User {
     return User(id = UserId(id), name = name, isAdhoc = is_adhoc > 0)
 }

@@ -20,6 +20,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.ApplicationWindow
 import io.sellmair.pacemaker.ui.LocalEventBus
+import io.sellmair.pacemaker.ui.LocalSessionService
 import io.sellmair.pacemaker.ui.LocalStateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             if (backend != null) {
                 CompositionLocalProvider(
                     LocalStateBus provides backend.stateBus,
-                    LocalEventBus provides backend.eventBus
+                    LocalEventBus provides backend.eventBus,
+                    LocalSessionService provides backend.sessionService
                 ) {
                     ApplicationWindow(ApplicationViewModel(this.lifecycleScope, backend))
                 }

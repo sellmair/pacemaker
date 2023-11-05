@@ -50,7 +50,6 @@ fun SessionStartStopButton(modifier: Modifier = Modifier) {
         me = meState?.me ?: return,
         session = activeSessionState.session,
         onClick = {
-
             coroutineScope.launch {
                 if (activeSessionState.session == null) eventBus?.emit(ActiveSessionIntent.Start)
                 else eventBus?.emit(ActiveSessionIntent.Stop)

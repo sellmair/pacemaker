@@ -4,6 +4,7 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.ConfigurationKey
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
@@ -14,6 +15,8 @@ interface SessionService {
 
     suspend fun createSession(): ActiveSessionService
     suspend fun getSessions(): List<StoredSessionService>
+
+    val sessionsFlow: Flow<List<StoredSessionService>>
 }
 
 interface ActiveSessionService {
@@ -26,6 +29,6 @@ interface ActiveSessionService {
 
 interface StoredSessionService {
     val session: Session
-    fun getUsers(): List<User>
-    fun getHeartRateMeasurements(user: User): List<SessionRecord>
+    suspend fun getUsers(): List<User>
+    suspend fun getHeartRateMeasurements(user: User): List<SessionRecord>
 }

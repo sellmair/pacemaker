@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.UserState
+import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.toColor
@@ -32,6 +33,16 @@ internal fun UserHead(
     )
 }
 
+
+@Composable
+fun UserHead(user: User, modifier: Modifier = Modifier, size: Dp = 24.dp) {
+    UserHead(
+        abbreviation = user.nameAbbreviation,
+        color = user.displayColor.toColor(),
+        modifier = modifier,
+        size = size
+    )
+}
 
 @Composable
 internal fun UserHead(

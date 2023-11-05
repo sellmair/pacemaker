@@ -8,15 +8,15 @@ import kotlinx.coroutines.MainScope
 
 private val backend by lazy { IosApplicationBackend() }
 
-private val viewModel by lazy { ApplicationViewModel(MainScope(), IosApplicationBackend()) }
-
+private val viewModel by lazy { ApplicationViewModel(MainScope(), backend) }
 
 @Suppress("Unused") // Entry point for iOS application!
 object IosPacemakerViewController {
     fun create() = ComposeUIViewController {
         CompositionLocalProvider(
             LocalEventBus provides backend.eventBus,
-            LocalStateBus provides backend.stateBus
+            LocalStateBus provides backend.stateBus,
+            LocalSessionService provides backend.sessionService
         ) {
             ApplicationWindow(viewModel)
         }
