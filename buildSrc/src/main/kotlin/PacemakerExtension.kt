@@ -54,6 +54,12 @@ class PacemakerExtension(
                 }
             }
         }
+
+        kotlin.apply {
+            sourceSets.androidMain.dependencies {
+                implementation(Dependencies.coroutinesAndroid)
+            }
+        }
     }
 
     val sourceSets = SourceSetsDsl()
