@@ -5,10 +5,7 @@ package io.sellmair.pacemaker.ble
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBPeripheral
-import platform.CoreBluetooth.CBPeripheralDelegateProtocol
-import platform.CoreBluetooth.CBService
+import platform.CoreBluetooth.*
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
@@ -26,6 +23,16 @@ internal class ApplePeripheralDelegate(
 
     override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
         scope.launch { thisDelegate.didDiscoverServices.emit(DidDiscoverServices(peripheral, didDiscoverServices)) }
+    }
+
+
+    class DidModifyServices(val peripheral: CBPeripheral, val services: List<CBService>)
+
+    val didModifyServices = MutableSharedFlow<DidModifyServices>()
+
+    override fun peripheral(peripheral: CBPeripheral, didModifyServices: List<*>) {
+        @Suppress("UNCHECKED_CAST")
+        scope.launch { thisDelegate.didModifyServices.emit(DidModifyServices(peripheral, didModifyServices as List<CBService>)) }
     }
 
 

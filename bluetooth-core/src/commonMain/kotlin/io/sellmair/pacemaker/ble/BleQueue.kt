@@ -38,7 +38,7 @@ internal class BleQueue(context: CoroutineContext) {
      * Timeout used for any given operation
      */
     object Timeout : ConfigurationKey.WithDefault<Duration> {
-        override val default: Duration = 10.seconds
+        override val default: Duration = 5.seconds
     }
 
     /**

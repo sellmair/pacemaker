@@ -116,10 +116,7 @@ internal class AppleConnectableController(
                 characteristic,
                 CBCharacteristicWriteWithoutResponse
             )
-            val result = connectableHardware.delegate.didWriteValue.first { it.characteristic == characteristic }
-            if (result.error != null) {
-                BleFailure.Message(result.error.localizedDescription)
-            } else BleSuccess()
+            BleSuccess()
         }
     }
 

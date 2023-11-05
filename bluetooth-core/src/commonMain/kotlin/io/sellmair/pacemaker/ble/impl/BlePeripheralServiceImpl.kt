@@ -67,11 +67,6 @@ internal class BlePeripheralServiceImpl(
             return null
         }
 
-        queue enqueue RespondToWriteRequestBleOperation(service, request.deviceId, request.characteristicUuid) {
-            controller.respond(request, BleKnownStatusCode.Success)
-            BleSuccess()
-        }
-
         return BleReceivedValue(request.deviceId, characteristic, value)
     }
 
