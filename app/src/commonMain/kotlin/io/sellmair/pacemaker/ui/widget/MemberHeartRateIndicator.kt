@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.UserState
@@ -48,6 +49,7 @@ internal fun MemberHeartRateIndicator(member: UserState, range: ClosedRange<Hear
                 userState = member,
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
+                    .alpha(0.75f)
             )
 
             member.heartRateLimit?.let { memberHeartRateLimit ->
