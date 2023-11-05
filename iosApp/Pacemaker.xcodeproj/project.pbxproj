@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -132,7 +132,7 @@
 				};
 			};
 			buildConfigurationList = B07ED25529BF9C21008A106B /* Build configuration list for PBXProject "Pacemaker" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -286,7 +286,7 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -343,7 +343,7 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
