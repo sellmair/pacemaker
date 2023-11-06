@@ -16,7 +16,7 @@ internal fun CoroutineScope.launchVibrationWarningActor(context: Context) = laun
     val vibratorManager = context.getSystemService<VibratorManager>() ?: return@launch
     while (isActive) {
         delay(1.seconds)
-        if (CriticalGroupState.get().value != null) {
+        if (CriticalGroupState.get().value != null && UtteranceState.get().value >= UtteranceState.Warnings) {
             vibratorManager.vibrate(
                 CombinedVibration.createParallel(
                     VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)

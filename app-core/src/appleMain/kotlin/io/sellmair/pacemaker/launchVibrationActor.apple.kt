@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 internal fun CoroutineScope.launchVibrationWarningActor() = launch {
     while(isActive) {
         delay(1.seconds)
-        if(CriticalGroupState.get().value != null) {
+        if(CriticalGroupState.get().value != null && UtteranceState.get().value >= UtteranceState.Warnings) {
             UIImpactFeedbackGenerator(UIImpactFeedbackStyleHeavy).impactOccurredWithIntensity(1.0)
         }
     }

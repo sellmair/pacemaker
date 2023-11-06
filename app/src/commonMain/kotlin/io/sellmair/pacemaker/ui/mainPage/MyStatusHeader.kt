@@ -58,6 +58,10 @@ internal fun MyStatusHeader(state: MeState?) {
                         .padding(top = 8.dp)
                         .align(Alignment.Center)
                 )
+
+                UtteranceControlButton(
+                    Modifier.align(Alignment.CenterEnd)
+                )
             }
 
             if (state?.heartRateLimit != null)

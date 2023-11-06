@@ -17,8 +17,9 @@ import kotlin.coroutines.suspendCoroutine
 internal fun CoroutineScope.launchTextToSpeech(context: Context) = launch {
     val textToSpeech = TextToSpeech(context) ?: return@launch
     events<UtteranceEvent> { event ->
+        if (!UtteranceState.shouldBeAnnounced(event)) return@events
         if (textToSpeech.isSpeaking) return@events
-        
+
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ASSISTANT)
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)

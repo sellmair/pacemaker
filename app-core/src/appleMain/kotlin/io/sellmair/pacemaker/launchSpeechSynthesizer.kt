@@ -9,7 +9,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
-import platform.AVFAudio.*
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionCategoryOptionDuckOthers
+import platform.AVFAudio.AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers
+import platform.AVFAudio.AVAudioSessionCategoryPlayback
+import platform.AVFAudio.AVAudioSessionModeVoicePrompt
+import platform.AVFAudio.AVSpeechSynthesizer
+import platform.AVFAudio.AVSpeechUtterance
+import platform.AVFAudio.AVSpeechUtteranceDefaultSpeechRate
+import platform.AVFAudio.setActive
 import kotlin.time.Duration.Companion.milliseconds
 
 private val synthesizer = AVSpeechSynthesizer()
@@ -25,6 +33,7 @@ internal fun CoroutineScope.launchSpeechSynthesizer() = launch {
     audioSession.setMode(AVAudioSessionModeVoicePrompt, null)
 
     events<UtteranceEvent>().conflate().collect { event ->
+        if (!UtteranceState.shouldBeAnnounced(event)) return@collect
         val utterance = AVSpeechUtterance.speechUtteranceWithString(event.message)
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate
         synthesizer.speakUtterance(utterance)

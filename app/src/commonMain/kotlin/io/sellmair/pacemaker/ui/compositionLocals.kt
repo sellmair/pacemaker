@@ -25,6 +25,11 @@ fun <T : State?> State.Key<T>.get(): StateFlow<T> {
 }
 
 @Composable
+fun <T : State?> State.Key<T>.set(value: T) {
+    LocalStateBus.current?.setState(this, value)
+}
+
+@Composable
 fun <T : State?> State.Key<T>.collectAsState(): androidx.compose.runtime.State<T> {
     return get().collectAsState()
 }
