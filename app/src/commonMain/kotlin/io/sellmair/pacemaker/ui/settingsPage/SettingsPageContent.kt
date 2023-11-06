@@ -78,12 +78,6 @@ internal fun SettingsPageDevicesList(
                         Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                     ) {
-
-                        CatImage(
-                            Modifier.fillMaxWidth()
-                                .height(200.dp)
-                        )
-
                         Column(
                             Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
