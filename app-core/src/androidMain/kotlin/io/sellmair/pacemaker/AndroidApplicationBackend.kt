@@ -72,7 +72,6 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override fun onCreate() {
         super.onCreate()
         notification.startForeground()
-        launchHrLimitDaemon(this)
         launchApplicationBackend(this)
     }
 
