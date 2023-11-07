@@ -23,6 +23,5 @@ enum class UtteranceState : State {
 
         suspend fun shouldBeAnnounced(event: UtteranceEvent) = shouldBeAnnounced(event.type)
     }
-
 }
 

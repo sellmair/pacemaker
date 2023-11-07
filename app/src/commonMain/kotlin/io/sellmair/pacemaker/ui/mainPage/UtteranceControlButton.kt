@@ -1,7 +1,9 @@
 package io.sellmair.pacemaker.ui.mainPage
 
-import androidx.compose.animation.Animatable
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
@@ -14,7 +16,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.UtteranceState
@@ -48,7 +52,7 @@ fun UtteranceControlButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
-    val desiredColor = when(state) {
+    val desiredColor = when (state) {
         UtteranceState.Silence -> Color.Gray
         UtteranceState.Warnings -> me.displayColorLight.toColor()
         UtteranceState.All -> me.displayColor.toColor()
@@ -68,14 +72,22 @@ fun UtteranceControlButton(
         modifier = modifier
             .padding(18.dp)
     ) {
-        Icon(
-            imageVector = when (state) {
-                UtteranceState.Silence -> Icons.Default.VolumeOff
-                UtteranceState.Warnings -> Icons.Default.Warning
-                UtteranceState.All -> Icons.Default.VolumeUp
-            },
-            contentDescription = "Start Session"
-        )
 
+        AnimatedContent(
+            targetState = state,
+            transitionSpec = {
+                (slideInHorizontally { it } + fadeIn() + scaleIn())
+                    .togetherWith(slideOutHorizontally { -it } + fadeOut() + scaleOut())
+            },
+        ) { targetState ->
+            Icon(
+                imageVector = when (targetState) {
+                    UtteranceState.Silence -> Icons.Default.VolumeOff
+                    UtteranceState.Warnings -> Icons.Default.Warning
+                    UtteranceState.All -> Icons.Default.VolumeUp
+                },
+                contentDescription = null,
+            )
+        }
     }
 }
