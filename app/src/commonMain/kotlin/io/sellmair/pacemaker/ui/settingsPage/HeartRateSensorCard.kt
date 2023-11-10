@@ -209,8 +209,8 @@ internal fun HeartRateSensorCard(
 
                 AnimatedVisibility(
                     visible = expanded,
-                    enter = expandVertically(clip = false),
-                    exit = shrinkVertically(clip = false)
+                    enter = expandVertically(clip = false).plus(fadeIn()),
+                    exit = shrinkVertically(clip = false).plus(fadeOut())
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
