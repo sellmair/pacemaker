@@ -8,7 +8,6 @@ import io.sellmair.pacemaker.utils.ConfigurationKey
 import kotlinx.coroutines.flow.Flow
 
 interface UserService {
-
     suspend fun me(): User
     suspend fun saveUser(user: User)
     suspend fun deleteUser(user: User)

@@ -12,6 +12,7 @@ import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.launchApplicationBackend
+import io.sellmair.pacemaker.meId
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.EventBus
 import io.sellmair.pacemaker.utils.StateBus
@@ -38,6 +39,10 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
 
     override val heartRateSensorBluetoothService = async { HeartRateSensorBluetoothService(ble) }
 
+    override val settings: Settings = NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults)
+
+    private val meId by lazy { settings.meId }
+
     private val pacemakerDatabase by lazy {
         SafePacemakerDatabase(
             PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema.synchronous(), "app.db"))
@@ -45,14 +50,13 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
     }
 
     override val userService: UserService by lazy {
-        SqlUserService(pacemakerDatabase)
+        SqlUserService(pacemakerDatabase, meId)
     }
 
     override val sessionService: SessionService by lazy {
         SqlSessionService(pacemakerDatabase)
     }
 
-    override val settings: Settings = NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults)
 
     init {
         launchApplicationBackend(this)

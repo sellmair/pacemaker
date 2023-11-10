@@ -5,7 +5,7 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.model.randomNewUser
+import io.sellmair.pacemaker.model.newUser
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.flow.Flow
@@ -13,13 +13,16 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
 
-internal class SqlUserService(private val database: SafePacemakerDatabase) : UserService {
+internal class SqlUserService(
+    private val database: SafePacemakerDatabase,
+    private val meId: UserId,
+) : UserService {
+
     override suspend fun me(): User = transaction {
-        val me = userQueries.findMe().executeAsOneOrNull()
+        val me = userQueries.findUserById(meId.value).executeAsOneOrNull()
         if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)
 
-
-        val user = randomNewUser()
+        val user = newUser(meId)
         userQueries.saveUser(user.toDbUser())
         userQueries.saveHeartRateLimit(
             Db_heart_rate_limit(

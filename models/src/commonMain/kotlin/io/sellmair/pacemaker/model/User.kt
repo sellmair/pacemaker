@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker.model
 
 import kotlin.math.absoluteValue
-import kotlin.random.Random
 
 data class User(
     val id: UserId,
@@ -24,7 +23,6 @@ val User.nameAbbreviation: String
     }
 
 
-fun randomNewUser(): User {
-    val id = Random.nextLong()
-    return User(id = UserId(id), name = "Anonymous ${(id % 100).absoluteValue}")
+fun newUser(id: UserId): User {
+    return User(id = id, name = "Anonymous ${(id.value % 100).absoluteValue}")
 }

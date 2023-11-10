@@ -56,6 +56,13 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     private val notification = AndroidHeartRateNotification(this)
 
+
+    override val settings: Settings by lazy {
+        SharedPreferencesSettings(getSharedPreferences("app", Context.MODE_PRIVATE))
+    }
+
+    private val meId by lazy { settings.meId }
+
     private val pacemakerDatabase by lazy {
         SafePacemakerDatabase(
             PacemakerDatabase(
@@ -67,15 +74,11 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     }
 
     override val userService: UserService by lazy {
-        SqlUserService(pacemakerDatabase)
+        SqlUserService(pacemakerDatabase, meId)
     }
 
     override val sessionService: SessionService by lazy {
         SqlSessionService(pacemakerDatabase)
-    }
-
-    override val settings: Settings by lazy {
-        SharedPreferencesSettings(getSharedPreferences("app", Context.MODE_PRIVATE))
     }
 
     override fun onCreate() {
