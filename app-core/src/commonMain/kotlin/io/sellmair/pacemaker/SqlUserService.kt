@@ -13,15 +13,15 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
 
-internal class SqlUserService(private val database: PacemakerDatabase) : UserService {
+internal class SqlUserService(private val database: SafePacemakerDatabase) : UserService {
     override suspend fun me(): User = transaction {
-        val me = database.userQueries.findMe().executeAsOneOrNull()
+        val me = userQueries.findMe().executeAsOneOrNull()
         if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)
 
 
         val user = randomNewUser()
-        database.userQueries.saveUser(user.toDbUser())
-        database.userQueries.saveUserSettings(
+        userQueries.saveUser(user.toDbUser())
+        userQueries.saveUserSettings(
             Db_user_settings(
                 id = 0, /* position 0 is reserved for 'me' */
                 user_id = user.id.value,
@@ -33,65 +33,67 @@ internal class SqlUserService(private val database: PacemakerDatabase) : UserSer
     }
 
     override suspend fun saveUser(user: User) = transaction {
-        database.userQueries.saveUser(user.toDbUser())
+        userQueries.saveUser(user.toDbUser())
         onSaveUser.emit(user)
     }
 
     override suspend fun deleteUser(user: User) = transaction {
-        database.userQueries.deleteUser(user.id.value)
-        database.userQueries.deleteUserSensors(user.id.value)
-        database.userQueries.delteUserSettings(user.id.value)
+        userQueries.deleteUser(user.id.value)
+        userQueries.deleteUserSensors(user.id.value)
+        userQueries.delteUserSettings(user.id.value)
     }
 
     override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) = transaction {
-        database.userQueries.saveSensor(Db_sensor(id = sensorId.value, user_id = user.id.value))
+        userQueries.saveSensor(Db_sensor(id = sensorId.value, user_id = user.id.value))
     }
 
     override suspend fun unlinkSensor(sensorId: HeartRateSensorId) = transaction {
-        database.userQueries.deleteSensor(id = sensorId.value)
+        userQueries.deleteSensor(id = sensorId.value)
     }
 
     override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) = transaction {
-        database.userQueries.saveHeartRateLimit(
+        userQueries.saveHeartRateLimit(
             user_id_ = user.id.value,
             user_id = user.id.value,
             heart_rate_limit = limit.value.toDouble(),
         )
     }
 
-    override suspend fun findUser(userId: UserId): User? {
-        return database.userQueries.findUserById(userId.value).executeAsOneOrNull()?.toUser()
+    override suspend fun findUser(userId: UserId): User? = database {
+        userQueries.findUserById(userId.value).executeAsOneOrNull()?.toUser()
     }
 
 
-    override suspend fun findUser(sensorId: HeartRateSensorId): User? {
-        return database.userQueries.findUserBySensorId(sensorId.value).executeAsOneOrNull()?.let { result ->
+    override suspend fun findUser(sensorId: HeartRateSensorId): User? = database {
+        userQueries.findUserBySensorId(sensorId.value).executeAsOneOrNull()?.let { result ->
             User(id = UserId(result.id), name = result.name, isAdhoc = result.is_adhoc > 0)
         }
     }
 
-    override fun findUserFlow(sensorId: HeartRateSensorId): Flow<User?> {
-        return database.userQueries.findUserBySensorId(sensorId.value).asFlow().map { query ->
+    override fun findUserFlow(sensorId: HeartRateSensorId): Flow<User?> = database.flow {
+        userQueries.findUserBySensorId(sensorId.value).asFlow().map { query ->
             query.executeAsOneOrNull()?.toUser()
         }
     }
 
-    override suspend fun findHeartRateLimit(user: User): HeartRate? {
-        return database.userQueries.findUserSettingsForUserId(user.id.value).executeAsOneOrNull()?.let { result ->
-            HeartRate(result.heart_rate_limit?.toFloat() ?: return null)
+    override suspend fun findHeartRateLimit(user: User): HeartRate? = database {
+        userQueries.findUserSettingsForUserId(user.id.value).executeAsOneOrNull()?.let { result ->
+            HeartRate(result.heart_rate_limit?.toFloat() ?: return@database null)
         }
     }
 
-    override fun findHeartRateLimitFlow(user: User): Flow<HeartRate?> {
-        return database.userQueries.findUserSettingsForUserId(user.id.value).asFlow()
+    override fun findHeartRateLimitFlow(user: User): Flow<HeartRate?> = database.flow {
+        userQueries.findUserSettingsForUserId(user.id.value).asFlow()
             .map { query -> query.executeAsOneOrNull() }
             .map { result -> HeartRate(result?.heart_rate_limit?.toFloat() ?: return@map null) }
     }
 
-    private suspend fun <T> transaction(transaction: suspend () -> T): T {
+    private suspend fun <T> transaction(transaction: suspend PacemakerDatabase.() -> T): T {
         try {
-            return database.transactionWithResult {
-                transaction()
+            return database {
+                transactionWithResult {
+                    transaction()
+                }
             }
         } finally {
             onChange.emit(Unit)

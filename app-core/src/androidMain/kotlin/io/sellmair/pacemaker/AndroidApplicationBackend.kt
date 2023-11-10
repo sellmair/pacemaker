@@ -53,9 +53,11 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     private val notification = AndroidHeartRateNotification(this)
 
     private val pacemakerDatabase by lazy {
-        PacemakerDatabase(
-            AndroidSqliteDriver(
-                schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
+        SafePacemakerDatabase(
+            PacemakerDatabase(
+                AndroidSqliteDriver(
+                    schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
+                )
             )
         )
     }
