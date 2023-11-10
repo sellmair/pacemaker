@@ -21,7 +21,7 @@ interface ApplicationBackend {
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchGroupStateActor(userService)
     scope.launchMeStateActor(userService)
-    scope.launchPacemakerBroadcastSender(userService, pacemakerBluetoothService)
+    scope.launchPacemakerBroadcastSender(pacemakerBluetoothService)
     scope.launchPacemakerBroadcastReceiver(userService, pacemakerBluetoothService)
     scope.launchHeartRateSensorMeasurement(heartRateSensorBluetoothService)
     scope.launchHeartRateSensorAutoConnector(userService, heartRateSensorBluetoothService)
