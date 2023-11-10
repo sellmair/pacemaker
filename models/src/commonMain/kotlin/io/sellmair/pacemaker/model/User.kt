@@ -10,7 +10,18 @@ data class User(
 )
 
 val User.nameAbbreviation: String
-    get() = name.split(Regex("\\s")).joinToString("") { it.firstOrNull()?.uppercase() ?: "" }
+    get() {
+        if (name.isBlank()) return ""
+        val parts = name.split(Regex("\\s"))
+            .filter { it.isNotBlank() }
+
+        if (parts.size >= 2) {
+            return (parts.first().firstOrNull() ?: "").toString().uppercase() +
+                    (parts.last().firstOrNull() ?: "").toString().uppercase()
+        }
+
+        return name.take(2)
+    }
 
 
 fun randomNewUser(): User {
