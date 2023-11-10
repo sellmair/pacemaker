@@ -1,7 +1,13 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -44,11 +50,9 @@ internal fun MyStatusHeader(state: MeState?) {
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
             ) {
-                state?.me?.let { me ->
-                    SessionStartStopButton(
-                         Modifier.align(Alignment.CenterStart)
-                    )
-                }
+                SessionStartStopButton(
+                    Modifier.align(Alignment.CenterStart)
+                )
 
                 Text(
                     state?.heartRate?.toString() ?: "🤷‍♂️",

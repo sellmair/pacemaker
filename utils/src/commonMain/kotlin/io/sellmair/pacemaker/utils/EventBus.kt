@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker.utils
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -44,3 +45,6 @@ suspend inline fun <reified T : Event> events(noinline collector: suspend (T) ->
 suspend fun Event.emit() {
     coroutineContext.eventBus.emit(this)
 }
+
+context(FlowCollector<T>)
+suspend fun<T> T.emit() = emit(this)

@@ -7,8 +7,9 @@ import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.utils.Event
 import io.sellmair.pacemaker.utils.State
+import io.sellmair.pacemaker.utils.emit
 import io.sellmair.pacemaker.utils.events
-import io.sellmair.pacemaker.utils.plusAssign
+import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -25,7 +26,9 @@ sealed interface ActiveSessionIntent : Event {
     data object Stop : ActiveSessionIntent
 }
 
-internal fun CoroutineScope.launchSessionActor(userService: UserService, sessionService: SessionService) = launch {
+internal fun CoroutineScope.launchSessionActor(
+    userService: UserService, sessionService: SessionService
+) = launchStateProducer(ActiveSessionState) {
     var activeSession: ActiveSessionService? = null
     var activeSessionActor: Job? = null
 
@@ -36,14 +39,14 @@ internal fun CoroutineScope.launchSessionActor(userService: UserService, session
                 activeSessionActor?.cancel()
                 val activeSessionService = sessionService.createSession()
                 activeSession = activeSessionService
-                ActiveSessionState += ActiveSessionState(activeSession?.session)
+                ActiveSessionState(activeSession?.session).emit()
                 activeSessionActor = launchActiveSessionActor(userService, activeSessionService)
             }
 
             Stop -> {
                 activeSession?.stop()
                 activeSessionActor?.cancel()
-                ActiveSessionState += ActiveSessionState(null)
+                ActiveSessionState(null).emit()
             }
         }
     }

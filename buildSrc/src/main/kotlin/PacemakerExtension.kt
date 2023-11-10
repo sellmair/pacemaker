@@ -123,6 +123,15 @@ class PacemakerExtension(
                 this.configure()
             }
         }
+
+        fun useAtomicFu() {
+            project.plugins.apply("kotlinx-atomicfu")
+            kotlin {
+                sourceSets.commonMain.dependencies {
+                    implementation("org.jetbrains.kotlinx:atomicfu:0.22.0")
+                }
+            }
+        }
     }
 
     operator fun <T> T.invoke(configure: T.() -> Unit) {

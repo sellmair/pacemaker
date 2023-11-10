@@ -12,4 +12,8 @@ pacemaker {
         useNonAndroid()
         useJvmAndAndroid()
     }
+
+    features {
+        useAtomicFu()
+    }
 }

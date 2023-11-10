@@ -4,8 +4,9 @@ import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.State
+import io.sellmair.pacemaker.utils.emit
 import io.sellmair.pacemaker.utils.events
-import io.sellmair.pacemaker.utils.plusAssign
+import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -51,7 +52,7 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
 
 
     /* Update MeState */
-    launch {
+    launchStateProducer(MeState) {
         var values = Values(me = userService.me())
 
         valuesChannel.consumeEach { update ->
@@ -61,11 +62,11 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
                 heartRateLimit = update.heartRateLimit ?: values.heartRateLimit
             )
 
-            MeState += MeState(
+            MeState(
                 me = values.me ?: return@consumeEach,
                 heartRate = values.heartRate,
                 heartRateLimit = values.heartRateLimit ?: return@consumeEach,
-            )
+            ).emit()
         }
     }
 }
