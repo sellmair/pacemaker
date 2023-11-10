@@ -1,15 +1,15 @@
 package io.sellmair.pacemaker.ui.widget
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +58,15 @@ internal fun UserHead(
         Text(
             text = abbreviation,
             color = Color.White,
-            fontSize = 10.sp
+            fontSize = 10.sp,
+            textAlign = TextAlign.Center,
+            style = TextStyle.Default,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentHeight(
+                    align = Alignment.CenterVertically, // Default value
+                    unbounded = true // Makes sense if the size less than text
+                )
         )
     }
 }
