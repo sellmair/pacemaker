@@ -26,6 +26,7 @@ fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackag
 fun PacemakerBluetoothConnection.broadcastPackages(): Flow<PacemakerBroadcastPackage> = receivedValues
     .broadcastPackages()
 
+@OptIn(ExperimentalStdlibApi::class)
 internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
     val logTag = LogTag.ble.with("decode PacemakerBroadcastPackage")
     class State(
@@ -60,25 +61,33 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
             when (value.characteristic) {
                 userIdCharacteristic -> {
                     userId = runCatching { UserId(value.data) }.getOrNull()
-                    if (userId == null) logTag.error("Failed decoding userId")
+                    if (userId == null) {
+                        logTag.error("Failed decoding userId (${value.data.toHexString()})")
+                    }
                     emitIfPossible()
                 }
 
                 userNameCharacteristic -> {
                     userName = runCatching { value.data.decodeToString() }.getOrNull()
-                    if (userName == null) logTag.error("Failed decoding userName")
+                    if (userName == null) {
+                        logTag.error("Failed decoding userName (${value.data.toHexString()})")
+                    }
                     emitIfPossible()
                 }
 
                 heartRateCharacteristic -> {
                     heartRate = HeartRate(value.data)
-                    if (heartRate == null) logTag.error("Failed decoding heartRate")
+                    if (heartRate == null) {
+                        logTag.error("Failed decoding heartRate (${value.data.toHexString()})")
+                    }
                     emitIfPossible()
                 }
 
                 heartRateLimitCharacteristic -> {
                     heartRateLimit = HeartRate(value.data)
-                    if (heartRateLimit == null) logTag.error("Failed decoding heartRateLimit")
+                    if (heartRateLimit == null) {
+                        logTag.error("Failed decoding heartRateLimit (${value.data.toHexString()})")
+                    }
                     emitIfPossible()
                 }
             }
