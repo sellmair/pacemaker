@@ -10,6 +10,7 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,7 +39,7 @@ suspend fun HeartRateSensorBluetoothService(ble: Ble): HeartRateSensorBluetoothS
     val newSensorsNearby = central.connectables
         .map { connectable -> HeartRateSensorImpl(ble.coroutineScope, connectable) }
         .onEach { sensor -> allSensorsNearby.value += sensor }
-        .shareIn(ble.coroutineScope, SharingStarted.Eagerly)
+        .shareIn(ble.coroutineScope, SharingStarted.Eagerly, replay = UNLIMITED)
 
     central.startScanning()
 

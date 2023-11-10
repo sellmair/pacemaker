@@ -1,6 +1,8 @@
 package io.sellmair.pacemaker.ble
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothProfile.GATT
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
@@ -21,8 +23,17 @@ internal class AndroidCentralController(
 
     override val scanResults = Channel<BleCentralController.ScanResult>()
 
+    override val connectedDevices = Channel<BleCentralController.ConnectedDevice>()
+
     @SuppressLint("MissingPermission")
     override fun startScanning() {
+        /* Detect already connected devices */
+        scope.launch {
+            hardware.manager.getConnectedDevices(GATT).forEach { device ->
+                connectedDevices.send(MyConnectedDevice(device))
+            }
+        }
+
         val scanCallback = object : ScanCallback() {
             override fun onScanFailed(errorCode: Int) {
                 super.onScanFailed(errorCode)
@@ -59,10 +70,23 @@ internal class AndroidCentralController(
         )
     }
 
+    override fun createConnectableController(device: BleCentralController.ConnectedDevice): BleConnectableController {
+        device as MyConnectedDevice
+        return AndroidConnectableController(
+            scope, service, AndroidConnectableHardware(
+                hardware.context, device.device, AndroidGattCallback(scope)
+            )
+        )
+    }
+
     private class MyScanResult(val result: ScanResult) : BleCentralController.ScanResult {
         override val deviceId: BleDeviceId = result.device.deviceId
         override val rssi: Int = result.rssi
         override val isConnectable: Boolean = result.isConnectable
+    }
+
+    private class MyConnectedDevice(val device: BluetoothDevice) : BleCentralController.ConnectedDevice {
+        override val deviceId: BleDeviceId = device.deviceId
     }
 
     companion object {
