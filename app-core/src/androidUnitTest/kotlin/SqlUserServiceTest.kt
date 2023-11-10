@@ -91,7 +91,6 @@ class SqlUserServiceTest {
 
     @Test
     fun `test - heart rate flow`() = runTest(DatabaseBackgroundDispatcher(Dispatchers.Unconfined)) {
-
         val service = service()
         val user = User(UserId(1), "Sarah")
         service.saveUser(user)
