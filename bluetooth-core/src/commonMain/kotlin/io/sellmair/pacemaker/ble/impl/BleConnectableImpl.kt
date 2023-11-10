@@ -36,11 +36,11 @@ internal class BleConnectableImpl(
 
     override fun connectIfPossible(connect: Boolean) {
         connectIfPossible.value = connect
-        if (!connect) {
-            scope.launch {
-                queue enqueue DisconnectPeripheralBleOperation(controller.deviceId) disconnect@{
-                    controller.disconnect()
-                }
+        scope.launch {
+            if(connect) {
+                tryConnect()
+            } else {
+                tryDisconnect()
             }
         }
     }
@@ -48,11 +48,27 @@ internal class BleConnectableImpl(
     suspend fun onScanResult(result: BleCentralController.ScanResult) {
         _rssi.value = result.rssi
         if (connectIfPossible.value && connectionState.value == Disconnected && result.isConnectable) {
+            tryConnect()
+        }
+    }
+
+    private suspend fun tryConnect() {
+        queue enqueue ConnectPeripheralBleOperation(controller.deviceId) connect@{
+            if (!connectIfPossible.value) return@connect BleSuccess()
             connectionState.value = BleConnectable.ConnectionState.Connecting
-            queue enqueue ConnectPeripheralBleOperation(controller.deviceId) connect@{
-                if (controller.isConnected.value) return@connect BleSuccess()
-                controller.connect()
+            if (controller.isConnected.value) return@connect BleSuccess()
+            val result = controller.connect()
+            if (result.isFailure) {
+                connectionState.value = Disconnected
             }
+            result
+        }
+    }
+
+    private suspend fun tryDisconnect() {
+        queue enqueue DisconnectPeripheralBleOperation(controller.deviceId) disconnect@{
+            if(connectIfPossible.value) return@disconnect BleSuccess()
+            controller.disconnect()
         }
     }
 

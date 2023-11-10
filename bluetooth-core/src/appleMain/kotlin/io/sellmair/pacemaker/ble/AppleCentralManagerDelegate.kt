@@ -3,6 +3,7 @@
 package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import platform.darwin.NSObject
 internal class AppleCentralManagerDelegate(
     private val scope: CoroutineScope
 ) : NSObject(), CBCentralManagerDelegateProtocol {
+
     private val thisDelegate = this
 
     /* Did Update State */
@@ -62,6 +64,7 @@ internal class AppleCentralManagerDelegate(
     val didConnectPeripheral = MutableSharedFlow<DidConnectPeripheral>()
 
     override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
+        log.debug("'didConnectPeripheral'")
         scope.launch {
             thisDelegate.didConnectPeripheral.emit(
                 DidConnectPeripheral(central = central, peripheral = didConnectPeripheral)
@@ -79,6 +82,7 @@ internal class AppleCentralManagerDelegate(
 
     @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+        log.debug("'didFailToConnectPeripheral'")
         scope.launch {
             thisDelegate.didFailConnectToPeripheral.emit(
                 DidFailConnectToPeripheral(central = central, peripheral = didFailToConnectPeripheral, error = error)
@@ -107,6 +111,6 @@ internal class AppleCentralManagerDelegate(
     }
 
     companion object {
-        val log get() = LogTag.ble.forClass<AppleCentralManagerDelegate>()
+        val log get() = LogTag.ble.with("AppleCentralManagerDelegate")
     }
 }

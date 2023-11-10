@@ -35,5 +35,17 @@ internal class BleCentralServiceImpl(
                 }.onScanResult(result)
             }
         }
+
+        scope.launch {
+            controller.connectedDevices.consumeAsFlow().collect { connectedDevice ->
+                connectableById.getOrPut(connectedDevice.deviceId) {
+                    BleConnectableImpl(
+                        scope, queue, controller.createConnectableController(connectedDevice), service
+                    ).also { newConnectable ->
+                        connectables.emit(newConnectable)
+                    }
+                }
+            }
+        }
     }
 }

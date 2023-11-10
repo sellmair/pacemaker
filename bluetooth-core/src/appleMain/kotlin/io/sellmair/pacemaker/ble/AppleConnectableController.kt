@@ -2,6 +2,8 @@
 
 package io.sellmair.pacemaker.ble
 
+import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.debug
 import io.sellmair.pacemaker.utils.toNSData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
@@ -35,6 +37,7 @@ internal class AppleConnectableController(
     override val rssi: MutableStateFlow<Int> = MutableStateFlow(-1)
 
     override suspend fun connect(): BleResult<Unit> {
+        log.debug("connect()")
         centralHardware.manager.connectPeripheral(connectableHardware.peripheral, mapOf<Any?, Any>())
         val didConnectFlow = centralHardware.delegate.didConnectPeripheral
             .filter { it.peripheral == connectableHardware.peripheral }
@@ -146,5 +149,9 @@ internal class AppleConnectableController(
             .filter { it.peripheral == connectableHardware.peripheral }
             .onEach { isConnected.value = false }
             .launchIn(scope)
+    }
+
+    companion object {
+        val log = LogTag.ble.forClass<AppleConnectableController>()
     }
 }

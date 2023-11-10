@@ -125,3 +125,13 @@ inline fun <T> BleResult<T>.getOr(onFailure: (failure: BleFailure) -> T): T {
         is BleFailure -> onFailure(this)
     }
 }
+
+val BleResult<*>.isSuccess get() = when(this) {
+    is BleFailure -> false
+    is BleSuccess -> true
+}
+
+val BleResult<*>.isFailure get() = when(this) {
+    is BleFailure -> true
+    is BleSuccess -> false
+}
