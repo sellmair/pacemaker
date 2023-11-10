@@ -25,6 +25,7 @@ kotlin {
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
         implementation(Dependencies.coroutinesTest)
+        implementation(Dependencies.coroutinesDebug)
     }
 
 

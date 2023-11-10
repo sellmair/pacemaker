@@ -1,21 +1,7 @@
 package io.sellmair.pacemaker.utils
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -26,6 +12,7 @@ private typealias Producer<K, T> = suspend FlowCollector<T>.(key: K) -> Unit
 
 inline fun <reified K : State.Key<T>, T : State?> CoroutineScope.launchStateProducer(
     coroutineContext: CoroutineContext = EmptyCoroutineContext,
+    keepActive: Duration = Duration.ZERO,
     noinline onInactive: suspend FlowCollector<T>.(key: K) -> Unit = OnInactive.resetValue(),
     noinline produce: suspend FlowCollector<T>.(key: K) -> Unit
 ): Job {
@@ -34,6 +21,7 @@ inline fun <reified K : State.Key<T>, T : State?> CoroutineScope.launchStateProd
     val producer = ColdStateProducerImpl(
         coroutineScope = coroutineScope,
         keyClazz = K::class,
+        keepActive = keepActive,
         onInactive = onInactive,
         onActive = produce,
     )
@@ -62,11 +50,7 @@ fun <T : State?> CoroutineScope.launchStateProducer(
 
 object OnInactive {
     fun <K : State.Key<T>, T : State?> keepValue(): Producer<K, T> = {}
-
-    fun <K : State.Key<T>, T : State?> resetValue(resetDelay: Duration = Duration.ZERO): Producer<K, T> = { key ->
-        delay(resetDelay)
-        emit(key.default)
-    }
+    fun <K : State.Key<T>, T : State?> resetValue(): Producer<K, T> = { key -> emit(key.default) }
 }
 
 
@@ -74,6 +58,7 @@ object OnInactive {
 internal class ColdStateProducerImpl<K : State.Key<T>, T : State?>(
     private val coroutineScope: CoroutineScope,
     private val keyClazz: KClass<K>,
+    private val keepActive: Duration = Duration.ZERO,
     private val onInactive: suspend FlowCollector<T>.(key: K) -> Unit,
     private val onActive: suspend FlowCollector<T>.(key: K) -> Unit
 ) : State.Producer {
@@ -85,16 +70,19 @@ internal class ColdStateProducerImpl<K : State.Key<T>, T : State?>(
         coroutineScope.launch { produceState(key, state) }
     }
 
+    @OptIn(FlowPreview::class)
     private suspend fun produceState(key: K, state: MutableStateFlow<T>) {
         state.subscriptionCount
             .map { subscriptionCount -> subscriptionCount > 0 }
             .distinctUntilChanged()
-            .collectLatest { isSubscribed ->
-                if (isSubscribed && coroutineContext.isActive) {
+            .debounce { isSubscribed -> if(!isSubscribed) keepActive else Duration.ZERO }
+            .distinctUntilChanged()
+            .collectLatest { isActive, ->
+                if (isActive && coroutineContext.isActive) {
                     state.emitAll(flow { onActive(key) })
                 }
 
-                if(!isSubscribed) {
+                if(!isActive) {
                     state.emitAll(flow { onInactive(key) })
                 }
             }
