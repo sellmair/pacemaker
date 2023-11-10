@@ -1,5 +1,7 @@
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
+import com.russhwolf.settings.NSUserDefaultsSettings
+import com.russhwolf.settings.Settings
 import io.sellmair.pacemaker.ApplicationBackend
 import io.sellmair.pacemaker.SafePacemakerDatabase
 import io.sellmair.pacemaker.SessionService
@@ -19,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import platform.Foundation.NSUserDefaults
 import kotlin.coroutines.CoroutineContext
 
 class IosApplicationBackend : ApplicationBackend, CoroutineScope {
@@ -48,6 +51,8 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
     override val sessionService: SessionService by lazy {
         SqlSessionService(pacemakerDatabase)
     }
+
+    override val settings: Settings = NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults)
 
     init {
         launchApplicationBackend(this)

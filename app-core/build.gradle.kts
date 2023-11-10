@@ -25,6 +25,7 @@ kotlin {
         api(project(":models"))
         api(project(":utils"))
         api(project(":bluetooth"))
+        implementation(Dependencies.multiplatformSettings)
     }
 
     sourceSets.androidMain.dependencies {

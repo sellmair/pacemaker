@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker
 
+import com.russhwolf.settings.Settings
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.utils.EventBus
@@ -14,6 +15,7 @@ interface ApplicationBackend {
     val userService: UserService
     val stateBus: StateBus
     val eventBus: EventBus
+    val settings: Settings
 }
 
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
@@ -26,6 +28,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchCriticalGroupStateActor()
     scope.launchSessionActor(userService, sessionService)
     scope.launchHeartRateUtteranceProducer()
+    scope.launchUtteranceSettingsActor(settings)
     launchPlatform(scope)
 }
 

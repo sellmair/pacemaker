@@ -1,11 +1,14 @@
 package io.sellmair.pacemaker
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.SharedPreferencesSettings
 import io.sellmair.pacemaker.ble.AndroidBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
@@ -31,6 +34,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>,
         override val userService: UserService,
         override val sessionService: SessionService,
+        override val settings: Settings,
     ) : Binder(), ApplicationBackend {
         override val eventBus get() = coroutineContext.eventBus
         override val stateBus get() = coroutineContext.stateBus
@@ -70,6 +74,9 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         SqlSessionService(pacemakerDatabase)
     }
 
+    override val settings: Settings by lazy {
+        SharedPreferencesSettings(getSharedPreferences("app", Context.MODE_PRIVATE))
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -88,6 +95,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
             sessionService = sessionService,
             pacemakerBluetoothService = pacemakerBluetoothService,
             heartRateSensorBluetoothService = heartRateSensorBluetoothService,
+            settings = settings
         )
     }
 }
