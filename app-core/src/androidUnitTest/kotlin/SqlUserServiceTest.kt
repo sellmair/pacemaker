@@ -1,4 +1,7 @@
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import io.sellmair.pacemaker.DatabaseBackgroundDispatcher
+import io.sellmair.pacemaker.SafePacemakerDatabase
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import io.sellmair.pacemaker.SqlUserService
 import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.model.HeartRate
@@ -7,11 +10,8 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.invoke
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -22,7 +22,7 @@ class SqlUserServiceTest {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         PacemakerDatabase.Schema.create(driver).await()
         val database = PacemakerDatabase(driver)
-        return SqlUserService(database)
+        return SqlUserService(SafePacemakerDatabase(database), UserId(1002))
 
     }
 
@@ -90,7 +90,8 @@ class SqlUserServiceTest {
     }
 
     @Test
-    fun `test - heart rate flow`() = runTest {
+    fun `test - heart rate flow`() = runTest(DatabaseBackgroundDispatcher(Dispatchers.Unconfined)) {
+
         val service = service()
         val user = User(UserId(1), "Sarah")
         service.saveUser(user)
