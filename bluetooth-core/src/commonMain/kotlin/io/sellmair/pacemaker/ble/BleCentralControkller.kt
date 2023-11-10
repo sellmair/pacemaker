@@ -8,19 +8,13 @@ internal interface BleCentralController {
 
     val scanResults: ReceiveChannel<ScanResult>
 
-    val connectedDevices: ReceiveChannel<ConnectedDevice>
+    val connectedDevices: ReceiveChannel<BleConnectableController>
 
     fun createConnectableController(result: ScanResult): BleConnectableController
-
-    fun createConnectableController(device: ConnectedDevice): BleConnectableController
 
     interface ScanResult {
         val deviceId: BleDeviceId
         val rssi: Int
         val isConnectable: Boolean
-    }
-
-    interface ConnectedDevice {
-        val deviceId: BleDeviceId
     }
 }

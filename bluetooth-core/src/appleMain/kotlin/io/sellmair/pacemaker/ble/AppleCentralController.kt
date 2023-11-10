@@ -17,9 +17,16 @@ internal class AppleCentralController(
         val connectedPeripherals = hardware.manager.retrieveConnectedPeripheralsWithServices(listOf(hardware.serviceDescriptor.uuid))
         scope.launch {
             @Suppress("UNCHECKED_CAST")
-            connectedPeripherals  as List<CBPeripheral>
-            connectedPeripherals.forEach { device ->
-                connectedDevices.send(MyConnectedDevice(device)) }
+            connectedPeripherals as List<CBPeripheral>
+            connectedPeripherals.forEach { peripheral ->
+                val delegate = ApplePeripheralDelegate(scope)
+                peripheral.delegate = delegate
+                val controller = AppleConnectableController(
+                    scope, hardware, AppleConnectableHardware(peripheral, delegate, hardware.serviceDescriptor)
+                )
+                controller.connect()
+                connectedDevices.send(controller)
+            }
         }
 
         hardware.manager.scanForPeripheralsWithServices(
@@ -30,7 +37,7 @@ internal class AppleCentralController(
 
     override val scanResults = Channel<BleCentralController.ScanResult>()
 
-    override val connectedDevices = Channel<BleCentralController.ConnectedDevice>()
+    override val connectedDevices = Channel<BleConnectableController>()
 
     override fun createConnectableController(result: BleCentralController.ScanResult): BleConnectableController {
         result as MyScanResult
@@ -40,16 +47,6 @@ internal class AppleCentralController(
         return AppleConnectableController(
             scope, hardware, AppleConnectableHardware(result.event.peripheral, delegate, hardware.serviceDescriptor)
         )
-
-    }
-
-    override fun createConnectableController(device: BleCentralController.ConnectedDevice): BleConnectableController {
-        device as MyConnectedDevice
-        val delegate = ApplePeripheralDelegate(scope)
-        device.peripheral.delegate = delegate
-        return AppleConnectableController(
-            scope, hardware, AppleConnectableHardware(device.peripheral, delegate, hardware.serviceDescriptor)
-        )
     }
 
     private class MyScanResult(val event: DidDiscoverPeripheral) : BleCentralController.ScanResult {
@@ -58,11 +55,6 @@ internal class AppleCentralController(
         override val isConnectable: Boolean =
             (event.advertisementData[CBAdvertisementDataIsConnectable] as? Boolean) ?: true
     }
-
-    private class MyConnectedDevice(val peripheral: CBPeripheral): BleCentralController.ConnectedDevice {
-        override val deviceId: BleDeviceId = peripheral.deviceId
-    }
-
 
     init {
         scope.launch {

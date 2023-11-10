@@ -22,7 +22,7 @@ internal class AndroidCentralController(
 
     override val scanResults = Channel<BleCentralController.ScanResult>()
 
-    override val connectedDevices = Channel<BleCentralController.ConnectedDevice>()
+    override val connectedDevices = Channel<BleConnectableController>()
 
     @SuppressLint("MissingPermission")
     override fun startScanning() {
@@ -38,7 +38,7 @@ internal class AndroidCentralController(
                 if (controller.connect().isFailure) return@forEach
                 val services = controller.discoverService().getOr { return@forEach }
                 if (service.uuid in services) {
-                    connectedDevices.send(MyConnectedDevice(controller))
+                    connectedDevices.send(controller)
                 }
             }
         }
@@ -79,19 +79,10 @@ internal class AndroidCentralController(
         )
     }
 
-    override fun createConnectableController(device: BleCentralController.ConnectedDevice): BleConnectableController {
-        device as MyConnectedDevice
-        return device.controller
-    }
-
     private class MyScanResult(val result: ScanResult) : BleCentralController.ScanResult {
         override val deviceId: BleDeviceId = result.device.deviceId
         override val rssi: Int = result.rssi
         override val isConnectable: Boolean = result.isConnectable
-    }
-
-    private class MyConnectedDevice(val controller: BleConnectableController) : BleCentralController.ConnectedDevice {
-        override val deviceId: BleDeviceId = controller.deviceId
     }
 
     companion object {
