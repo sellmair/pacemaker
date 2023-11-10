@@ -10,6 +10,8 @@ import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.launch
 
 data class MeState(
@@ -47,6 +49,13 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
     launch {
         userService.findHeartRateLimitFlow(userService.me()).collect { heartRateLimit ->
             valuesChannel.send(Values(heartRateLimit = heartRateLimit))
+        }
+    }
+
+    /* Collect changes in user service (maybe 'me' was updated?) */
+    launch {
+        userService.onChange.conflate().collect {
+            valuesChannel.send(Values(me = userService.me()))
         }
     }
 
