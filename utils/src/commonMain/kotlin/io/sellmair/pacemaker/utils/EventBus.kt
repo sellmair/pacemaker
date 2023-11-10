@@ -46,5 +46,7 @@ suspend fun Event.emit() {
     coroutineContext.eventBus.emit(this)
 }
 
-context(FlowCollector<T>)
-suspend fun<T> T.emit() = emit(this)
+
+val<T> FlowCollector<T>.emit: suspend T.() -> Unit get() = {
+    emit(this)
+}
