@@ -21,9 +21,8 @@ internal class SqlUserService(private val database: SafePacemakerDatabase) : Use
 
         val user = randomNewUser()
         userQueries.saveUser(user.toDbUser())
-        userQueries.saveUserSettings(
-            Db_user_settings(
-                id = 0, /* position 0 is reserved for 'me' */
+        userQueries.saveHeartRateLimit(
+            Db_heart_rate_limit(
                 user_id = user.id.value,
                 heart_rate_limit = UserService.NewUserHeartRateLimit.value().value.toDouble()
             )
@@ -40,7 +39,7 @@ internal class SqlUserService(private val database: SafePacemakerDatabase) : Use
     override suspend fun deleteUser(user: User) = transaction {
         userQueries.deleteUser(user.id.value)
         userQueries.deleteUserSensors(user.id.value)
-        userQueries.delteUserSettings(user.id.value)
+        userQueries.deleteHeartRateLimit(user.id.value)
     }
 
     override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) = transaction {
@@ -52,8 +51,7 @@ internal class SqlUserService(private val database: SafePacemakerDatabase) : Use
     }
 
     override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) = transaction {
-        userQueries.saveHeartRateLimit(
-            user_id_ = user.id.value,
+        userQueries.saveHeartRateLimitForUser(
             user_id = user.id.value,
             heart_rate_limit = limit.value.toDouble(),
         )

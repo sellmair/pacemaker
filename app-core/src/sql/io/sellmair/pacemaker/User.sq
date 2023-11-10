@@ -10,19 +10,14 @@ CREATE TABLE db_sensor(
     FOREIGN KEY(user_id) REFERENCES db_user(id)
 );
 
-CREATE TABLE db_user_settings(
-    id INTEGER PRIMARY KEY  NOT NULL,
-    user_id INTEGER,
+CREATE TABLE db_heart_rate_limit(
+    user_id INTEGER PRIMARY KEY NOT NULL ,
     heart_rate_limit REAL,
     FOREIGN KEY (user_id) REFERENCES db_user(id)
 );
 
-INSERT INTO db_user_settings (id) VALUES (0);
-
 findMe:
-SELECT * FROM db_user
-LEFT JOIN db_user_settings ON db_user_settings.user_id = db_user.id
-WHERE db_user_settings.id = 0;
+SELECT * FROM db_user ORDER BY id ASC LIMIT 1;
 
 findUserById:
 SELECT * FROM db_user WHERE id = ?;
@@ -33,20 +28,17 @@ LEFT JOIN db_sensor ON db_sensor.user_id = db_user.id
 WHERE db_sensor.id = ?;
 
 findUserSettingsForUserId:
-SELECT * FROM db_user_settings WHERE user_id = ?;
-
-findUserSettingsForMe:
-SELECT * FROM db_user WHERE id = 0;
+SELECT * FROM db_heart_rate_limit WHERE user_id = ?;
 
 saveUser:
 INSERT OR REPLACE INTO db_user VALUES ?;
 
-saveUserSettings:
-INSERT OR REPLACE INTO db_user_settings VALUES ?;
-
 saveHeartRateLimit:
-INSERT OR REPLACE INTO db_user_settings(id, user_id, heart_rate_limit)
- VALUES ((SELECT id FROM db_user_settings WHERE user_id = ?),?, ?);
+INSERT OR REPLACE INTO db_heart_rate_limit VALUES ?;
+
+saveHeartRateLimitForUser:
+INSERT OR REPLACE INTO db_heart_rate_limit(user_id, heart_rate_limit)
+ VALUES (?,?);
 
 saveSensor:
 INSERT OR REPLACE INTO db_sensor VALUES ?;
@@ -54,8 +46,8 @@ INSERT OR REPLACE INTO db_sensor VALUES ?;
 deleteUser:
 DELETE FROM db_user WHERE db_user.id = ?;
 
-delteUserSettings:
-DELETE FROM db_user_settings WHERE db_user_settings.user_id = ?;
+deleteHeartRateLimit:
+DELETE FROM db_heart_rate_limit WHERE db_heart_rate_limit.user_id = ?;
 
 deleteUserSensors:
 DELETE FROM db_sensor WHERE db_sensor.user_id = ?;
