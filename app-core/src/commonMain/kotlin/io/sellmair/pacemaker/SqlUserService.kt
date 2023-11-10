@@ -28,11 +28,13 @@ internal class SqlUserService(private val database: PacemakerDatabase) : UserSer
                 heart_rate_limit = UserService.NewUserHeartRateLimit.value().value.toDouble()
             )
         )
+        onSaveUser.emit(user)
         user
     }
 
     override suspend fun saveUser(user: User) = transaction {
         database.userQueries.saveUser(user.toDbUser())
+        onSaveUser.emit(user)
     }
 
     override suspend fun deleteUser(user: User) = transaction {
@@ -97,6 +99,8 @@ internal class SqlUserService(private val database: PacemakerDatabase) : UserSer
     }
 
     override val onChange = MutableSharedFlow<Unit>()
+
+    override val onSaveUser = MutableSharedFlow<User>()
 }
 
 internal fun User.toDbUser(): Db_user {

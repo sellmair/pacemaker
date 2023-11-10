@@ -49,7 +49,6 @@ private class SqlStoredSessionService(
 ) : StoredSessionService {
 
     override suspend fun getUsers(): List<User> {
-        println("getUsers!")
         return withContext(Dispatchers.IO) {
             database.sessionQueries.findUsers(session_id = session.id.value).executeAsList()
                 .mapNotNull { userId -> database.userQueries.findUserById(userId).executeAsOneOrNull() }

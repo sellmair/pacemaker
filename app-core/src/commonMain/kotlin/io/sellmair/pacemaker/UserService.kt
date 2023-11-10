@@ -25,6 +25,7 @@ interface UserService {
     suspend fun saveHeartRateLimit(user: User, limit: HeartRate)
 
     val onChange: Flow<Unit>
+    val onSaveUser: Flow<User>
 
     object NewUserHeartRateLimit : ConfigurationKey.WithDefault<HeartRate> {
         override val default: HeartRate = HeartRate(145)
