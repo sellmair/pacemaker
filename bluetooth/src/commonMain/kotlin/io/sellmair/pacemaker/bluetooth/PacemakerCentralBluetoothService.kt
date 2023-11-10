@@ -5,6 +5,7 @@ package io.sellmair.pacemaker.bluetooth
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.ble.BleConnection
 import io.sellmair.pacemaker.ble.ble
+import io.sellmair.pacemaker.ble.isFailure
 import io.sellmair.pacemaker.bluetooth.PacemakerCentralBluetoothService.Companion.log
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
@@ -45,11 +46,15 @@ internal suspend fun PacemakerCentralBluetoothService(ble: Ble): PacemakerCentra
 
 
         /* Enable notifications for all characteristics that support it */
-        connection.scope.launch {
-            PacemakerServiceDescriptors.service.characteristics
-                .filter { it.isNotificationsEnabled }
-                .forEach { characteristic -> connection.enableNotifications(characteristic) }
-        }
+        PacemakerServiceDescriptors.service.characteristics
+            .filter { it.isNotificationsEnabled }
+            .forEach { characteristic ->
+                connection.scope.launch {
+                    while (connection.enableNotifications(characteristic).isFailure) {
+                        delay(10.seconds)
+                    }
+                }
+            }
 
         /* Logging: Log all received values */
         connection.scope.launch {
