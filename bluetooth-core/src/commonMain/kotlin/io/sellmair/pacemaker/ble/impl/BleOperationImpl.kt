@@ -1,6 +1,13 @@
 package io.sellmair.pacemaker.ble.impl
 
-import io.sellmair.pacemaker.ble.*
+import io.sellmair.pacemaker.ble.BleCharacteristicDescriptor
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleOperation
+import io.sellmair.pacemaker.ble.BleResult
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleSimpleOperation
+import io.sellmair.pacemaker.ble.BleUUID
+import io.sellmair.pacemaker.ble.map
 import kotlinx.coroutines.CoroutineScope
 
 internal class ReadCharacteristicBleOperation(
@@ -73,14 +80,14 @@ internal class EnableNotificationsBleOperation(
 
 internal class DiscoverServicesBleOperation(
     private val deviceId: BleDeviceId,
-    private val discover: suspend () -> BleResult<Unit>
+    private val discover: suspend () -> BleResult<Any>
 ) : BleSimpleOperation {
 
     override val description: String
         get() = "'$deviceId' Discover services'"
 
     override suspend fun CoroutineScope.invoke(): BleResult<Unit> {
-        return discover()
+        return discover().map { }
     }
 }
 

@@ -99,11 +99,11 @@ internal class AndroidConnectableController(
         return BleSuccess()
     }
 
-    override suspend fun discoverService(): BleUnit {
+    override suspend fun discoverService(): BleResult<Set<BleUUID>> {
         val gatt = gatt ?: return BleFailure.Message("No 'gatt' connected")
         gatt.discoverServices()
         val status = BleStatusCode(hardware.callback.onServicesDiscovered.first().status)
-        return if (status.isSuccess) BleSuccess()
+        return if (status.isSuccess) BleSuccess(gatt.services.map { BleUUID(it.uuid) }.toSet())
         else BleFailure.StatusCode(status)
     }
 

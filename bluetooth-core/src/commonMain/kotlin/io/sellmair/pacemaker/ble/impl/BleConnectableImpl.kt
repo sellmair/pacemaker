@@ -1,12 +1,34 @@
 package io.sellmair.pacemaker.ble.impl
 
-import io.sellmair.pacemaker.ble.*
+import io.sellmair.pacemaker.ble.BleCentralController
+import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connected
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Disconnected
+import io.sellmair.pacemaker.ble.BleConnectableController
+import io.sellmair.pacemaker.ble.BleConnection
+import io.sellmair.pacemaker.ble.BleDeviceId
+import io.sellmair.pacemaker.ble.BleQueue
+import io.sellmair.pacemaker.ble.BleServiceDescriptor
+import io.sellmair.pacemaker.ble.BleSuccess
+import io.sellmair.pacemaker.ble.ble
+import io.sellmair.pacemaker.ble.enqueue
+import io.sellmair.pacemaker.ble.getOr
+import io.sellmair.pacemaker.ble.isFailure
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.info
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 internal class BleConnectableImpl(
     private val scope: CoroutineScope,
@@ -54,6 +76,7 @@ internal class BleConnectableImpl(
 
     private suspend fun tryConnect() {
         queue enqueue ConnectPeripheralBleOperation(controller.deviceId) connect@{
+            if(controller.isConnected.value) return@connect BleSuccess()
             if (!connectIfPossible.value) return@connect BleSuccess()
             connectionState.value = BleConnectable.ConnectionState.Connecting
             if (controller.isConnected.value) return@connect BleSuccess()

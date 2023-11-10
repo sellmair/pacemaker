@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker.ble
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothProfile.GATT
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
@@ -30,7 +29,17 @@ internal class AndroidCentralController(
         /* Detect already connected devices */
         scope.launch {
             hardware.manager.getConnectedDevices(GATT).forEach { device ->
-                connectedDevices.send(MyConnectedDevice(device))
+                val controller = AndroidConnectableController(
+                    scope, service, AndroidConnectableHardware(
+                        hardware.context, device, AndroidGattCallback(scope)
+                    )
+                )
+
+                if (controller.connect().isFailure) return@forEach
+                val services = controller.discoverService().getOr { return@forEach }
+                if (service.uuid in services) {
+                    connectedDevices.send(MyConnectedDevice(controller))
+                }
             }
         }
 
@@ -72,11 +81,7 @@ internal class AndroidCentralController(
 
     override fun createConnectableController(device: BleCentralController.ConnectedDevice): BleConnectableController {
         device as MyConnectedDevice
-        return AndroidConnectableController(
-            scope, service, AndroidConnectableHardware(
-                hardware.context, device.device, AndroidGattCallback(scope)
-            )
-        )
+        return device.controller
     }
 
     private class MyScanResult(val result: ScanResult) : BleCentralController.ScanResult {
@@ -85,8 +90,8 @@ internal class AndroidCentralController(
         override val isConnectable: Boolean = result.isConnectable
     }
 
-    private class MyConnectedDevice(val device: BluetoothDevice) : BleCentralController.ConnectedDevice {
-        override val deviceId: BleDeviceId = device.deviceId
+    private class MyConnectedDevice(val controller: BleConnectableController) : BleCentralController.ConnectedDevice {
+        override val deviceId: BleDeviceId = controller.deviceId
     }
 
     companion object {

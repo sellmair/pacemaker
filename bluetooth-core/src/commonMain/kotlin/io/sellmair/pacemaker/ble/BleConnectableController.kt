@@ -19,7 +19,7 @@ interface BleConnectableController {
 
     suspend fun disconnect(): BleUnit
 
-    suspend fun discoverService(): BleUnit
+    suspend fun discoverService(): BleResult<Set<BleUUID>>
 
     suspend fun discoverCharacteristics(): BleUnit
 

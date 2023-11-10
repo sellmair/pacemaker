@@ -6,7 +6,17 @@ import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
 import io.sellmair.pacemaker.utils.toNSData
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import okio.ByteString.Companion.toByteString
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithoutResponse
@@ -63,10 +73,10 @@ internal class AppleConnectableController(
         return BleSuccess()
     }
 
-    override suspend fun discoverService(): BleResult<Unit> {
+    override suspend fun discoverService(): BleResult<Set<BleUUID>> {
         connectableHardware.peripheral.discoverServices(listOf(connectableHardware.serviceDescriptor.uuid))
         val result = connectableHardware.delegate.didDiscoverServices.first()
-        return if (result.error == null) BleSuccess()
+        return if (result.error == null) BleSuccess(setOf(connectableHardware.serviceDescriptor.uuid))
         else BleFailure.Message(result.error.localizedDescription)
     }
 
