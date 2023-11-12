@@ -17,6 +17,11 @@ pacemaker {
 
 extensions.configure(ApplicationExtension::class) {
     namespace = "io.sellmair.pacemaker"
+
+    defaultConfig {
+        versionName = "2023.2"
+        versionCode = 3
+    }
 }
 
 kotlin {

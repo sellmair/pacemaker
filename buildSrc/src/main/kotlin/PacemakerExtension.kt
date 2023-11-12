@@ -42,7 +42,7 @@ class PacemakerExtension(
             compileSdkVersion(34)
             namespace = "io.sellmair.${project.name.replace("-", ".")}"
             defaultConfig {
-                minSdk = 31
+                minSdk = 33
             }
 
             if (this is ApplicationExtension) {
