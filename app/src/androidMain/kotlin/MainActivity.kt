@@ -47,13 +47,13 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             arrayOf(
                 Manifest.permission.BLUETOOTH_SCAN,
                 Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_ADVERTISE
+                Manifest.permission.BLUETOOTH_ADVERTISE,
+                Manifest.permission.POST_NOTIFICATIONS,
             ), 0
         )
         startForegroundService()
 
         setContent {
-
             val backend = mainServiceConnection.backend.collectAsState().value
             if (backend != null) {
                 CompositionLocalProvider(
