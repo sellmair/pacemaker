@@ -12,15 +12,20 @@ plugins {
 
 pacemaker {
     ios()
+    watchos()
     android()
 }
 
 extensions.configure(ApplicationExtension::class) {
     namespace = "io.sellmair.pacemaker"
+    defaultConfig {
+        versionName = "2023.2"
+        versionCode = 1
+    }
 }
 
 kotlin {
-    sourceSets.commonMain.get().dependencies {
+    sourceSets.phoneMain.dependencies {
        implementation(project(":app-core"))
 
         /* COMPOSE */
@@ -50,7 +55,7 @@ kotlin {
         }
     }
 
-    sourceSets.getByName("androidInstrumentedTest").dependencies {
+    sourceSets.androidInstrumentedTest.dependencies {
         implementation("androidx.compose.ui:ui-test-junit4:1.5.3")
     }
 

@@ -1,12 +1,16 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import app.cash.sqldelight.gradle.SqlDelightExtension
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.gradle.BaseExtension
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinSourceSetConvention
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 class PacemakerExtension(
     private val project: Project,
@@ -33,6 +37,11 @@ class PacemakerExtension(
     fun macos() {
         kotlin.macosArm64()
         kotlin.macosX64()
+    }
+
+    fun watchos() {
+        kotlin.watchosArm64()
+        kotlin.watchosSimulatorArm64()
     }
 
     fun android() {
@@ -138,3 +147,10 @@ class PacemakerExtension(
         configure(this)
     }
 }
+
+val NamedDomainObjectContainer<KotlinSourceSet>.androidUnitTest by KotlinSourceSetConvention
+val NamedDomainObjectContainer<KotlinSourceSet>.androidInstrumentedTest by KotlinSourceSetConvention
+val NamedDomainObjectContainer<KotlinSourceSet>.phoneMain by KotlinSourceSetConvention
+val NamedDomainObjectContainer<KotlinSourceSet>.phoneTest by KotlinSourceSetConvention
+val NamedDomainObjectContainer<KotlinSourceSet>.iosAndMacMain by KotlinSourceSetConvention
+val NamedDomainObjectContainer<KotlinSourceSet>.iosAndMacTest by KotlinSourceSetConvention

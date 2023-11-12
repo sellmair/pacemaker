@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
@@ -28,6 +30,22 @@ kotlin {
         implementation(Dependencies.coroutinesDebug)
     }
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    kotlin.applyDefaultHierarchyTemplate {
+        common {
+            group("phone") {
+                withAndroidTarget()
+                group("ios")
+            }
+
+            group("apple") {
+                group("iosAndMac") {
+                    group("ios")
+                    group("macos")
+                }
+            }
+        }
+    }
 
     //https://youtrack.jetbrains.com/issue/KT-61573
     targets.all {

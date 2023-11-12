@@ -1,20 +1,14 @@
 package io.sellmair.pacemaker.utils
 
-import kotlinx.cinterop.BetaInteropApi
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.toCValues
-import okio.FileSystem
+import kotlinx.cinterop.*
 import platform.Foundation.NSData
 import platform.Foundation.create
+import platform.darwin.NSUInteger
 
-actual fun defaultFileSystem(): FileSystem {
-    return FileSystem.SYSTEM
-}
 
-@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class, BetaInteropApi::class)
 fun ByteArray.toNSData(): NSData {
     return memScoped {
-        NSData.create(bytes = this@toNSData.toCValues().ptr, length = size.toULong())
+        NSData.create(bytes = this@toNSData.toCValues().ptr, length = size.convert<NSUInteger>())
     }
 }

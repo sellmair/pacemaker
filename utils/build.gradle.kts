@@ -7,6 +7,7 @@ pacemaker {
     macos()
     android()
     ios()
+    watchos()
 
     sourceSets {
         useNonAndroid()

@@ -12,5 +12,3 @@ fun FileSystem.readUtf8OrNull(path: Path): String? {
         null
     }
 }
-
-expect fun defaultFileSystem(): FileSystem

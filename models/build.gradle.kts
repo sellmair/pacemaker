@@ -6,4 +6,5 @@ pacemaker {
     jvm()
     ios()
     macos()
+    watchos()
 }
