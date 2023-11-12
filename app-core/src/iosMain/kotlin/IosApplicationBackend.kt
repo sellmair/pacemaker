@@ -43,10 +43,8 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
 
     private val meId by lazy { settings.meId }
 
-    private val pacemakerDatabase by lazy {
-        SafePacemakerDatabase(
-            PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema.synchronous(), "app.db"))
-        )
+    private val pacemakerDatabase = SafePacemakerDatabase {
+        PacemakerDatabase(NativeSqliteDriver(PacemakerDatabase.Schema, "app.db"))
     }
 
     override val userService: UserService by lazy {

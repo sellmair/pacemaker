@@ -27,7 +27,6 @@ internal class SqlUserService(
             val me = userQueries.findUserById(meId.value).executeAsOneOrNull()
             if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)
 
-            LogTag.appCore.error("Creating me!")
             val user = newUser(meId)
             userQueries.saveUser(user.toDbUser())
             userQueries.saveHeartRateLimit(

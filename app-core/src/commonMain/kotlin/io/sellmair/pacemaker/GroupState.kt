@@ -58,6 +58,7 @@ internal fun CoroutineScope.launchGroupStateActor(
             )
         }
 
+        
         emit(GroupState(userStates))
     }
 
