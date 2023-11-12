@@ -13,7 +13,6 @@ pacemaker {
                 create("PacemakerDatabase") {
                     srcDirs(file("src/sql"))
                     packageName = "io.sellmair.pacemaker.sql"
-                    generateAsync = true
                 }
             }
         }

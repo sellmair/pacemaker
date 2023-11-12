@@ -49,6 +49,7 @@
             android:theme="@style/AppTheme"
             android:icon="@mipmap/ic_launcher"
             android:label="Pacemaker"
+            android:allowBackup="false"
     >
 
         <activity android:name="io.sellmair.pacemaker.MainActivity" android:exported="true"

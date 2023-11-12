@@ -13,8 +13,8 @@ import kotlinx.datetime.Instant
 
 internal class SqlSessionService(private val database: SafePacemakerDatabase) : SessionService {
     override suspend fun createSession(): ActiveSessionService = database {
+        val startTime = SessionService.SessionClock.value().now()
         transactionWithResult {
-            val startTime = SessionService.SessionClock.value().now()
             sessionQueries.newSession(startTime.toString())
             val id = sessionQueries.lastSessionId().executeAsOne()
             SqlActiveSessionService(Session(SessionId(id), startTime, null), database)

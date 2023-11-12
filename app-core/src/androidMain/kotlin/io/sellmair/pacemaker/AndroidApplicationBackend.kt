@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
@@ -63,12 +62,10 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     private val meId by lazy { settings.meId }
 
-    private val pacemakerDatabase by lazy {
-        SafePacemakerDatabase(
-            PacemakerDatabase(
-                AndroidSqliteDriver(
-                    schema = PacemakerDatabase.Schema.synchronous(), context = this, name = "test.db"
-                )
+    private val pacemakerDatabase = SafePacemakerDatabase {
+        PacemakerDatabase(
+            AndroidSqliteDriver(
+                schema = PacemakerDatabase.Schema, context = this, name = "test.db"
             )
         )
     }

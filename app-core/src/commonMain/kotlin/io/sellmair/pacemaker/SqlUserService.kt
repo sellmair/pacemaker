@@ -7,6 +7,8 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.model.newUser
 import io.sellmair.pacemaker.sql.PacemakerDatabase
+import io.sellmair.pacemaker.utils.LogTag
+import io.sellmair.pacemaker.utils.error
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,24 +20,33 @@ internal class SqlUserService(
     private val meId: UserId,
 ) : UserService {
 
-    override suspend fun me(): User = transaction {
-        val me = userQueries.findUserById(meId.value).executeAsOneOrNull()
-        if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)
+    override suspend fun me(): User {
+        val newUserHeartRateLimit = UserService.NewUserHeartRateLimit.value()
 
-        val user = newUser(meId)
-        userQueries.saveUser(user.toDbUser())
-        userQueries.saveHeartRateLimit(
-            Db_heart_rate_limit(
-                user_id = user.id.value,
-                heart_rate_limit = UserService.NewUserHeartRateLimit.value().value.toDouble()
+        val user = transaction {
+            val me = userQueries.findUserById(meId.value).executeAsOneOrNull()
+            if (me != null) return@transaction User(id = UserId(me.id), name = me.name, isAdhoc = false)
+
+            LogTag.appCore.error("Creating me!")
+            val user = newUser(meId)
+            userQueries.saveUser(user.toDbUser())
+            userQueries.saveHeartRateLimit(
+                Db_heart_rate_limit(
+                    user_id = user.id.value,
+                    heart_rate_limit = newUserHeartRateLimit.value.toDouble()
+                )
             )
-        )
+            user
+        }
+
         onSaveUser.emit(user)
-        user
+        return user
     }
 
-    override suspend fun saveUser(user: User) = transaction {
-        userQueries.saveUser(user.toDbUser())
+    override suspend fun saveUser(user: User) {
+        transaction {
+            userQueries.saveUser(user.toDbUser())
+        }
         onSaveUser.emit(user)
     }
 
@@ -54,9 +65,11 @@ internal class SqlUserService(
     }
 
     override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) = transaction {
-        userQueries.saveHeartRateLimitForUser(
-            user_id = user.id.value,
-            heart_rate_limit = limit.value.toDouble(),
+        userQueries.saveHeartRateLimit(
+            Db_heart_rate_limit(
+                user_id = user.id.value,
+                heart_rate_limit = limit.value.toDouble()
+            ),
         )
     }
 
@@ -89,7 +102,7 @@ internal class SqlUserService(
             .map { result -> HeartRate(result?.heart_rate_limit?.toFloat() ?: return@map null) }
     }
 
-    private suspend fun <T> transaction(transaction: suspend PacemakerDatabase.() -> T): T {
+    private suspend fun <T> transaction(transaction: PacemakerDatabase.() -> T): T {
         try {
             return database {
                 transactionWithResult {

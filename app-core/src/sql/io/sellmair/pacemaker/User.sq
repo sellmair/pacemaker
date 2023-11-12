@@ -33,10 +33,6 @@ INSERT OR REPLACE INTO db_user VALUES ?;
 saveHeartRateLimit:
 INSERT OR REPLACE INTO db_heart_rate_limit VALUES ?;
 
-saveHeartRateLimitForUser:
-INSERT OR REPLACE INTO db_heart_rate_limit(user_id, heart_rate_limit)
- VALUES (?,?);
-
 saveSensor:
 INSERT OR REPLACE INTO db_sensor VALUES ?;
 
