@@ -16,8 +16,6 @@ CREATE TABLE db_heart_rate_limit(
     FOREIGN KEY (user_id) REFERENCES db_user(id)
 );
 
-INSERT INTO db_user VALUES (RANDOM(), "Anonymous" + RANDOM(), 0);
-
 findUserById:
 SELECT * FROM db_user WHERE id = ?;
 
