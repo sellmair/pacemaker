@@ -20,7 +20,7 @@ extensions.configure(ApplicationExtension::class) {
 
     defaultConfig {
         versionName = "2023.2"
-        versionCode = 3
+        versionCode = 4
     }
 }
 
