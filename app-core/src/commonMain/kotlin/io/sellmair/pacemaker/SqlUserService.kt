@@ -7,8 +7,6 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.model.newUser
 import io.sellmair.pacemaker.sql.PacemakerDatabase
-import io.sellmair.pacemaker.utils.LogTag
-import io.sellmair.pacemaker.utils.error
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +20,7 @@ internal class SqlUserService(
 
     override suspend fun me(): User {
         val newUserHeartRateLimit = UserService.NewUserHeartRateLimit.value()
+        var newUserCreated = false
 
         val user = transaction {
             val me = userQueries.findUserById(meId.value).executeAsOneOrNull()
@@ -35,10 +34,15 @@ internal class SqlUserService(
                     heart_rate_limit = newUserHeartRateLimit.value.toDouble()
                 )
             )
+            newUserCreated = true
             user
         }
 
-        onSaveUser.emit(user)
+        if (newUserCreated) {
+            onChange.emit(Unit)
+            onSaveUser.emit(user)
+        }
+
         return user
     }
 
@@ -46,30 +50,43 @@ internal class SqlUserService(
         transaction {
             userQueries.saveUser(user.toDbUser())
         }
+        onChange.emit(Unit)
         onSaveUser.emit(user)
     }
 
-    override suspend fun deleteUser(user: User) = transaction {
-        userQueries.deleteUser(user.id.value)
-        userQueries.deleteUserSensors(user.id.value)
-        userQueries.deleteHeartRateLimit(user.id.value)
+    override suspend fun deleteUser(user: User) {
+        transaction {
+            userQueries.deleteUser(user.id.value)
+            userQueries.deleteUserSensors(user.id.value)
+            userQueries.deleteHeartRateLimit(user.id.value)
+        }
+        onChange.emit(Unit)
     }
 
-    override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) = transaction {
-        userQueries.saveSensor(Db_sensor(id = sensorId.value, user_id = user.id.value))
+    override suspend fun linkSensor(user: User, sensorId: HeartRateSensorId) {
+        transaction {
+            userQueries.saveSensor(Db_sensor(id = sensorId.value, user_id = user.id.value))
+        }
+        onChange.emit(Unit)
     }
 
-    override suspend fun unlinkSensor(sensorId: HeartRateSensorId) = transaction {
-        userQueries.deleteSensor(id = sensorId.value)
+    override suspend fun unlinkSensor(sensorId: HeartRateSensorId) {
+        transaction {
+            userQueries.deleteSensor(id = sensorId.value)
+        }
+        onChange.emit(Unit)
     }
 
-    override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) = transaction {
-        userQueries.saveHeartRateLimit(
-            Db_heart_rate_limit(
-                user_id = user.id.value,
-                heart_rate_limit = limit.value.toDouble()
-            ),
-        )
+    override suspend fun saveHeartRateLimit(user: User, limit: HeartRate) {
+        transaction {
+            userQueries.saveHeartRateLimit(
+                Db_heart_rate_limit(
+                    user_id = user.id.value,
+                    heart_rate_limit = limit.value.toDouble()
+                ),
+            )
+        }
+        onChange.emit(Unit)
     }
 
     override suspend fun findUser(userId: UserId): User? = database {
@@ -102,14 +119,10 @@ internal class SqlUserService(
     }
 
     private suspend fun <T> transaction(transaction: PacemakerDatabase.() -> T): T {
-        try {
-            return database {
-                transactionWithResult {
-                    transaction()
-                }
+        return database {
+            transactionWithResult {
+                transaction()
             }
-        } finally {
-            onChange.emit(Unit)
         }
     }
 
