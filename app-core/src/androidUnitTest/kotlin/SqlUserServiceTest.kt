@@ -11,6 +11,7 @@ import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.invoke
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
+import utils.createInMemoryDatabase
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -18,12 +19,7 @@ import kotlin.test.assertNull
 class SqlUserServiceTest {
 
     private fun service(): SqlUserService {
-        val database = SafePacemakerDatabase {
-            val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-            PacemakerDatabase.Schema.create(driver)
-            PacemakerDatabase(driver)
-        }
-        return SqlUserService(database, UserId(1002))
+        return SqlUserService(createInMemoryDatabase(), UserId(1002))
     }
 
     @Test
