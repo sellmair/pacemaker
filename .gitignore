@@ -17,3 +17,4 @@ app/PM.podspec
 /captures
 .externalNativeBuild
 .cxx
+/app/release/
