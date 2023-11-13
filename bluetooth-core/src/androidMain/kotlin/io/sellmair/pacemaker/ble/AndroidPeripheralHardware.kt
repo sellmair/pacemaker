@@ -87,8 +87,8 @@ private fun BluetoothGattCharacteristic(descriptor: BleCharacteristicDescriptor)
     return BluetoothGattCharacteristic(
         descriptor.uuid,
         (PROPERTY_READ.takeIf { descriptor.isReadable } ?: 0) or
-                (PROPERTY_NOTIFY.takeIf { descriptor.isNotificationsEnabled } ?: 0) or
-                (PROPERTY_WRITE.takeIf { descriptor.isWritable } ?: 0),
+            (PROPERTY_NOTIFY.takeIf { descriptor.isNotificationsEnabled } ?: 0) or
+            (PROPERTY_WRITE_NO_RESPONSE.takeIf { descriptor.isWritable } ?: 0),
         PERMISSION_READ or (PERMISSION_WRITE.takeIf { descriptor.isWritable } ?: 0)
-    )
+    ).also { if(descriptor.isWritable) it.writeType = WRITE_TYPE_NO_RESPONSE }
 }
