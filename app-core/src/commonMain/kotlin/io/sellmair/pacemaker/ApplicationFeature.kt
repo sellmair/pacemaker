@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker
 
 import com.russhwolf.settings.Settings
+import com.russhwolf.settings.set
 import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,8 @@ enum class ApplicationFeature(val default: Boolean) {
      * Allow to record and then view sessions
      */
     Sessions(false);
+
+    val state get() = ApplicationFeatureState.Key(this)
 
     suspend fun enable() {
         ApplicationFeatureEvent.Enable(this).emit()
@@ -57,6 +60,7 @@ internal fun CoroutineScope.launchApplicationFeatureActor(settings: Settings) = 
             is ApplicationFeatureEvent.Toggle -> !enabled
         }
         ApplicationFeatureState(key.feature, enabled).emit()
+        settings[settingsKey] = enabled
     }
 }
 
