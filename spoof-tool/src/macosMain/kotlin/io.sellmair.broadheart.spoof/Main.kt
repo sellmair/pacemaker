@@ -7,10 +7,7 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.info
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import platform.CoreFoundation.CFRunLoopRun
 
 
@@ -18,8 +15,8 @@ private val ble = AppleBle()
 
 
 fun main() {
-    //launchSendBroadcasts()
-    launchReceiveBroadcasts()
+    launchSendBroadcasts()
+    //launchReceiveBroadcasts()
     /* launchReceiveHeartRates() */
     CFRunLoopRun()
 }
@@ -35,10 +32,12 @@ private fun launchSendBroadcasts() = MainScope().launch {
         pacemakerPeripheral.write {
             setUser(user)
             setHeartRateLimit(HeartRate(120))
+            setHeartRate(HeartRate(130))
         }
 
 
         while (isActive) {
+            yield()
             val line = readln()
             if (line.startsWith("l")) {
                 val heartRateLimit = line.removePrefix("l").toIntOrNull() ?: continue
