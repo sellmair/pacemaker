@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import io.sellmair.pacemaker.GroupState
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
@@ -16,16 +17,18 @@ internal fun GroupHeartRateOverview(
 ) {
     HeartRateScale(range = range) {
         state?.members.orEmpty().forEach { memberState ->
-            MemberHeartRateIndicator(memberState, range)
+            key(memberState.user.id.value) {
+                MemberHeartRateIndicator(memberState, range)
 
-            if (memberState.isMe) {
-                ChangeableMemberHeartRateLimit(
-                    state = memberState,
-                    range = range,
-                    onLimitChanged = onMyHeartRateLimitChanged
-                )
-            } else {
-                MemberHeartRateLimit(memberState, range)
+                if (memberState.isMe) {
+                    ChangeableMemberHeartRateLimit(
+                        state = memberState,
+                        range = range,
+                        onLimitChanged = onMyHeartRateLimitChanged
+                    )
+                } else {
+                    MemberHeartRateLimit(memberState, range)
+                }
             }
         }
     }

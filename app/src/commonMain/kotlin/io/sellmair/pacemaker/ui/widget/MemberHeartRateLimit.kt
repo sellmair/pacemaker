@@ -1,9 +1,12 @@
 package io.sellmair.pacemaker.ui.widget
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -12,6 +15,7 @@ import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun MemberHeartRateLimit(
@@ -20,7 +24,16 @@ internal fun MemberHeartRateLimit(
 ) {
     val user = userState.user
     val heartRateLimit = userState.heartRateLimit ?: return
-    OnHeartRateScalePosition(heartRateLimit, range, side = ScaleSide.Left) {
+
+    val animatableHeartRateLimit = remember { Animatable(heartRateLimit.value) }
+    rememberCoroutineScope().launch {
+        animatableHeartRateLimit.animateTo(
+            heartRateLimit.value,
+            animationSpec = onHeartRateScaleSpring()
+        )
+    }
+
+    OnHeartRateScalePosition(HeartRate(animatableHeartRateLimit.value), range, side = ScaleSide.Left) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth(.4f)
