@@ -29,6 +29,7 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchSessionActor(userService, sessionService)
     scope.launchHeartRateUtteranceProducer()
     scope.launchUtteranceSettingsActor(settings)
+    scope.launchApplicationFeatureActor(settings)
     launchPlatform(scope)
 }
 
