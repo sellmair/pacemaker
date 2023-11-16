@@ -28,7 +28,7 @@ internal fun SettingsPageHeader(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(24.dp)
     ) {
         BasicTextField(
             modifier = Modifier
