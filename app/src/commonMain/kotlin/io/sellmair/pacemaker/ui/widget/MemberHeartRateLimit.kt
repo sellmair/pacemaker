@@ -25,7 +25,7 @@ internal fun MemberHeartRateLimit(
     val user = userState.user
     val heartRateLimit = userState.heartRateLimit ?: return
 
-    val animatableHeartRateLimit = remember { Animatable(heartRateLimit.value) }
+    val animatableHeartRateLimit = remember(user.id.value) { Animatable(heartRateLimit.value) }
     rememberCoroutineScope().launch {
         animatableHeartRateLimit.animateTo(
             heartRateLimit.value,
