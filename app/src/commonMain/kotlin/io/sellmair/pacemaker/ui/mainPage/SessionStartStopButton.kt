@@ -12,25 +12,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.ActiveSessionIntent
 import io.sellmair.pacemaker.ActiveSessionState
+import io.sellmair.pacemaker.ApplicationFeature
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.LocalEventBus
-import io.sellmair.pacemaker.ui.collectAsState
-import io.sellmair.pacemaker.ui.displayColor
-import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -40,6 +33,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SessionStartStopButton(modifier: Modifier = Modifier) {
+    val sessionsEnabled = ApplicationFeature.Sessions.state.get().collectAsState().value.enabled
+    if (!sessionsEnabled) return
+
     val meState by MeState.collectAsState()
     val activeSessionState by ActiveSessionState.collectAsState()
 

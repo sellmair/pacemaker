@@ -16,6 +16,7 @@ import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.Headline
 import io.sellmair.pacemaker.ui.widget.UserHead
+import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 
 @Composable
 internal fun SettingsPageHeader(
@@ -47,6 +48,7 @@ internal fun SettingsPageHeader(
             size = 32.dp,
             modifier = Modifier
                 .padding(4.dp)
+                .experimentalFeatureToggle()
         )
     }
 }

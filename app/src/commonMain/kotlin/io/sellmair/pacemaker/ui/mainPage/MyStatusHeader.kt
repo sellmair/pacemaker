@@ -1,13 +1,7 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -25,6 +19,7 @@ import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 
 @Composable
 internal fun MyStatusHeader(state: MeState?) {
@@ -61,6 +56,7 @@ internal fun MyStatusHeader(state: MeState?) {
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .align(Alignment.Center)
+                        .experimentalFeatureToggle()
                 )
 
                 UtteranceControlButton(
