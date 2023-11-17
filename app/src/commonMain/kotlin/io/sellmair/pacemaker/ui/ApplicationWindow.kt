@@ -4,8 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import io.sellmair.pacemaker.ApplicationIntent
-import io.sellmair.pacemaker.ApplicationViewModel
+import io.sellmair.pacemaker.GroupState
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.mainPage.MainPage
 import io.sellmair.pacemaker.ui.settingsPage.SettingsPage
@@ -14,12 +13,9 @@ import io.sellmair.pacemaker.ui.timelinePage.TimelinePageViewModel
 
 
 @Composable
-internal fun ApplicationWindow(
-    viewModel: ApplicationViewModel
-) {
+internal fun ApplicationWindow() {
     val coroutineScope = rememberCoroutineScope()
-    val groupState by viewModel.group.collectAsState(null)
-    val nearbyDevices by viewModel.heartRateSensorViewModels.collectAsState()
+    val groupState by GroupState.get().collectAsState()
     val meState by MeState.collectAsState()
     val meColor = meState?.me?.displayColor?.toColor() ?: Color.Gray
     val sessionService = LocalSessionService.current
@@ -47,9 +43,6 @@ internal fun ApplicationWindow(
                 Page.MainPage -> MainPage(
                     meState = meState,
                     groupState = groupState,
-                    onMyHeartRateLimitChanged = { newHeartRateLimit ->
-                        viewModel.send(ApplicationIntent.MainPageIntent.UpdateHeartRateLimit(newHeartRateLimit))
-                    }
                 )
 
                 Page.TimelinePage -> {
@@ -59,11 +52,7 @@ internal fun ApplicationWindow(
                 }
 
                 Page.SettingsPage -> meState?.let { me ->
-                    SettingsPage(
-                        me = me.me,
-                        heartRateSensors = nearbyDevices,
-                        onIntent = viewModel::send
-                    )
+                    SettingsPage(me = me.me)
                 }
             }
         }

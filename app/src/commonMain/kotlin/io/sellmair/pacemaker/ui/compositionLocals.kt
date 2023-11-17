@@ -33,11 +33,3 @@ fun <T : State?> State.Key<T>.set(value: T) {
 fun <T : State?> State.Key<T>.collectAsState(): androidx.compose.runtime.State<T> {
     return get().collectAsState()
 }
-
-@Composable
-fun Event.emit() {
-    val eventBus = LocalEventBus.current ?: return
-    rememberCoroutineScope().launch {
-        eventBus.emit(this@emit)
-    }
-}

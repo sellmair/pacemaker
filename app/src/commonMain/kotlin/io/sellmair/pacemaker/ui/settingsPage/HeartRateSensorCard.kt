@@ -60,11 +60,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.ApplicationIntent
-import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent.CreateAdhocUser
-import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent.DeleteAdhocUser
-import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent.UpdateAdhocUser
-import io.sellmair.pacemaker.ApplicationIntent.SettingsPageIntent.UpdateAdhocUserLimit
+import io.sellmair.pacemaker.AdhocUserIntent
 import io.sellmair.pacemaker.HeartRateSensorViewModel
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connected
@@ -73,13 +69,12 @@ import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Disconnected
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.HSLColor
-import io.sellmair.pacemaker.ui.displayColor
-import io.sellmair.pacemaker.ui.displayColorLight
-import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
+import io.sellmair.pacemaker.ui.widget.Launching
 import io.sellmair.pacemaker.ui.widget.ScaleSide
+import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlin.math.roundToInt
@@ -92,7 +87,6 @@ internal fun HeartRateSensorCard(
     me: User,
     viewModel: HeartRateSensorViewModel,
     modifier: Modifier = Modifier,
-    onEvent: (ApplicationIntent.SettingsPageIntent) -> Unit = {}
 ) {
     HeartRateSensorCard(
         me = me,
@@ -108,7 +102,6 @@ internal fun HeartRateSensorCard(
             .collectAsState(Disconnected)
             .value,
         modifier = modifier,
-        onEvent = onEvent,
         onConnectClicked = { viewModel.connection.onConnectClicked() },
         onDisconnectClicked = { viewModel.connection.onDisconnectClicked() }
     )
@@ -128,7 +121,6 @@ internal fun HeartRateSensorCard(
     connectIfPossible: Boolean,
     connectionState: ConnectionState?,
     modifier: Modifier = Modifier,
-    onEvent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
     onConnectClicked: () -> Unit = {},
     onDisconnectClicked: () -> Unit = {}
 ) {
@@ -152,7 +144,6 @@ internal fun HeartRateSensorCard(
                         sensorName = sensorName,
                         sensorId = sensorId,
                         associatedUser = associatedUser,
-                        onEvent = onEvent
                     )
 
                     Spacer(Modifier.weight(1f))
@@ -225,13 +216,13 @@ internal fun HeartRateSensorCard(
                                     exit = slideOutHorizontally { -it } + fadeOut(),
                                     enter = slideInHorizontally { -it } + fadeIn()
                                 ),
-                                onClick = {
+                                onClick = Launching {
                                     if (associatedUser?.isAdhoc == true) {
-                                        onEvent(DeleteAdhocUser(associatedUser))
+                                        AdhocUserIntent.DeleteAdhocUser(associatedUser).emit()
                                         adhocUserViewVisible = false
                                         onDisconnectClicked()
                                     } else {
-                                        onEvent(CreateAdhocUser(sensorId))
+                                        AdhocUserIntent.CreateAdhocUser(sensorId).emit()
                                         adhocUserViewVisible = true
                                     }
                                 },
@@ -289,9 +280,10 @@ internal fun HeartRateSensorCard(
                     range = range,
                     horizontalCenterBias = .35f,
                     side = ScaleSide.Right,
-                    onLimitChanged = { newHeartRateLimit ->
-                        if (associatedUser != null)
-                            onEvent(UpdateAdhocUserLimit(associatedUser, newHeartRateLimit))
+                    onLimitChanged = Launching { newHeartRateLimit ->
+                        if (associatedUser != null) {
+                            AdhocUserIntent.UpdateAdhocUserLimit(associatedUser, newHeartRateLimit).emit()
+                        }
                     }
                 )
             }
@@ -333,7 +325,6 @@ internal fun HeartRateCardTitle(
     sensorName: String?,
     sensorId: HeartRateSensorId,
     associatedUser: User?,
-    onEvent: (ApplicationIntent.SettingsPageIntent) -> Unit
 ) {
     Column {
         AnimatedVisibility(
@@ -365,9 +356,9 @@ internal fun HeartRateCardTitle(
                     ),
                     singleLine = true,
                     decorationBox = { it() },
-                    onValueChange = { newName ->
+                    onValueChange = Launching { newName ->
                         userName = newName
-                        onEvent(UpdateAdhocUser(user.copy(name = newName)))
+                        AdhocUserIntent.UpdateAdhocUser(user.copy(name = newName)).emit()
                     }
                 )
             }

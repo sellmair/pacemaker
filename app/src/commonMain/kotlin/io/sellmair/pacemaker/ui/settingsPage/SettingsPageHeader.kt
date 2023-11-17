@@ -9,19 +9,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import io.sellmair.pacemaker.ApplicationIntent
+import io.sellmair.pacemaker.UpdateMeIntent
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.ui.displayColor
 import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.Headline
+import io.sellmair.pacemaker.ui.widget.Launching
 import io.sellmair.pacemaker.ui.widget.UserHead
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 
 @Composable
 internal fun SettingsPageHeader(
     me: User,
-    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
 ) {
     var userName by remember { mutableStateOf(me.name) }
 
@@ -37,9 +37,9 @@ internal fun SettingsPageHeader(
             value = userName,
             textStyle = TextStyle.Headline,
             singleLine = true,
-            onValueChange = { newName ->
+            onValueChange = Launching { newName ->
                 userName = newName
-                onIntent(ApplicationIntent.SettingsPageIntent.UpdateMe(me.copy(name = newName)))
+                UpdateMeIntent.UpdateMe(me.copy(name = newName))
             })
 
         UserHead(

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.ApplicationIntent
 import io.sellmair.pacemaker.HeartRateSensorViewModel
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.displayColor
@@ -24,13 +23,9 @@ import io.sellmair.pacemaker.ui.toColor
 internal fun SettingsPageContent(
     me: User,
     heartRateSensors: List<HeartRateSensorViewModel>,
-    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize()) {
-        SettingsPageHeader(
-            me = me,
-            onIntent = onIntent,
-        )
+        SettingsPageHeader(me = me)
 
         Spacer(Modifier.height(24.dp))
 
@@ -38,7 +33,6 @@ internal fun SettingsPageContent(
             SettingsPageDevicesList(
                 me = me,
                 heartRateSensors = heartRateSensors,
-                onIntent = onIntent
             )
         }
     }
@@ -48,7 +42,6 @@ internal fun SettingsPageContent(
 internal fun SettingsPageDevicesList(
     me: User,
     heartRateSensors: List<HeartRateSensorViewModel>,
-    onIntent: (ApplicationIntent.SettingsPageIntent) -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
         Text(
@@ -100,8 +93,7 @@ internal fun SettingsPageDevicesList(
                 ) {
                     HeartRateSensorCard(
                         me = me,
-                        viewModel = sensor,
-                        onEvent = onIntent,
+                        viewModel = sensor
                     )
                 }
             }

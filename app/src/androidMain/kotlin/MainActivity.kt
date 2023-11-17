@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                     LocalEventBus provides backend.eventBus,
                     LocalSessionService provides backend.sessionService
                 ) {
-                    ApplicationWindow(ApplicationViewModel(this.lifecycleScope, backend))
+                    ApplicationWindow()
                 }
             }
         }
