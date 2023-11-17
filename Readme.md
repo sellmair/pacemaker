@@ -93,6 +93,17 @@ Such states can then be used in the Application UI/Frontend easily
 @Composable
 fun MyLoginScreen() {
     val loginState by LoginState.collectAsState()
+    MyLoginScreen(
+        email = loginState.email,
+        password = loginState.password
+    )
+}
+
+@Composable
+fun MyLoginScreen(
+    email: String,
+    password: String
+) {
     Text(loginState.email)
     Text(loginState.password)
     Button(
@@ -104,6 +115,7 @@ fun MyLoginScreen() {
 ```
 
 ### Libraries used
+
 - kotlinx.coroutines
 - kotlinx.datetime
 - SQLDelight
