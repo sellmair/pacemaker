@@ -6,7 +6,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.channelFlow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.isActive
@@ -27,13 +25,13 @@ import kotlin.experimental.ExperimentalTypeInference
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
-private typealias Producer<K, T> = suspend ColdStateProducerScope<T>.(key: K) -> Unit
+private typealias Producer<K, T> = suspend StateProducerScope<T>.(key: K) -> Unit
 
 inline fun <reified K : State.Key<T>, T : State?> CoroutineScope.launchStateProducer(
     coroutineContext: CoroutineContext = EmptyCoroutineContext,
     keepActive: Duration = Duration.ZERO,
-    noinline onInactive: suspend ColdStateProducerScope<T>.(key: K) -> Unit = OnInactive.resetValue(),
-    noinline produce: suspend ColdStateProducerScope<T>.(key: K) -> Unit
+    noinline onInactive: suspend StateProducerScope<T>.(key: K) -> Unit = OnInactive.resetValue(),
+    noinline produce: suspend StateProducerScope<T>.(key: K) -> Unit
 ): Job {
     val newCoroutineContext = (this.coroutineContext + coroutineContext).let { base -> base + Job(base.job) }
     val coroutineScope = CoroutineScope(newCoroutineContext)
@@ -53,12 +51,12 @@ fun <T : State?> CoroutineScope.launchStateProducer(
     key: State.Key<T>,
     coroutineContext: CoroutineContext = EmptyCoroutineContext,
     started: SharingStarted = SharingStarted.Eagerly,
-    produce: suspend FlowCollector<T>.() -> Unit
+    produce: suspend StateProducerScope<T>.() -> Unit
 ): Job {
     val newCoroutineContext = (this.coroutineContext + coroutineContext).let { base -> base + Job(base.job) }
     val coroutineScope = CoroutineScope(newCoroutineContext)
 
-    val hotFlow = flow(produce).shareIn(coroutineScope, started, replay = 1)
+    val hotFlow = stateProducerFlow(produce).shareIn(coroutineScope, started, replay = 1)
 
     coroutineScope.launch {
         currentCoroutineContext().stateBus.setState(key, hotFlow)
@@ -78,8 +76,8 @@ internal class ColdStateProducerImpl<K : State.Key<T>, T : State?>(
     private val coroutineScope: CoroutineScope,
     private val keyClazz: KClass<K>,
     private val keepActive: Duration = Duration.ZERO,
-    private val onInactive: suspend ColdStateProducerScope<T>.(key: K) -> Unit,
-    private val onActive: suspend ColdStateProducerScope<T>.(key: K) -> Unit
+    private val onInactive: suspend StateProducerScope<T>.(key: K) -> Unit,
+    private val onActive: suspend StateProducerScope<T>.(key: K) -> Unit
 ) : State.Producer {
     @Suppress("UNCHECKED_CAST")
     override fun <X : State?> launchIfApplicable(key: State.Key<X>, state: MutableStateFlow<X>) {
@@ -98,26 +96,26 @@ internal class ColdStateProducerImpl<K : State.Key<T>, T : State?>(
             .distinctUntilChanged()
             .collectLatest { isActive ->
                 if (isActive && coroutineContext.isActive) {
-                    state.emitAll(coldStateFlow { onActive(key) })
+                    state.emitAll(stateProducerFlow { onActive(key) })
                 }
 
                 if (!isActive) {
-                    state.emitAll(coldStateFlow { onInactive(key) })
+                    state.emitAll(stateProducerFlow { onInactive(key) })
                 }
             }
     }
 }
 
 @OptIn(ExperimentalTypeInference::class)
-private fun <T : State?> coldStateFlow(@BuilderInference block: suspend ColdStateProducerScope<T>.() -> Unit): Flow<T> {
+private fun <T : State?> stateProducerFlow(@BuilderInference block: suspend StateProducerScope<T>.() -> Unit): Flow<T> {
     return channelFlow {
-        with(ColdStateProducerScope(this)) {
+        with(StateProducerScope(this)) {
             block()
         }
     }
 }
 
-class ColdStateProducerScope<T : State?> internal constructor(
+class StateProducerScope<T : State?> internal constructor(
     private val scope: ProducerScope<T>
 ) : ProducerScope<T> by scope {
     suspend fun T.emit() = channel.send(this)
