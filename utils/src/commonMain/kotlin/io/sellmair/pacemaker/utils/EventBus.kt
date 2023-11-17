@@ -1,11 +1,14 @@
 package io.sellmair.pacemaker.utils
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -42,11 +45,11 @@ suspend inline fun <reified T : Event> events(noinline collector: suspend (T) ->
     coroutineContext.eventBus.events.filterIsInstance<T>().collect(collector)
 }
 
+inline fun <reified T : Event> CoroutineScope.collectEventsAsync(noinline collector: suspend (T) -> Unit): Job =
+    launch { events<T>(collector) }
+
 suspend fun Event.emit() {
     coroutineContext.eventBus.emit(this)
 }
 
-
-val<T> FlowCollector<T>.emit: suspend T.() -> Unit get() = {
-    emit(this)
-}
+val <T> FlowCollector<T>.emit: suspend T.() -> Unit get() = { emit(this) }

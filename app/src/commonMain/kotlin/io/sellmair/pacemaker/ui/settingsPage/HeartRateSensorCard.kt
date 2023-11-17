@@ -61,7 +61,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.AdhocUserIntent
-import io.sellmair.pacemaker.HeartRateSensorViewModel
+import io.sellmair.pacemaker.HeartRateSensorConnectionIntent
+import io.sellmair.pacemaker.HeartRateSensorConnectionState
+import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connected
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connecting
@@ -85,25 +87,23 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 internal fun HeartRateSensorCard(
     me: User,
-    viewModel: HeartRateSensorViewModel,
+    heartRateSensorState: HeartRateSensorState,
+    heartRateSensorConnectionState: HeartRateSensorConnectionState,
     modifier: Modifier = Modifier,
 ) {
     HeartRateSensorCard(
         me = me,
-        sensorName = viewModel.name,
-        sensorId = viewModel.id,
-        rssi = viewModel.rssi.collectAsState().value,
-        heartRate = viewModel.heartRate.collectAsState().value,
-        associatedUser = viewModel.associatedUser.collectAsState().value,
-        associatedHeartRateLimit = viewModel.associatedHeartRateLimit.collectAsState().value,
-        connectIfPossible = viewModel.connection.connectIfPossible.collectAsState().value,
-        connectionState = viewModel.connection.connectionState
-            .debounce { if (it in setOf(Disconnected, Connected)) 500.milliseconds else 0.seconds }
-            .collectAsState(Disconnected)
-            .value,
+        sensorName = heartRateSensorState.name,
+        sensorId = heartRateSensorState.id,
+        rssi = heartRateSensorState.rssi,
+        heartRate = heartRateSensorState.heartRate,
+        associatedUser = heartRateSensorState.associatedUser,
+        associatedHeartRateLimit = heartRateSensorState.associatedHeartRateLimit,
+        connectIfPossible = heartRateSensorConnectionState.connectIfPossible,
+        connectionState = heartRateSensorConnectionState.connectionState,
         modifier = modifier,
-        onConnectClicked = { viewModel.connection.onConnectClicked() },
-        onDisconnectClicked = { viewModel.connection.onDisconnectClicked() }
+        onConnectClicked = Launching { HeartRateSensorConnectionIntent.Connect(heartRateSensorState.id).emit() },
+        onDisconnectClicked = Launching { HeartRateSensorConnectionIntent.Disconnect(heartRateSensorState.id).emit() }
     )
 }
 

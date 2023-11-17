@@ -18,6 +18,8 @@ kotlin {
         implementation(Dependencies.coroutinesCore)
         implementation(Dependencies.okio)
         implementation(Dependencies.kotlinxDatetime)
+        implementation(Dependencies.kotlinxImmutable)
+        implementation(Dependencies.composeRuntime(project))
     }
 
     sourceSets.commonTest.dependencies {

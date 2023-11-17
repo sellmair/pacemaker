@@ -33,7 +33,9 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchAdhocUserActor(userService)
     scope.launchHeartRateSensorLinkingActor(userService)
     scope.launchUpdateMeActor(userService)
-    scope.launchHeartRateSensorViewModelStateActor(userService, heartRateSensorBluetoothService)
+    scope.launchHeartRateSensorsStateActor(heartRateSensorBluetoothService)
+    scope.launchHeartRateSensorStateActor(userService, heartRateSensorBluetoothService)
+    scope.launchHeartRateSensorConnectionStateActor(userService, heartRateSensorBluetoothService)
     launchPlatform(scope)
 }
 
