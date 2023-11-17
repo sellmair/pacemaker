@@ -33,7 +33,7 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
 
     val valuesChannel = Channel<Values>()
 
-    /* Collect measruements */
+    /* Collect measurements */
     launch {
         events<HeartRateMeasurementEvent> { measurement ->
             val user = userService.findUser(measurement.sensorId)
