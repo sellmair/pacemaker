@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
 
 package io.sellmair.pacemaker.ui.settingsPage
 
@@ -52,6 +51,7 @@ internal fun SettingsPageContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun SettingsPageDevicesList(
     me: User,
