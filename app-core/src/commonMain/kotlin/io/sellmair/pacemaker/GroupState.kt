@@ -8,6 +8,7 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
 import io.sellmair.pacemaker.utils.State
+import io.sellmair.pacemaker.utils.StateProducerScope
 import io.sellmair.pacemaker.utils.events
 import io.sellmair.pacemaker.utils.launchStateProducer
 import io.sellmair.pacemaker.utils.value
@@ -17,7 +18,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlin.collections.component1
@@ -47,7 +47,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     val measurements = hashMapOf<UserId, ActorIn.AddMeasurement>()
     val meUserId = async { userService.me().id }
 
-    suspend fun FlowCollector<GroupState>.updateAndEmitGroup() {
+    suspend fun StateProducerScope<GroupState>.updateAndEmitGroup() {
         val userStates = measurements.mapNotNull { (userId, measurement) ->
             val user = userService.findUser(userId) ?: return@mapNotNull null
             UserState(
@@ -58,8 +58,7 @@ internal fun CoroutineScope.launchGroupStateActor(
             )
         }
 
-        
-        emit(GroupState(userStates))
+        GroupState(userStates).emit()
     }
 
     /* Main actor */
