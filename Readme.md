@@ -104,8 +104,8 @@ fun MyLoginScreen(
     email: String,
     password: String
 ) {
-    Text(loginState.email)
-    Text(loginState.password)
+    Text(email)
+    Text(password)
     Button(
         onClick = Launching { LoginIntent.emit() }
     ) {
