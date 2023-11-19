@@ -24,7 +24,7 @@ WatchOS support (via UWB chip and Internet)
 ## Install
 
 - Google Play: https://play.google.com/store/apps/details?id=io.sellmair.pacemaker
-- Apple App Store: https://apps.apple.com/de/app/pacemaker-heart-rate-monitor/
+- Apple App Store: https://apps.apple.com/us/app/pacemaker-heart-rate-monitor/id6446760560
 
 # Technical Details
 
