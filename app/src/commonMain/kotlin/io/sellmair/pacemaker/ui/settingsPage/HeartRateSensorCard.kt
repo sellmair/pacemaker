@@ -2,55 +2,17 @@
 
 package io.sellmair.pacemaker.ui.settingsPage
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MonitorHeart
-import androidx.compose.material.icons.outlined.CellTower
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.MonitorHeart
-import androidx.compose.material.icons.outlined.PersonAdd
-import androidx.compose.material.icons.outlined.PersonRemove
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,23 +27,21 @@ import io.sellmair.pacemaker.HeartRateSensorConnectionIntent
 import io.sellmair.pacemaker.HeartRateSensorConnectionState
 import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState
-import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connected
-import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Connecting
-import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.Disconnected
+import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.*
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.*
+import io.sellmair.pacemaker.ui.HSLColor
+import io.sellmair.pacemaker.ui.displayColor
+import io.sellmair.pacemaker.ui.displayColorLight
+import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.widget.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
+import io.sellmair.pacemaker.ui.widget.GradientBackdrop
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
-import io.sellmair.pacemaker.ui.widget.Launching
-import io.sellmair.pacemaker.ui.widget.ScaleSide
 import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
 import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 
 @Composable
@@ -131,10 +91,13 @@ internal fun HeartRateSensorCard(
     ElevatedCard(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.outlinedCardElevation(
+            defaultElevation = if (expanded) 6.dp else 3.dp
+        ),
         onClick = { expanded = !expanded }
     ) {
         Box(modifier = Modifier.fillMaxWidth().defaultMinSize(50.dp)) {
-            MeshBackdrop(
+            GradientBackdrop(
                 modifier = Modifier.fillMaxWidth().matchParentSize()
             )
 
@@ -264,13 +227,12 @@ internal fun HeartRateSensorCard(
         AnimatedVisibility(
             visible = expanded && adhocUserViewVisible
         ) {
-            val range = HeartRate(100)..HeartRate(170)
+            val range = HeartRate(100)..HeartRate(200)
 
             HeartRateScale(
                 range = range,
                 horizontalCenterBias = .35f,
                 modifier = Modifier
-                    .padding(vertical = 48.dp)
                     .fillMaxWidth()
                     .height(200.dp)
             ) {
@@ -395,7 +357,7 @@ internal fun ConnectDisconnectButton(
             }
         },
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = if (connectionState == Connected) Color.Gray
+            containerColor = if (connectionState == Connected) color.copy(lightness = .6f).toColor()
             else color.copy(lightness = .4f).toColor(),
         ),
     ) {

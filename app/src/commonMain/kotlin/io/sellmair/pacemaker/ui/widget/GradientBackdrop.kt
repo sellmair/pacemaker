@@ -1,6 +1,4 @@
-@file:Suppress("PackageDirectoryMismatch")
-
-package io.sellmair.pacemaker.ui.settingsPage
+package io.sellmair.pacemaker.ui.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,14 +9,14 @@ import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.MeColorLight
 
 @Composable
-internal actual fun MeshBackdrop(modifier: Modifier) {
+internal fun GradientBackdrop(modifier: Modifier) {
     Box(
         modifier = modifier.background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(MeColor(), MeColorLight()),
-                    startY = 0f,
-                    endY = 500f
-                )
+            brush = Brush.verticalGradient(
+                colors = listOf(MeColor(), MeColorLight()),
+                startY = 0f,
+                endY = 500f
             )
+        )
     )
 }
