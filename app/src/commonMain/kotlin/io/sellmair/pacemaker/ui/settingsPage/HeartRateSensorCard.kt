@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -306,7 +307,8 @@ internal fun HeartRateCardTitle(
             if (associatedUser != null) userState.value = associatedUser
             val user = userState.value ?: return@AnimatedVisibility
 
-            var userName by remember { mutableStateOf(user.name) }
+            var isFocused by remember { mutableStateOf(false) }
+            var edittingUserName by remember { mutableStateOf(user.name) }
 
             val customTextSelectionColors = TextSelectionColors(
                 handleColor = Color.White,
@@ -317,8 +319,11 @@ internal fun HeartRateCardTitle(
 
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
                 BasicTextField(
+                    modifier = Modifier.onFocusChanged { focusState ->
+                        isFocused = focusState.hasFocus
+                    },
                     readOnly = !user.isAdhoc,
-                    value = userName,
+                    value = if(isFocused) edittingUserName else user.name,
                     keyboardActions = KeyboardActions(onDone = {
                         this.defaultKeyboardAction(ImeAction.Done)
                         focusManager.clearFocus()
@@ -336,7 +341,7 @@ internal fun HeartRateCardTitle(
                     singleLine = true,
                     decorationBox = { it() },
                     onValueChange = Launching { newName ->
-                        userName = newName
+                        edittingUserName = newName
                         AdhocUserIntent.UpdateAdhocUser(user.copy(name = newName)).emit()
                     }
                 )
