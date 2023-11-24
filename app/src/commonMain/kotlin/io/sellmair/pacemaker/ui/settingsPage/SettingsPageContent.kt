@@ -28,7 +28,7 @@ import io.sellmair.pacemaker.HeartRateSensorConnectionState
 import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.HeartRateSensorsState
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.displayColor
+import io.sellmair.pacemaker.displayColor
 import io.sellmair.pacemaker.ui.get
 import io.sellmair.pacemaker.ui.toColor
 

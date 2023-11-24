@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.ui.displayColorLight
+import io.sellmair.pacemaker.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
 import kotlin.math.roundToInt
 

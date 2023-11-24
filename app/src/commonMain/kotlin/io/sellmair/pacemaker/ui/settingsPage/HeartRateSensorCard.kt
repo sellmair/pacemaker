@@ -17,8 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -38,9 +36,10 @@ import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.*
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.HSLColor
-import io.sellmair.pacemaker.ui.displayColor
-import io.sellmair.pacemaker.ui.displayColorLight
+import io.sellmair.pacemaker.HSLColor
+import io.sellmair.pacemaker.displayColor
+import io.sellmair.pacemaker.displayColorLight
+import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
@@ -49,7 +48,6 @@ import io.sellmair.pacemaker.ui.widget.HeartRateScale
 import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.FlowPreview
 import kotlin.math.roundToInt
-import kotlin.reflect.KProperty
 
 
 @Composable

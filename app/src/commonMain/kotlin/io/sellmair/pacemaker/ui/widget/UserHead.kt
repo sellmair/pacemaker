@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
-import io.sellmair.pacemaker.ui.displayColor
+import io.sellmair.pacemaker.displayColor
 import io.sellmair.pacemaker.ui.toColor
 
 @Composable

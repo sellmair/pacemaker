@@ -41,12 +41,12 @@ suspend inline fun <reified T : Event> events(): Flow<T> {
     return coroutineContext.eventBus.events.filterIsInstance<T>()
 }
 
-suspend inline fun <reified T : Event> events(noinline collector: suspend (T) -> Unit) {
+suspend inline fun <reified T : Event> collectEvents(noinline collector: suspend (T) -> Unit) {
     coroutineContext.eventBus.events.filterIsInstance<T>().collect(collector)
 }
 
 inline fun <reified T : Event> CoroutineScope.collectEventsAsync(noinline collector: suspend (T) -> Unit): Job =
-    launch { events<T>(collector) }
+    launch { collectEvents<T>(collector) }
 
 suspend fun Event.emit() {
     coroutineContext.eventBus.emit(this)

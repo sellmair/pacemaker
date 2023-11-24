@@ -5,11 +5,7 @@ import io.sellmair.pacemaker.ActiveSessionIntent.Stop
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.emit
-import io.sellmair.pacemaker.utils.events
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -32,7 +28,7 @@ internal fun CoroutineScope.launchSessionActor(
     var activeSession: ActiveSessionService? = null
     var activeSessionActor: Job? = null
 
-    events<ActiveSessionIntent> { event ->
+    collectEvents<ActiveSessionIntent> { event ->
         when (event) {
             Start -> {
                 activeSession?.stop()
@@ -59,15 +55,15 @@ internal fun CoroutineScope.launchActiveSessionActor(
 ) = launch {
     coroutineScope {
         launch {
-            events<PacemakerBroadcastPackageEvent> { event ->
-                val user = userService.findUser(event.pkg.userId) ?: return@events
+            collectEvents<PacemakerBroadcastPackageEvent> { event ->
+                val user = userService.findUser(event.pkg.userId) ?: return@collectEvents
                 activeSessionService.save(user, event.pkg.heartRate, event.pkg.heartRateLimit, event.pkg.receivedTime)
             }
         }
 
         launch {
-            events<HeartRateMeasurementEvent> { event ->
-                val user = userService.findUser(event.sensorId) ?: return@events
+            collectEvents<HeartRateMeasurementEvent> { event ->
+                val user = userService.findUser(event.sensorId) ?: return@collectEvents
                 val heartRateLimit = userService.findHeartRateLimit(user)
                 activeSessionService.save(user, event.heartRate, heartRateLimit, event.time)
             }

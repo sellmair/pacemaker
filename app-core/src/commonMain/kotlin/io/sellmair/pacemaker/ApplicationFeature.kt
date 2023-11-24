@@ -53,7 +53,7 @@ internal fun CoroutineScope.launchApplicationFeatureActor(settings: Settings) = 
     var enabled = settings.getBooleanOrNull(settingsKey) ?: key.default.enabled
     ApplicationFeatureState(key.feature, enabled).emit()
 
-    events<ApplicationFeatureEvent> { event ->
+    collectEvents<ApplicationFeatureEvent> { event ->
         enabled = when (event) {
             is ApplicationFeatureEvent.Disable -> false
             is ApplicationFeatureEvent.Enable -> true

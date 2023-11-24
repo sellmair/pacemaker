@@ -5,6 +5,8 @@ import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.randomUserId
 import io.sellmair.pacemaker.utils.Event
+import io.sellmair.pacemaker.utils.collectEvents
+import io.sellmair.pacemaker.utils.collectEventsAsync
 import io.sellmair.pacemaker.utils.events
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +46,7 @@ internal fun CoroutineScope.launchAdhocUserActor(userService: UserService): Job 
         userService.saveHeartRateLimit(intent.user, intent.limit)
     }
 
-    events<AdhocUserIntent> { intent ->
+    collectEvents<AdhocUserIntent> { intent ->
         when (intent) {
             is AdhocUserIntent.CreateAdhocUser -> createAdhocUser(intent)
             is AdhocUserIntent.DeleteAdhocUser -> deleteAdhocUser(intent)
