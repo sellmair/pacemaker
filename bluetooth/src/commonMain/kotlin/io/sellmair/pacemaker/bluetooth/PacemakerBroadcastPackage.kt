@@ -2,6 +2,7 @@ package io.sellmair.pacemaker.bluetooth
 
 import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.model.Hue
 import io.sellmair.pacemaker.model.UserId
 import kotlinx.datetime.Instant
 
@@ -12,4 +13,6 @@ data class PacemakerBroadcastPackage(
     val userName: String,
     val heartRate: HeartRate,
     val heartRateLimit: HeartRate,
+    /* Custom color hue picked by the user (see HSLColor) and UserColors */
+    val userColorHue: Hue?,
 )
