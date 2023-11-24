@@ -80,7 +80,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     override fun onCreate() {
         super.onCreate()
-        notification.startForeground()
+        notification.startForeground(this)
         launchApplicationBackend(this)
     }
 

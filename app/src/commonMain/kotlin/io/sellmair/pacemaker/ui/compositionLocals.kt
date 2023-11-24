@@ -2,16 +2,13 @@ package io.sellmair.pacemaker.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import io.sellmair.pacemaker.SessionService
-import io.sellmair.pacemaker.utils.Event
 import io.sellmair.pacemaker.utils.EventBus
 import io.sellmair.pacemaker.utils.State
 import io.sellmair.pacemaker.utils.StateBus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 
 val LocalStateBus = staticCompositionLocalOf<StateBus?> { null }

@@ -25,7 +25,7 @@ dependencies {
     implementation("org.jetbrains.compose:compose-gradle-plugin:1.5.10")
     implementation(kotlin("gradle-plugin:$kotlinVersion"))
     implementation(kotlin("serialization:$kotlinVersion"))
-    implementation("com.android.tools.build:gradle:8.1.2")
+    implementation("com.android.tools.build:gradle:8.1.4")
     implementation("app.cash.sqldelight:gradle-plugin:2.0.0")
     implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.22.0")
 }

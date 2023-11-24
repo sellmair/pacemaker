@@ -14,7 +14,7 @@
                 "target": "Pacemaker",
             },
             "configuration": "Debug",
-            "destination": "iOS Device",
+            "destination": "Sebastian’s iPhone",
         }
     ]
 }

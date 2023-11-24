@@ -6,10 +6,6 @@ plugins {
 kotlin {
     jvmToolchain(17)
 
-    sourceSets.all {
-        languageSettings.enableLanguageFeature("ContextReceivers")
-    }
-
     sourceSets.commonMain.dependencies {
         if (project.name != "utils") {
             implementation(project(":utils"))

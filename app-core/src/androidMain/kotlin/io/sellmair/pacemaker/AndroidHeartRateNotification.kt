@@ -62,12 +62,11 @@ class AndroidHeartRateNotification(private val service: Service) {
     }
 
 
-    context (CoroutineScope)
-    fun startForeground() {
+    fun startForeground(coroutineScope: CoroutineScope) {
         service.startForeground(notificationId, createDefaultNotification().build())
 
         /* Update notification showing current users heart rate */
-        launch {
+        coroutineScope.launch {
             MeState.get().filterNotNull().collect { meState ->
                 update(
                     meState.heartRate ?: return@collect,
