@@ -27,20 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.AdhocUserIntent
-import io.sellmair.pacemaker.HeartRateSensorConnectionIntent
-import io.sellmair.pacemaker.HeartRateSensorConnectionState
-import io.sellmair.pacemaker.HeartRateSensorState
+import io.sellmair.pacemaker.*
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState
 import io.sellmair.pacemaker.ble.BleConnectable.ConnectionState.*
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.HSLColor
-import io.sellmair.pacemaker.displayColor
-import io.sellmair.pacemaker.displayColorLight
-import io.sellmair.pacemaker.ui.toColor
-import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.*
 import io.sellmair.pacemaker.ui.widget.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.GradientBackdrop
@@ -200,7 +193,7 @@ internal fun HeartRateSensorCard(
                                     if (associatedUser?.isAdhoc == true) Icons.Outlined.PersonRemove
                                     else Icons.Outlined.PersonAdd,
                                     contentDescription = null,
-                                    tint = me.displayColorLight.copy(lightness = .95f).toColor()
+                                    tint = MeColorWhite()
                                 )
                             }
                         }
@@ -218,7 +211,6 @@ internal fun HeartRateSensorCard(
                                     exit = slideOutHorizontally { it } + fadeOut(),
                                     enter = slideInHorizontally { it } + fadeIn()
                                 ),
-                                color = me.displayColor,
                                 connectionState = connectionState,
                                 onConnectClicked = onConnectClicked,
                                 onDisconnectClicked = onDisconnectClicked
@@ -243,7 +235,7 @@ internal fun HeartRateSensorCard(
                     .height(200.dp)
             ) {
                 ChangeableMemberHeartRateLimit(
-                    color = associatedUser?.displayColor?.toColor() ?: Color.Gray,
+                    color = UserColors.fromHue(UserColors.defaultHue(associatedUser?.id)).toColor(),
                     heartRateLimit = HeartRate(130f),
                     range = range,
                     horizontalCenterBias = .35f,
@@ -360,7 +352,6 @@ internal fun HeartRateCardTitle(
 
 @Composable
 internal fun ConnectDisconnectButton(
-    color: HSLColor,
     connectionState: ConnectionState?,
     onConnectClicked: () -> Unit,
     onDisconnectClicked: () -> Unit,
@@ -378,11 +369,10 @@ internal fun ConnectDisconnectButton(
             }
         },
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = if (connectionState == Connected) color.copy(lightness = .6f).toColor()
-            else color.copy(lightness = .4f).toColor(),
+            containerColor = if (connectionState == Connected)  MeColorLight()
+            else MeColor(),
         ),
     ) {
-        val lightColor = color.copy(lightness = .95f)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             AnimatedVisibility(
@@ -390,7 +380,7 @@ internal fun ConnectDisconnectButton(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally()
             ) {
-                Text("Connect", color = lightColor.toColor())
+                Text("Connect", color = MeColorWhite())
             }
 
             AnimatedVisibility(
@@ -398,7 +388,7 @@ internal fun ConnectDisconnectButton(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally()
             ) {
-                Text("Disconnect", color = lightColor.copy(saturation = 0.1f).toColor())
+                Text("Disconnect", color = MeColorWhite())
             }
 
             AnimatedVisibility(
@@ -407,7 +397,7 @@ internal fun ConnectDisconnectButton(
                 exit = fadeOut() + shrinkOut()
             ) {
                 CircularProgressIndicator(
-                    color = lightColor.toColor(),
+                    color = MeColorWhite(),
                     modifier = Modifier.size(14.dp),
                     strokeWidth = 2.dp
                 )

@@ -4,15 +4,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import io.sellmair.pacemaker.*
-import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.HSLColor
+import io.sellmair.pacemaker.MeColorState
+import io.sellmair.pacemaker.UserColors
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 
 interface PacemakerTheme {
+
+
     val meColor: Color
     val meColorLight: Color
+    val meColorWhite: Color
 }
 
 private val PacemakerThemeCompositionLocal = compositionLocalOf<PacemakerTheme> { MissingPacemakerTheme }
@@ -27,12 +31,16 @@ fun MeColor() = PacemakerTheme().meColor
 fun MeColorLight() = PacemakerTheme().meColorLight
 
 @Composable
+fun MeColorWhite() = PacemakerTheme().meColorWhite
+
+@Composable
 fun PacemakerTheme(content: @Composable () -> Unit) {
     val pacemakerTheme by MeColorState.get().filterNotNull()
         .map { state ->
             PacemakerThemeImpl(
                 meColor = state.color.toColor(),
-                meColorLight = UserColors.fromHueLight(state.color.hue).toColor()
+                meColorLight = UserColors.fromHueLight(state.color.hue).toColor(),
+                meColorWhite = state.color.copy(lightness = .95f).toColor()
             )
         }
         .distinctUntilChanged()
@@ -63,11 +71,13 @@ fun PacemakerTheme(content: @Composable () -> Unit) {
 
 private data class PacemakerThemeImpl(
     override val meColor: Color,
-    override val meColorLight: Color
+    override val meColorLight: Color,
+    override val meColorWhite: Color
 ) : PacemakerTheme
 
 
 private object MissingPacemakerTheme : PacemakerTheme {
     override val meColor: Color = Color.Gray
     override val meColorLight: Color = Color.LightGray
+    override val meColorWhite: Color = Color.White
 }

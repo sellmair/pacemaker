@@ -1,17 +1,15 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
 import kotlin.math.absoluteValue
 
 object UserColors {
     const val saturation = .5f
     const val lightness = .4f
-
     const val saturationLight = .7f
     const val lightnessLight = .75f
 
-    fun defaultHue(userId: UserId): Float = hashCode().toFloat().absoluteValue % 360f
+    fun defaultHue(userId: UserId?): Float = userId.hashCode().toFloat().absoluteValue % 360f
 
     fun fromHue(hue: Float) = HSLColor(
         hue = hue, saturation = saturation, lightness = lightness
@@ -29,23 +27,9 @@ data class HSLColor(
 )
 
 
-val User.displayColorLight: HSLColor
-    get() = HSLColor(
-        hue = UserColors.defaultHue(id),
-        saturation = UserColors.saturationLight,
-        lightness = UserColors.lightnessLight
-    )
-
-val User.displayColor: HSLColor
-    get() = HSLColor(
-        hue = UserColors.defaultHue(id),
-        saturation = UserColors.saturation,
-        lightness = UserColors.lightness
-    )
-
 val UserState.displayColor: HSLColor
-    get() = user.displayColor
+    get() = UserColors.fromHue(UserColors.defaultHue(user.id))
 
 val UserState.displayColorLight: HSLColor
-    get() = user.displayColorLight
+    get() = UserColors.fromHueLight(UserColors.defaultHue(user.id))
 

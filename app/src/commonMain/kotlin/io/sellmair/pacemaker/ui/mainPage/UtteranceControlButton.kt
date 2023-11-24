@@ -16,23 +16,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.UtteranceState
-import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.LocalStateBus
+import io.sellmair.pacemaker.ui.MeColor
+import io.sellmair.pacemaker.ui.MeColorLight
 import io.sellmair.pacemaker.ui.collectAsState
-import io.sellmair.pacemaker.displayColor
-import io.sellmair.pacemaker.displayColorLight
-import io.sellmair.pacemaker.ui.toColor
 
 @Composable
 fun UtteranceControlButton(modifier: Modifier = Modifier) {
-    val meState by MeState.collectAsState()
     val utteranceState by UtteranceState.collectAsState()
-    val me = meState?.me ?: return
     val stateBus = LocalStateBus.current
     UtteranceControlButton(
-        me = me,
         state = utteranceState,
         modifier = modifier,
         onClick = {
@@ -43,15 +37,14 @@ fun UtteranceControlButton(modifier: Modifier = Modifier) {
 
 @Composable
 fun UtteranceControlButton(
-    me: User,
     state: UtteranceState,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     val desiredColor = when (state) {
         UtteranceState.Silence -> Color.Gray
-        UtteranceState.Warnings -> me.displayColorLight.toColor()
-        UtteranceState.All -> me.displayColor.toColor()
+        UtteranceState.Warnings -> MeColorLight()
+        UtteranceState.All -> MeColor()
     }
 
     val color = remember { Animatable(desiredColor) }

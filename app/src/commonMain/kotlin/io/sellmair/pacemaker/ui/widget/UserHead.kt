@@ -1,7 +1,10 @@
 package io.sellmair.pacemaker.ui.widget
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,9 +17,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.UserState
-import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.displayColor
+import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.ui.toColor
 
 @Composable
@@ -28,17 +30,6 @@ internal fun UserHead(
     UserHead(
         abbreviation = userState.user.nameAbbreviation,
         color = userState.displayColor.toColor(),
-        modifier = modifier,
-        size = size
-    )
-}
-
-
-@Composable
-fun UserHead(user: User, modifier: Modifier = Modifier, size: Dp = 24.dp) {
-    UserHead(
-        abbreviation = user.nameAbbreviation,
-        color = user.displayColor.toColor(),
         modifier = modifier,
         size = size
     )

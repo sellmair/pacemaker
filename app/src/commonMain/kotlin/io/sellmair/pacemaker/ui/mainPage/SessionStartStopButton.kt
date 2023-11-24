@@ -33,14 +33,12 @@ fun SessionStartStopButton(modifier: Modifier = Modifier) {
     val sessionsEnabled = ApplicationFeature.Sessions.state.get().collectAsState().value.enabled
     if (!sessionsEnabled) return
 
-    val meState by MeState.collectAsState()
     val activeSessionState by ActiveSessionState.collectAsState()
 
     val eventBus = LocalEventBus.current
     val coroutineScope = rememberCoroutineScope()
 
     SessionStartStopButton(
-        me = meState?.me ?: return,
         session = activeSessionState.session,
         onClick = {
             coroutineScope.launch {
@@ -54,16 +52,16 @@ fun SessionStartStopButton(modifier: Modifier = Modifier) {
 
 @Composable
 fun SessionStartStopButton(
-    me: User,
     session: Session?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val color = remember { Animatable(me.displayColor.toColor()) }
+    val meColor = MeColor()
+    val color = remember { Animatable(meColor) }
 
     LaunchedEffect(session) {
         color.animateTo(
-            if (session != null) Color.Companion.Red else me.displayColor.toColor(),
+            if (session != null) Color.Companion.Red else meColor,
         )
     }
 
