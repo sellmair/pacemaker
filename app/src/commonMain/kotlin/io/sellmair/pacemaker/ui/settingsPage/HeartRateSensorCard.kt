@@ -6,6 +6,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
@@ -15,11 +17,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.AdhocUserIntent
@@ -42,6 +48,7 @@ import io.sellmair.pacemaker.ui.widget.HeartRateScale
 import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.FlowPreview
 import kotlin.math.roundToInt
+import kotlin.reflect.KProperty
 
 
 @Composable
@@ -306,10 +313,20 @@ internal fun HeartRateCardTitle(
                 backgroundColor = Color.White.copy(alpha = 0.4f)
             )
 
+            val focusManager = LocalFocusManager.current
+
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
                 BasicTextField(
                     readOnly = !user.isAdhoc,
-                    value = user.name,
+                    value = userName,
+                    keyboardActions = KeyboardActions(onDone = {
+                        this.defaultKeyboardAction(ImeAction.Done)
+                        focusManager.clearFocus()
+                    }),
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        imeAction = ImeAction.Done
+                    ),
                     cursorBrush = SolidColor(Color.White),
                     textStyle = TextStyle(
                         fontSize = 18.sp,
@@ -336,6 +353,7 @@ internal fun HeartRateCardTitle(
         )
     }
 }
+
 
 @Composable
 internal fun ConnectDisconnectButton(
