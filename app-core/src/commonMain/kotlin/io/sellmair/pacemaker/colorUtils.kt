@@ -9,6 +9,9 @@ object UserColors {
     const val saturationLight = .7f
     const val lightnessLight = .75f
 
+
+    fun default(userId: UserId?): HSLColor = fromHue(defaultHue(userId))
+
     fun defaultHue(userId: UserId?): Float = userId.hashCode().toFloat().absoluteValue % 360f
 
     fun fromHue(hue: Float) = HSLColor(
@@ -20,6 +23,8 @@ object UserColors {
     )
 }
 
+fun HSLColor.toUserLight() = UserColors.fromHueLight(hue)
+
 data class HSLColor(
     val hue: Float,
     val saturation: Float,
@@ -28,8 +33,8 @@ data class HSLColor(
 
 
 val UserState.displayColor: HSLColor
-    get() = UserColors.fromHue(UserColors.defaultHue(user.id))
+    get() = color
 
 val UserState.displayColorLight: HSLColor
-    get() = UserColors.fromHueLight(UserColors.defaultHue(user.id))
+    get() = color.toUserLight()
 

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.coroutineContext
 
 interface Event
@@ -45,8 +46,10 @@ suspend inline fun <reified T : Event> collectEvents(noinline collector: suspend
     coroutineContext.eventBus.events.filterIsInstance<T>().collect(collector)
 }
 
-inline fun <reified T : Event> CoroutineScope.collectEventsAsync(noinline collector: suspend (T) -> Unit): Job =
-    launch { collectEvents<T>(collector) }
+inline fun <reified T : Event> CoroutineScope.collectEventsAsync(
+    context: CoroutineContext = EmptyCoroutineContext,
+    noinline collector: suspend (T) -> Unit
+): Job = launch(context = context) { collectEvents<T>(collector) }
 
 suspend fun Event.emit() {
     coroutineContext.eventBus.emit(this)

@@ -24,9 +24,11 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.sellmair.pacemaker.UserColors
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.displayColorLight
+import io.sellmair.pacemaker.toUserLight
 import io.sellmair.pacemaker.ui.toColor
 import kotlin.math.roundToInt
 
@@ -59,7 +61,7 @@ internal fun ChangeableMemberHeartRateLimit(
     onLimitChanged: (HeartRate) -> Unit = {}
 ) {
     ChangeableMemberHeartRateLimit(
-        color = user.displayColorLight.toColor(),
+        color = user.color.toUserLight().toColor(),
         heartRateLimit = heartRateLimit,
         range = range,
         horizontalCenterBias = horizontalCenterBias,

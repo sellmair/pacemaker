@@ -11,5 +11,5 @@ data class PacemakerBroadcastPackage(
     val userId: UserId,
     val userName: String,
     val heartRate: HeartRate,
-    val heartRateLimit: HeartRate
+    val heartRateLimit: HeartRate,
 )
