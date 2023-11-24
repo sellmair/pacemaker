@@ -60,14 +60,12 @@ private fun CoroutineScope.launchHeartRateSensorConnectionIntentActor(userServic
 
         when (intent) {
             is HeartRateSensorConnectionIntent.Connect -> {
-                sensor.connectIfPossible(true)
                 if (userService.findUser(sensor.deviceId.toHeartRateSensorId()) == null) {
                     userService.linkSensor(userService.me(), sensor.deviceId.toHeartRateSensorId())
                 }
             }
 
             is HeartRateSensorConnectionIntent.Disconnect -> {
-                sensor.connectIfPossible(false)
                 if (userService.findUser(sensor.deviceId.toHeartRateSensorId()) == userService.me()) {
                     userService.unlinkSensor(sensor.deviceId.toHeartRateSensorId())
                 }
