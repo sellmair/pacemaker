@@ -13,6 +13,5 @@ data class PacemakerBroadcastPackage(
     val userName: String,
     val heartRate: HeartRate,
     val heartRateLimit: HeartRate,
-    /* Custom color hue picked by the user (see HSLColor) and UserColors */
     val userColorHue: Hue?,
 )
