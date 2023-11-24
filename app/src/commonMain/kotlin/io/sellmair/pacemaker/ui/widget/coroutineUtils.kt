@@ -5,6 +5,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import io.sellmair.pacemaker.ui.LocalEventBus
 import io.sellmair.pacemaker.ui.LocalStateBus
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -34,5 +35,5 @@ fun<T> Launching(action: suspend (value: T) -> Unit): (T) -> Unit {
 fun rememberPacemakerCoroutineScope(): CoroutineScope {
     val eventBus = LocalEventBus.current ?: EmptyCoroutineContext
     val stateBus = LocalStateBus.current ?: EmptyCoroutineContext
-    return rememberCoroutineScope { eventBus + stateBus }
+    return rememberCoroutineScope { Dispatchers.Main.immediate + eventBus + stateBus }
 }
