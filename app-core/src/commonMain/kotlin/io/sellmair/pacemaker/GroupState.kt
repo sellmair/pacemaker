@@ -6,18 +6,14 @@ import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.utils.ConfigurationKey
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.StateProducerScope
-import io.sellmair.pacemaker.utils.collectEvents
-import io.sellmair.pacemaker.utils.launchStateProducer
-import io.sellmair.pacemaker.utils.value
+import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlin.collections.component1
@@ -44,8 +40,9 @@ internal fun CoroutineScope.launchGroupStateActor(
     userService: UserService
 ) {
     val actorIn = Channel<ActorIn>(Channel.UNLIMITED)
-    val measurements = hashMapOf<UserId, ActorIn.AddMeasurement>()
+    val measurements = hashMapOf<UserId, AddMeasurement>()
     val meUserId = async { userService.me().id }
+    val colors = hashMapOf<UserId, HSLColor>()
 
     suspend fun StateProducerScope<GroupState>.updateAndEmitGroup() {
         val userStates = measurements.mapNotNull { (userId, measurement) ->
@@ -54,7 +51,8 @@ internal fun CoroutineScope.launchGroupStateActor(
                 user = user,
                 isMe = meUserId.await() == user.id,
                 heartRate = measurement.heartRate,
-                heartRateLimit = userService.findHeartRateLimit(user)
+                heartRateLimit = userService.findHeartRateLimit(user),
+                color = colors.getOrElse(userId) { UserColors.default(userId) }
             )
         }
 
@@ -99,18 +97,23 @@ internal fun CoroutineScope.launchGroupStateActor(
     }
 
     /* Listen for incoming HeartRate measurements */
-    launch {
-        collectEvents<HeartRateMeasurementEvent> { event ->
-            val user = userService.findUser(event.sensorId) ?: return@collectEvents
-            actorIn.send(AddMeasurement(event.heartRate, user, event.time))
-        }
+    collectEventsAsync<HeartRateMeasurementEvent> { event ->
+        val user = userService.findUser(event.sensorId) ?: return@collectEventsAsync
+        actorIn.send(AddMeasurement(event.heartRate, user, event.time))
     }
 
+
     /* Listen for incoming Pacemaker Broadcasts measurements */
-    launch {
-        collectEvents<PacemakerBroadcastPackageEvent> { event ->
-            val user = userService.findUser(event.pkg.userId) ?: return@collectEvents
-            actorIn.send(AddMeasurement(event.pkg.heartRate, user, event.pkg.receivedTime))
+    collectEventsAsync<PacemakerBroadcastPackageEvent> { event ->
+        val user = userService.findUser(event.pkg.userId) ?: return@collectEventsAsync
+        actorIn.send(AddMeasurement(event.pkg.heartRate, user, event.pkg.receivedTime))
+    }
+
+    /* Listen for changes of the current users color */
+    launch(Dispatchers.Main.immediate) {
+        MeColorState.get().filterNotNull().collect { meColor ->
+            colors[meUserId.await()] = meColor.color
+            actorIn.send(ActorIn.RecalculateGroup)
         }
     }
 }
