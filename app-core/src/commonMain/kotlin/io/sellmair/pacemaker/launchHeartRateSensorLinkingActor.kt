@@ -3,7 +3,7 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.collectEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +16,7 @@ sealed interface HeartRateSensorLinkingIntent : Event {
 
 
 internal fun CoroutineScope.launchHeartRateSensorLinkingActor(userService: UserService): Job = launch(Dispatchers.Main.immediate) {
-    events<HeartRateSensorLinkingIntent> { intent ->
+    collectEvents<HeartRateSensorLinkingIntent> { intent ->
         when (intent) {
             is HeartRateSensorLinkingIntent.LinkSensor -> userService.linkSensor(intent.user, intent.sensor)
             is HeartRateSensorLinkingIntent.UnlinkSensor -> userService.unlinkSensor(intent.sensor)

@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.collectAsState
-import io.sellmair.pacemaker.ui.displayColor
-import io.sellmair.pacemaker.ui.displayColorLight
+import io.sellmair.pacemaker.displayColor
+import io.sellmair.pacemaker.displayColorLight
 import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 

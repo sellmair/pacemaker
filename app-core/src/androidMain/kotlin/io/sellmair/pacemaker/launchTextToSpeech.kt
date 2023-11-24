@@ -7,7 +7,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.collectEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,9 +16,9 @@ import kotlin.coroutines.suspendCoroutine
 
 internal fun CoroutineScope.launchTextToSpeech(context: Context) = launch {
     val textToSpeech = TextToSpeech(context) ?: return@launch
-    events<UtteranceEvent> { event ->
-        if (!UtteranceState.shouldBeAnnounced(event)) return@events
-        if (textToSpeech.isSpeaking) return@events
+    collectEvents<UtteranceEvent> { event ->
+        if (!UtteranceState.shouldBeAnnounced(event)) return@collectEvents
+        if (textToSpeech.isSpeaking) return@collectEvents
 
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ASSISTANT)

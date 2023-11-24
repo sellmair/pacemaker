@@ -4,8 +4,7 @@ import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.emit
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.collectEvents
 import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -35,7 +34,7 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
 
     /* Collect measurements */
     launch {
-        events<HeartRateMeasurementEvent> { measurement ->
+        collectEvents<HeartRateMeasurementEvent> { measurement ->
             val user = userService.findUser(measurement.sensorId)
             val me = userService.me()
             if (user?.id == me.id) {

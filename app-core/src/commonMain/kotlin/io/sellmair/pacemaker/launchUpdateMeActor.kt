@@ -3,7 +3,7 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.collectEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,7 +17,7 @@ sealed class UpdateMeIntent : Event {
 
 internal fun CoroutineScope.launchUpdateMeActor(userService: UserService): Job = launch(Dispatchers.Main.immediate) {
     var me = userService.me()
-    events<UpdateMeIntent>() { intent ->
+    collectEvents<UpdateMeIntent> { intent ->
         when(intent) {
             is UpdateMeIntent.UpdateHeartRateLimit -> userService.saveHeartRateLimit(me, intent.heartRateLimit)
             is UpdateMeIntent.UpdateMe -> {

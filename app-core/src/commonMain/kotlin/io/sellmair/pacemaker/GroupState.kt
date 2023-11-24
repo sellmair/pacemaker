@@ -9,7 +9,7 @@ import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.ConfigurationKey
 import io.sellmair.pacemaker.utils.State
 import io.sellmair.pacemaker.utils.StateProducerScope
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.pacemaker.utils.collectEvents
 import io.sellmair.pacemaker.utils.launchStateProducer
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.CoroutineScope
@@ -100,16 +100,16 @@ internal fun CoroutineScope.launchGroupStateActor(
 
     /* Listen for incoming HeartRate measurements */
     launch {
-        events<HeartRateMeasurementEvent> { event ->
-            val user = userService.findUser(event.sensorId) ?: return@events
+        collectEvents<HeartRateMeasurementEvent> { event ->
+            val user = userService.findUser(event.sensorId) ?: return@collectEvents
             actorIn.send(AddMeasurement(event.heartRate, user, event.time))
         }
     }
 
     /* Listen for incoming Pacemaker Broadcasts measurements */
     launch {
-        events<PacemakerBroadcastPackageEvent> { event ->
-            val user = userService.findUser(event.pkg.userId) ?: return@events
+        collectEvents<PacemakerBroadcastPackageEvent> { event ->
+            val user = userService.findUser(event.pkg.userId) ?: return@collectEvents
             actorIn.send(AddMeasurement(event.pkg.heartRate, user, event.pkg.receivedTime))
         }
     }
