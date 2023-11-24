@@ -50,7 +50,7 @@ internal fun SettingsPageDevicesList(
     Column(Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = "Nearby Devices",
+            text = "Nearby Heart Rate Sensors",
             fontWeight = FontWeight.Bold
         )
 
