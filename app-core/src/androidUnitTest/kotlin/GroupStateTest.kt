@@ -1,5 +1,7 @@
+
 import io.sellmair.pacemaker.GroupState
 import io.sellmair.pacemaker.SqlUserService
+import io.sellmair.pacemaker.UserColors
 import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.UserState
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
@@ -12,18 +14,21 @@ import io.sellmair.pacemaker.utils.StateBus
 import io.sellmair.pacemaker.utils.emit
 import io.sellmair.pacemaker.utils.get
 import io.sellmair.pacemaker.utils.value
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.Clock
 import utils.createInMemoryDatabase
-import kotlin.test.*
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GroupStateTest {
@@ -48,7 +53,7 @@ class GroupStateTest {
                         isMe = true,
                         heartRate = HeartRate(128f),
                         heartRateLimit = UserService.NewUserHeartRateLimit.value(),
-                        
+                        color = UserColors.default(userService.me().id)
                     )
                 )
             ), state
