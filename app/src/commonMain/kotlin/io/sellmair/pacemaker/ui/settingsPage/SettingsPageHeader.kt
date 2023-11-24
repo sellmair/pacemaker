@@ -22,11 +22,10 @@ import io.sellmair.pacemaker.ui.widget.Headline
 import io.sellmair.pacemaker.ui.widget.Launching
 import io.sellmair.pacemaker.ui.widget.UserHead
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
+import io.sellmair.pacemaker.utils.emit
 
 @Composable
-internal fun SettingsPageHeader(
-    me: User,
-) {
+internal fun SettingsPageHeader(me: User) {
     var userName by remember { mutableStateOf(me.name) }
 
     Row(
@@ -53,7 +52,7 @@ internal fun SettingsPageHeader(
             ),
             onValueChange = Launching { newName ->
                 userName = newName
-                UpdateMeIntent.UpdateMe(me.copy(name = newName))
+                UpdateMeIntent.UpdateMe(me.copy(name = newName)).emit()
             })
 
         UserHead(
