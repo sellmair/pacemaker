@@ -106,6 +106,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     /* Listen for incoming Pacemaker Broadcasts measurements */
     collectEventsAsync<PacemakerBroadcastPackageEvent> { event ->
         val user = userService.findUser(event.pkg.userId) ?: return@collectEventsAsync
+        event.pkg.userColorHue?.let { hue -> colors[event.pkg.userId] = UserColors.fromHue(hue) }
         actorIn.send(AddMeasurement(event.pkg.heartRate, user, event.pkg.receivedTime))
     }
 

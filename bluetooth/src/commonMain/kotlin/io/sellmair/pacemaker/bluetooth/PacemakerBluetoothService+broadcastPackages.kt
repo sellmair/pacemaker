@@ -7,9 +7,11 @@ import io.sellmair.pacemaker.ble.BleReceivedValue
 import io.sellmair.pacemaker.ble.ble
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateCharacteristic
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.heartRateLimitCharacteristic
+import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userColorHueCharacteristic
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userIdCharacteristic
 import io.sellmair.pacemaker.bluetooth.PacemakerServiceDescriptors.userNameCharacteristic
 import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.model.Hue
 import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.datetime.Clock
+import okio.Buffer
 
 fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
     return newConnections.flatMapMerge { connection -> connection.broadcastPackages() }
@@ -29,10 +32,12 @@ fun PacemakerBluetoothConnection.broadcastPackages(): Flow<PacemakerBroadcastPac
 @OptIn(ExperimentalStdlibApi::class)
 internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
     val logTag = LogTag.ble.with("decode PacemakerBroadcastPackage")
+
     class State(
         val deviceId: BleDeviceId,
         var userId: UserId? = null,
         var userName: String? = null,
+        var userColorHue: Hue? = null,
         var heartRate: HeartRate? = null,
         var heartRateLimit: HeartRate? = null
     )
@@ -51,7 +56,8 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
                 userId = userId ?: return,
                 userName = userName ?: "n/a",
                 heartRate = heartRate ?: return,
-                heartRateLimit = heartRateLimit ?: return
+                heartRateLimit = heartRateLimit ?: return,
+                userColorHue = userColorHue,
             )
         )
     }
@@ -87,6 +93,14 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
                     heartRateLimit = HeartRate(value.data)
                     if (heartRateLimit == null) {
                         logTag.error("Failed decoding heartRateLimit (${value.data.toHexString()})")
+                    }
+                    emitIfPossible()
+                }
+
+                userColorHueCharacteristic -> {
+                    userColorHue = Hue(value.data)
+                    if (userColorHue == null) {
+                        logTag.error("Failed decoding userColorHue (${value.data.toHexString()}")
                     }
                     emitIfPossible()
                 }
