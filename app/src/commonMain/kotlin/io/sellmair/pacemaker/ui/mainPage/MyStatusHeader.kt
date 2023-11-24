@@ -16,10 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.sellmair.pacemaker.MeState
+import io.sellmair.pacemaker.ui.MeColor
+import io.sellmair.pacemaker.ui.MeColorLight
 import io.sellmair.pacemaker.ui.collectAsState
-import io.sellmair.pacemaker.displayColor
-import io.sellmair.pacemaker.displayColorLight
-import io.sellmair.pacemaker.ui.toColor
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 
 @Composable
@@ -76,13 +75,13 @@ fun MyStatusHeader() {
                     Modifier.offset(y = (-4).dp),
                     fontWeight = FontWeight.Light,
                     fontSize = 10.sp,
-                    color = state.me.displayColor.toColor()
+                    color = MeColor()
                 )
 
             Icon(
                 Icons.Outlined.FavoriteBorder, "Heart",
                 Modifier.offset(y = (-4).dp),
-                tint = state?.me?.displayColorLight?.toColor() ?: Color.Gray
+                tint = MeColorLight()
             )
         }
     }

@@ -2,16 +2,7 @@
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,9 +19,8 @@ import io.sellmair.pacemaker.HeartRateSensorConnectionState
 import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.HeartRateSensorsState
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.displayColor
+import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.get
-import io.sellmair.pacemaker.ui.toColor
 
 @Composable
 internal fun SettingsPageContent(
@@ -120,7 +110,7 @@ internal fun SettingsPageDevicesList(
                 Spacer(Modifier.height(24.dp))
 
                 CircularProgressIndicator(
-                    color = me.displayColor.toColor(),
+                    color = MeColor(),
                     modifier = Modifier.size(24.dp),
                     strokeWidth = 1.dp
                 )

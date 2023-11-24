@@ -41,7 +41,7 @@ internal fun MemberHeartRateLimit(
         ) {
             drawRect(
                 Brush.linearGradient(
-                    listOf(Color.Transparent, user.displayColorLight.toColor()),
+                    listOf(Color.Transparent, userState.displayColorLight.toColor()),
                 )
             )
         }

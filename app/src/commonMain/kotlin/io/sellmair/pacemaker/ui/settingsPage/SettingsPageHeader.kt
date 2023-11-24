@@ -17,10 +17,8 @@ import androidx.compose.ui.unit.dp
 import io.sellmair.pacemaker.UpdateMeIntent
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
-import io.sellmair.pacemaker.displayColor
-import io.sellmair.pacemaker.ui.toColor
+import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.widget.*
-import io.sellmair.pacemaker.ui.widget.UserHead
 import io.sellmair.pacemaker.utils.emit
 
 @Composable
@@ -53,7 +51,7 @@ internal fun SettingsPageHeader(me: User) {
 
             UserHead(
                 abbreviation = me.nameAbbreviation,
-                color = me.displayColor.toColor(),
+                color = MeColor(),
                 size = 32.dp,
                 modifier = Modifier
                     .padding(4.dp)
