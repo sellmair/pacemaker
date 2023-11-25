@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
@@ -16,7 +17,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.ApplicationWindow
 import io.sellmair.pacemaker.ui.LocalEventBus
 import io.sellmair.pacemaker.ui.LocalSessionService
@@ -39,17 +39,21 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge(SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK))
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK),
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK)
+        )
 
         coroutineContext = Dispatchers.Main + Job()
 
         requestPermissions(
-            arrayOf(
+            listOfNotNull(
                 Manifest.permission.BLUETOOTH_SCAN,
                 Manifest.permission.BLUETOOTH_CONNECT,
                 Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ), 0
+                if(Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null,
+                if(Build.VERSION.SDK_INT >= 33) Manifest.permission.BODY_SENSORS else null
+            ).toTypedArray(), 0
         )
         startForegroundService()
 

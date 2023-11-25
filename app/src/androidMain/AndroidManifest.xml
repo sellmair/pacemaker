@@ -45,6 +45,10 @@
             android:name="android.permission.ACCESS_COARSE_LOCATION"
             android:maxSdkVersion="30"/>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
+
     <application
             android:theme="@style/AppTheme"
             android:icon="@mipmap/ic_launcher"
@@ -64,8 +68,7 @@
         <service
                 android:name="io.sellmair.pacemaker.AndroidApplicationBackend"
                 android:foregroundServiceType="health|connectedDevice"
-                android:exported="false"
-        />
+                android:exported="false"/>
 
     </application>
 </manifest>
