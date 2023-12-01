@@ -19,14 +19,14 @@ import io.sellmair.pacemaker.utils.stateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus() + StateBus()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus()
 
     inner class MainServiceBinder(
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,

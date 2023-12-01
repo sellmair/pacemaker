@@ -1,4 +1,4 @@
-import app.cash.sqldelight.async.coroutines.synchronous
+
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
@@ -20,14 +20,14 @@ import io.sellmair.pacemaker.utils.eventBus
 import io.sellmair.pacemaker.utils.stateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import platform.Foundation.NSUserDefaults
 import kotlin.coroutines.CoroutineContext
 
 class IosApplicationBackend : ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + Job() + EventBus() + StateBus()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus()
 
     override val eventBus: EventBus get() = coroutineContext.eventBus
 
