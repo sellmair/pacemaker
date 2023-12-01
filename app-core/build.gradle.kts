@@ -26,9 +26,5 @@ kotlin {
         api(project(":bluetooth"))
         implementation(Dependencies.multiplatformSettings)
     }
-
-    sourceSets.androidMain.dependencies {
-        implementation("androidx.core:core-ktx:1.12.0")
-    }
 }
 

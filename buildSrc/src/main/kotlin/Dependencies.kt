@@ -10,5 +10,6 @@ object Dependencies {
     const val kotlinxDatetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.1"
     const val kotlinxImmutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.6"
     const val multiplatformSettings = "com.russhwolf:multiplatform-settings:1.1.0"
+    const val androidXCoreKtx = "androidx.core:core-ktx:1.12.0"
     fun composeRuntime(project: Project) = ComposePlugin.Dependencies(project).runtime
 }

@@ -1,7 +1,5 @@
 package io.sellmair.pacemaker.ble
 
-import android.Manifest.permission.BLUETOOTH_ADVERTISE
-import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.*
@@ -9,11 +7,9 @@ import android.bluetooth.BluetoothGattServer
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.pm.PackageManager
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 
@@ -36,7 +32,6 @@ internal suspend fun AndroidPeripheralHardware(
     scope: CoroutineScope,
     serviceDescriptor: BleServiceDescriptor,
 ): AndroidPeripheralHardware {
-    context.awaitBluetoothPermissions()
     val manager = context.getSystemService(BluetoothManager::class.java)
     val gattServerCallback = AndroidGattServerCallback(scope)
     val gattServer = manager.openGattServer(context, gattServerCallback)
@@ -62,15 +57,6 @@ internal suspend fun AndroidPeripheralHardware(
         service = gattService,
         serviceDescriptor = serviceDescriptor
     )
-}
-
-private suspend fun Context.awaitBluetoothPermissions() {
-    while (
-        checkSelfPermission(BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
-        checkSelfPermission(BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
-    ) {
-        delay(250)
-    }
 }
 
 private fun BluetoothGattService(descriptor: BleServiceDescriptor): BluetoothGattService {

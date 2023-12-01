@@ -9,13 +9,11 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 import io.sellmair.pacemaker.ble.AndroidBle
+import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.sql.PacemakerDatabase
-import io.sellmair.pacemaker.utils.EventBus
-import io.sellmair.pacemaker.utils.StateBus
-import io.sellmair.pacemaker.utils.eventBus
-import io.sellmair.pacemaker.utils.stateBus
+import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -43,14 +41,16 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
     override val stateBus: StateBus = coroutineContext.stateBus
 
-    private val ble by lazy { AndroidBle(this) }
+    private val ble: Deferred<Ble> = async {
+        AndroidBle(this@AndroidApplicationBackend) ?: never()
+    }
 
     override val pacemakerBluetoothService = async {
-        PacemakerBluetoothService(ble)
+        PacemakerBluetoothService(ble.await())
     }
 
     override val heartRateSensorBluetoothService = async {
-        HeartRateSensorBluetoothService(ble)
+        HeartRateSensorBluetoothService(ble.await())
     }
 
     private val notification = AndroidHeartRateNotification(this)
