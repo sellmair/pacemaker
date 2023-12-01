@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             unbindService(mainServiceConnection)
             stopService(Intent(this, AndroidApplicationBackend::class.java))
             finish()
+            Runtime.getRuntime().exit(0)
         }
     }
 
