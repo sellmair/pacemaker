@@ -1,33 +1,16 @@
 package io.sellmair.pacemaker.ble
 
-import android.Manifest.permission.*
-import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.content.getSystemService
 import io.sellmair.pacemaker.ble.impl.BleCentralServiceImpl
 import io.sellmair.pacemaker.ble.impl.BlePeripheralServiceImpl
 import kotlinx.coroutines.*
 import java.io.Closeable
 
-suspend fun AndroidBle(context: Context): Ble? {
-    val manager = context.getSystemService<BluetoothManager>() ?: return null
-
-    /* Await permissions */
+suspend fun AndroidBle(context: Context): Ble {
+    /* Await permissions to be granted and bluetooth to be turned on*/
     while (
-        context.checkSelfPermission(BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED ||
-        context.checkSelfPermission(BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
-        context.checkSelfPermission(BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
-    ) {
-        delay(250)
-    }
-
-    /* Await Bluetooth adapter to be turned on */
-    while(
-        manager.adapter?.isEnabled != true
-    ) {
-        delay(1000)
-    }
+        !context.isBluetoothPermissionGranted() || !context.isBluetoothEnabled()
+    )   delay(250)
 
     return AndroidBleImpl(context)
 }

@@ -24,7 +24,8 @@ import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus() +
+            AndroidContextProvider(this)
 
     inner class MainServiceBinder(
         override val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>,

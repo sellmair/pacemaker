@@ -3,6 +3,8 @@
 package io.sellmair.pacemaker
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -17,15 +19,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.core.content.getSystemService
+import io.sellmair.pacemaker.ui.*
 import io.sellmair.pacemaker.ui.ApplicationWindow
-import io.sellmair.pacemaker.ui.LocalEventBus
-import io.sellmair.pacemaker.ui.LocalSessionService
-import io.sellmair.pacemaker.ui.LocalStateBus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import io.sellmair.pacemaker.utils.get
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
@@ -51,8 +49,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 Manifest.permission.BLUETOOTH_SCAN,
                 Manifest.permission.BLUETOOTH_CONNECT,
                 Manifest.permission.BLUETOOTH_ADVERTISE,
-                if(Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null,
-                if(Build.VERSION.SDK_INT >= 33) Manifest.permission.BODY_SENSORS else null
+                if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null,
+                if (Build.VERSION.SDK_INT >= 33) Manifest.permission.BODY_SENSORS else null
             ).toTypedArray(), 0
         )
         startForegroundService()
@@ -68,6 +66,16 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                     ApplicationWindow()
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bluetoothManager = getSystemService<BluetoothManager>()
+        val adapter = bluetoothManager?.adapter
+        if (adapter?.isEnabled == false) {
+            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBluetoothIntent, -1)
         }
     }
 
