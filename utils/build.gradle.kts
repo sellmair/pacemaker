@@ -1,19 +1,6 @@
-plugins {
-    id("pacemaker-library")
-}
-
-pacemaker {
-    jvm()
-    macos()
-    android()
-    ios()
-
-    sourceSets {
-        useNonAndroid()
-        useJvmAndAndroid()
-    }
-
-    features {
-        useAtomicFu()
+project.plugins.apply("kotlinx-atomicfu")
+kotlin {
+    sourceSets.commonMain.dependencies {
+        implementation("org.jetbrains.kotlinx:atomicfu:0.22.0")
     }
 }

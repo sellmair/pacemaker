@@ -5,7 +5,12 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven("https://maven.pkg.jetbrains.space/public/p/amper/amper")
     }
+}
+
+plugins {
+    id("org.jetbrains.amper.settings.plugin").version("0.1.2")
 }
 
 dependencyResolutionManagement {
@@ -33,6 +38,7 @@ dependencyResolutionManagement {
     }
 }
 
+/*
 include(":utils")
 include(":models")
 include(":bluetooth")
@@ -40,3 +46,4 @@ include(":bluetooth-core")
 include(":spoof-tool")
 include(":app")
 include(":app-core")
+ */

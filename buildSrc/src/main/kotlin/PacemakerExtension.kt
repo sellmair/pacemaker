@@ -118,7 +118,6 @@ class PacemakerExtension(
                     implementation("app.cash.sqldelight:native-driver:2.0.0")
                 }
 
-
             }
 
             project.extensions.configure(SqlDelightExtension::class.java) {

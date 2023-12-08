@@ -1,0 +1,17 @@
+apply:
+  - ../pacemaker.module-template.yaml
+
+product:
+  type: lib
+  platforms:
+    - jvm
+    - macosArm64
+    - macosX64
+    - android
+    - iosX64
+    - iosSimulatorArm64
+    - iosArm64
+aliases:
+  - jvmAndAndroid: [jvm, android]
+  - native: [macosArm64, macosX64, iosX64, iosSimulatorArm64, iosArm64]
+  - nonAndroid: [jvm, macosArm64, macosX64, iosX64, iosSimulatorArm64, iosArm64]

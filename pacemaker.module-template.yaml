@@ -1,0 +1,14 @@
+dependencies:
+  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
+  - com.squareup.okio:okio:3.6.0
+  - org.jetbrains.kotlinx:kotlinx-datetime:0.4.1
+
+test-dependencies:
+  - $kotlin-test
+  - org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3
+  - org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.7.3
+
+settings:
+  kotlin:
+    freeCompilerArgs:
+      - "-Xexpect-actual-classes"
