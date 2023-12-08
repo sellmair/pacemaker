@@ -73,7 +73,10 @@ class AndroidHeartRateNotification(private val service: Service) {
     fun startForeground(coroutineScope: CoroutineScope) {
         /* Update notification showing current users heart rate */
         coroutineScope.launch(Dispatchers.Main.immediate) {
-            while(Build.VERSION.SDK_INT >= 33 && service.checkSelfPermission(Manifest.permission.BODY_SENSORS) != PERMISSION_GRANTED) {
+            while(
+                (Build.VERSION.SDK_INT >= 33 && service.checkSelfPermission(Manifest.permission.BODY_SENSORS) != PERMISSION_GRANTED) ||
+                (Build.VERSION.SDK_INT >= 33 && service.checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE) != PERMISSION_GRANTED)
+            ) {
                 delay(1.seconds)
             }
 

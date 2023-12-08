@@ -85,6 +85,6 @@ suspend fun <T : State?> State.Key<T>.get(): StateFlow<T> {
     return coroutineContext.stateBus.getState(this)
 }
 
-suspend fun <T : State?> State.Key<T>.set(value: T) {
+suspend infix fun <T : State?> State.Key<T>.set(value: T) {
     return coroutineContext.stateBus.setState(this, value)
 }

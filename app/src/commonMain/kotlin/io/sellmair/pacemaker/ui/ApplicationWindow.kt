@@ -16,5 +16,13 @@ internal fun ApplicationWindow() {
                 Page.SettingsPage -> SettingsPage()
             }
         }
+
+        ApplicationWindowPlatformOverlay()
     }
 }
+
+/**
+ * Potential overlays that each platform can define
+ */
+@Composable
+expect fun ApplicationWindowPlatformOverlay()
