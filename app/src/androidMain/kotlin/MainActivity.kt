@@ -9,6 +9,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +21,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.getSystemService
+import androidx.lifecycle.lifecycleScope
 import io.sellmair.pacemaker.ui.*
 import io.sellmair.pacemaker.ui.ApplicationWindow
 import io.sellmair.pacemaker.utils.get
@@ -27,6 +29,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 
 class MainActivity : ComponentActivity(), CoroutineScope {
@@ -73,9 +76,16 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         super.onStart()
         val bluetoothManager = getSystemService<BluetoothManager>()
         val adapter = bluetoothManager?.adapter
-        if (adapter?.isEnabled == false) {
-            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBluetoothIntent, -1)
+        lifecycleScope.launch {
+            while (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                delay(1.seconds)
+            }
+
+            if (adapter?.isEnabled == false) {
+                val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                @Suppress("DEPRECATION")
+                startActivityForResult(enableBluetoothIntent, -1)
+            }
         }
     }
 
