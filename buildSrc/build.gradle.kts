@@ -21,8 +21,9 @@ repositories {
 }
 
 dependencies {
-    val kotlinVersion = "1.9.21"
-    implementation("org.jetbrains.compose:compose-gradle-plugin:1.5.11")
+    val kotlinVersion = "1.9.22"
+    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.0-beta01")
+
     implementation(kotlin("gradle-plugin:$kotlinVersion"))
     implementation(kotlin("serialization:$kotlinVersion"))
     implementation("com.android.tools.build:gradle:8.1.4")
