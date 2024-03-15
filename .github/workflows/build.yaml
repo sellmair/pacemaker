@@ -1,0 +1,19 @@
+name: Build
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+ snapshot:
+   runs-on: macOS-latest
+   steps:
+     - name: Checkout
+       uses: actions/checkout@v2
+     - name: Configure JDK
+       uses: actions/setup-java@v1
+       with:
+         java-version: 11
+     - name: Build
+       run: ./gradlew check assemble
