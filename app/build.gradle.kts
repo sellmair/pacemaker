@@ -44,10 +44,6 @@ kotlin {
         /* androidx */
         implementation("androidx.activity:activity-compose:1.8.2")
         implementation(compose.preview)
-
-        implementation("androidx.compose.material3:material3:1.2.0-beta02") {
-            because("Fixing: https://partnerissuetracker.corp.google.com/issues/322214617")
-        }
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
