@@ -1,6 +1,5 @@
 package io.sellmair.pacemaker
 
-import UtteranceEvent
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -16,6 +15,9 @@ import kotlin.coroutines.suspendCoroutine
 
 internal fun CoroutineScope.launchTextToSpeech(context: Context) = launch {
     val textToSpeech = TextToSpeech(context) ?: return@launch
+    textToSpeech.setSpeechRate(1.3f)
+    textToSpeech.setPitch(0.85f)
+
     collectEvents<UtteranceEvent> { event ->
         if (!UtteranceState.shouldBeAnnounced(event)) return@collectEvents
         if (textToSpeech.isSpeaking) return@collectEvents

@@ -10,33 +10,33 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
 
     <!-- Polar SDK needs Bluetooth scan permission to search for BLE devices. Polar BLE SDK doesn't use the scan
-   to decide the location so "neverForLocation" permission flag can be used.-->
+    to decide the location so "neverForLocation" permission flag can be used.-->
     <uses-permission
-            android:name="android.permission.BLUETOOTH_SCAN"
-            android:usesPermissionFlags="neverForLocation"/>
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"/>
 
     <!-- Polar SDK needs Bluetooth connect permission to connect for found BLE devices.-->
     <uses-permission
-            android:name="android.permission.BLUETOOTH_CONNECT"/>
+        android:name="android.permission.BLUETOOTH_CONNECT"/>
 
     <!-- Allows Polar SDK to connect to paired bluetooth devices. Legacy Bluetooth permission,
-     which is needed on devices with API 30 (Android Q) or older. -->
+    which is needed on devices with API 30 (Android Q) or older. -->
     <uses-permission
-            android:name="android.permission.BLUETOOTH"
-            android:maxSdkVersion="30"/>
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30"/>
 
     <!-- Allows Polar SDK to discover and pair bluetooth devices. Legacy Bluetooth permission,
-     which is needed on devices with API 30 (Android Q) or older. -->
+    which is needed on devices with API 30 (Android Q) or older. -->
     <uses-permission
-            android:name="android.permission.BLUETOOTH_ADMIN"
-            android:maxSdkVersion="30"/>
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30"/>
 
     <!-- Polar SDK needs the fine location permission to get results for Bluetooth scan. Request
     fine location permission on devices with API 30 (Android Q). Note, if your application
     needs location for other purposes than bluetooth then remove android:maxSdkVersion="30"-->
-    <uses-permission
-            android:name="android.permission.ACCESS_FINE_LOCATION"
-            android:maxSdkVersion="30"/>
+        <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="30"/>
 
     <!-- The coarse location permission is needed, if fine location permission is requested. Request
       coarse location permission on devices with API 30 (Android Q). Note, if your application
@@ -49,26 +49,25 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
     <uses-permission android:name="android.permission.BODY_SENSORS"/>
 
-    <application
-            android:theme="@style/AppTheme"
-            android:icon="@mipmap/ic_launcher"
-            android:label="Pacemaker"
-            android:allowBackup="false"
+        <application
+        android:theme="@style/AppTheme"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Pacemaker"
+        android:allowBackup="false"
+        android:localeConfig="@xml/locales_config"
     >
 
-        <activity android:name="io.sellmair.pacemaker.MainActivity" android:exported="true"
-                  android:launchMode="singleTask">
+            <activity android:name="io.sellmair.pacemaker.MainActivity" android:exported="true" android:launchMode="singleTask">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+            </activity>
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+            <service
+            android:name="io.sellmair.pacemaker.AndroidApplicationBackend"
+            android:foregroundServiceType="health|connectedDevice"
+    android:exported="false"/>
 
-        <service
-                android:name="io.sellmair.pacemaker.AndroidApplicationBackend"
-                android:foregroundServiceType="health|connectedDevice"
-                android:exported="false"/>
-
-    </application>
+</application>
 </manifest>

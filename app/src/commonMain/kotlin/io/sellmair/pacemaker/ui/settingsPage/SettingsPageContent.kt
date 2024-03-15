@@ -2,16 +2,7 @@
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,6 +21,11 @@ import io.sellmair.pacemaker.HeartRateSensorsState
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.get
+import org.jetbrains.compose.resources.stringResource
+import pacemaker.app.generated.resources.Res
+import pacemaker.app.generated.resources.nearby_heart_rate_sensors
+import pacemaker.app.generated.resources.please_stand_by
+import pacemaker.app.generated.resources.searching_for_hr_sensors
 
 @Composable
 internal fun SettingsPageContent(
@@ -59,7 +55,7 @@ internal fun SettingsPageDevicesList(
     Column(Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = "Nearby Heart Rate Sensors",
+            text = stringResource(Res.string.nearby_heart_rate_sensors),
             fontWeight = FontWeight.Bold
         )
 
@@ -86,12 +82,12 @@ internal fun SettingsPageDevicesList(
 
 
                             Text(
-                                "Searching for heart rate sensors",
+                                stringResource(Res.string.searching_for_hr_sensors),
                                 fontSize = 12.sp
                             )
 
                             Text(
-                                "Please stand by 👍",
+                                stringResource(Res.string.please_stand_by),
                                 fontSize = 8.sp,
                                 fontWeight = FontWeight.Light
                             )

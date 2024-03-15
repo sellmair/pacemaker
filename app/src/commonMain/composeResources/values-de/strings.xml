@@ -1,0 +1,15 @@
+<resources>
+    <string name="please_stand_by">Bitte warten Sie 👍</string>
+    <string name="heart_rate_sensor">Herzfrequenz Sensor</string>
+    <string name="connect">verbinden</string>
+    <string name="disconnect">trennen</string>
+
+    <string name="nearby_heart_rate_sensors">Herzfrequenzsensoren in der Nähe</string>
+    <string name="searching_for_hr_sensors">Suche nach Herzfrequenzsensoren</string>
+
+    <string name="heart_rate_info_utterance">Deine Herzfrequenz beträgt: %1$d. Dein aktuelles Limit beträgt: %2$d</string>
+    
+    <string name="slow_down">Langsamer!</string>
+    <string name="slow_down_heart_rate_utterance_fragment_me">Deine eigene Herzfrequenz beträgt %1$d BPM</string>
+    <string name="slow_down_heart_rate_utterance_fragment_other">%1$s läuft mit %2$d BPM</string>
+</resources>

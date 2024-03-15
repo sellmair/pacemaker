@@ -8,7 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import io.sellmair.pacemaker.ApplicationFeature
+import io.sellmair.pacemaker.HeartRateUtteranceRequest
+import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.ui.LocalEventBus
+import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext

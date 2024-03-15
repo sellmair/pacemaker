@@ -1,6 +1,5 @@
 package io.sellmair.pacemaker
 
-import UtteranceEvent
 import io.sellmair.pacemaker.utils.State
 import io.sellmair.pacemaker.utils.get
 

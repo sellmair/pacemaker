@@ -28,6 +28,8 @@ import io.sellmair.pacemaker.utils.get
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -76,7 +78,13 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         super.onStart()
         val bluetoothManager = getSystemService<BluetoothManager>()
         val adapter = bluetoothManager?.adapter
+
+        lifecycleScope.launchWithBackendContext {
+            launchHeartRateUtteranceActor()
+        }
+
         lifecycleScope.launch {
+
             while (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 delay(1.seconds)
             }
@@ -86,6 +94,13 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 @Suppress("DEPRECATION")
                 startActivityForResult(enableBluetoothIntent, -1)
             }
+        }
+    }
+
+    private fun <T> CoroutineScope.launchWithBackendContext(action: CoroutineScope.() -> T) = launch {
+        val backend = mainServiceConnection.backend.filterNotNull().first()
+        withContext(backend.eventBus + backend.stateBus) {
+            action()
         }
     }
 

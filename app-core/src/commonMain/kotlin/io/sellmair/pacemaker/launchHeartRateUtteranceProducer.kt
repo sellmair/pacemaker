@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker
 
-import UtteranceEvent
+import io.sellmair.pacemaker.model.HeartRate
+import io.sellmair.pacemaker.utils.Event
 import io.sellmair.pacemaker.utils.emit
 import io.sellmair.pacemaker.utils.get
 import kotlinx.coroutines.CoroutineScope
@@ -10,6 +11,18 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+
+sealed class HeartRateUtteranceRequest : Event {
+    /**
+     * At least one person is in 'critical state', exceeding his limit
+     */
+    class SlowDownHeartRateUtterance(val criticalStates: List<UserState>) : HeartRateUtteranceRequest()
+
+    /**
+     * Just a status update
+     */
+    class InfoHeartRateUtterance(val myHeartRate: HeartRate, val myHeartRateLimit: HeartRate) : HeartRateUtteranceRequest()
+}
 
 internal fun CoroutineScope.launchHeartRateUtteranceProducer() = launch {
 
@@ -23,18 +36,7 @@ internal fun CoroutineScope.launchHeartRateUtteranceProducer() = launch {
             delay(15.seconds)
             val criticalStates = criticalUserStates.toList()
             if (criticalStates.isNotEmpty()) {
-                launch textToSpeech@{
-                    val message = "Slow down! ${
-                        if (criticalStates.singleOrNull()?.isMe == true) {
-                            "You are at " +
-                                "${criticalStates.singleOrNull()?.heartRate?.value?.roundToInt()} bpm"
-                        } else criticalStates.joinToString(", ") {
-                            "${it.user.name} is at ${it.heartRate.value.roundToInt()} bpm"
-                        }
-                    }"
-
-                    UtteranceEvent(UtteranceEvent.Type.Warning, message).emit()
-                }
+                HeartRateUtteranceRequest.SlowDownHeartRateUtterance(criticalStates).emit()
             }
         }
     }
@@ -43,12 +45,15 @@ internal fun CoroutineScope.launchHeartRateUtteranceProducer() = launch {
     launch {
         while (true) {
             delay(1.minutes)
-                val me = group?.members.orEmpty().firstOrNull { it.isMe }
-                val heartRate = me?.heartRate?.value?.roundToInt() ?: continue
-                val limit = me.heartRateLimit?.value?.roundToInt() ?: continue
-                val message = "Your heart rate is at: $heartRate. The current limit is: $limit"
-                UtteranceEvent(UtteranceEvent.Type.Info, message).emit()
-            }
+            val me = group?.members.orEmpty().firstOrNull { it.isMe }
+            val heartRate = me?.heartRate?.value?.roundToInt() ?: continue
+            val limit = me.heartRateLimit?.value?.roundToInt() ?: continue
+
+            HeartRateUtteranceRequest.InfoHeartRateUtterance(
+                myHeartRate = HeartRate(heartRate),
+                myHeartRateLimit = HeartRate(limit)
+            ).emit()
+        }
     }
 
     /* Collect critical member states */

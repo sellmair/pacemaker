@@ -1,4 +1,5 @@
 @file:SuppressLint("TestManifestGradleConfiguration")
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import android.annotation.SuppressLint
 import com.android.build.api.dsl.ApplicationExtension
@@ -25,6 +26,10 @@ extensions.configure(ApplicationExtension::class) {
 }
 
 kotlin {
+    compilerOptions {
+        optIn.add("org.jetbrains.compose.resources.ExperimentalResourceApi")
+    }
+
     sourceSets.commonMain.get().dependencies {
        implementation(project(":app-core"))
 
@@ -32,6 +37,8 @@ kotlin {
         implementation(compose.ui)
         implementation(compose.foundation)
         implementation(compose.runtime)
+        implementation(compose.components.resources)
+        implementation(compose.components.uiToolingPreview)
 
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)

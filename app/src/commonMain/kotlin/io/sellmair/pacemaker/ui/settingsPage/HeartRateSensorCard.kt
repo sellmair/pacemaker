@@ -40,6 +40,11 @@ import io.sellmair.pacemaker.ui.widget.GradientBackdrop
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
 import io.sellmair.pacemaker.utils.emit
 import kotlinx.coroutines.FlowPreview
+import org.jetbrains.compose.resources.stringResource
+import pacemaker.app.generated.resources.Res
+import pacemaker.app.generated.resources.connect
+import pacemaker.app.generated.resources.disconnect
+import pacemaker.app.generated.resources.heart_rate_sensor
 import kotlin.math.roundToInt
 
 
@@ -67,7 +72,7 @@ internal fun HeartRateSensorCard(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 internal fun HeartRateSensorCard(
     me: User,
@@ -119,7 +124,7 @@ internal fun HeartRateSensorCard(
                             Icon(
                                 Icons.Outlined.MonitorHeart,
                                 tint = Color.White,
-                                contentDescription = "Heart Rate Sensor",
+                                contentDescription = stringResource(Res.string.heart_rate_sensor),
                             )
                         }
 
@@ -131,7 +136,7 @@ internal fun HeartRateSensorCard(
                             Icon(
                                 Icons.Filled.MonitorHeart,
                                 tint = Color.White,
-                                contentDescription = "Heart Rate Sensor",
+                                contentDescription = stringResource(Res.string.heart_rate_sensor),
                             )
                         }
                     }
@@ -313,7 +318,7 @@ internal fun HeartRateCardTitle(
                         isFocused = focusState.hasFocus
                     },
                     readOnly = !user.isAdhoc,
-                    value = if(isFocused) edittingUserName else user.name,
+                    value = if (isFocused) edittingUserName else user.name,
                     keyboardActions = KeyboardActions(onDone = {
                         this.defaultKeyboardAction(ImeAction.Done)
                         focusManager.clearFocus()
@@ -369,7 +374,7 @@ internal fun ConnectDisconnectButton(
             }
         },
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = if (connectionState == Connected)  MeColorLight()
+            containerColor = if (connectionState == Connected) MeColorLight()
             else MeColor(),
         ),
     ) {
@@ -380,7 +385,10 @@ internal fun ConnectDisconnectButton(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally()
             ) {
-                Text("Connect", color = MeColorWhite())
+                Text(
+                    stringResource(Res.string.connect),
+                    color = MeColorWhite()
+                )
             }
 
             AnimatedVisibility(
@@ -388,7 +396,10 @@ internal fun ConnectDisconnectButton(
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally()
             ) {
-                Text("Disconnect", color = MeColorWhite())
+                Text(
+                    stringResource(Res.string.disconnect),
+                    color = MeColorWhite()
+                )
             }
 
             AnimatedVisibility(

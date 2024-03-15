@@ -1,10 +1,11 @@
 package io.sellmair.pacemaker.ui.mainPage
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,10 +32,11 @@ fun UtteranceControlButton(modifier: Modifier = Modifier) {
         modifier = modifier,
         onClick = {
             stateBus?.setState(UtteranceState, utteranceState.next())
-        }
+        },
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UtteranceControlButton(
     state: UtteranceState,
@@ -71,9 +73,9 @@ fun UtteranceControlButton(
         ) { targetState ->
             Icon(
                 imageVector = when (targetState) {
-                    UtteranceState.Silence -> Icons.Default.VolumeOff
+                    UtteranceState.Silence -> Icons.AutoMirrored.Default.VolumeOff
                     UtteranceState.Warnings -> Icons.Default.Warning
-                    UtteranceState.All -> Icons.Default.VolumeUp
+                    UtteranceState.All -> Icons.AutoMirrored.Default.VolumeUp
                 },
                 contentDescription = null,
             )

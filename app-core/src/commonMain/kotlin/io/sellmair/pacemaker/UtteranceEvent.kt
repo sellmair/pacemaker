@@ -1,3 +1,5 @@
+package io.sellmair.pacemaker
+
 import io.sellmair.pacemaker.utils.Event
 
 data class UtteranceEvent(
