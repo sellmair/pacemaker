@@ -22,14 +22,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
-import io.sellmair.pacemaker.ui.*
 import io.sellmair.pacemaker.ui.ApplicationWindow
-import io.sellmair.pacemaker.utils.get
+import io.sellmair.pacemaker.ui.LocalEventBus
+import io.sellmair.pacemaker.ui.LocalSessionService
+import io.sellmair.pacemaker.ui.LocalStateBus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -79,12 +78,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         val bluetoothManager = getSystemService<BluetoothManager>()
         val adapter = bluetoothManager?.adapter
 
-        lifecycleScope.launchWithBackendContext {
-            launchHeartRateUtteranceActor()
-        }
-
         lifecycleScope.launch {
-
             while (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 delay(1.seconds)
             }
@@ -94,13 +88,6 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 @Suppress("DEPRECATION")
                 startActivityForResult(enableBluetoothIntent, -1)
             }
-        }
-    }
-
-    private fun <T> CoroutineScope.launchWithBackendContext(action: CoroutineScope.() -> T) = launch {
-        val backend = mainServiceConnection.backend.filterNotNull().first()
-        withContext(backend.eventBus + backend.stateBus) {
-            action()
         }
     }
 
@@ -117,6 +104,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
     private inner class ApplicationBackendConnection : ServiceConnection {
 
+        private var coroutineContext: CoroutineContext? = null
+
         private val _backend = MutableStateFlow<ApplicationBackend?>(null)
 
         val backend = _backend.asStateFlow()
@@ -124,11 +113,15 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is AndroidApplicationBackend.MainServiceBinder) {
                 this._backend.value = service
+                val coroutineContext = SupervisorJob() + Dispatchers.Main + service.eventBus + service.stateBus
+                CoroutineScope(coroutineContext).launchFrontendServices()
+                this.coroutineContext = coroutineContext
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             _backend.value = null
+            coroutineContext?.cancel()
         }
     }
 

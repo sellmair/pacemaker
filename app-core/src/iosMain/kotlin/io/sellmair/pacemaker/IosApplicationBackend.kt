@@ -1,18 +1,11 @@
+package io.sellmair.pacemaker
 
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
-import io.sellmair.pacemaker.ApplicationBackend
-import io.sellmair.pacemaker.SafePacemakerDatabase
-import io.sellmair.pacemaker.SessionService
-import io.sellmair.pacemaker.SqlSessionService
-import io.sellmair.pacemaker.SqlUserService
-import io.sellmair.pacemaker.UserService
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
-import io.sellmair.pacemaker.launchApplicationBackend
-import io.sellmair.pacemaker.meId
 import io.sellmair.pacemaker.sql.PacemakerDatabase
 import io.sellmair.pacemaker.utils.EventBus
 import io.sellmair.pacemaker.utils.StateBus
