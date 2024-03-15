@@ -1,0 +1,16 @@
+<resources>
+    <string name="please_stand_by">Please stand by 👍</string>
+    <string name="heart_rate_sensor">Heart Rate Sensor</string>
+    <string name="connect">connect</string>
+    <string name="disconnect">disconnect</string>
+
+    <string name="nearby_heart_rate_sensors">Nearby Heart Rate Sensors xxx</string>
+    <string name="searching_for_hr_sensors">Searching for heart rate sensors</string>
+
+    <string name="heart_rate_info_utterance">Your heart rate is at: %1$d. The current limit is: %2$d</string>
+    
+    <string name="slow_down">Slow down!</string>
+    <string name="slow_down_heart_rate_utterance_fragment_me">You are at %1$d bpm</string>
+    <string name="slow_down_heart_rate_utterance_fragment_other">%1$s is at %2$d bpm</string>
+</resources>
+ 

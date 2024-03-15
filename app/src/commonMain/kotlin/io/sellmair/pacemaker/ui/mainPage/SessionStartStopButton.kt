@@ -17,10 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.ActiveSessionIntent
+import io.sellmair.pacemaker.ActiveSessionState
+import io.sellmair.pacemaker.ApplicationFeature
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.ui.*
+import io.sellmair.pacemaker.ui.LocalEventBus
+import io.sellmair.pacemaker.ui.MeColor
+import io.sellmair.pacemaker.ui.collectAsState
+import io.sellmair.pacemaker.ui.get
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
