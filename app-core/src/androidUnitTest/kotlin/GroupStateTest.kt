@@ -70,9 +70,7 @@ class GroupStateTest {
     @OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
     private fun test(block: suspend TestScope.() -> Unit) = runTest(EventBus() + StateBus()) {
         try {
-            val main = StandardTestDispatcher(testScheduler, "main")
-            Dispatchers.setMain(main)
-            launchGroupStateActor(userService)
+            launchGroupStateActor(userService, actorContext = StandardTestDispatcher(testScheduler))
             block()
         } finally {
             currentCoroutineContext().cancelChildren()

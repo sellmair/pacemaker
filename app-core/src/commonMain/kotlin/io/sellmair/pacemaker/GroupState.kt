@@ -19,6 +19,7 @@ import kotlinx.datetime.Instant
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -37,7 +38,7 @@ data class GroupState(val members: List<UserState> = emptyList()) : Iterable<Use
 }
 
 internal fun CoroutineScope.launchGroupStateActor(
-    userService: UserService
+    userService: UserService, actorContext: CoroutineContext = Dispatchers.Main.immediate
 ) {
     val actorIn = Channel<ActorIn>(Channel.UNLIMITED)
     val measurements = hashMapOf<UserId, AddMeasurement>()
@@ -60,7 +61,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     }
 
     /* Main actor */
-    launchStateProducer(GroupState.Key, Dispatchers.Main.immediate) {
+    launchStateProducer(GroupState.Key, actorContext) {
         actorIn.consumeEach { event ->
             when (event) {
                 is AddMeasurement -> {
@@ -90,7 +91,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     }
 
     /* Check for changes in UserService and refresh the group */
-    launch(Dispatchers.Main.immediate) {
+    launch(actorContext) {
         userService.onChange.collect {
             actorIn.send(ActorIn.RecalculateGroup)
         }
@@ -111,7 +112,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     }
 
     /* Listen for changes of the current users color */
-    launch(Dispatchers.Main.immediate) {
+    launch(actorContext) {
         MeColorState.get().filterNotNull().collect { meColor ->
             colors[meUserId.await()] = meColor.color
             actorIn.send(ActorIn.RecalculateGroup)
