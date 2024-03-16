@@ -23,7 +23,7 @@ class GroupStateTest {
         userService.linkSensor(userService.me(), meSensorId)
         HeartRateMeasurementEvent(HeartRate(128f), meSensorId, Clock.System.now()).emit()
 
-        launch(start = CoroutineStart.UNDISPATCHED) {
+        launch(StandardTestDispatcher(testScheduler), start = CoroutineStart.UNDISPATCHED) {
             GroupState.get().collect { println("(${testScheduler.currentTime}ms) s: $it") }
         }
 
