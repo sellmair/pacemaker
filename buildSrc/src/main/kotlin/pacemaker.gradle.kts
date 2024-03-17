@@ -34,3 +34,14 @@ kotlin {
         }
     }
 }
+
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        showExceptions = true
+        showStackTraces = true
+        showCauses = true
+        outputs.upToDateWhen { false }
+    }
+}

@@ -13,7 +13,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-internal val databaseBackgroundThread: CoroutineDispatcher = newSingleThreadContext("database")
+private val databaseBackgroundThread: CoroutineDispatcher = newSingleThreadContext("database")
 
 internal object DatabaseBackgroundDispatcher : ConfigurationKey.WithDefault<CoroutineDispatcher> {
     override val default: CoroutineDispatcher = databaseBackgroundThread

@@ -1,4 +1,5 @@
 # Pacemaker (iOS & Android) [KMP]
+[![Build](https://github.com/sellmair/pacemaker/actions/workflows/build.yaml/badge.svg)](https://github.com/sellmair/pacemaker/actions/workflows/build.yaml)
 
 Run together! A running companion monitoring the heart rate of a group of people doing sports together.
 
