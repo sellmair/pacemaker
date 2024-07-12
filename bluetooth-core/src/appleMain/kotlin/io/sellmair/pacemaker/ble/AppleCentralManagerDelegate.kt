@@ -4,6 +4,7 @@ package io.sellmair.pacemaker.ble
 
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.debug
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,7 +81,7 @@ internal class AppleCentralManagerDelegate(
 
     val didFailConnectToPeripheral = MutableSharedFlow<DidFailConnectToPeripheral>()
 
-    @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    @ObjCSignatureOverride
     override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
         log.debug("'didFailToConnectPeripheral'")
         scope.launch {
@@ -97,7 +98,7 @@ internal class AppleCentralManagerDelegate(
 
     val didDisconnectPeripheral = MutableSharedFlow<DidDisconnectPeripheral>()
 
-    @Suppress("CONFLICTING_OVERLOADS", "PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    @ObjCSignatureOverride
     override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
         scope.launch {
             thisDelegate.didDisconnectPeripheral.emit(
