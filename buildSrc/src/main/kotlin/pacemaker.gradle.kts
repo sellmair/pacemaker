@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
@@ -27,11 +29,9 @@ kotlin {
     }
 
 
-    //https://youtrack.jetbrains.com/issue/KT-61573
-    targets.all {
-        compilations.all {
-            compilerOptions.options.freeCompilerArgs.add("-Xexpect-actual-classes")
-        }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 

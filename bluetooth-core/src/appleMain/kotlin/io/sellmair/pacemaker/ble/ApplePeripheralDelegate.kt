@@ -1,7 +1,8 @@
-@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "unused", "UNUSED_PARAMETER")
+@file:Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "unused", "UNUSED_PARAMETER")
 
 package io.sellmair.pacemaker.ble
 
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -70,6 +71,7 @@ internal class ApplePeripheralDelegate(
 
     val didUpdateNotificationState = MutableSharedFlow<DidUpdateNotificationState>()
 
+    @ObjCSignatureOverride
     override fun peripheral(
         peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?
     ) {
@@ -87,6 +89,7 @@ internal class ApplePeripheralDelegate(
 
     val didUpdateValue = MutableSharedFlow<DidUpdateValue>()
 
+    @ObjCSignatureOverride
     override fun peripheral(
         peripheral: CBPeripheral,
         didUpdateValueForCharacteristic: CBCharacteristic,
@@ -104,6 +107,7 @@ internal class ApplePeripheralDelegate(
 
     val didWriteValue = MutableSharedFlow<DidWriteValue>()
 
+    @ObjCSignatureOverride
     override fun peripheral(
         peripheral: CBPeripheral,
         didWriteValueForCharacteristic: CBCharacteristic,
