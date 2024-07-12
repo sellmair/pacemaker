@@ -4,7 +4,7 @@
     <string name="connect">connect</string>
     <string name="disconnect">disconnect</string>
 
-    <string name="nearby_heart_rate_sensors">Nearby Heart Rate Sensors xxx</string>
+    <string name="nearby_heart_rate_sensors">Nearby Heart Rate Sensors</string>
     <string name="searching_for_hr_sensors">Searching for heart rate sensors</string>
 
     <string name="heart_rate_info_utterance">Your heart rate is at: %1$d. The current limit is: %2$d</string>
