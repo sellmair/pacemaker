@@ -103,19 +103,19 @@ class PacemakerExtension(
             project.plugins.apply("app.cash.sqldelight")
             kotlin {
                 sourceSets.commonMain.dependencies {
-                    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0")
+                    implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
                 }
 
                 sourceSets.androidMain.dependencies {
-                    implementation("app.cash.sqldelight:android-driver:2.0.0")
+                    implementation("app.cash.sqldelight:android-driver:2.0.2")
                 }
 
                 sourceSets.getByName("androidUnitTest").dependencies {
-                    implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
+                    implementation("app.cash.sqldelight:sqlite-driver:2.0.2")
                 }
 
                 sourceSets.nativeMain.dependencies {
-                    implementation("app.cash.sqldelight:native-driver:2.0.0")
+                    implementation("app.cash.sqldelight:native-driver:2.0.2")
                 }
 
 
@@ -127,10 +127,10 @@ class PacemakerExtension(
         }
 
         fun useAtomicFu() {
-            project.plugins.apply("kotlinx-atomicfu")
+            project.plugins.apply("org.jetbrains.kotlinx.atomicfu")
             kotlin {
                 sourceSets.commonMain.dependencies {
-                    implementation("org.jetbrains.kotlinx:atomicfu:0.22.0")
+                    implementation("org.jetbrains.kotlinx:atomicfu:0.25.0")
                 }
             }
         }

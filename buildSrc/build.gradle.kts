@@ -21,12 +21,12 @@ repositories {
 }
 
 dependencies {
-    val kotlinVersion = "2.0.10-RC"
+    val kotlinVersion = "2.0.20"
     implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.11")
     implementation("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:$kotlinVersion")
     implementation(kotlin("gradle-plugin:$kotlinVersion"))
     implementation(kotlin("serialization:$kotlinVersion"))
-    implementation("com.android.tools.build:gradle:8.5.1")
+    implementation("com.android.tools.build:gradle:8.5.2")
     implementation("app.cash.sqldelight:gradle-plugin:2.0.2")
-    implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.23.2")
+    implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.25.0")
 }
