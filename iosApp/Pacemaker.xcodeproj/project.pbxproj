@@ -11,13 +11,9 @@
 		B07ED26029BF9C21008A106B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07ED25F29BF9C21008A106B /* ContentView.swift */; };
 		B07ED26229BF9C22008A106B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07ED26129BF9C22008A106B /* Assets.xcassets */; };
 		B07ED26529BF9C22008A106B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07ED26429BF9C22008A106B /* Preview Assets.xcassets */; };
-		FF3D6CAD5DC179096D34E0D4 /* libPods-Pacemaker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pacemaker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.release.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.release.xcconfig"; sourceTree = "<group>"; };
-		511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pacemaker.debug.xcconfig"; path = "Target Support Files/Pods-Pacemaker/Pods-Pacemaker.debug.xcconfig"; sourceTree = "<group>"; };
 		B071979C2AE9711E00E53800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B07ED25A29BF9C21008A106B /* Pacemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pacemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B07ED25D29BF9C21008A106B /* PacemakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerApp.swift; sourceTree = "<group>"; };
@@ -31,77 +27,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF3D6CAD5DC179096D34E0D4 /* libPods-Pacemaker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		60658279AC0A7A6AC483D624 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1AFD0559BA1AD7DBF1FAFE14 /* libPods-Pacemaker.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		75B3E0F5D5F59509048A1980 /* Target Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				75B3E21257C32531DC305639 /* PM */,
-				75B3E6AD3EBDD1159E736CB9 /* Pods-Pacemaker */,
-			);
-			path = "Target Support Files";
-			sourceTree = "<group>";
-		};
-		75B3E21257C32531DC305639 /* PM */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = PM;
-			sourceTree = "<group>";
-		};
-		75B3E6AD3EBDD1159E736CB9 /* Pods-Pacemaker */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Pods-Pacemaker";
-			sourceTree = "<group>";
-		};
-		75B3EAA887AB77F7E3B8E44F /* Local Podspecs */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Local Podspecs";
-			sourceTree = "<group>";
-		};
-		75B3EB14C3164D48B1E555D8 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				75B3ECF718073DE915A6DBF9 /* Headers */,
-				75B3EAA887AB77F7E3B8E44F /* Local Podspecs */,
-				75B3E0F5D5F59509048A1980 /* Target Support Files */,
-				511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */,
-				1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		75B3ECF718073DE915A6DBF9 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Headers;
-			sourceTree = "<group>";
-		};
 		B07ED25129BF9C21008A106B = {
 			isa = PBXGroup;
 			children = (
 				B07ED25C29BF9C21008A106B /* Pacemaker */,
 				B07ED25B29BF9C21008A106B /* Products */,
-				60658279AC0A7A6AC483D624 /* Frameworks */,
-				75B3EB14C3164D48B1E555D8 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,12 +76,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B07ED26829BF9C22008A106B /* Build configuration list for PBXNativeTarget "Pacemaker" */;
 			buildPhases = (
-				AA3495ADA9984FDA120BB08C /* [CP] Check Pods Manifest.lock */,
+				B0A5C0082CA1E1C6003D0856 /* Compile Kotlin */,
 				B07ED25629BF9C21008A106B /* Sources */,
 				B07ED25729BF9C21008A106B /* Frameworks */,
 				B07ED25829BF9C21008A106B /* Resources */,
-				90DB4FA7AA7DE12ACF36AE92 /* [CP] Embed Pods Frameworks */,
-				29269C111F7A0383A14CB54C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -203,41 +137,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		29269C111F7A0383A14CB54C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		90DB4FA7AA7DE12ACF36AE92 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pacemaker/Pods-Pacemaker-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AA3495ADA9984FDA120BB08C /* [CP] Check Pods Manifest.lock */ = {
+		B0A5C0082CA1E1C6003D0856 /* Compile Kotlin */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -245,19 +145,15 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "Compile Kotlin";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Pacemaker-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\npwd\n./gradlew :app:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -397,12 +293,11 @@
 		};
 		B07ED26929BF9C22008A106B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 511024E3D3C9A62BDCDD419A /* Pods-Pacemaker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Pacemaker/Preview Content\"";
 				DEVELOPMENT_TEAM = R58Q77NDGL;
@@ -428,8 +323,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-l\"c++\"",
-					"-framework",
-					"\"PM\"",
 					"-lsqlite3",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker;
@@ -445,12 +338,11 @@
 		};
 		B07ED26A29BF9C22008A106B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E9CE9C866240BA98D596615 /* Pods-Pacemaker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"Pacemaker/Preview Content\"";
 				DEVELOPMENT_TEAM = R58Q77NDGL;
 				ENABLE_PREVIEWS = YES;
@@ -475,8 +367,6 @@
 					"$(inherited)",
 					"-ObjC",
 					"-l\"c++\"",
-					"-framework",
-					"\"PM\"",
 					"-lsqlite3",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker;

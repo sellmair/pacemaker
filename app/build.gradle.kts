@@ -4,11 +4,11 @@
 import android.annotation.SuppressLint
 import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     id("pacemaker-application")
     id("org.jetbrains.compose")
-    kotlin("native.cocoapods")
     kotlin("plugin.compose")
 }
 
@@ -50,7 +50,7 @@ kotlin {
 
     sourceSets.androidMain.get().dependencies {
         /* androidx */
-        implementation("androidx.activity:activity-compose:1.9.0")
+        implementation("androidx.activity:activity-compose:1.9.2")
         implementation(compose.preview)
     }
 
@@ -62,19 +62,13 @@ kotlin {
     }
 
     sourceSets.getByName("androidInstrumentedTest").dependencies {
-        implementation("androidx.compose.ui:ui-test-junit4:1.6.8")
+        implementation("androidx.compose.ui:ui-test-junit4:1.7.2")
     }
+}
 
-    cocoapods {
-        version = "2024.2"
-        name = "PM"
-        podfile = project.file("../iosApp/Podfile")
-
-        framework {
-            homepage = "https://github.com/sellmair/pacemaker"
-            summary = "Application Framework"
-            baseName = "PM"
-            linkerOpts("-lsqlite3")
-        }
+kotlin.targets.withType<KotlinNativeTarget>().configureEach {
+    binaries.framework {
+        baseName = "LibPacemaker"
+        isStatic = true
     }
 }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import PM
+import LibPacemaker
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
