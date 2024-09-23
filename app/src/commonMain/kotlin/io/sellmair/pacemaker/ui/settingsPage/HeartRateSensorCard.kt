@@ -38,7 +38,7 @@ import io.sellmair.pacemaker.ui.widget.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.GradientBackdrop
 import io.sellmair.pacemaker.ui.widget.HeartRateScale
-import io.sellmair.pacemaker.utils.emit
+import io.sellmair.evas.emit
 import kotlinx.coroutines.FlowPreview
 import org.jetbrains.compose.resources.stringResource
 import pacemaker.app.generated.resources.Res

@@ -2,7 +2,10 @@ package io.sellmair.pacemaker
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import io.sellmair.pacemaker.utils.*
+import io.sellmair.evas.Event
+import io.sellmair.evas.State
+import io.sellmair.evas.collectEvents
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -18,7 +21,7 @@ sealed class MeColorIntent : Event {
 
 internal fun CoroutineScope.launchMeColorStateActor(
     settings: Settings
-) = launchStateProducer(MeColorState, coroutineContext = Dispatchers.Main.immediate) {
+) = launchState(MeColorState, context = Dispatchers.Main.immediate) {
     val initialHue = settings.storedUserHue ?: UserColors.defaultHue(settings.meId)
     MeColorState(UserColors.fromHue(initialHue)).emit()
 
@@ -28,12 +31,12 @@ internal fun CoroutineScope.launchMeColorStateActor(
     }
 }
 
-private const val hueSetingsKey = "me.hue"
+private const val hueSettingsKey = "me.hue"
 
 private var Settings.storedUserHue: Float?
-    get() = getFloatOrNull(hueSetingsKey)
+    get() = getFloatOrNull(hueSettingsKey)
     set(value) {
-        if (value != null) set(hueSetingsKey, value)
-        else remove(hueSetingsKey)
+        if (value != null) set(hueSettingsKey, value)
+        else remove(hueSettingsKey)
     }
   

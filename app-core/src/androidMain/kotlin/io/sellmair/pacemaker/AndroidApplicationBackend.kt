@@ -8,6 +8,7 @@ import android.os.IBinder
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
+import io.sellmair.evas.*
 import io.sellmair.pacemaker.ble.AndroidBle
 import io.sellmair.pacemaker.ble.Ble
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
@@ -24,7 +25,7 @@ import kotlin.coroutines.CoroutineContext
 
 class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus() +
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + Events() + States() +
             AndroidContextProvider(this)
 
     inner class MainServiceBinder(
@@ -34,13 +35,13 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         override val sessionService: SessionService,
         override val settings: Settings,
     ) : Binder(), ApplicationBackend {
-        override val eventBus get() = coroutineContext.eventBus
-        override val stateBus get() = coroutineContext.stateBus
+        override val events get() = coroutineContext.eventsOrThrow
+        override val states get() = coroutineContext.statesOrThrow
     }
 
-    override val eventBus: EventBus = coroutineContext.eventBus
+    override val events: Events = coroutineContext.eventsOrThrow
 
-    override val stateBus: StateBus = coroutineContext.stateBus
+    override val states: States = coroutineContext.statesOrThrow
 
     private val ble: Deferred<Ble> = async {
         AndroidBle(this@AndroidApplicationBackend) ?: never()

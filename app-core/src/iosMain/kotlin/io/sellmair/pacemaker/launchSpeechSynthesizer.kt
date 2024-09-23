@@ -2,7 +2,7 @@
 
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.evas.events
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

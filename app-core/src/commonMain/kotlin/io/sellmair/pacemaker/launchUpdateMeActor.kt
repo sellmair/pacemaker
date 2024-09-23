@@ -2,8 +2,8 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.collectEvents
+import io.sellmair.evas.Event
+import io.sellmair.evas.collectEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

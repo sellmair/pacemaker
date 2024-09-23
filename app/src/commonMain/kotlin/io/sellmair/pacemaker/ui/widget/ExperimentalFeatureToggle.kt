@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import io.sellmair.evas.compose.eventsOrNull
 import io.sellmair.pacemaker.ApplicationFeature
-import io.sellmair.pacemaker.ui.LocalEventBus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
@@ -18,7 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Modifier.experimentalFeatureToggle(): Modifier {
-    val eventBus = LocalEventBus.current
+    val eventBus = eventsOrNull()
     val coroutineScope = rememberCoroutineScope { eventBus ?: EmptyCoroutineContext }
     val experimentalFeatures = ApplicationFeature.entries.filter { !it.default }
 

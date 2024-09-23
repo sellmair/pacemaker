@@ -2,8 +2,8 @@ package io.sellmair.pacemaker.ui
 
 import io.sellmair.pacemaker.HeartRateUtteranceRequest
 import io.sellmair.pacemaker.UtteranceEvent
-import io.sellmair.pacemaker.utils.collectEventsAsync
-import io.sellmair.pacemaker.utils.emit
+import io.sellmair.evas.collectEventsAsync
+import io.sellmair.evas.emit
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.getString
 import pacemaker.app.generated.resources.*

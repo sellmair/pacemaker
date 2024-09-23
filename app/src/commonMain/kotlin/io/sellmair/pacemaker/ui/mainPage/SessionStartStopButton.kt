@@ -17,14 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.sellmair.evas.compose.*
 import io.sellmair.pacemaker.ActiveSessionIntent
 import io.sellmair.pacemaker.ActiveSessionState
 import io.sellmair.pacemaker.ApplicationFeature
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.ui.LocalEventBus
 import io.sellmair.pacemaker.ui.MeColor
-import io.sellmair.pacemaker.ui.collectAsState
-import io.sellmair.pacemaker.ui.get
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -34,12 +32,12 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SessionStartStopButton(modifier: Modifier = Modifier) {
-    val sessionsEnabled = ApplicationFeature.Sessions.state.get().collectAsState().value.enabled
+    val sessionsEnabled = ApplicationFeature.Sessions.state.composeValue().enabled
     if (!sessionsEnabled) return
 
-    val activeSessionState by ActiveSessionState.collectAsState()
+    val activeSessionState = ActiveSessionState.composeValue()
 
-    val eventBus = LocalEventBus.current
+    val eventBus = LocalEvents.current
     val coroutineScope = rememberCoroutineScope()
 
     SessionStartStopButton(

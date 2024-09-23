@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.model.User
@@ -7,6 +8,8 @@ import io.sellmair.pacemaker.utils.ConfigurationKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+
+val LocalSessionService = staticCompositionLocalOf<SessionService?> { null }
 
 interface SessionService {
     object SessionClock : ConfigurationKey.WithDefault<Clock> {

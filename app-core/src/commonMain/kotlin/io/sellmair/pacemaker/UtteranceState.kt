@@ -1,7 +1,7 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.get
+import io.sellmair.evas.State
+import io.sellmair.evas.value
 
 enum class UtteranceState : State {
     Silence, Warnings, All;
@@ -15,8 +15,8 @@ enum class UtteranceState : State {
 
         suspend fun shouldBeAnnounced(type: UtteranceEvent.Type): Boolean {
             return when (type) {
-                UtteranceEvent.Type.Info -> UtteranceState.get().value >= All
-                UtteranceEvent.Type.Warning -> UtteranceState.get().value >= Warnings
+                UtteranceEvent.Type.Info -> UtteranceState.value() >= All
+                UtteranceEvent.Type.Warning -> UtteranceState.value() >= Warnings
             }
         }
 

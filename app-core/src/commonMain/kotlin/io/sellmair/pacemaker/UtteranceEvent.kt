@@ -1,6 +1,6 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.utils.Event
+import io.sellmair.evas.Event
 
 data class UtteranceEvent(
     val type: Type,

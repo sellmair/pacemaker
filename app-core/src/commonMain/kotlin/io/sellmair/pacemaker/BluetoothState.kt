@@ -1,7 +1,7 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.evas.State
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +18,7 @@ data class BluetoothState(
     }
 }
 
-internal fun CoroutineScope.launchBluetoothStateActor(): Job = launchStateProducer(BluetoothState) {
+internal fun CoroutineScope.launchBluetoothStateActor(): Job = launchState(BluetoothState) {
     val isBluetoothEnabledFlow = flow {
         while (true) {
             val isBluetoothEnabled = isBluetoothEnabled()

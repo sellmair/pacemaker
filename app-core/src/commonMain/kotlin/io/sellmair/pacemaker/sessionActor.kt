@@ -1,11 +1,14 @@
 package io.sellmair.pacemaker
 
+import io.sellmair.evas.Event
+import io.sellmair.evas.State
+import io.sellmair.evas.collectEvents
+import io.sellmair.evas.launchState
 import io.sellmair.pacemaker.ActiveSessionIntent.Start
 import io.sellmair.pacemaker.ActiveSessionIntent.Stop
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -24,7 +27,7 @@ sealed interface ActiveSessionIntent : Event {
 
 internal fun CoroutineScope.launchSessionActor(
     userService: UserService, sessionService: SessionService
-) = launchStateProducer(ActiveSessionState) {
+) = launchState(ActiveSessionState) {
     var activeSession: ActiveSessionService? = null
     var activeSessionActor: Job? = null
 

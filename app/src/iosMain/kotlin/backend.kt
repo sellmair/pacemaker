@@ -6,7 +6,7 @@
 
     internal val backend by lazy {
         IosApplicationBackend().also { backend ->
-            val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main + backend.eventBus + backend.stateBus)
+            val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main + backend.events + backend.states)
             scope.launchFrontendServices()
         }
     }

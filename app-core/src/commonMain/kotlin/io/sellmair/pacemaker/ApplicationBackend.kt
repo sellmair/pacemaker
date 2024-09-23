@@ -1,10 +1,10 @@
 package io.sellmair.pacemaker
 
 import com.russhwolf.settings.Settings
+import io.sellmair.evas.Events
+import io.sellmair.evas.States
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
-import io.sellmair.pacemaker.utils.EventBus
-import io.sellmair.pacemaker.utils.StateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 
@@ -13,8 +13,8 @@ interface ApplicationBackend {
     val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
     val sessionService: SessionService
     val userService: UserService
-    val stateBus: StateBus
-    val eventBus: EventBus
+    val states: States
+    val events: Events
     val settings: Settings
 }
 

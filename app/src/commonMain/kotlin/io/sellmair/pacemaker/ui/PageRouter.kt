@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.ApplicationFeature
 
 @Composable
@@ -123,7 +124,7 @@ private fun PageWithAnimation(
 
 @Composable
 fun getEnabledPages(): List<Page> {
-    val sessionsEnabled = ApplicationFeature.Sessions.state.get().collectAsState().value.enabled
+    val sessionsEnabled = ApplicationFeature.Sessions.state.composeValue().enabled
     val pages = Page.entries.toMutableList()
     if (!sessionsEnabled) pages.remove(Page.TimelinePage)
     return pages

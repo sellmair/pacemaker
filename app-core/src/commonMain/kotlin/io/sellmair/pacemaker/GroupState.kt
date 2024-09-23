@@ -1,5 +1,6 @@
 package io.sellmair.pacemaker
 
+import io.sellmair.evas.*
 import io.sellmair.pacemaker.ActorIn.AddMeasurement
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
@@ -61,7 +62,7 @@ internal fun CoroutineScope.launchGroupStateActor(
     }
 
     /* Main actor */
-    launchStateProducer(GroupState.Key, actorContext) {
+    launchState(GroupState.Key, actorContext) {
         actorIn.consumeEach { event ->
             when (event) {
                 is AddMeasurement -> {
@@ -113,7 +114,7 @@ internal fun CoroutineScope.launchGroupStateActor(
 
     /* Listen for changes of the current users color */
     launch(actorContext) {
-        MeColorState.get().filterNotNull().collect { meColor ->
+        MeColorState.flow().filterNotNull().collect { meColor ->
             colors[meUserId.await()] = meColor.color
             actorIn.send(ActorIn.RecalculateGroup)
         }

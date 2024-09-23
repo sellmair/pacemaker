@@ -9,8 +9,8 @@ import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.evas.State
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +47,7 @@ data class HeartRateSensorState(
 internal fun CoroutineScope.launchHeartRateSensorStateActor(
     userService: UserService,
     bluetoothService: Deferred<HeartRateSensorBluetoothService>
-) = launchStateProducer(keepActive = 1.minutes) { key: HeartRateSensorState.Key ->
+) = launchState(keepActive = 1.minutes) { key: HeartRateSensorState.Key ->
     bluetoothService.await().withHeartRateSensor(key.sensorInfo.id) { sensor ->
         if (sensor == null) return@withHeartRateSensor key.default.emit()
 

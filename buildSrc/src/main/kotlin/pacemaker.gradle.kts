@@ -18,6 +18,7 @@ kotlin {
         implementation(Dependencies.kotlinxDatetime)
         implementation(Dependencies.kotlinxImmutable)
         implementation(Dependencies.composeRuntime(project))
+        implementation(Dependencies.evas)
     }
 
     sourceSets.commonTest.dependencies {

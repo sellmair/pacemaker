@@ -15,15 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.MeColorLight
-import io.sellmair.pacemaker.ui.collectAsState
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 
 @Composable
 fun MyStatusHeader() {
-    MyStatusHeader(MeState.collectAsState().value)
+    MyStatusHeader(MeState.composeValue())
 }
 
 

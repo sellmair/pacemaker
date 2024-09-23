@@ -3,14 +3,11 @@ package io.sellmair.pacemaker
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
+import io.sellmair.evas.*
 import io.sellmair.pacemaker.ble.AppleBle
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.sql.PacemakerDatabase
-import io.sellmair.pacemaker.utils.EventBus
-import io.sellmair.pacemaker.utils.StateBus
-import io.sellmair.pacemaker.utils.eventBus
-import io.sellmair.pacemaker.utils.stateBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,11 +17,11 @@ import kotlin.coroutines.CoroutineContext
 
 class IosApplicationBackend : ApplicationBackend, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + EventBus() + StateBus()
+    override val coroutineContext: CoroutineContext = Dispatchers.Main + SupervisorJob() + Events() + States()
 
-    override val eventBus: EventBus get() = coroutineContext.eventBus
+    override val events: Events get() = coroutineContext.eventsOrThrow
 
-    override val stateBus: StateBus = coroutineContext.stateBus
+    override val states: States = coroutineContext.statesOrThrow
 
     private val ble = AppleBle()
 

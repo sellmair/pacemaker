@@ -67,7 +67,7 @@ data class LoginState(val email: String, val password: String, val isLoggedIn: B
     }
 }
 
-fun CoroutineScope.launchLoginStateActor() = launchStateProducer(LoginState) {
+fun CoroutineScope.launchLoginStateActor() = launchState(LoginState) {
     var state = LoginState.default
 
     collectEventsAsync<EmailChangedEvent> {

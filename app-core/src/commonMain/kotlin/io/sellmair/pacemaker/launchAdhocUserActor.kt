@@ -4,10 +4,10 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.randomUserId
-import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.collectEvents
-import io.sellmair.pacemaker.utils.collectEventsAsync
-import io.sellmair.pacemaker.utils.events
+import io.sellmair.evas.Event
+import io.sellmair.evas.collectEvents
+import io.sellmair.evas.collectEventsAsync
+import io.sellmair.evas.Events
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

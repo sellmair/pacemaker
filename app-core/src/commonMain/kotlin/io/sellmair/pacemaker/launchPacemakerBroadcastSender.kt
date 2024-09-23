@@ -1,8 +1,9 @@
 package io.sellmair.pacemaker
 
+import io.sellmair.evas.flow
 import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.model.Hue
-import io.sellmair.pacemaker.utils.get
+import io.sellmair.evas.value
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -19,7 +20,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
 
     /* Broadcast changes to 'me' */
     launch {
-        MeState.get().mapNotNull { state -> state?.me }
+        MeState.flow().mapNotNull { state -> state?.me }
             .distinctUntilChanged()
             .conflate()
             .collect { me ->
@@ -31,7 +32,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
 
     /* Broadcast changes to 'heartRateLimit' */
     launch {
-        MeState.get().mapNotNull { state -> state?.heartRateLimit }
+        MeState.flow().mapNotNull { state -> state?.heartRateLimit }
             .sample(32.milliseconds)
             .distinctUntilChanged()
             .conflate()
@@ -44,7 +45,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
 
     /* Broadcast changes to 'heartRate' */
     launch {
-        MeState.get().mapNotNull { state -> state?.heartRate }
+        MeState.flow().mapNotNull { state -> state?.heartRate }
             .sample(32.milliseconds)
             .distinctUntilChanged()
             .conflate()
@@ -57,7 +58,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
 
     /* Broadcast my current color */
     launch {
-        MeColorState.get().mapNotNull { state -> state?.color }
+        MeColorState.flow().mapNotNull { state -> state?.color }
             .sample(32.milliseconds)
             .distinctUntilChanged()
             .conflate()
@@ -73,7 +74,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
         while (isActive) {
             delay(15.seconds)
 
-            MeState.get().value?.let { state ->
+            MeState.value()?.let { state ->
                 pacemakerBluetoothService.await().write {
                     setUser(state.me)
                     setHeartRateLimit(state.heartRateLimit)
@@ -81,7 +82,7 @@ internal fun CoroutineScope.launchPacemakerBroadcastSender(
                 }
             }
 
-            MeColorState.get().value?.let { state ->
+            MeColorState.value()?.let { state ->
                 pacemakerBluetoothService.await().write {
                     setColorHue(Hue.safe(state.color.hue))
                 }

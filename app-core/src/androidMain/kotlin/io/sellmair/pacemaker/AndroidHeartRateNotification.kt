@@ -14,8 +14,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import io.sellmair.app.core.R
+import io.sellmair.evas.flow
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.utils.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -84,7 +84,7 @@ class AndroidHeartRateNotification(private val service: Service) {
                 service, notificationId, createDefaultNotification().build(), foregroundServiceType
             )
 
-            MeState.get().filterNotNull().collect { meState ->
+            MeState.flow().filterNotNull().collect { meState ->
                 update(
                     meState.heartRate ?: return@collect,
                     meState.heartRateLimit

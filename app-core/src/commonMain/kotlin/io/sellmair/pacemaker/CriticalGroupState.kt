@@ -1,9 +1,8 @@
 package io.sellmair.pacemaker
 
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.emit
-import io.sellmair.pacemaker.utils.get
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.evas.State
+import io.sellmair.evas.collect
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 
 data class CriticalGroupState(val criticalMembers: List<UserState>) : State {
@@ -12,8 +11,8 @@ data class CriticalGroupState(val criticalMembers: List<UserState>) : State {
     }
 }
 
-internal fun CoroutineScope.launchCriticalGroupStateActor() = launchStateProducer(CriticalGroupState) {
-    GroupState.get().collect { groupState ->
+internal fun CoroutineScope.launchCriticalGroupStateActor() = launchState(CriticalGroupState) {
+    GroupState.collect { groupState ->
         val criticalMembers = groupState.members.filter { userState ->
             val heartRateLimit = userState.heartRateLimit ?: return@filter false
             userState.heartRate > heartRateLimit

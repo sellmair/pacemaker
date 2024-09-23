@@ -19,7 +19,7 @@ import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.nameAbbreviation
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.widget.*
-import io.sellmair.pacemaker.utils.emit
+import io.sellmair.evas.emit
 
 @Composable
 internal fun SettingsPageHeader(me: User) {
