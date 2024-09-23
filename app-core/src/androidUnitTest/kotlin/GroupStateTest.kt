@@ -1,3 +1,9 @@
+import io.sellmair.evas.Events
+import io.sellmair.evas.States
+import io.sellmair.evas.collect
+import io.sellmair.evas.emit
+import io.sellmair.evas.flow
+import io.sellmair.evas.value
 import io.sellmair.pacemaker.*
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
@@ -9,7 +15,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.*
 import kotlinx.datetime.Clock
 import utils.createInMemoryDatabase
-import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
@@ -27,11 +32,10 @@ class GroupStateTest {
         HeartRateMeasurementEvent(HeartRate(128f), meSensorId, Clock.System.now()).emit()
 
         launch {
-            GroupState.get().collect { println("(${testScheduler.currentTime}ms) s: $it") }
+            GroupState.collect { println("(${testScheduler.currentTime}ms) s: $it") }
         }
 
-
-        val state = GroupState.get().first { it.members.isNotEmpty() }
+        val state = GroupState.flow().first { it.members.isNotEmpty() }
         println("(${testScheduler.currentTime}ms) Received first state with non-empty members")
 
         assertEquals(
@@ -51,12 +55,12 @@ class GroupStateTest {
 
         println("(${testScheduler.currentTime}ms) Testing current state value...")
         assertEquals(
-            state, GroupState.get().value,
+            state, GroupState.value(),
             "(${testScheduler.currentTime}ms) Expect the current value of 'GroupState' to be the recently emitted state"
         )
 
         println("(${testScheduler.currentTime}ms) Waiting until the Group state resets..")
-        GroupState.get().first { it == GroupState.default }
+        GroupState.flow().first { it == GroupState.default }
 
         println("(${testScheduler.currentTime}ms) Group state was reset!")
         assertEquals(
@@ -66,7 +70,7 @@ class GroupStateTest {
         )
     }
 
-    private fun test(block: suspend TestScope.() -> Unit) = runTest(EventBus() + StateBus()) {
+    private fun test(block: suspend TestScope.() -> Unit) = runTest(Events() + States()) {
         try {
             launchGroupStateActor(userService, actorContext = currentCoroutineContext())
             block()

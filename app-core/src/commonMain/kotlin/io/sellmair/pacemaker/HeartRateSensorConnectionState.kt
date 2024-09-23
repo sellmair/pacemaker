@@ -8,10 +8,10 @@ import io.sellmair.pacemaker.bluetooth.HeartRateSensor
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRateSensorId
-import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.collectEventsAsync
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.evas.Event
+import io.sellmair.evas.State
+import io.sellmair.evas.collectEventsAsync
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +46,7 @@ sealed class HeartRateSensorConnectionIntent : Event {
 internal fun CoroutineScope.launchHeartRateSensorConnectionStateActor(
     userService: UserService,
     bluetoothService: Deferred<HeartRateSensorBluetoothService>
-) = launchStateProducer(Dispatchers.Main.immediate, keepActive = 1.minutes) { key: HeartRateSensorConnectionState.Key ->
+) = launchState(Dispatchers.Main.immediate, keepActive = 1.minutes) { key: HeartRateSensorConnectionState.Key ->
     bluetoothService.await().withHeartRateSensor(key.sensorId) { sensor ->
         if (sensor == null) return@withHeartRateSensor
         launchHeartRateSensorConnectionIntentActor(userService, sensor)

@@ -22,10 +22,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
+import io.sellmair.evas.compose.LocalEvents
+import io.sellmair.evas.compose.LocalStates
 import io.sellmair.pacemaker.ui.ApplicationWindow
-import io.sellmair.pacemaker.ui.LocalEventBus
-import io.sellmair.pacemaker.ui.LocalSessionService
-import io.sellmair.pacemaker.ui.LocalStateBus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,8 +62,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             val backend = mainServiceConnection.backend.collectAsState().value
             if (backend != null) {
                 CompositionLocalProvider(
-                    LocalStateBus provides backend.stateBus,
-                    LocalEventBus provides backend.eventBus,
+                    LocalStates provides backend.states,
+                    LocalEvents provides backend.events,
                     LocalSessionService provides backend.sessionService
                 ) {
                     ApplicationWindow()
@@ -113,7 +112,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is AndroidApplicationBackend.MainServiceBinder) {
                 this._backend.value = service
-                val coroutineContext = SupervisorJob() + Dispatchers.Main + service.eventBus + service.stateBus
+                val coroutineContext = SupervisorJob() + Dispatchers.Main + service.events + service.states
                 CoroutineScope(coroutineContext).launchFrontendServices()
                 this.coroutineContext = coroutineContext
             }

@@ -1,11 +1,11 @@
 package io.sellmair.pacemaker
 
+import io.sellmair.evas.State
+import io.sellmair.evas.collectEventsAsync
+import io.sellmair.evas.launchState
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.collectEvents
-import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -33,15 +33,14 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
     val valuesChannel = Channel<Values>()
 
     /* Collect measurements */
-    launch {
-        collectEvents<HeartRateMeasurementEvent> { measurement ->
-            val user = userService.findUser(measurement.sensorId)
-            val me = userService.me()
-            if (user?.id == me.id) {
-                valuesChannel.send(Values(me = me, heartRate = measurement.heartRate))
-            }
+    collectEventsAsync<HeartRateMeasurementEvent> { measurement ->
+        val user = userService.findUser(measurement.sensorId)
+        val me = userService.me()
+        if (user?.id == me.id) {
+            valuesChannel.send(Values(me = me, heartRate = measurement.heartRate))
         }
     }
+
 
     /* Collect changes to HR limit */
     launch {
@@ -59,7 +58,7 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
 
 
     /* Update MeState */
-    launchStateProducer(MeState) {
+    launchState(MeState) {
         var values = Values(me = userService.me())
 
         valuesChannel.consumeEach { update ->

@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.SessionsState
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.ui.collectAsState
 import io.sellmair.pacemaker.ui.widget.Headline
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -25,7 +25,7 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun TimelinePage() {
-    val sessions = SessionsState.collectAsState().value.sessions
+    val sessions = SessionsState.composeValue().sessions
     TimelinePage(sessions)
 }
 

@@ -2,6 +2,9 @@ package io.sellmair.pacemaker.ui
 
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
+import io.sellmair.evas.compose.LocalEvents
+import io.sellmair.evas.compose.LocalStates
+import io.sellmair.pacemaker.LocalSessionService
 import io.sellmair.pacemaker.backend
 
 
@@ -9,8 +12,8 @@ import io.sellmair.pacemaker.backend
 object IosPacemakerViewController {
     fun create() = ComposeUIViewController {
         CompositionLocalProvider(
-            LocalEventBus provides backend.eventBus,
-            LocalStateBus provides backend.stateBus,
+            LocalEvents provides backend.events,
+            LocalStates provides backend.states,
             LocalSessionService provides backend.sessionService
         ) {
             ApplicationWindow()

@@ -6,7 +6,7 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
-import io.sellmair.pacemaker.utils.collectEvents
+import io.sellmair.evas.collectEvents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

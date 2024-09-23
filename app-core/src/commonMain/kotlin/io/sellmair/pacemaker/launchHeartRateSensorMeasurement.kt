@@ -5,7 +5,7 @@ package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.toEvent
-import io.sellmair.pacemaker.utils.emit
+import io.sellmair.evas.emit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi

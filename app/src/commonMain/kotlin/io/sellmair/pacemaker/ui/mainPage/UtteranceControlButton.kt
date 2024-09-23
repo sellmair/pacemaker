@@ -17,21 +17,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.sellmair.evas.compose.EvasLaunching
+import io.sellmair.evas.compose.composeState
+import io.sellmair.evas.set
 import io.sellmair.pacemaker.UtteranceState
-import io.sellmair.pacemaker.ui.LocalStateBus
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.MeColorLight
-import io.sellmair.pacemaker.ui.collectAsState
 
 @Composable
 fun UtteranceControlButton(modifier: Modifier = Modifier) {
-    val utteranceState by UtteranceState.collectAsState()
-    val stateBus = LocalStateBus.current
+    val utteranceState by UtteranceState.composeState()
     UtteranceControlButton(
         state = utteranceState,
         modifier = modifier,
-        onClick = {
-            stateBus?.setState(UtteranceState, utteranceState.next())
+        onClick = EvasLaunching {
+            UtteranceState.set(utteranceState.next())
         },
     )
 }

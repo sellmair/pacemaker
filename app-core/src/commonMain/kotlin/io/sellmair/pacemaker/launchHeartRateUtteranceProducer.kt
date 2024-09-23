@@ -1,9 +1,9 @@
 package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.model.HeartRate
-import io.sellmair.pacemaker.utils.Event
-import io.sellmair.pacemaker.utils.emit
-import io.sellmair.pacemaker.utils.get
+import io.sellmair.evas.Event
+import io.sellmair.evas.collect
+import io.sellmair.evas.emit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,7 +57,7 @@ internal fun CoroutineScope.launchHeartRateUtteranceProducer() = launch {
     }
 
     /* Collect critical member states */
-    GroupState.get().collect { state ->
+    GroupState.collect { state ->
         group = state
         criticalUserStates = state.members.filter { memberState ->
             val currentHeartRate = memberState.heartRate

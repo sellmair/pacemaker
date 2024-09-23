@@ -4,7 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import io.sellmair.pacemaker.HSLColor
+import io.sellmair.evas.compose.composeFlow
+import io.sellmair.evas.flow
 import io.sellmair.pacemaker.MeColorState
 import io.sellmair.pacemaker.UserColors
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,7 +36,7 @@ fun MeColorWhite() = PacemakerTheme().meColorWhite
 
 @Composable
 fun PacemakerTheme(content: @Composable () -> Unit) {
-    val pacemakerTheme by MeColorState.get().filterNotNull()
+    val pacemakerTheme by MeColorState.composeFlow().filterNotNull()
         .map { state ->
             PacemakerThemeImpl(
                 meColor = state.color.toColor(),

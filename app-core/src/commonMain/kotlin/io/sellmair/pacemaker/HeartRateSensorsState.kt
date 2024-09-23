@@ -1,11 +1,11 @@
 package io.sellmair.pacemaker
 
 import androidx.compose.runtime.Immutable
+import io.sellmair.evas.State
+import io.sellmair.evas.launchState
 import io.sellmair.pacemaker.bluetooth.HeartRateSensorBluetoothService
 import io.sellmair.pacemaker.bluetooth.toHeartRateSensorId
 import io.sellmair.pacemaker.model.HeartRateSensorId
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.launchStateProducer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.emitAll
@@ -27,7 +27,7 @@ data class HeartRateSensorsState(val nearbySensors: List<HeartRateSensorInfo>) :
 
 internal fun CoroutineScope.launchHeartRateSensorsStateActor(
     bluetoothService: Deferred<HeartRateSensorBluetoothService>
-) = launchStateProducer(HeartRateSensorsState) {
+) = launchState(HeartRateSensorsState) {
     emitAll(bluetoothService.await()
         .allSensorsNearby
         .map { sensors ->

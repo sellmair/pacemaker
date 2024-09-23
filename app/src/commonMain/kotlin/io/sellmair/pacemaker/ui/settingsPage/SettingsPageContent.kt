@@ -1,4 +1,3 @@
-
 package io.sellmair.pacemaker.ui.settingsPage
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -8,19 +7,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.HeartRateSensorConnectionState
 import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.HeartRateSensorsState
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.MeColor
-import io.sellmair.pacemaker.ui.get
 import org.jetbrains.compose.resources.stringResource
 import pacemaker.app.generated.resources.Res
 import pacemaker.app.generated.resources.nearby_heart_rate_sensors
@@ -100,8 +97,10 @@ internal fun SettingsPageDevicesList(
             }
 
             items(heartRateSensors, key = { it.id.value }) { sensor ->
-                val sensorState by HeartRateSensorState.Key(sensor).get().collectAsState()
-                val sensorConnectionState = HeartRateSensorConnectionState.Key(sensor.id).get().collectAsState().value ?: return@items
+                val sensorState = HeartRateSensorState.Key(sensor).composeValue()
+
+                val sensorConnectionState = HeartRateSensorConnectionState.Key(sensor.id).composeValue()
+                sensorConnectionState ?: return@items
 
                 Box(
                     modifier = Modifier.padding(24.dp).animateItemPlacement()

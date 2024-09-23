@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+
 plugins {
     id("pacemaker-library")
 }
@@ -15,5 +17,14 @@ pacemaker {
 
     features {
         useAtomicFu()
+    }
+}
+
+kotlin {
+    androidTarget {
+        @Suppress("OPT_IN_USAGE")
+        instrumentedTestVariant {
+            sourceSetTree = KotlinSourceSetTree.test
+        }
     }
 }

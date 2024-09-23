@@ -11,5 +11,7 @@ object Dependencies {
     const val kotlinxImmutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
     const val multiplatformSettings = "com.russhwolf:multiplatform-settings:1.1.1"
     const val androidXCoreKtx = "androidx.core:core-ktx:1.13.1"
+    const val evas = "io.sellmair:evas:1.0.0-RC.2"
+    const val evasCompose = "io.sellmair:evas-compose:1.0.0-RC.2"
     fun composeRuntime(project: Project) = ComposePlugin.Dependencies(project).runtime
 }

@@ -4,7 +4,7 @@ import io.sellmair.pacemaker.bluetooth.PacemakerBluetoothService
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
 import io.sellmair.pacemaker.bluetooth.broadcastPackages
 import io.sellmair.pacemaker.model.User
-import io.sellmair.pacemaker.utils.emit
+import io.sellmair.evas.emit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.conflate

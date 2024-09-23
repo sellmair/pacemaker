@@ -2,7 +2,7 @@ package io.sellmair.pacemaker
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.set
-import io.sellmair.pacemaker.utils.*
+import io.sellmair.evas.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.time.Duration.Companion.INFINITE
@@ -45,7 +45,7 @@ sealed class ApplicationFeatureEvent : Event {
     data class Toggle(val feature: ApplicationFeature) : ApplicationFeatureEvent()
 }
 
-internal fun CoroutineScope.launchApplicationFeatureActor(settings: Settings) = launchStateProducer(
+internal fun CoroutineScope.launchApplicationFeatureActor(settings: Settings) = launchState(
     coroutineContext = Dispatchers.Main.immediate,
     keepActive = INFINITE
 ) { key: ApplicationFeatureState.Key ->

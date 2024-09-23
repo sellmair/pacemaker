@@ -1,8 +1,9 @@
 package io.sellmair.pacemaker
 
 import io.sellmair.pacemaker.model.Session
-import io.sellmair.pacemaker.utils.State
-import io.sellmair.pacemaker.utils.launchStateProducer
+import io.sellmair.evas.State
+import io.sellmair.evas.StateProducerStarted
+import io.sellmair.evas.launchState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
@@ -16,8 +17,8 @@ data class SessionsState(val sessions: List<Session>) : State {
     }
 }
 
-internal fun CoroutineScope.launchSessionStateActor(sessionService: SessionService): Job = launchStateProducer(
-    SessionsState.Key, started = Lazily
+internal fun CoroutineScope.launchSessionStateActor(sessionService: SessionService): Job = launchState(
+    SessionsState.Key, started = StateProducerStarted.Lazily
 ) {
     val sessionsStateFlow = sessionService.sessionsFlow
         .map { sessionServices -> sessionServices.map { it.session }.sortedBy { it.startTime } }

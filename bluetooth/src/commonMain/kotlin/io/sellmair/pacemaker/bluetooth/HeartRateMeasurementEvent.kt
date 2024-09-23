@@ -1,8 +1,8 @@
 package io.sellmair.pacemaker.bluetooth
 
+import io.sellmair.evas.Event
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
-import io.sellmair.pacemaker.utils.Event
 import kotlinx.datetime.Instant
 
 data class HeartRateMeasurementEvent(

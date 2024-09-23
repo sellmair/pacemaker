@@ -5,7 +5,7 @@ import android.os.CombinedVibration
 import android.os.VibrationEffect
 import android.os.VibratorManager
 import androidx.core.content.getSystemService
-import io.sellmair.pacemaker.utils.get
+import io.sellmair.evas.value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -16,7 +16,7 @@ internal fun CoroutineScope.launchVibrationWarningActor(context: Context) = laun
     val vibratorManager = context.getSystemService<VibratorManager>() ?: return@launch
     while (isActive) {
         delay(1.seconds)
-        if (CriticalGroupState.get().value != null && UtteranceState.get().value >= UtteranceState.Warnings) {
+        if (CriticalGroupState.value() != null && UtteranceState.value() >= UtteranceState.Warnings) {
             vibratorManager.vibrate(
                 CombinedVibration.createParallel(
                     VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
