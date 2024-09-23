@@ -21,8 +21,8 @@ extensions.configure(ApplicationExtension::class) {
     namespace = "io.sellmair.pacemaker"
 
     defaultConfig {
-        versionName = "2024.1"
-        versionCode = 14
+        versionName = "2024.2"
+        versionCode = 15
     }
 }
 
@@ -66,7 +66,7 @@ kotlin {
     }
 
     cocoapods {
-        version = "2023.1"
+        version = "2024.2"
         name = "PM"
         podfile = project.file("../iosApp/Podfile")
 
