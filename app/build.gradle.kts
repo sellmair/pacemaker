@@ -21,8 +21,8 @@ extensions.configure(ApplicationExtension::class) {
     namespace = "io.sellmair.pacemaker"
 
     defaultConfig {
-        versionName = "2024.2"
-        versionCode = 15
+        versionName = "2025.1"
+        versionCode = 17
     }
 }
 
