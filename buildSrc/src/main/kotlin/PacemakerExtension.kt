@@ -43,7 +43,7 @@ class PacemakerExtension(
             namespace = "io.sellmair.${project.name.replace("-", ".")}"
             defaultConfig {
                 minSdk = 31
-                targetSdk = 34
+                targetSdk = 35
             }
 
             if (this is ApplicationExtension) {
@@ -130,7 +130,7 @@ class PacemakerExtension(
             project.plugins.apply("org.jetbrains.kotlinx.atomicfu")
             kotlin {
                 sourceSets.commonMain.dependencies {
-                    implementation("org.jetbrains.kotlinx:atomicfu:0.25.0")
+                    implementation("org.jetbrains.kotlinx:atomicfu:0.26.1")
                 }
             }
         }
