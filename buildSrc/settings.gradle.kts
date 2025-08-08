@@ -18,5 +18,7 @@ dependencyResolutionManagement {
                 includeGroupByRegex(".*android.*")
             }
         }
+        maven("https://repo.sellmair.io")
     }
+
 }

@@ -6,6 +6,7 @@ pacemaker {
     android()
     ios()
     macos()
+    jvm()
 }
 
 kotlin {

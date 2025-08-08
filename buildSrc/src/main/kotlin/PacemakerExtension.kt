@@ -1,4 +1,3 @@
-
 import app.cash.sqldelight.gradle.SqlDelightExtension
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.gradle.BaseExtension
@@ -103,22 +102,24 @@ class PacemakerExtension(
             project.plugins.apply("app.cash.sqldelight")
             kotlin {
                 sourceSets.commonMain.dependencies {
-                    implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+                    implementation(Dependencies.sqldelight_coroutineExtensions)
                 }
 
                 sourceSets.androidMain.dependencies {
-                    implementation("app.cash.sqldelight:android-driver:2.0.2")
+                    implementation(Dependencies.sqldelight_androidDriver)
                 }
 
                 sourceSets.getByName("androidUnitTest").dependencies {
-                    implementation("app.cash.sqldelight:sqlite-driver:2.0.2")
+                    implementation(Dependencies.sqldelight_sqliteDriver)
                 }
 
                 sourceSets.nativeMain.dependencies {
-                    implementation("app.cash.sqldelight:native-driver:2.0.2")
+                    implementation(Dependencies.sqldelight_nativeDriver)
                 }
 
-
+                sourceSets.jvmMain.dependencies {
+                    implementation(Dependencies.sqldelight_sqliteDriver)
+                }
             }
 
             project.extensions.configure(SqlDelightExtension::class.java) {

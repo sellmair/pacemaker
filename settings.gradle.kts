@@ -5,6 +5,8 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven("https://repo.sellmair.io")
+
     }
 }
 
@@ -36,6 +38,7 @@ dependencyResolutionManagement {
             }
         }
 
+        maven("https://repo.sellmair.io")
     }
 }
 

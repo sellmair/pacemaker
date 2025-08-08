@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 

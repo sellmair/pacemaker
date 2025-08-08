@@ -5,9 +5,10 @@ plugins {
 }
 
 dependencies {
-    implementation(deps.compose.gradlePlugin)
-    implementation(deps.kotlin.composeCompilerPlugin)
     implementation(deps.kotlin.gradlePlugin)
+    implementation(deps.kotlin.composeCompilerPlugin)
+    implementation(deps.compose.gradlePlugin)
+    implementation(deps.compose.hotReload.gradlePlugin)
     implementation(deps.android.gradlePlugin)
     implementation(deps.sqldelight.gradlePlugin)
     implementation(deps.atomicFu.gradlePlugin)

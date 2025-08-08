@@ -7,14 +7,16 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    id("pacemaker-application")
-    id("org.jetbrains.compose")
-    kotlin("plugin.compose")
+    `pacemaker-application`
+    org.jetbrains.compose
+    org.jetbrains.kotlin.plugin.compose
+    id("org.jetbrains.compose.hot-reload")
 }
 
 pacemaker {
     ios()
     android()
+    jvm()
 }
 
 extensions.configure(ApplicationExtension::class) {
@@ -46,6 +48,11 @@ kotlin {
         implementation(compose.material3)
         implementation(compose.materialIconsExtended)
 
+    }
+
+    sourceSets.jvmMain.dependencies {
+        implementation(compose.desktop.currentOs)
+        implementation(deps.coroutines.swing)
     }
 
     sourceSets.androidMain.get().dependencies {

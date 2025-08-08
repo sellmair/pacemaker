@@ -6,6 +6,7 @@ plugins {
 pacemaker {
     ios()
     android()
+    jvm()
 
     features {
         useSqlDelight {

@@ -4,6 +4,7 @@
 kotlin = "2.2.0"
 agp = "8.11.1"
 compose = "1.8.2"
+composeHotReload = "1.0.0-beta06"
 coroutines = "1.10.1"
 okio = "3.10.2"
 kotlinxDatetime = "0.7.1"
@@ -20,13 +21,19 @@ androidxActivityCompose = "1.9.3"
 # kotlinx-coroutines
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+
 sqldelight-gradlePlugin = { module = "app.cash.sqldelight:gradle-plugin", version.ref = "sqldelight" }
+sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight"}
+sqldelight-sqliteDriver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight"}
+sqldelight-nativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight"}
+sqldelight-coroutineExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight"}
 
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCoreKtx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
@@ -39,4 +46,5 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 kotlin-composeCompilerPlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
+compose-hotReload-gradlePlugin = { module = "org.jetbrains.compose.hot-reload:hot-reload-gradle-plugin", version.ref = "composeHotReload" }
 atomicFu-gradlePlugin = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "atomicFu" }
