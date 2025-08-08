@@ -4,14 +4,14 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.value
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 internal class SqlActiveSessionService(
     override val session: Session,
     private val database: SafePacemakerDatabase
 ) : ActiveSessionService {
 
-    override suspend fun stop() = database {
+    override suspend fun stop(): Unit = database {
         sessionQueries.endSession(SessionService.SessionClock.value().now().toString(), session.id.value)
     }
 
@@ -20,7 +20,7 @@ internal class SqlActiveSessionService(
         heartRate: HeartRate,
         heartRateLimit: HeartRate?,
         measurementTime: Instant
-    ) = database {
+    ): Unit = database {
         sessionQueries.saveHeartRateMeasurement(
             session_id = session.id.value,
             user_id = user.id.value,
@@ -30,4 +30,3 @@ internal class SqlActiveSessionService(
         )
     }
 }
-

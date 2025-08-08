@@ -39,7 +39,7 @@ class PacemakerExtension(
         project.plugins.apply(androidPluginId)
         kotlin.androidTarget()
         project.extensions.configure(BaseExtension::class) {
-            compileSdkVersion(34)
+            compileSdkVersion(35)
             namespace = "io.sellmair.${project.name.replace("-", ".")}"
             defaultConfig {
                 minSdk = 31
@@ -58,8 +58,8 @@ class PacemakerExtension(
 
         kotlin.apply {
             sourceSets.androidMain.dependencies {
-                implementation(Dependencies.coroutinesAndroid)
-                implementation(Dependencies.androidXCoreKtx)
+                implementation(Dependencies.coroutines_android)
+                implementation(Dependencies.androidx_core_ktx)
             }
         }
     }
@@ -128,11 +128,6 @@ class PacemakerExtension(
 
         fun useAtomicFu() {
             project.plugins.apply("org.jetbrains.kotlinx.atomicfu")
-            kotlin {
-                sourceSets.commonMain.dependencies {
-                    implementation("org.jetbrains.kotlinx:atomicfu:0.26.1")
-                }
-            }
         }
     }
 

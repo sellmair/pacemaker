@@ -9,6 +9,12 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    versionCatalogs.register("deps") {
+        from(files("dependencies.toml"))
+    }
+}
+
+dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google {

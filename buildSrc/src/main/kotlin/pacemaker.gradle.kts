@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -6,18 +7,18 @@ plugins {
 
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 
     sourceSets.commonMain.dependencies {
         if (project.name != "utils") {
             implementation(project(":utils"))
         }
 
-        implementation(Dependencies.coroutinesCore)
+        implementation(Dependencies.coroutines_core)
         implementation(Dependencies.okio)
-        implementation(Dependencies.kotlinxDatetime)
-        implementation(Dependencies.kotlinxImmutable)
-        implementation(Dependencies.composeRuntime(project))
+        implementation(Dependencies.kotlinx_datetime)
+        implementation(Dependencies.kotlinx_collections_immutable)
+        implementation(ComposePlugin.Dependencies(project).runtime)
         implementation(Dependencies.evas)
     }
 
@@ -25,13 +26,14 @@ kotlin {
         implementation(kotlin("test"))
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
-        implementation(Dependencies.coroutinesTest)
+        implementation(Dependencies.coroutines_test)
     }
 
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
+        optIn.add("kotlin.time.ExperimentalTime")
     }
 }
 

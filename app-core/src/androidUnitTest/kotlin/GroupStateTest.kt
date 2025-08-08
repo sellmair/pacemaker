@@ -1,23 +1,21 @@
-import io.sellmair.evas.Events
-import io.sellmair.evas.States
-import io.sellmair.evas.collect
-import io.sellmair.evas.emit
-import io.sellmair.evas.flow
-import io.sellmair.evas.value
+import io.sellmair.evas.*
 import io.sellmair.pacemaker.*
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.utils.*
-import kotlinx.coroutines.*
+import io.sellmair.pacemaker.utils.value
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.*
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import utils.createInMemoryDatabase
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.time.Clock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GroupStateTest {

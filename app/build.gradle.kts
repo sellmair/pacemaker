@@ -34,7 +34,7 @@ kotlin {
     sourceSets.commonMain.get().dependencies {
         implementation(project(":app-core"))
 
-        implementation(Dependencies.evasCompose)
+        implementation(deps.evas.compose)
 
         /* COMPOSE */
         implementation(compose.ui)

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 interface HeartRateSensorBluetoothService {
     val newSensorsNearby: SharedFlow<HeartRateSensor>
@@ -88,4 +88,3 @@ private class HeartRateSensorImpl(
         return (byte1.toInt() shl 8 or byte2.toInt()).toUShort()
     }
 }
-

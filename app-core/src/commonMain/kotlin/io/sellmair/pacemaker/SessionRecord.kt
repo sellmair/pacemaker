@@ -3,7 +3,7 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.SessionId
 import io.sellmair.pacemaker.model.UserId
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class SessionRecord(
     val sessionId: SessionId,

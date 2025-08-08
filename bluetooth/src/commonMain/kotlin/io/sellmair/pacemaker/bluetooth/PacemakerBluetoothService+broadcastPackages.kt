@@ -19,8 +19,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.datetime.Clock
-import okio.Buffer
+import kotlin.time.Clock
 
 fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
     return newConnections.flatMapMerge { connection -> connection.broadcastPackages() }

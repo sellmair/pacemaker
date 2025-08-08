@@ -1,16 +1,20 @@
-import org.gradle.api.Project
-import org.jetbrains.compose.ComposePlugin
-
+@Suppress("unused")
 object Dependencies {
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1"
-    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1"
-    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1"
-    const val okio = "com.squareup.okio:okio:3.9.0"
-    const val kotlinxDatetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.1"
-    const val kotlinxImmutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.8"
-    const val multiplatformSettings = "com.russhwolf:multiplatform-settings:1.3.0"
-    const val androidXCoreKtx = "androidx.core:core-ktx:1.13.1"
-    const val evas = "io.sellmair:evas:1.2.0"
-    const val evasCompose = "io.sellmair:evas-compose:1.2.0"
-    fun composeRuntime(project: Project) = ComposePlugin.Dependencies(project).runtime
+    const val android_gradlePlugin = "com.android.tools.build:gradle:8.11.1"
+    const val androidx_activity_compose = "androidx.activity:activity-compose:1.9.3"
+    const val androidx_core_ktx = "androidx.core:core-ktx:1.13.1"
+    const val atomicFu_gradlePlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.29.0"
+    const val compose_gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:1.8.2"
+    const val coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1"
+    const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1"
+    const val coroutines_test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1"
+    const val evas = "io.sellmair:evas:1.3.0"
+    const val evas_compose = "io.sellmair:evas-compose:1.3.0"
+    const val kotlin_composeCompilerPlugin = "org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.2.0"
+    const val kotlin_gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0"
+    const val kotlinx_collections_immutable = "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.4.0"
+    const val kotlinx_datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
+    const val multiplatform_settings = "com.russhwolf:multiplatform-settings:1.3.0"
+    const val okio = "com.squareup.okio:okio:3.10.2"
+    const val sqldelight_gradlePlugin = "app.cash.sqldelight:gradle-plugin:2.1.0"
 }

@@ -4,7 +4,7 @@ import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.Hue
 import io.sellmair.pacemaker.model.UserId
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class PacemakerBroadcastPackage(
     val receivedTime: Instant,

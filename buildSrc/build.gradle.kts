@@ -1,32 +1,49 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `kotlin-dsl`
 }
 
-repositories {
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
-        mavenContent {
-            includeGroupByRegex(".*compose.*")
-        }
-    }
-
-    google {
-        mavenContent {
-            includeGroupByRegex(".*google.*")
-            includeGroupByRegex(".*android.*")
-        }
-    }
-
-    mavenCentral()
-    gradlePluginPortal()
+dependencies {
+    implementation(deps.compose.gradlePlugin)
+    implementation(deps.kotlin.composeCompilerPlugin)
+    implementation(deps.kotlin.gradlePlugin)
+    implementation(deps.android.gradlePlugin)
+    implementation(deps.sqldelight.gradlePlugin)
+    implementation(deps.atomicFu.gradlePlugin)
 }
 
-dependencies {
-    val kotlinVersion = "2.1.0"
-    implementation("org.jetbrains.compose:compose-gradle-plugin:1.7.3")
-    implementation("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:$kotlinVersion")
-    implementation(kotlin("gradle-plugin:$kotlinVersion"))
-    implementation(kotlin("serialization:$kotlinVersion"))
-    implementation("com.android.tools.build:gradle:8.7.3")
-    implementation("app.cash.sqldelight:gradle-plugin:2.0.2")
-    implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.26.1")
+
+/*
+Make dependencies from the version catalog available in convention scripts and buildSrc!
+ */
+run {
+    tasks.register("generateDependencies") {
+        val output = file("src/main/kotlin/Dependencies.kt")
+        outputs.file(output)
+
+        val catalog = versionCatalogs.named("deps")
+        val libraries = catalog.libraryAliases.associateWith { alias ->
+            catalog.findLibrary(alias).get().get().toString()
+        }
+
+        inputs.property("libraries", libraries)
+
+        doFirst {
+            output.parentFile.mkdirs()
+            output.outputStream().bufferedWriter().use { writer ->
+                writer.appendLine("@Suppress(\"unused\")")
+                writer.appendLine("object Dependencies {")
+                libraries.forEach { (alias, notation) ->
+                    val escapedAlias = alias.replace(".", "_")
+                    writer.appendLine("    const val $escapedAlias = \"$notation\"")
+                }
+                writer.appendLine("}")
+            }
+        }
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        dependsOn("generateDependencies")
+    }
 }

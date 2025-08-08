@@ -18,7 +18,7 @@ import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.SessionsState
 import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.ui.widget.Headline
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -93,4 +93,3 @@ private fun Int.twoDigitString(): String {
     return if (this >= 10) this.toString()
     else "0$this"
 }
-

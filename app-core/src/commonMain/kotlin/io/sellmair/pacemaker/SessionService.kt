@@ -6,8 +6,8 @@ import io.sellmair.pacemaker.model.Session
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.utils.ConfigurationKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 val LocalSessionService = staticCompositionLocalOf<SessionService?> { null }
 

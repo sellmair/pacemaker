@@ -1,6 +1,6 @@
 package io.sellmair.pacemaker.model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class Session(
     val id: SessionId,

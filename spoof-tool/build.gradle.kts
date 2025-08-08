@@ -12,7 +12,7 @@ pacemaker {
 kotlin {
     sourceSets.getByName("commonMain").dependencies {
         implementation(project(":bluetooth"))
-        implementation(Dependencies.coroutinesCore)
+        implementation(Dependencies.coroutines_core)
         implementation(Dependencies.okio)
     }
 

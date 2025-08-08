@@ -103,7 +103,7 @@ internal fun SettingsPageDevicesList(
                 sensorConnectionState ?: return@items
 
                 Box(
-                    modifier = Modifier.padding(24.dp).animateItemPlacement()
+                    modifier = Modifier.padding(24.dp).animateItem()
                 ) {
                     HeartRateSensorCard(
                         me = me,

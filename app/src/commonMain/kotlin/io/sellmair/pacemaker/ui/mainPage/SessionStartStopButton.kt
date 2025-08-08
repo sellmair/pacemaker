@@ -26,7 +26,7 @@ import io.sellmair.pacemaker.ui.MeColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.toDateTimePeriod
 import kotlin.time.Duration.Companion.milliseconds
 

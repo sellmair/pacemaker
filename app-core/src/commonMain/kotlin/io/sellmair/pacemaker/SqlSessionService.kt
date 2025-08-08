@@ -9,7 +9,7 @@ import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 internal class SqlSessionService(private val database: SafePacemakerDatabase) : SessionService {
     override suspend fun createSession(): ActiveSessionService = database {
@@ -76,4 +76,3 @@ private fun Db_session.toSession() = Session(
     startTime = Instant.parse(start_time),
     endTime = end_time?.let { Instant.parse(end_time) }
 )
-
