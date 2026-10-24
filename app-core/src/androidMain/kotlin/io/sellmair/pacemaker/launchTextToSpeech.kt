@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
+import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.core.content.getSystemService
 import io.sellmair.evas.collectEvents
@@ -12,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import java.util.UUID
 
 internal fun CoroutineScope.launchTextToSpeech(context: Context) = launch {
     val textToSpeech = TextToSpeech(context) ?: return@launch
@@ -37,7 +39,7 @@ internal fun CoroutineScope.launchTextToSpeech(context: Context) = launch {
         val audioManager = context.getSystemService<AudioManager>()
 
         audioManager?.requestAudioFocus(focusRequest)
-        textToSpeech.speak(event.message, TextToSpeech.QUEUE_FLUSH, null)
+        textToSpeech.speak(event.message, TextToSpeech.QUEUE_FLUSH, Bundle(), UUID.randomUUID().toString())
 
         do {
             delay(100)

@@ -64,9 +64,15 @@ internal class AndroidCentralController(
         val scanSettings = ScanSettings.Builder()
             .build()
 
-        hardware.manager.adapter.bluetoothLeScanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
+        val scanner = hardware.manager.adapter.bluetoothLeScanner
+        if (scanner == null) {
+            log.error("Bluetooth LE scanner is unavailable")
+            return
+        }
+
+        scanner.startScan(listOf(scanFilter), scanSettings, scanCallback)
         scope.coroutineContext.job.invokeOnCompletion {
-            hardware.manager.adapter.bluetoothLeScanner.startScan(scanCallback)
+            scanner.stopScan(scanCallback)
         }
     }
 

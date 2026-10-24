@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattConnectionSettings
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.os.Build
@@ -74,7 +75,16 @@ internal class AndroidConnectableController(
             gatt?.close()
         }
 
-        gatt = hardware.device.connectGatt(hardware.context, false, hardware.callback, BluetoothDevice.TRANSPORT_LE)
+        gatt = if (Build.VERSION.SDK_INT >= 37) {
+            val settings = BluetoothGattConnectionSettings.Builder()
+                .setAutoConnectEnabled(false)
+                .setTransport(BluetoothDevice.TRANSPORT_LE)
+                .build()
+            hardware.device.connectGatt(settings, hardware.context.mainExecutor, hardware.callback)
+        } else {
+            @Suppress("DEPRECATION")
+            hardware.device.connectGatt(hardware.context, false, hardware.callback, BluetoothDevice.TRANSPORT_LE)
+        }
         return hardware.callback.onConnectionStateChange.mapNotNull { connectionStateChange ->
             val statusCode = BleStatusCode(connectionStateChange.status)
 
@@ -169,7 +179,6 @@ internal class AndroidConnectableController(
 
     private fun requireGattService(): BleResult<BluetoothGattService> {
         return requireGatt().flatMap { gatt ->
-            @Suppress("EQUALITY_NOT_APPLICABLE") // TODO: Create ticket!
             val service = gatt.services.find { it.uuid == service.uuid }
             return if (service == null) BleFailure.Message("Missing '$service' in 'gatt'")
             else BleSuccess(service)

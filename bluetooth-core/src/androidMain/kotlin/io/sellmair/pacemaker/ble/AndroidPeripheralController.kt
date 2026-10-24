@@ -27,8 +27,13 @@ internal class AndroidPeripheralController(
 
     override fun startAdvertising() {
         val callback = object : AdvertiseCallback() {}
+        val advertiser = hardware.manager.adapter.bluetoothLeAdvertiser
+        if (advertiser == null) {
+            log.error("Bluetooth LE advertiser is unavailable")
+            return
+        }
 
-        hardware.manager.adapter.bluetoothLeAdvertiser.startAdvertising(
+        advertiser.startAdvertising(
             AdvertiseSettings.Builder().setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                 .setConnectable(true)
                 .build(),
@@ -39,7 +44,7 @@ internal class AndroidPeripheralController(
         )
 
         scope.coroutineContext.job.invokeOnCompletion {
-            hardware.manager.adapter.bluetoothLeAdvertiser.stopAdvertising(callback)
+            advertiser.stopAdvertising(callback)
         }
     }
 

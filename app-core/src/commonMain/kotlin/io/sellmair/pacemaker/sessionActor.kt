@@ -38,7 +38,7 @@ internal fun CoroutineScope.launchSessionActor(
                 activeSessionActor?.cancel()
                 val activeSessionService = sessionService.createSession()
                 activeSession = activeSessionService
-                ActiveSessionState(activeSession?.session).emit()
+                ActiveSessionState(activeSessionService.session).emit()
                 activeSessionActor = launchActiveSessionActor(userService, activeSessionService)
             }
 

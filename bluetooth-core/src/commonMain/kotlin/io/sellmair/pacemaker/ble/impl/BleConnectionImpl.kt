@@ -17,7 +17,7 @@ internal class BleConnectionImpl(
         get() = controller.values
 
     override suspend fun enableNotifications(characteristic: BleCharacteristicDescriptor): BleResult<Unit> {
-        if (!scope.isActive) BleFailure.Rejected
+        if (!scope.isActive) return BleFailure.Rejected
         return queue enqueue EnableNotificationsBleOperation(controller.deviceId, characteristic) {
             controller.enableNotification(characteristic)
         }

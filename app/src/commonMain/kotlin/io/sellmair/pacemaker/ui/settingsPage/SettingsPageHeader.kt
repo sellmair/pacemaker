@@ -41,7 +41,7 @@ internal fun SettingsPageHeader(me: User) {
                     focusManager.clearFocus()
                 }),
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     imeAction = ImeAction.Done
                 ),
                 onValueChange = Launching { newName ->

@@ -79,9 +79,9 @@ private fun SessionItem(session: Session) {
 }
 
 private fun LocalDateTime.dateString(): String = buildString {
-    append(dayOfMonth.twoDigitString())
+    append(day.twoDigitString())
     append(".")
-    append(monthNumber.twoDigitString())
+    append((month.ordinal + 1).twoDigitString())
     if (year != Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year) {
         append(".${year}")
     }

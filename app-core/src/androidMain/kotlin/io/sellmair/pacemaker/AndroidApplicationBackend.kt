@@ -44,7 +44,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
     override val states: States = coroutineContext.statesOrThrow
 
     private val ble: Deferred<Ble> = async {
-        AndroidBle(this@AndroidApplicationBackend) ?: never()
+        AndroidBle(this@AndroidApplicationBackend)
     }
 
     override val pacemakerBluetoothService = async {
