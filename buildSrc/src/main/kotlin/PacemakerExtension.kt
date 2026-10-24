@@ -1,6 +1,5 @@
 import app.cash.sqldelight.gradle.SqlDelightExtension
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -8,8 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 class PacemakerExtension(
-    private val project: Project,
-    private val androidPluginId: String
+    private val project: Project
 ) {
 
     private val kotlin = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
@@ -24,35 +22,25 @@ class PacemakerExtension(
     }
 
     fun ios() {
-        kotlin.iosX64()
         kotlin.iosArm64()
         kotlin.iosSimulatorArm64()
     }
 
     fun macos() {
         kotlin.macosArm64()
-        kotlin.macosX64()
     }
 
     fun android() {
-        project.plugins.apply(androidPluginId)
-        kotlin.androidTarget()
-        project.extensions.configure(BaseExtension::class) {
-            compileSdkVersion(35)
+        project.plugins.apply("com.android.kotlin.multiplatform.library")
+        val androidTarget = kotlin.targets.getByName("android") as KotlinMultiplatformAndroidLibraryTarget
+        androidTarget.apply {
             namespace = "io.sellmair.${project.name.replace("-", ".")}"
-            defaultConfig {
-                minSdk = 31
-                targetSdk = 35
+            compileSdk = 37
+            minSdk = 31
+            androidResources {
+                enable = true
             }
-
-            if (this is ApplicationExtension) {
-                packaging {
-                    resources {
-                        /* https://github.com/Kotlin/kotlinx-atomicfu/pull/344 */
-                        excludes.add("META-INF/versions/9/previous-compilation-data.bin")
-                    }
-                }
-            }
+            withHostTest {}
         }
 
         kotlin.apply {
@@ -109,7 +97,7 @@ class PacemakerExtension(
                     implementation(Dependencies.sqldelight_androidDriver)
                 }
 
-                sourceSets.getByName("androidUnitTest").dependencies {
+                sourceSets.getByName("androidHostTest").dependencies {
                     implementation(Dependencies.sqldelight_sqliteDriver)
                 }
 
@@ -125,10 +113,6 @@ class PacemakerExtension(
             project.extensions.configure(SqlDelightExtension::class.java) {
                 this.configure()
             }
-        }
-
-        fun useAtomicFu() {
-            project.plugins.apply("org.jetbrains.kotlinx.atomicfu")
         }
     }
 

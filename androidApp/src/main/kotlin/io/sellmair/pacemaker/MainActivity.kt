@@ -100,7 +100,6 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         }
     }
 
-
     private inner class ApplicationBackendConnection : ServiceConnection {
 
         private var coroutineContext: CoroutineContext? = null

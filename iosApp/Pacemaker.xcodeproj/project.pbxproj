@@ -223,7 +223,7 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

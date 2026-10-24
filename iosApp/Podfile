@@ -1,4 +1,4 @@
 target 'Pacemaker' do
-  platform :ios, '14.1'
+  platform :ios, '16.6'
   pod 'PM', :path => '../app'
 end

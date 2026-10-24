@@ -10,6 +10,10 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     versionCatalogs.register("deps") {
         from(files("dependencies.toml"))
@@ -48,4 +52,5 @@ include(":bluetooth")
 include(":bluetooth-core")
 include(":spoof-tool")
 include(":app")
+include(":androidApp")
 include(":app-core")

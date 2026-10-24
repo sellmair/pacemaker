@@ -7,7 +7,7 @@ import io.sellmair.pacemaker.ui.timelinePage.TimelinePage
 
 
 @Composable
-internal fun ApplicationWindow() {
+fun ApplicationWindow() {
     PacemakerTheme {
         PageRouter { page ->
             when (page) {
