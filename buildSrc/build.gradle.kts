@@ -11,7 +11,6 @@ dependencies {
     implementation(deps.compose.hotReload.gradlePlugin)
     implementation(deps.android.gradlePlugin)
     implementation(deps.sqldelight.gradlePlugin)
-    implementation(deps.atomicFu.gradlePlugin)
 }
 
 

@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -20,7 +19,7 @@ kotlin {
         implementation(Dependencies.okio)
         implementation(Dependencies.kotlinx_datetime)
         implementation(Dependencies.kotlinx_collections_immutable)
-        implementation(ComposePlugin.Dependencies(project).runtime)
+        implementation(Dependencies.compose_runtime)
         implementation(Dependencies.evas)
     }
 
