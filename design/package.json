@@ -1,0 +1,17 @@
+{
+  "name": "pacemaker-design",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pacemaker Shared Rhythm visual identity and reproducible platform icon exports",
+  "scripts": {
+    "generate": "node tools/generate.mjs",
+    "validate": "node tools/validate.mjs",
+    "preview": "node tools/preview.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.0",
+    "fontkit": "^2.0.4",
+    "playwright": "^1.55.0"
+  }
+}

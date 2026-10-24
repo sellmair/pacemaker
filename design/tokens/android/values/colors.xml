@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="pm_background">#F3F5ED</color>
+  <color name="pm_surface">#FFFFFF</color>
+  <color name="pm_raised">#E6EADF</color>
+  <color name="pm_text">#171A19</color>
+  <color name="pm_muted">#546055</color>
+  <color name="pm_border">#7A8578</color>
+  <color name="pm_primary">#DBFF00</color>
+  <color name="pm_on_primary">#171A19</color>
+  <color name="pm_accent_text">#4D6000</color>
+  <color name="pm_success">#176B3B</color>
+  <color name="pm_success_surface">#E1F2E5</color>
+  <color name="pm_warning">#7A4600</color>
+  <color name="pm_warning_surface">#FFF0D5</color>
+  <color name="pm_danger">#B32B26</color>
+  <color name="pm_danger_surface">#FFE5E0</color>
+  <color name="pm_info">#245C89</color>
+  <color name="pm_info_surface">#E1EFFB</color>
+</resources>

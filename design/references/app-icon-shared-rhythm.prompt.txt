@@ -1,0 +1,12 @@
+Generated with the built-in image_gen tool.
+Output: .img/app-icon-shared-rhythm.png
+Status: design concept.
+
+Use case: logo-brand
+Asset type: one new modern mobile app icon for Pacemaker, a social running and heart-rate companion.
+Primary request: A radically simplified, cool, flat sports-tech identity expressing two people moving in sync and keeping a shared rhythm. The previous concept of rounded running figures forming a heart felt like a nursing-home logo. Completely abandon human silhouettes, circular heads, hearts, hugging figures and wellness imagery.
+Visual concept: TWO identical bold angular rhythm strokes, running parallel with a precise small offset, forming one compact abstract athletic emblem. Each stroke is a very simplified pulse: a short horizontal lead, one decisive upward diagonal, one decisive downward diagonal and a short horizontal exit. The two strokes are exactly synchronized and evenly spaced, like two runners holding the same pace. They must read as a single strong geometric mark, not a chart. Only one rise and fall per stroke, no extra oscillations. Use a mildly forward-leaning silhouette, confident hard cuts, uniform thick strokes, extremely restrained corner softening. Preserve clean charcoal negative space between the two strokes everywhere. No crossing, tangles, arrows, circles or enclosing frame. The symbol should be instantly memorable and readable at 24 pixels. Prioritize beautiful visual simplicity over literal storytelling.
+Color palette: strictly TWO perfectly flat solid colors. Acid yellow #DBFF00 emblem on deep charcoal #171A19 background. No green/blue pastels, no violet. No gradients anywhere.
+Composition: square 1024 by 1024 artwork, full-bleed charcoal background reaching all edges, one centered compact emblem occupying about 60 percent of the width and 48 percent of the height. Balanced generous margins suitable for a circular app icon crop. No rounded-square tile drawn inside the image.
+Style: exceptionally clean vector-like graphic design, contemporary independent performance-sports brand, bold, minimal, sharp, flat, purposeful. No stroke variation or calligraphic curves.
+Constraints: one finished icon only. No text, no letters, no wordmark, no numbers, no people, no heart symbol, no medical cross, no checkmark, no speed decorations, no thin lines, no shadows, no gradients, no glow, no textures, no glass, no bevels, no 3D, no perspective, no mockup, no presentation board, no watermark.

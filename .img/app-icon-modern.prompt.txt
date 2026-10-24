@@ -1,0 +1,15 @@
+Generated with the built-in image_gen tool.
+Reference: iosApp/Pacemaker/Assets.xcassets/AppIcon.appiconset/app-logo-ios.png
+Output: .img/app-icon-modern.png
+Status: design concept; launcher assets have not been replaced.
+
+Use case: logo-brand
+Asset type: Pacemaker mobile app icon redesign, one square 1024 by 1024 master artwork.
+Primary request: Modernize the supplied app icon for a running companion that lets friends monitor their heart rates together. Keep the recognizable idea of TWO overlapping hearts, but redraw the geometry and update the color treatment with a refined contemporary sports-app identity.
+Input image: current Pacemaker app icon, identity reference and redesign target. Preserve the paired-heart concept, not the old exact shapes or white background.
+Scene/backdrop: full-bleed solid very deep midnight violet background, approximately #17132F, extending to all four square edges.
+Subject: exactly two bold, beautifully proportioned open heart loops arranged diagonally, one slightly lower-left and one upper-right, forming one compact connected emblem. The front heart is fresh luminous aqua, the back heart is mint/teal; a restrained smooth aqua-to-mint transition is acceptable. Use thick consistent ribbon-width outlines, generous open interiors, softly rounded curves and subtly rounded bottom tips, mathematically clean optical balance. Make the overlap intentional with a clear narrow background-colored separation at the crossing. Preserve a recognizable two-heart silhouette at tiny launcher sizes. The pair should feel rhythmic, active and connected, not romantic decoration.
+Style/medium: premium minimal graphic design, crisp vector-like edges, almost flat color, confident and restrained. Strong contrast. No glossy 3D material.
+Composition/framing: centered compact emblem filling roughly 65 percent of the square width and height with balanced negative space and ample margin for circular or rounded-square platform masking. Square image itself has sharp corners and full background bleed; do not draw a surrounding tile or device mockup.
+Text: none.
+Constraints: one icon only, no presentation board, no text, no letters, no ECG zigzag, no extra symbols, no tiny details, no cast shadows, no bevel, no glass, no sparkles, no texture, no border, no watermark. Maintain the two-heart identity while making the artwork simpler, bolder and more legible.

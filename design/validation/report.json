@@ -1,0 +1,816 @@
+{
+  "passed": true,
+  "imagesChecked": 40,
+  "checks": [
+    {
+      "name": "brand/app-icon-1024.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "brand/app-icon-1024.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "brand/app-icon-1024.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "brand/app-icon-2048.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "brand/app-icon-2048.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "brand/app-icon-2048.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "brand/mark-transparent-1024.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "brand/mark-transparent-1024.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "brand/mark-transparent-1024.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-1024.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-1024.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-1024.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Dark-1024.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Dark-1024.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Dark-1024.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Tinted-1024.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Tinted-1024.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/AppIcon.appiconset/AppIcon-Tinted-1024.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-20.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-20.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-20.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-29.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-29.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-29.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-40.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-40.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-40.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-58.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-58.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-58.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-60.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-60.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-60.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-76.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-76.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-76.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-80.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-80.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-80.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-87.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-87.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-87.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-120.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-120.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-120.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-152.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-152.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-152.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-167.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-167.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-167.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-180.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-180.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/ios/legacy/AppIcon-180.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher_round.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher_round.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-mdpi/pacemaker_launcher_round.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher_round.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher_round.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-hdpi/pacemaker_launcher_round.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher_round.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher_round.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xhdpi/pacemaker_launcher_round.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher_round.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher_round.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher_round.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher_round.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher_round.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher_round.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/play-store-512.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/play-store-512.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/play-store-512.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/foreground-432.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/foreground-432.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/foreground-432.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/monochrome-432.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/monochrome-432.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/monochrome-432.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/background-432.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/background-432.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/android/layers/background-432.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-16.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-16.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-16.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-32.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-32.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-32.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-48.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-48.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/favicon-48.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-192.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-192.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-192.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-192.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-192.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-192.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-512.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-512.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/icon-512.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-512.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-512.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/maskable-512.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "icons/web/apple-touch-icon.png: dimensions",
+      "passed": true
+    },
+    {
+      "name": "icons/web/apple-touch-icon.png: alpha format",
+      "passed": true
+    },
+    {
+      "name": "icons/web/apple-touch-icon.png: sRGB",
+      "passed": true
+    },
+    {
+      "name": "iOS tinted artwork is grayscale RGB",
+      "passed": true
+    },
+    {
+      "name": "Play icon is fully opaque RGBA",
+      "passed": true
+    },
+    {
+      "name": "Play icon is below 1 MiB",
+      "passed": true
+    },
+    {
+      "name": "All intended text and control contrast pairs pass",
+      "passed": true
+    },
+    {
+      "name": "Adaptive mark stays inside the central 66 dp safe circle",
+      "passed": true,
+      "detail": {
+        "maximumRadiusDp": 27.67,
+        "safeRadiusDp": 33
+      }
+    },
+    {
+      "name": "Android foreground is at least 48 dp wide",
+      "passed": true
+    },
+    {
+      "name": "Catalog references AppIcon-1024.png",
+      "passed": true
+    },
+    {
+      "name": "Catalog references AppIcon-Dark-1024.png",
+      "passed": true
+    },
+    {
+      "name": "Catalog references AppIcon-Tinted-1024.png",
+      "passed": true
+    },
+    {
+      "name": "Web manifest references icon-192.png",
+      "passed": true
+    },
+    {
+      "name": "Web manifest references maskable-192.png",
+      "passed": true
+    },
+    {
+      "name": "Web manifest references icon-512.png",
+      "passed": true
+    },
+    {
+      "name": "Web manifest references maskable-512.png",
+      "passed": true
+    },
+    {
+      "name": "ICO includes 16, 32 and 48 px entries",
+      "passed": true
+    },
+    {
+      "name": "Available native icon compilers passed",
+      "passed": true
+    }
+  ],
+  "contrast": [
+    {
+      "theme": "dark",
+      "name": "primary action",
+      "foreground": "#171A19",
+      "background": "#DBFF00",
+      "ratio": 15.29,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "text on canvas",
+      "foreground": "#F3F5ED",
+      "background": "#171A19",
+      "ratio": 15.94,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "text on surface",
+      "foreground": "#F3F5ED",
+      "background": "#222624",
+      "ratio": 13.93,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "secondary text on canvas",
+      "foreground": "#A9B3AA",
+      "background": "#171A19",
+      "ratio": 8.11,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "secondary text on surface",
+      "foreground": "#A9B3AA",
+      "background": "#222624",
+      "ratio": 7.09,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "secondary text on raised",
+      "foreground": "#A9B3AA",
+      "background": "#2C312E",
+      "ratio": 6.13,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "accent text on raised",
+      "foreground": "#DBFF00",
+      "background": "#2C312E",
+      "ratio": 11.55,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "success",
+      "foreground": "#A3E8BC",
+      "background": "#173424",
+      "ratio": 9.55,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "warning",
+      "foreground": "#FFB86B",
+      "background": "#382B1D",
+      "ratio": 8.05,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "danger",
+      "foreground": "#FF8E84",
+      "background": "#402622",
+      "ratio": 6.23,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "information",
+      "foreground": "#8BCAFF",
+      "background": "#1E3040",
+      "ratio": 7.73,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "control boundary on background",
+      "foreground": "#748178",
+      "background": "#171A19",
+      "ratio": 4.3,
+      "minimum": 3,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "control boundary on surface",
+      "foreground": "#748178",
+      "background": "#222624",
+      "ratio": 3.76,
+      "minimum": 3,
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "name": "control boundary on raised",
+      "foreground": "#748178",
+      "background": "#2C312E",
+      "ratio": 3.25,
+      "minimum": 3,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "primary action",
+      "foreground": "#171A19",
+      "background": "#DBFF00",
+      "ratio": 15.29,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "text on canvas",
+      "foreground": "#171A19",
+      "background": "#F3F5ED",
+      "ratio": 15.94,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "text on surface",
+      "foreground": "#171A19",
+      "background": "#FFFFFF",
+      "ratio": 17.53,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "secondary text on canvas",
+      "foreground": "#546055",
+      "background": "#F3F5ED",
+      "ratio": 6,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "secondary text on surface",
+      "foreground": "#546055",
+      "background": "#FFFFFF",
+      "ratio": 6.6,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "secondary text on raised",
+      "foreground": "#546055",
+      "background": "#E6EADF",
+      "ratio": 5.41,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "accent text on raised",
+      "foreground": "#4D6000",
+      "background": "#E6EADF",
+      "ratio": 5.75,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "success",
+      "foreground": "#176B3B",
+      "background": "#E1F2E5",
+      "ratio": 5.63,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "warning",
+      "foreground": "#7A4600",
+      "background": "#FFF0D5",
+      "ratio": 6.91,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "danger",
+      "foreground": "#B32B26",
+      "background": "#FFE5E0",
+      "ratio": 5.33,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "information",
+      "foreground": "#245C89",
+      "background": "#E1EFFB",
+      "ratio": 6.05,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "control boundary on background",
+      "foreground": "#7A8578",
+      "background": "#F3F5ED",
+      "ratio": 3.5,
+      "minimum": 3,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "control boundary on surface",
+      "foreground": "#7A8578",
+      "background": "#FFFFFF",
+      "ratio": 3.85,
+      "minimum": 3,
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "name": "control boundary on raised",
+      "foreground": "#7A8578",
+      "background": "#E6EADF",
+      "ratio": 3.15,
+      "minimum": 3,
+      "passed": true
+    }
+  ],
+  "nativeSummary": {
+    "androidCompile": {
+      "passed": true
+    },
+    "androidLink": {
+      "passed": true
+    },
+    "androidSdk": {},
+    "ios": {
+      "passed": true
+    }
+  }
+}

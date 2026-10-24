@@ -1,0 +1,13 @@
+Generated with the built-in image_gen tool.
+Output: .img/app-icon-training-together.png
+Status: design concept.
+
+Use case: logo-brand
+Asset type: a new Pacemaker mobile app icon concept, square 1024 by 1024 master artwork.
+Primary request: Create an elegant modern app icon expressing two people TRAINING TOGETHER, with a subtle heart-health association built into the same symbol. Pacemaker is a social running companion for keeping a group's heart rates in a comfortable range.
+Scene/backdrop: full-bleed perfectly flat deep midnight violet #17132F, no tile or outer rounded border.
+Subject: a single highly resolved, bold emblem of TWO abstract people running in the SAME direction, side by side and in sync. Each person has one small circular head and one economical flowing body/stride shape. Use intelligent negative space and complementary curves so their paired bodies quietly suggest a heart, but prioritize recognizable forward athletic movement and two distinct companions. Think premium sports brand glyph, not a pictogram illustration. The people should feel equal, neither chasing nor competing. The heart association must emerge from the paired shapes, never from a separate heart placed behind or around them. Two flat colors, fresh aqua #35D5EE and mint #81F3C3, distinguish the partners. Strong clean geometry, generous internal gaps, rounded ends and balanced optical weight. Keep the visual vocabulary extremely simple, readable at 32 pixels.
+Style/medium: sophisticated minimal vector-like graphic design, essentially flat color, custom memorable silhouette, energetic and friendly, no glossy material.
+Composition/framing: one centered emblem occupying about 62 percent of the square width and height, enough negative space around it for both circular and rounded-square launcher cropping. Square artwork, sharp outer corners, background bleeds to edges.
+Text: none.
+Constraints: exactly two people, exactly two heads. No text, no letters, no checkmark, no medical cross, no ECG overlay, no additional heart symbol, no surrounding circle, no tiny fingers or facial features, no equipment, no decorative speed lines, no border, no 3D, no bevels, no cast shadows, no texture, no glow, no watermark. Do not show a presentation board, mockup, labels or variations. Deliver one polished icon.

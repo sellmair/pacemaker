@@ -1,0 +1,45 @@
+/* Generated from src/brand.json by tools/generate.mjs. */
+@font-face{font-family:Inter;src:url("../fonts/Inter-Variable.ttf") format("truetype");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/BarlowCondensed-SemiBold.ttf") format("truetype");font-weight:600;font-style:normal;font-display:swap}
+:root, [data-theme="dark"]{
+  --pm-background: #171A19;
+  --pm-surface: #222624;
+  --pm-raised: #2C312E;
+  --pm-text: #F3F5ED;
+  --pm-muted: #A9B3AA;
+  --pm-border: #748178;
+  --pm-primary: #DBFF00;
+  --pm-on-primary: #171A19;
+  --pm-accent-text: #DBFF00;
+  --pm-success: #A3E8BC;
+  --pm-success-surface: #173424;
+  --pm-warning: #FFB86B;
+  --pm-warning-surface: #382B1D;
+  --pm-danger: #FF8E84;
+  --pm-danger-surface: #402622;
+  --pm-info: #8BCAFF;
+  --pm-info-surface: #1E3040;
+  color-scheme: dark;
+}
+[data-theme="light"]{
+  --pm-background: #F3F5ED;
+  --pm-surface: #FFFFFF;
+  --pm-raised: #E6EADF;
+  --pm-text: #171A19;
+  --pm-muted: #546055;
+  --pm-border: #7A8578;
+  --pm-primary: #DBFF00;
+  --pm-on-primary: #171A19;
+  --pm-accent-text: #4D6000;
+  --pm-success: #176B3B;
+  --pm-success-surface: #E1F2E5;
+  --pm-warning: #7A4600;
+  --pm-warning-surface: #FFF0D5;
+  --pm-danger: #B32B26;
+  --pm-danger-surface: #FFE5E0;
+  --pm-info: #245C89;
+  --pm-info-surface: #E1EFFB;
+  color-scheme: light;
+}
+:root{--pm-font-body:Inter,system-ui,sans-serif;--pm-font-display:"Barlow Condensed",Impact,sans-serif;--pm-radius-control:8px;--pm-radius-card:12px;--pm-radius-sheet:20px;--pm-duration:180ms;--pm-easing:cubic-bezier(.2,0,0,1);}
+@media(prefers-reduced-motion:reduce){:root{--pm-duration:0ms}}

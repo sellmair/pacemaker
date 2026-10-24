@@ -1,0 +1,6 @@
+  [mcp_servers.studio]
+    url = "http://127.0.0.1:64342/stream"
+
+  # Use Android Studio rather than the globally configured standalone IntelliJ IDEA.
+  [mcp_servers.idea]
+    enabled = false

@@ -1,0 +1,15 @@
+{
+  "retrieved": "2026-10-24",
+  "fonts": [
+    {
+      "file": "BarlowCondensed-SemiBold.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/BarlowCondensed-SemiBold.ttf",
+      "license": "BarlowCondensed-OFL.txt"
+    },
+    {
+      "file": "Inter-Variable.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
+      "license": "Inter-OFL.txt"
+    }
+  ]
+}

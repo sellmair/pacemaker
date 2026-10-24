@@ -1,0 +1,21 @@
+{
+  "primary": "primary",
+  "onPrimary": "onPrimary",
+  "primaryContainer": "raised",
+  "onPrimaryContainer": "accentText",
+  "secondary": "text",
+  "onSecondary": "background",
+  "secondaryContainer": "raised",
+  "onSecondaryContainer": "text",
+  "background": "background",
+  "onBackground": "text",
+  "surface": "surface",
+  "onSurface": "text",
+  "surfaceVariant": "raised",
+  "onSurfaceVariant": "muted",
+  "outline": "border",
+  "error": "danger",
+  "onError": "background",
+  "errorContainer": "dangerSurface",
+  "onErrorContainer": "danger"
+}

@@ -1,0 +1,24 @@
+{
+  "androidCompile": {
+    "passed": true,
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "androidLink": {
+    "passed": true,
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "androidSdk": {
+    "buildTools": "36.1.0",
+    "platform": "android-36"
+  },
+  "ios": {
+    "passed": true,
+    "exitCode": 0,
+    "stdout": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n\t<key>com.apple.actool.compilation-results</key>\n\t<dict>\n\t\t<key>output-files</key>\n\t\t<array>\n\t\t\t<string>/var/folders/bb/knlwqxjd1c3_f3wxjdtbw4rc0000gp/T/pacemaker-design-PldFUX/asset-info.plist</string>\n\t\t\t<string>/var/folders/bb/knlwqxjd1c3_f3wxjdtbw4rc0000gp/T/pacemaker-design-PldFUX/ios-output/AppIcon60x60@2x.png</string>\n\t\t\t<string>/var/folders/bb/knlwqxjd1c3_f3wxjdtbw4rc0000gp/T/pacemaker-design-PldFUX/ios-output/AppIcon76x76@2x~ipad.png</string>\n\t\t\t<string>/var/folders/bb/knlwqxjd1c3_f3wxjdtbw4rc0000gp/T/pacemaker-design-PldFUX/ios-output/Assets.car</string>\n\t\t</array>\n\t</dict>\n</dict>\n</plist>\n",
+    "stderr": ""
+  }
+}

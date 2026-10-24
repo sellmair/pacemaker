@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "Fonts loaded",
+      "passed": true
+    },
+    {
+      "name": "All displayed images loaded",
+      "passed": true
+    },
+    {
+      "name": "UI icon paths loaded",
+      "passed": true
+    },
+    {
+      "name": "Above-limit state",
+      "passed": true
+    },
+    {
+      "name": "Signal-loss state has no stale reading",
+      "passed": true
+    },
+    {
+      "name": "Source selection updates live source",
+      "passed": true
+    },
+    {
+      "name": "Limit adjustment propagates",
+      "passed": true
+    },
+    {
+      "name": "Meter expands for a high limit",
+      "passed": true
+    },
+    {
+      "name": "Voice settings are synchronized",
+      "passed": true
+    },
+    {
+      "name": "Name validation",
+      "passed": true
+    },
+    {
+      "name": "Preference save feedback",
+      "passed": true
+    },
+    {
+      "name": "No horizontal overflow at 320px",
+      "passed": true
+    },
+    {
+      "name": "No horizontal overflow at 390px",
+      "passed": true
+    },
+    {
+      "name": "No horizontal overflow at 768px",
+      "passed": true
+    },
+    {
+      "name": "No horizontal overflow at 1440px",
+      "passed": true
+    },
+    {
+      "name": "No browser errors",
+      "passed": true
+    },
+    {
+      "name": "Offline guide loads without a server",
+      "passed": true
+    },
+    {
+      "name": "Offline images loaded",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

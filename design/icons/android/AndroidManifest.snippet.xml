@@ -1,0 +1,4 @@
+<!-- Add these attributes to your existing application element; do not replace the manifest. -->
+<application xmlns:android="http://schemas.android.com/apk/res/android"
+    android:icon="@mipmap/pacemaker_launcher"
+    android:roundIcon="@mipmap/pacemaker_launcher_round" />

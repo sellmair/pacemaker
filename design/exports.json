@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "source": "src/brand.json",
+  "images": [
+    {
+      "file": "brand/app-icon-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "rgb"
+    },
+    {
+      "file": "brand/app-icon-2048.png",
+      "width": 2048,
+      "height": 2048,
+      "mode": "rgb"
+    },
+    {
+      "file": "brand/mark-transparent-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/ios/AppIcon.appiconset/AppIcon-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/AppIcon.appiconset/AppIcon-Dark-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/ios/AppIcon.appiconset/AppIcon-Tinted-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-20.png",
+      "width": 20,
+      "height": 20,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-29.png",
+      "width": 29,
+      "height": 29,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-40.png",
+      "width": 40,
+      "height": 40,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-58.png",
+      "width": 58,
+      "height": 58,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-60.png",
+      "width": 60,
+      "height": 60,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-76.png",
+      "width": 76,
+      "height": 76,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-80.png",
+      "width": 80,
+      "height": 80,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-87.png",
+      "width": 87,
+      "height": 87,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-120.png",
+      "width": 120,
+      "height": 120,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-152.png",
+      "width": 152,
+      "height": 152,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-167.png",
+      "width": 167,
+      "height": 167,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/ios/legacy/AppIcon-180.png",
+      "width": 180,
+      "height": 180,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/android/res/mipmap-mdpi/pacemaker_launcher.png",
+      "width": 48,
+      "height": 48,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-mdpi/pacemaker_launcher_round.png",
+      "width": 48,
+      "height": 48,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-hdpi/pacemaker_launcher.png",
+      "width": 72,
+      "height": 72,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-hdpi/pacemaker_launcher_round.png",
+      "width": 72,
+      "height": 72,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xhdpi/pacemaker_launcher.png",
+      "width": 96,
+      "height": 96,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xhdpi/pacemaker_launcher_round.png",
+      "width": 96,
+      "height": 96,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher.png",
+      "width": 144,
+      "height": 144,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xxhdpi/pacemaker_launcher_round.png",
+      "width": 144,
+      "height": 144,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher.png",
+      "width": 192,
+      "height": 192,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/res/mipmap-xxxhdpi/pacemaker_launcher_round.png",
+      "width": 192,
+      "height": 192,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/play-store-512.png",
+      "width": 512,
+      "height": 512,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/layers/foreground-432.png",
+      "width": 432,
+      "height": 432,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/layers/monochrome-432.png",
+      "width": 432,
+      "height": 432,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/android/layers/background-432.png",
+      "width": 432,
+      "height": 432,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/web/favicon-16.png",
+      "width": 16,
+      "height": 16,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/web/favicon-32.png",
+      "width": 32,
+      "height": 32,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/web/favicon-48.png",
+      "width": 48,
+      "height": 48,
+      "mode": "rgba"
+    },
+    {
+      "file": "icons/web/icon-192.png",
+      "width": 192,
+      "height": 192,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/web/maskable-192.png",
+      "width": 192,
+      "height": 192,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/web/icon-512.png",
+      "width": 512,
+      "height": 512,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/web/maskable-512.png",
+      "width": 512,
+      "height": 512,
+      "mode": "rgb"
+    },
+    {
+      "file": "icons/web/apple-touch-icon.png",
+      "width": 180,
+      "height": 180,
+      "mode": "rgb"
+    }
+  ]
+}
