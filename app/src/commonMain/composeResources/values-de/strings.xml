@@ -1,6 +1,10 @@
 <resources>
     <string name="please_stand_by">Bitte warten Sie 👍</string>
     <string name="heart_rate_sensor">Herzfrequenz Sensor</string>
+    <string name="heart_rate_sensor_not_connected">Herzfrequenzsensor nicht verbunden</string>
+    <string name="heart_rate_sensor_connecting">Verbindung zum Herzfrequenzsensor wird hergestellt</string>
+    <string name="heart_rate_sensor_connected">Herzfrequenzsensor verbunden</string>
+    <string name="heart_rate_sensor_disconnecting">Verbindung zum Herzfrequenzsensor wird getrennt</string>
     <string name="connect">verbinden</string>
     <string name="disconnect">trennen</string>
 

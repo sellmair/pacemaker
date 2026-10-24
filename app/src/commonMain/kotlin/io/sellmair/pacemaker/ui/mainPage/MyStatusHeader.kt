@@ -20,6 +20,8 @@ import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.MeColorLight
 import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
+import io.sellmair.pacemaker.ui.widget.HeartRateSensorIcon
+import io.sellmair.pacemaker.ui.widget.HeartRateSensorIconState
 
 @Composable
 fun MyStatusHeader() {
@@ -54,15 +56,28 @@ fun MyStatusHeader() {
                     Modifier.align(Alignment.CenterStart)
                 )
 
-                Text(
-                    state?.heartRate?.toString() ?: "🤷‍♂️",
-                    fontWeight = FontWeight.Black,
-                    fontSize = 48.sp,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.Center)
-                        .experimentalFeatureToggle()
-                )
+                val heartRate = state?.heartRate
+                if (heartRate != null) {
+                    Text(
+                        heartRate.toString(),
+                        fontWeight = FontWeight.Black,
+                        fontSize = 48.sp,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .align(Alignment.Center)
+                            .experimentalFeatureToggle()
+                    )
+                } else {
+                    HeartRateSensorIcon(
+                        state = HeartRateSensorIconState.Disconnected,
+                        tint = MeColor(),
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(top = 8.dp)
+                            .size(64.dp)
+                            .experimentalFeatureToggle()
+                    )
+                }
 
                 UtteranceControlButton(
                     Modifier.align(Alignment.CenterEnd)

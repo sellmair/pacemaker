@@ -1,6 +1,10 @@
 <resources>
     <string name="please_stand_by">Attendere prego 👍</string>
     <string name="heart_rate_sensor">Sensore di frequenza cardiaca</string>
+    <string name="heart_rate_sensor_not_connected">Sensore di frequenza cardiaca non connesso</string>
+    <string name="heart_rate_sensor_connecting">Connessione al sensore di frequenza cardiaca</string>
+    <string name="heart_rate_sensor_connected">Sensore di frequenza cardiaca connesso</string>
+    <string name="heart_rate_sensor_disconnecting">Disconnessione del sensore di frequenza cardiaca</string>
     <string name="connect">connetti</string>
     <string name="disconnect">disconnetti</string>
 

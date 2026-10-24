@@ -18,6 +18,9 @@ import io.sellmair.pacemaker.HeartRateSensorState
 import io.sellmair.pacemaker.HeartRateSensorsState
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.MeColor
+import io.sellmair.pacemaker.ui.MeColorLight
+import io.sellmair.pacemaker.ui.widget.HeartRateSensorIcon
+import io.sellmair.pacemaker.ui.widget.HeartRateSensorIconState
 import org.jetbrains.compose.resources.stringResource
 import pacemaker.app.generated.resources.Res
 import pacemaker.app.generated.resources.nearby_heart_rate_sensors
@@ -50,11 +53,22 @@ internal fun SettingsPageDevicesList(
     heartRateSensors: List<HeartRateSensorsState.HeartRateSensorInfo>,
 ) {
     Column(Modifier.fillMaxWidth()) {
-        Text(
+        Row(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = stringResource(Res.string.nearby_heart_rate_sensors),
-            fontWeight = FontWeight.Bold
-        )
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HeartRateSensorIcon(
+                state = HeartRateSensorIconState.Sensor,
+                tint = MeColor(),
+                modifier = Modifier.size(24.dp),
+                decorative = true
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(
+                text = stringResource(Res.string.nearby_heart_rate_sensors),
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -77,6 +91,13 @@ internal fun SettingsPageDevicesList(
                         ) {
                             Spacer(Modifier.height(24.dp))
 
+                            HeartRateSensorIcon(
+                                state = HeartRateSensorIconState.Searching,
+                                tint = MeColorLight(),
+                                modifier = Modifier.size(64.dp),
+                                decorative = true
+                            )
+                            Spacer(Modifier.height(16.dp))
 
                             Text(
                                 stringResource(Res.string.searching_for_hr_sensors),

@@ -1,6 +1,10 @@
 <resources>
     <string name="please_stand_by">Please stand by 👍</string>
     <string name="heart_rate_sensor">Heart Rate Sensor</string>
+    <string name="heart_rate_sensor_not_connected">Heart rate sensor not connected</string>
+    <string name="heart_rate_sensor_connecting">Connecting to heart rate sensor</string>
+    <string name="heart_rate_sensor_connected">Heart rate sensor connected</string>
+    <string name="heart_rate_sensor_disconnecting">Disconnecting heart rate sensor</string>
     <string name="connect">connect</string>
     <string name="disconnect">disconnect</string>
 
@@ -13,4 +17,3 @@
     <string name="slow_down_heart_rate_utterance_fragment_me">You are at %1$d bpm</string>
     <string name="slow_down_heart_rate_utterance_fragment_other">%1$s is at %2$d bpm</string>
 </resources>
- 

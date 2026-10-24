@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,6 +33,7 @@ import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.ui.*
+import io.sellmair.pacemaker.ui.icons.HeartRateSensorIcons
 import io.sellmair.pacemaker.ui.widget.*
 import io.sellmair.pacemaker.ui.widget.ChangeableMemberHeartRateLimit
 import io.sellmair.pacemaker.ui.widget.GradientBackdrop
@@ -44,7 +44,6 @@ import org.jetbrains.compose.resources.stringResource
 import pacemaker.app.generated.resources.Res
 import pacemaker.app.generated.resources.connect
 import pacemaker.app.generated.resources.disconnect
-import pacemaker.app.generated.resources.heart_rate_sensor
 import kotlin.math.roundToInt
 
 
@@ -91,6 +90,12 @@ internal fun HeartRateSensorCard(
 
     var expanded: Boolean by remember { mutableStateOf(false) }
     var adhocUserViewVisible by mutableStateOf(associatedUser?.isAdhoc == true)
+    val sensorIconState = when (connectionState) {
+        Connected -> HeartRateSensorIconState.Connected
+        Connecting -> HeartRateSensorIconState.Connecting
+        Disconnected -> if (connectIfPossible) HeartRateSensorIconState.Searching else HeartRateSensorIconState.Disconnected
+        null -> HeartRateSensorIconState.Disconnecting
+    }
 
     ElevatedCard(
         modifier = modifier,
@@ -107,38 +112,22 @@ internal fun HeartRateSensorCard(
 
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    HeartRateCardTitle(
-                        sensorName = sensorName,
-                        sensorId = sensorId,
-                        associatedUser = associatedUser,
-                    )
+                    Box(Modifier.weight(1f)) {
+                        HeartRateCardTitle(
+                            sensorName = sensorName,
+                            sensorId = sensorId,
+                            associatedUser = associatedUser,
+                        )
+                    }
 
-                    Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.width(12.dp))
 
-                    Box {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = !connectIfPossible,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            Icon(
-                                Icons.Outlined.MonitorHeart,
-                                tint = Color.White,
-                                contentDescription = stringResource(Res.string.heart_rate_sensor),
-                            )
-                        }
-
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = connectIfPossible,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            Icon(
-                                Icons.Filled.MonitorHeart,
-                                tint = Color.White,
-                                contentDescription = stringResource(Res.string.heart_rate_sensor),
-                            )
-                        }
+                    Crossfade(targetState = sensorIconState, label = "Sensor connection icon") { iconState ->
+                        HeartRateSensorIcon(
+                            state = iconState,
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
                     }
 
                 }
@@ -380,6 +369,19 @@ internal fun ConnectDisconnectButton(
     ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
+            AnimatedVisibility(visible = connectionState != Connecting) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (connectionState == Connected) HeartRateSensorIcons.Disconnected
+                        else HeartRateSensorIcons.Connected,
+                        contentDescription = null,
+                        tint = MeColorWhite(),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                }
+            }
+
             AnimatedVisibility(
                 visible = connectionState == null || connectionState == Disconnected,
                 enter = expandHorizontally(),
