@@ -55,6 +55,7 @@ fun PacemakerTheme(content: @Composable () -> Unit) {
     ) {
         MaterialTheme(
             colorScheme = lightColorScheme(
+                background = Color.White,
                 primary = meColor,
                 primaryContainer = meColor,
                 secondaryContainer = meColor,
