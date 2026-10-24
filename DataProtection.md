@@ -1,4 +1,4 @@
-### Data Projection
+# Pacemaker – Datenschutzerklärung / Privacy Policy
 The Pacemaker App does not require an Internet connection and does not share, nor store, any information central. 
 All information stored by the APP is stored on the users devices. 
 
