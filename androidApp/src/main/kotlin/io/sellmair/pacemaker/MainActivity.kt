@@ -14,10 +14,12 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.getSystemService
@@ -37,6 +39,15 @@ class MainActivity : ComponentActivity(), CoroutineScope {
     override var coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
     private val mainServiceConnection = ApplicationBackendConnection()
+    private val runtimePermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        if (hasBluetoothRuntimePermission()) {
+            startForegroundService()
+        } else {
+            Toast.makeText(this, "Bluetooth permission is required to use Pacemaker.", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,16 +58,20 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
         coroutineContext = Dispatchers.Main + Job()
 
-        requestPermissions(
-            listOfNotNull(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null,
-                if (Build.VERSION.SDK_INT >= 33) Manifest.permission.BODY_SENSORS else null
-            ).toTypedArray(), 0
+        val runtimePermissions = listOfNotNull(
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_ADVERTISE,
+            if (Build.VERSION.SDK_INT >= 33) Manifest.permission.POST_NOTIFICATIONS else null
         )
-        startForegroundService()
+        val permissionsToRequest = runtimePermissions.filter {
+            checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (permissionsToRequest.isEmpty()) {
+            startForegroundService()
+        } else {
+            runtimePermissionRequest.launch(permissionsToRequest.toTypedArray())
+        }
 
         setContent {
             val backend = mainServiceConnection.backend.collectAsState().value
@@ -99,6 +114,12 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             Runtime.getRuntime().exit(0)
         }
     }
+
+    private fun hasBluetoothRuntimePermission(): Boolean = listOf(
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_ADVERTISE
+    ).all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 
     private inner class ApplicationBackendConnection : ServiceConnection {
 
