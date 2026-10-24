@@ -17,9 +17,17 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
+    @State private var showWatchLaunchHelp = false
     var body: some View {
         ComposeView()
                 .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+                .onAppear { WatchPhoneBridge.shared.activate() }
+                .onReceive(NotificationCenter.default.publisher(for: .watchLaunchFailed)) { _ in showWatchLaunchHelp = true }
+                .alert("watch_launch_failed_title", isPresented: $showWatchLaunchHelp) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text("watch_launch_failed_message")
+                }
     }
 }
 

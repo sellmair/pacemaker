@@ -1,0 +1,11 @@
+"Ready" = "Bereit";
+"iPhone connection unavailable" = "iPhone-Verbindung nicht verfügbar";
+"Heart rate unavailable" = "Herzfrequenz nicht verfügbar";
+"Allow heart rate in Settings" = "Erlaube den Herzfrequenzzugriff in den Einstellungen";
+"Allow workout access in Settings" = "Erlaube den Workout-Zugriff in den Einstellungen";
+"Could not start heart rate" = "Herzfrequenzmessung konnte nicht gestartet werden";
+"With iPhone" = "Mit iPhone";
+"Open Pacemaker on your iPhone" = "Öffne Pacemaker auf deinem iPhone";
+"Start" = "Start";
+"Stop" = "Stopp";
+"Limit %lld" = "Limit %lld";

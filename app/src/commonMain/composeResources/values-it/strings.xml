@@ -1,4 +1,5 @@
 <resources>
+    <string name="watch_transport_unavailable">Google Play services non è disponibile per la connessione Wear OS</string>
     <string name="please_stand_by">Attendere prego 👍</string>
     <string name="heart_rate_sensor">Sensore di frequenza cardiaca</string>
     <string name="heart_rate_sensor_not_connected">Sensore di frequenza cardiaca non connesso</string>
@@ -16,4 +17,17 @@
     <string name="slow_down">Rallentare!</string>
     <string name="slow_down_heart_rate_utterance_fragment_me">La tua frequenza cardiaca è di %1$d BPM</string>
     <string name="slow_down_heart_rate_utterance_fragment_other">%1$s sta correndo alla frequenza di %2$d BPM</string>
+    <string name="use_watch_source">Usa orologio da polso</string>
+    <string name="use_sensor_source">Usa questo sensore</string>
+    <string name="use_automatic_source">Usa sorgente automatica</string>
+    <string name="selected_heart_rate_source">Sorgente di frequenza cardiaca selezionata: %1$s</string>
+    <string name="forget_watch_companion">Dimentica orologio da polso</string>
+    <string name="watch_connected">Connesso a %1$s</string>
+    <string name="watch_paired_offline">Associato, non nelle vicinanze</string>
+    <string name="watch_not_paired">Associa prima questo orologio al telefono</string>
+    <string name="watch_connect">Connetti</string>
+    <string name="watch_disconnect">Disconnetti</string>
+    <string name="watch_forget">Dimentica orologio associato</string>
+    <string name="watch_pair">Connetti</string>
+    <string name="watch_details">Dettagli</string>
 </resources>

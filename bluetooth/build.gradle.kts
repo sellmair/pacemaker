@@ -12,6 +12,7 @@ pacemaker {
 kotlin {
     sourceSets.commonMain.dependencies {
         api(project(":bluetooth-core"))
+        api(project(":models"))
         implementation(Dependencies.okio)
     }
 

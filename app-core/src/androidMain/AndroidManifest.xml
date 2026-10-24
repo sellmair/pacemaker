@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-
-
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+
+
 
     <!-- Polar SDK needs Bluetooth scan permission to search for BLE devices. Polar BLE SDK doesn't use the scan
    to decide the location so "neverForLocation" permission flag can be used.-->
@@ -39,6 +39,13 @@
                 android:foregroundServiceType="connectedDevice"
                 android:exported="false"
         />
+        <service android:name="io.sellmair.pacemaker.AndroidWatchCompanionListenerService"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/pacemaker/watch-companion/v1" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

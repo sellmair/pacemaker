@@ -27,4 +27,7 @@ kotlin {
         api(project(":bluetooth"))
         implementation(Dependencies.multiplatform_settings)
     }
+    sourceSets.androidMain.dependencies {
+        implementation(Dependencies.play_services_wearable)
+    }
 }

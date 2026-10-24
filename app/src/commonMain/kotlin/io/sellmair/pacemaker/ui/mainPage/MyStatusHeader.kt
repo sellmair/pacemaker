@@ -19,7 +19,6 @@ import io.sellmair.evas.compose.composeValue
 import io.sellmair.pacemaker.MeState
 import io.sellmair.pacemaker.ui.MeColor
 import io.sellmair.pacemaker.ui.MeColorLight
-import io.sellmair.pacemaker.ui.widget.experimentalFeatureToggle
 import io.sellmair.pacemaker.ui.widget.HeartRateSensorIcon
 import io.sellmair.pacemaker.ui.widget.HeartRateSensorIconState
 
@@ -52,10 +51,6 @@ fun MyStatusHeader() {
                     .fillMaxWidth()
                     .height(IntrinsicSize.Min)
             ) {
-                SessionStartStopButton(
-                    Modifier.align(Alignment.CenterStart)
-                )
-
                 val heartRate = state?.heartRate
                 if (heartRate != null) {
                     Text(
@@ -65,7 +60,6 @@ fun MyStatusHeader() {
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .align(Alignment.Center)
-                            .experimentalFeatureToggle()
                     )
                 } else {
                     HeartRateSensorIcon(
@@ -75,7 +69,6 @@ fun MyStatusHeader() {
                             .align(Alignment.Center)
                             .padding(top = 8.dp)
                             .size(64.dp)
-                            .experimentalFeatureToggle()
                     )
                 }
 

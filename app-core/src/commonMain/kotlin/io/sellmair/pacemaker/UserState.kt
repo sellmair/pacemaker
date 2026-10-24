@@ -8,5 +8,6 @@ data class UserState(
     val isMe: Boolean,
     val heartRate: HeartRate,
     val heartRateLimit: HeartRate?,
-    val color: HSLColor
+    val color: HSLColor,
+    val measuredAtEpochMillis: Long = 0L
 )

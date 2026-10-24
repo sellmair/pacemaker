@@ -14,6 +14,15 @@ android {
         versionName = "2025.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    buildTypes {
+        create("profile") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            isProfileable = true
+            matchingFallbacks += listOf("release")
+        }
+    }
 }
 
 dependencies {

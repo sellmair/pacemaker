@@ -9,10 +9,14 @@ Run together! A running companion monitoring the heart rate of a group of people
 - iPhone <-> iPhone connections (No internet necessary, BLE)
 - Android <-> Android connections (No internet necessary, BLE)
 - iPhone <-> Android connections (No internet necessary, BLE)
+- Wear OS companion for live wrist heart rate, group alerts, and measurement controls (current Android work; validation in progress)
+- Apple Watch companion work is deferred from this Android release scope
 
-## Planned
+Wear OS exchanges live heart rate and measurement control messages with the paired Pacemaker phone through Google's Wearable Data Layer. The operating system may use its encrypted internet relay when a direct connection is unavailable. Pacemaker sends no watch heart-rate history or GPS data. The phone remains responsible for nearby group sharing; this release does not record new workout sessions. Previously stored phone history remains on the device. Apple Watch changes are deferred and are not represented as validated in this release scope.
 
-WatchOS support (via UWB chip and Internet)
+For local data handling details, see [DataProtection.md](DataProtection.md).
+
+For automated coverage and reusable manual watch scenarios, see [WATCH_TESTING.md](WATCH_TESTING.md).
 
 ## Screenshots
 
@@ -122,5 +126,3 @@ fun MyLoginScreen(
 - SQLDelight
 - Multiplatform Settings
 - Okio
-
-

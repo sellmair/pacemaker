@@ -55,7 +55,6 @@ internal fun SettingsPageHeader(me: User) {
                 size = 32.dp,
                 modifier = Modifier
                     .padding(4.dp)
-                    .experimentalFeatureToggle()
             )
         }
 

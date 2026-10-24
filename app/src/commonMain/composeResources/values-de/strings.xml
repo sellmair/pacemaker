@@ -1,4 +1,5 @@
 <resources>
+    <string name="watch_transport_unavailable">Google Play-Dienste für die Wear-OS-Verbindung sind nicht verfügbar</string>
     <string name="please_stand_by">Bitte warten Sie 👍</string>
     <string name="heart_rate_sensor">Herzfrequenz Sensor</string>
     <string name="heart_rate_sensor_not_connected">Herzfrequenzsensor nicht verbunden</string>
@@ -16,4 +17,17 @@
     <string name="slow_down">Langsamer!</string>
     <string name="slow_down_heart_rate_utterance_fragment_me">Deine eigene Herzfrequenz beträgt %1$d BPM</string>
     <string name="slow_down_heart_rate_utterance_fragment_other">%1$s läuft mit %2$d BPM</string>
+    <string name="use_watch_source">Handgelenkuhr verwenden</string>
+    <string name="use_sensor_source">Diesen Sensor verwenden</string>
+    <string name="use_automatic_source">Automatische Quelle verwenden</string>
+    <string name="selected_heart_rate_source">Ausgewählte Herzfrequenzquelle: %1$s</string>
+    <string name="forget_watch_companion">Handgelenkuhr vergessen</string>
+    <string name="watch_connected">Mit %1$s verbunden</string>
+    <string name="watch_paired_offline">Gekoppelt, nicht in der Nähe</string>
+    <string name="watch_not_paired">Kopple diese Uhr zuerst mit deinem Telefon</string>
+    <string name="watch_connect">Verbinden</string>
+    <string name="watch_disconnect">Trennen</string>
+    <string name="watch_forget">Gekoppelte Uhr vergessen</string>
+    <string name="watch_pair">Verbinden</string>
+    <string name="watch_details">Details</string>
 </resources>

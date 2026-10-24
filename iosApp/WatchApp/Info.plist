@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WKApplication</key><true/>
+	<key>WKCompanionAppBundleIdentifier</key><string>io.sellmair.Pacemaker</string>
+	<key>WKBackgroundModes</key><array><string>workout-processing</string></array>
+	<key>NSHealthShareUsageDescription</key><string>Pacemaker reads heart rate while a workout is active.</string>
+	<key>NSHealthUpdateUsageDescription</key><string>Pacemaker needs permission to create Apple Health workout sessions for live heart-rate monitoring. Pacemaker does not save a workout to Apple Health; watchOS may store heart-rate readings collected during the session.</string>
+</dict>
+</plist>

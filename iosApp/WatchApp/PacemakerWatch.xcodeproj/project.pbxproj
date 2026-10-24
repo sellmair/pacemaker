@@ -1,0 +1,29 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 60;
+	objects = {
+		A00000000000000000000001 /* PacemakerWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000013; };
+		A00000000000000000000002 /* WatchSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000012; };
+		A00000000000000000000003 /* PacemakerWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000013; };
+		A00000000000000000000012 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionModel.swift; sourceTree = "<group>"; };
+		A00000000000000000000013 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerWatchApp.swift; sourceTree = "<group>"; };
+		A00000000000000000000014 /* PacemakerWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacemakerWatch.entitlements; sourceTree = "<group>"; };
+		A00000000000000000000015 /* PacemakerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PacemakerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00000000000000000000021 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001, A00000000000000000000002, A00000000000000000000003,); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000022 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000023 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000031 /* PacemakerWatch */ = {isa = PBXGroup; children = (A00000000000000000000012, A00000000000000000000013, A00000000000000000000014, A00000000000000000000032,); path = .; sourceTree = "<group>"; };
+		A00000000000000000000032 /* Products */ = {isa = PBXGroup; children = (A00000000000000000000015,); name = Products; sourceTree = "<group>"; };
+		A00000000000000000000041 /* Project */ = {isa = PBXProject; attributes = { LastUpgradeCheck = 2700; TargetAttributes = { A00000000000000000000051 = {CreatedOnToolsVersion = 27.0;};};}; buildConfigurationList = A00000000000000000000061; compatibilityVersion = "Xcode 15.0"; mainGroup = A00000000000000000000031; productRefGroup = A00000000000000000000032; projectDirPath = ""; projectRoot = ""; targets = (A00000000000000000000051,); };
+		A00000000000000000000051 /* PacemakerWatch */ = {isa = PBXNativeTarget; buildConfigurationList = A00000000000000000000062; buildPhases = (A00000000000000000000021, A00000000000000000000022, A00000000000000000000023,); buildRules = (); dependencies = (); name = PacemakerWatch; productName = PacemakerWatch; productReference = A00000000000000000000015; productType = "com.apple.product-type.application"; };
+		A00000000000000000000061 /* Project configuration list */ = {isa = XCConfigurationList; buildConfigurations = (A00000000000000000000071, A00000000000000000000072,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00000000000000000000062 /* Target configuration list */ = {isa = XCConfigurationList; buildConfigurations = (A00000000000000000000073, A00000000000000000000074,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00000000000000000000071 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {SDKROOT = watchos; }; name = Debug; };
+		A00000000000000000000072 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {SDKROOT = watchos; }; name = Release; };
+		A00000000000000000000073 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = PacemakerWatch.entitlements; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = Pacemaker; INFOPLIST_KEY_NSHealthShareUsageDescription = "Pacemaker reads heart rate while a workout is active."; INFOPLIST_KEY_WKApplication = YES; INFOPLIST_KEY_WKCompanionAppBundleIdentifier = io.sellmair.Pacemaker; IPHONEOS_DEPLOYMENT_TARGET = 10.0; PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Debug; };
+		A00000000000000000000074 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = PacemakerWatch.entitlements; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = Pacemaker; INFOPLIST_KEY_NSHealthShareUsageDescription = "Pacemaker reads heart rate while a workout is active."; INFOPLIST_KEY_WKApplication = YES; INFOPLIST_KEY_WKCompanionAppBundleIdentifier = io.sellmair.Pacemaker; IPHONEOS_DEPLOYMENT_TARGET = 10.0; PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Release; };
+	};
+	rootObject = A00000000000000000000041;
+}

@@ -15,8 +15,8 @@ import io.sellmair.app.core.R
 import io.sellmair.evas.flow
 import io.sellmair.pacemaker.model.HeartRate
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 class AndroidHeartRateNotification(private val service: Service) {
 
@@ -42,26 +42,26 @@ class AndroidHeartRateNotification(private val service: Service) {
     }
 
     private fun createDefaultNotification(): NotificationCompat.Builder {
-        val mainActivityClz = Class.forName("io.sellmair.pacemaker.MainActivity")
-
-        val notificationIntent = Intent(service, mainActivityClz)
+        val notificationIntent = service.packageManager.getLaunchIntentForPackage(service.packageName)
+            ?: Intent(service, service.javaClass)
         val contentPendingIntent = PendingIntent.getActivity(
             service, openActivityRequestCode, notificationIntent, FLAG_IMMUTABLE
         )
 
-        val stopIntent = Intent(service, mainActivityClz)
-        stopIntent.setAction(stopAction)
-        val stopPendingIntent = PendingIntent.getActivity(
-            service, stopAppRequestCode, stopIntent, FLAG_IMMUTABLE
-        )
-
-        return NotificationCompat.Builder(service, notificationChannel.id)
+        val builder = NotificationCompat.Builder(service, notificationChannel.id)
             .setSmallIcon(R.mipmap.ic_launcher_foreground)
             .setContentTitle("Pacemaker")
             .setContentText("Running")
             .setContentIntent(contentPendingIntent)
-            .addAction(NotificationCompat.Action.Builder(null, "stop", stopPendingIntent).build())
             .setOngoing(true)
+        if (!service.packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_WATCH)) {
+            notificationIntent.component?.let { component ->
+                val stopIntent = Intent().setComponent(component).setAction(stopAction)
+                val stopPendingIntent = PendingIntent.getActivity(service, stopAppRequestCode, stopIntent, FLAG_IMMUTABLE)
+                builder.addAction(NotificationCompat.Action.Builder(null, "stop", stopPendingIntent).build())
+            }
+        }
+        return builder
     }
 
 
@@ -77,11 +77,11 @@ class AndroidHeartRateNotification(private val service: Service) {
                 service, notificationId, createDefaultNotification().build(), foregroundServiceType
             )
 
-            MeState.flow().filterNotNull().collect { meState ->
-                update(
-                    meState.heartRate ?: return@collect,
-                    meState.heartRateLimit
-                )
+            MeState.flow().collect { meState ->
+                if (meState == null) return@collect
+                if (meState.hasFreshHeartRate(Clock.System.now().toEpochMilliseconds())) {
+                    meState.heartRate?.let { update(it, meState.heartRateLimit) }
+                } else updateUnavailable(meState.heartRateLimit)
             }
         }
     }
@@ -90,6 +90,14 @@ class AndroidHeartRateNotification(private val service: Service) {
         notificationManager.notify(
             notificationId, createDefaultNotification()
                 .setContentText("Current HR: $myHeartRate Limit: $myHeartRateLimit")
+                .build()
+        )
+    }
+
+    private fun updateUnavailable(myHeartRateLimit: HeartRate) {
+        notificationManager.notify(
+            notificationId, createDefaultNotification()
+                .setContentText("Heart rate unavailable Limit: $myHeartRateLimit")
                 .build()
         )
     }

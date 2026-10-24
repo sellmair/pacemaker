@@ -17,6 +17,10 @@ internal fun PacemakerBluetoothWritable(underlying: BleWritable) = object : Pace
         underlying.setValue(PacemakerServiceDescriptors.heartRateCharacteristic, heartRate.encodeToByteArray())
     }
 
+    override suspend fun clearHeartRate() {
+        underlying.setValue(PacemakerServiceDescriptors.heartRateCharacteristic, byteArrayOf())
+    }
+
     override suspend fun setHeartRateLimit(heartRate: HeartRate) {
         underlying.setValue(PacemakerServiceDescriptors.heartRateLimitCharacteristic, heartRate.encodeToByteArray())
     }

@@ -41,6 +41,9 @@ class PacemakerExtension(
                 enable = true
             }
             withHostTest {}
+            kotlin.sourceSets.getByName("androidHostTest").dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
         }
 
         kotlin.apply {

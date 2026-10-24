@@ -1,0 +1,28 @@
+<resources>
+    <string name="nearby_group">Nearby group</string>
+    <string name="group_bluetooth_unavailable">Group Bluetooth unavailable</string>
+    <string name="phone_shows_group">Your phone shows the nearby group</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="connect_phone">Connect</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_starting">Starting workout</string>
+    <string name="status_hr_unavailable">Heart rate is unavailable</string>
+    <string name="status_permissions">Allow heart rate in Settings</string>
+    <string name="status_open_watch_permissions">Open this watch to allow heart rate access</string>
+    <string name="status_conflicting_workout">Stop the other workout first</string>
+    <string name="status_already_running">Pacemaker workout is already active</string>
+    <string name="status_start_failed">Could not start workout</string>
+    <string name="status_stop_failed">Could not stop workout</string>
+    <string name="status_phone_connect">Open Pacemaker on your phone to connect</string>
+    <string name="status_connect_watch">Select this watch in Pacemaker</string>
+    <string name="status_platform_unavailable">Google Play services is unavailable</string>
+    <string name="status_select_phone">Open Pacemaker on your selected phone</string>
+    <string name="status_connected">Connected to Pacemaker</string>
+    <string name="status_phone_lost">Phone connection lost</string>
+    <string name="status_with_phone">With phone</string>
+    <string name="status_session_sync">Session sync unavailable</string>
+    <string name="own_limit">Your limit: %1$d BPM</string>
+    <string name="close">Close</string>
+    <string name="group_count">Group · %1$d</string>
+</resources>

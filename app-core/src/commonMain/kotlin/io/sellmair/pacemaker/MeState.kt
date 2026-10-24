@@ -3,77 +3,107 @@ package io.sellmair.pacemaker
 import io.sellmair.evas.State
 import io.sellmair.evas.collectEventsAsync
 import io.sellmair.evas.launchState
+import io.sellmair.evas.flow
+import io.sellmair.evas.value
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 data class MeState(
     val me: User,
     val heartRate: HeartRate?,
-    val heartRateLimit: HeartRate
+    val heartRateLimit: HeartRate,
+    val measuredAtEpochMillis: Long? = null
 ) : State {
     companion object Key : State.Key<MeState?> {
         override val default: MeState? = null
     }
 }
 
-internal fun CoroutineScope.launchMeStateActor(userService: UserService) {
+internal fun CoroutineScope.launchMeStateActor(userService: UserService, clock: Clock = Clock.System) {
 
     class Values(
         val me: User? = null,
-        val heartRate: HeartRate? = null,
+        val measurement: HeartRateMeasurementEvent? = null,
+        val measurementChanged: Boolean = false,
+        val clearMeasurement: Boolean = false,
+        val clearMeasurementAt: Instant? = null,
         val heartRateLimit: HeartRate? = null
     )
 
     val valuesChannel = Channel<Values>()
+    var expiryJob: Job? = null
 
-    /* Collect measurements */
     collectEventsAsync<HeartRateMeasurementEvent> { measurement ->
+        val now = clock.now()
+        val age = now - measurement.time
+        if (age < kotlin.time.Duration.ZERO || age > HeartRateSource.MAX_AGE) return@collectEventsAsync
         val user = userService.findUser(measurement.sensorId)
         val me = userService.me()
         if (user?.id == me.id) {
-            valuesChannel.send(Values(me = me, heartRate = measurement.heartRate))
+            val selectedSource = SelectedHeartRateSourceState.value()?.source
+            if (!acceptsHeartRateMeasurement(selectedSource, me.id.value.toString(), user.id.value.toString(), measurement.sensorId.value)) return@collectEventsAsync
+            valuesChannel.send(Values(me = me, measurement = measurement, measurementChanged = true))
+            expiryJob?.cancel()
+            expiryJob = launch {
+                kotlinx.coroutines.delay(HeartRateSource.MAX_AGE - age)
+                valuesChannel.send(Values(clearMeasurementAt = measurement.time))
+            }
         }
     }
 
-
-    /* Collect changes to HR limit */
     launch {
         userService.findHeartRateLimitFlow(userService.me()).collect { heartRateLimit ->
             valuesChannel.send(Values(heartRateLimit = heartRateLimit))
         }
     }
 
-    /* Collect changes in user service (maybe 'me' was updated?) */
     launch {
         userService.onSaveUser.conflate().collect {
             valuesChannel.send(Values(me = userService.me()))
         }
     }
 
+    launch {
+        SelectedHeartRateSourceState.flow().map { state ->
+            val source = state.source
+            (source?.id) to (source?.heartRate != null)
+        }.distinctUntilChanged().collect { (_, hasValue) ->
+            if (!hasValue) valuesChannel.send(Values(clearMeasurement = true))
+        }
+    }
 
-    /* Update MeState */
     launchState(MeState) {
-        var values = Values(me = userService.me())
+        var me = userService.me()
+        var heartRateLimit: HeartRate? = null
+        var currentMeasurement: HeartRateMeasurementEvent? = null
 
         valuesChannel.consumeEach { update ->
-            values = Values(
-                me = update.me ?: values.me,
-                heartRate = update.heartRate ?: values.heartRate,
-                heartRateLimit = update.heartRateLimit ?: values.heartRateLimit
-            )
+            me = update.me ?: me
+            heartRateLimit = update.heartRateLimit ?: heartRateLimit
+            if (update.measurementChanged) currentMeasurement = update.measurement
+            if (update.clearMeasurement ||
+                (update.clearMeasurementAt != null && currentMeasurement?.time == update.clearMeasurementAt)) {
+                currentMeasurement = null
+            }
 
             MeState(
-                me = values.me ?: return@consumeEach,
-                heartRate = values.heartRate,
-                heartRateLimit = values.heartRateLimit ?: return@consumeEach,
+                me = me,
+                heartRate = currentMeasurement?.heartRate,
+                heartRateLimit = heartRateLimit ?: return@consumeEach,
+                measuredAtEpochMillis = currentMeasurement?.time?.toEpochMilliseconds()
             ).emit()
         }
     }
 }
-

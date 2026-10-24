@@ -1,0 +1,28 @@
+<resources>
+    <string name="nearby_group">Gruppe in der Nähe</string>
+    <string name="group_bluetooth_unavailable">Gruppen-Bluetooth nicht verfügbar</string>
+    <string name="phone_shows_group">Die Gruppe wird auf dem Telefon angezeigt</string>
+    <string name="start">Start</string>
+    <string name="stop">Stopp</string>
+    <string name="connect_phone">Verbinden</string>
+    <string name="status_ready">Bereit</string>
+    <string name="status_starting">Training wird gestartet</string>
+    <string name="status_hr_unavailable">Herzfrequenz nicht verfügbar</string>
+    <string name="status_permissions">Erlaube Herzfrequenz in den Einstellungen</string>
+    <string name="status_open_watch_permissions">Öffne diese Uhr und erlaube den Herzfrequenzzugriff</string>
+    <string name="status_conflicting_workout">Beende zuerst das andere Training</string>
+    <string name="status_already_running">Pacemaker-Training läuft bereits</string>
+    <string name="status_start_failed">Training konnte nicht gestartet werden</string>
+    <string name="status_stop_failed">Training konnte nicht beendet werden</string>
+    <string name="status_phone_connect">Öffne Pacemaker auf deinem Telefon</string>
+    <string name="status_connect_watch">Wähle diese Uhr in Pacemaker aus</string>
+    <string name="status_platform_unavailable">Google Play-Dienste sind nicht verfügbar</string>
+    <string name="status_select_phone">Öffne Pacemaker auf deinem ausgewählten Telefon</string>
+    <string name="status_connected">Mit Pacemaker verbunden</string>
+    <string name="status_phone_lost">Telefonverbindung verloren</string>
+    <string name="status_with_phone">Mit Telefon</string>
+    <string name="status_session_sync">Sitzungssynchronisierung nicht verfügbar</string>
+    <string name="own_limit">Dein Limit: %1$d BPM</string>
+    <string name="close">Schließen</string>
+    <string name="group_count">Gruppe · %1$d</string>
+</resources>

@@ -16,4 +16,18 @@
     <string name="slow_down">Slow down!</string>
     <string name="slow_down_heart_rate_utterance_fragment_me">You are at %1$d bpm</string>
     <string name="slow_down_heart_rate_utterance_fragment_other">%1$s is at %2$d bpm</string>
+    <string name="use_watch_source">Use wrist watch</string>
+    <string name="use_sensor_source">Use this sensor</string>
+    <string name="use_automatic_source">Use automatic source</string>
+    <string name="selected_heart_rate_source">Selected heart-rate source: %1$s</string>
+    <string name="forget_watch_companion">Forget wrist watch</string>
+    <string name="watch_connected">Connected to %1$s</string>
+    <string name="watch_paired_offline">Paired, not nearby</string>
+    <string name="watch_not_paired">Install Pacemaker on your Wear OS watch to use it here</string>
+    <string name="watch_transport_unavailable">Google Play services is unavailable for the Wear OS connection</string>
+    <string name="watch_connect">Connect</string>
+    <string name="watch_disconnect">Disconnect</string>
+    <string name="watch_forget">Forget watch source</string>
+    <string name="watch_pair">Connect</string>
+    <string name="watch_details">Details</string>
 </resources>

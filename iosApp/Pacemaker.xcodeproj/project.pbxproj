@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A10000000000000000000001 /* WatchPhoneBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002 /* WatchPhoneBridge.swift */; };
+		A20000000000000000000001 /* PacemakerWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011; };
+		A20000000000000000000002 /* WatchSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012; };
+		A20000000000000000000003 /* PacemakerWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A30000000000000000000001 /* Phone English Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30000000000000000000011; };
+		A30000000000000000000002 /* Phone German Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30000000000000000000012; };
+		A30000000000000000000003 /* Phone Italian Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30000000000000000000013; };
+		A30000000000000000000004 /* Watch English Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30000000000000000000014; };
+		A30000000000000000000005 /* Watch German Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30100000000000000000011; };
+		A30000000000000000000006 /* Watch Italian Localizable.strings */ = {isa = PBXBuildFile; fileRef = A30100000000000000000012; };
 		B07ED25E29BF9C21008A106B /* PacemakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07ED25D29BF9C21008A106B /* PacemakerApp.swift */; };
 		B07ED26029BF9C21008A106B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07ED25F29BF9C21008A106B /* ContentView.swift */; };
 		B07ED26229BF9C22008A106B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B07ED26129BF9C22008A106B /* Assets.xcassets */; };
@@ -14,6 +24,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A10000000000000000000002 /* WatchPhoneBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../WatchApp/WatchPhoneBridge.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* PacemakerWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerWatchApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* WatchSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* PacemakerWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PacemakerWatch.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000015 /* PacemakerWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PacemakerWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A30000000000000000000011 /* Phone English Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A30000000000000000000012 /* Phone German Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A30000000000000000000013 /* Phone Italian Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A30000000000000000000014 /* Watch English Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A30100000000000000000011 /* Watch German Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A30100000000000000000012 /* Watch Italian Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B071979C2AE9711E00E53800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B07ED25A29BF9C21008A106B /* Pacemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pacemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B07ED25D29BF9C21008A106B /* PacemakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacemakerApp.swift; sourceTree = "<group>"; };
@@ -37,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				B07ED25C29BF9C21008A106B /* Pacemaker */,
+				A20000000000000000000028 /* WatchApp */,
 				B07ED25B29BF9C21008A106B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -45,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				B07ED25A29BF9C21008A106B /* Pacemaker.app */,
+				A20000000000000000000015 /* PacemakerWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,12 +78,37 @@
 				B071979C2AE9711E00E53800 /* Info.plist */,
 				B07ED25D29BF9C21008A106B /* PacemakerApp.swift */,
 				B07ED25F29BF9C21008A106B /* ContentView.swift */,
+				A10000000000000000000002 /* WatchPhoneBridge.swift */,
+				A30000000000000000000011 /* Phone English Localizable.strings */,
+				A30000000000000000000012 /* Phone German Localizable.strings */,
+				A30000000000000000000013 /* Phone Italian Localizable.strings */,
 				B07ED26129BF9C22008A106B /* Assets.xcassets */,
 				B07ED26329BF9C22008A106B /* Preview Content */,
 			);
 			path = Pacemaker;
 			sourceTree = "<group>";
 		};
+		A20000000000000000000028 /* WatchApp */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000011 /* PacemakerWatchApp.swift */,
+				A20000000000000000000012 /* WatchSessionModel.swift */,
+				A30000000000000000000014 /* Watch English Localizable.strings */,
+				A30100000000000000000011 /* Watch German Localizable.strings */,
+				A30100000000000000000012 /* Watch Italian Localizable.strings */,
+				A20000000000000000000013 /* PacemakerWatch.entitlements */,
+			);
+			path = WatchApp;
+			sourceTree = "<group>";
+		};
+		A20000000000000000000026 /* Watch target dependency */ = {isa = PBXTargetDependency; target = A20000000000000000000025; targetProxy = A20000000000000000000027; };
+		A20000000000000000000027 /* Watch target proxy */ = {isa = PBXContainerItemProxy; containerPortal = B07ED25229BF9C21008A106B; proxyType = 1; remoteGlobalIDString = A20000000000000000000025; remoteInfo = PacemakerWatch; };
+		A20000000000000000000031 /* Watch configuration list */ = {isa = XCConfigurationList; buildConfigurations = (A20000000000000000000033, A20000000000000000000034,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A20000000000000000000032 /* Watch target configuration list */ = {isa = XCConfigurationList; buildConfigurations = (A20000000000000000000035, A20000000000000000000036,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A20000000000000000000033 /* Project Debug */ = {isa = XCBuildConfiguration; buildSettings = {SDKROOT = watchos; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Debug; };
+		A20000000000000000000034 /* Project Release */ = {isa = XCBuildConfiguration; buildSettings = {SDKROOT = watchos; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Release; };
+		A20000000000000000000035 /* Watch Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = WatchApp/PacemakerWatch.entitlements; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = WatchApp/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = watchos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Debug; };
+		A20000000000000000000036 /* Watch Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = WatchApp/PacemakerWatch.entitlements; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = WatchApp/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = io.sellmair.Pacemaker.watchkitapp; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = watchos; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 4; WATCHOS_DEPLOYMENT_TARGET = 10.0; }; name = Release; };
 		B07ED26329BF9C22008A106B /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -80,14 +128,27 @@
 				B07ED25629BF9C21008A106B /* Sources */,
 				B07ED25729BF9C21008A106B /* Frameworks */,
 				B07ED25829BF9C21008A106B /* Resources */,
+				A20000000000000000000021 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A20000000000000000000026 /* Watch target dependency */,
 			);
 			name = Pacemaker;
 			productName = Pacemaker;
 			productReference = B07ED25A29BF9C21008A106B /* Pacemaker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A20000000000000000000025 /* PacemakerWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A20000000000000000000032;
+			buildPhases = (A20000000000000000000022, A20000000000000000000023, A20000000000000000000024,);
+			buildRules = ();
+			dependencies = ();
+			name = PacemakerWatch;
+			productName = PacemakerWatch;
+			productReference = A20000000000000000000015;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -103,6 +164,7 @@
 					B07ED25929BF9C21008A106B = {
 						CreatedOnToolsVersion = 14.2;
 					};
+				A20000000000000000000025 = {CreatedOnToolsVersion = 27.0;};
 				};
 			};
 			buildConfigurationList = B07ED25529BF9C21008A106B /* Build configuration list for PBXProject "Pacemaker" */;
@@ -120,6 +182,7 @@
 			projectRoot = "";
 			targets = (
 				B07ED25929BF9C21008A106B /* Pacemaker */,
+				A20000000000000000000025 /* PacemakerWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -129,12 +192,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30000000000000000000001 /* Phone English Localizable.strings */,
+				A30000000000000000000002 /* Phone German Localizable.strings */,
+				A30000000000000000000003 /* Phone Italian Localizable.strings */,
 				B07ED26529BF9C22008A106B /* Preview Assets.xcassets in Resources */,
 				B07ED26229BF9C22008A106B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+		A20000000000000000000021 /* Embed Watch Content */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 16; files = (A20000000000000000000003,); name = "Embed Watch Content"; runOnlyForDeploymentPostprocessing = 0; };
+		A20000000000000000000022 /* Watch Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A20000000000000000000001, A20000000000000000000002,); runOnlyForDeploymentPostprocessing = 0; };
+		A20000000000000000000023 /* Watch Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A20000000000000000000024 /* Watch Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A30000000000000000000004, A30000000000000000000005, A30000000000000000000006,); runOnlyForDeploymentPostprocessing = 0; };
 
 /* Begin PBXShellScriptBuildPhase section */
 		B0A5C0082CA1E1C6003D0856 /* Compile Kotlin */ = {
@@ -163,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B07ED26029BF9C21008A106B /* ContentView.swift in Sources */,
+				A10000000000000000000001 /* WatchPhoneBridge.swift in Sources */,
 				B07ED25E29BF9C21008A106B /* PacemakerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,6 +369,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = Pacemaker/Pacemaker.entitlements;
 				CURRENT_PROJECT_VERSION = 17;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Pacemaker/Preview Content\"";
@@ -309,6 +382,7 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pacemaker uses HealthKit to start a heart rate workout on your paired Apple Watch.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -342,6 +416,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = Pacemaker/Pacemaker.entitlements;
 				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"Pacemaker/Preview Content\"";
 				DEVELOPMENT_TEAM = R58Q77NDGL;
@@ -353,6 +428,7 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
 				INFOPLIST_KEY_NSBluetoothWhileInUseUsageDescription = "Uses Bluetooth LE to connect to other devices supported by Pacemaker";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pacemaker uses HealthKit to start a heart rate workout on your paired Apple Watch.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

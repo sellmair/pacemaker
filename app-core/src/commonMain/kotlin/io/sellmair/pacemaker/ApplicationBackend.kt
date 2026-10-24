@@ -19,6 +19,7 @@ interface ApplicationBackend {
 }
 
 fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
+    scope.launchHeartRateSourceSelectionActor(settings)
     scope.launchGroupStateActor(userService)
     scope.launchMeStateActor(userService)
     scope.launchPacemakerBroadcastSender(pacemakerBluetoothService)
@@ -26,17 +27,14 @@ fun ApplicationBackend.launchApplicationBackend(scope: CoroutineScope) {
     scope.launchHeartRateSensorMeasurement(heartRateSensorBluetoothService)
     scope.launchHeartRateSensorAutoConnector(userService, heartRateSensorBluetoothService)
     scope.launchCriticalGroupStateActor()
-    scope.launchSessionActor(userService, sessionService)
     scope.launchHeartRateUtteranceProducer()
     scope.launchUtteranceSettingsActor(settings)
-    scope.launchApplicationFeatureActor(settings)
     scope.launchAdhocUserActor(userService)
     scope.launchHeartRateSensorLinkingActor(userService)
     scope.launchUpdateMeActor(userService)
     scope.launchHeartRateSensorsStateActor(heartRateSensorBluetoothService)
     scope.launchHeartRateSensorStateActor(userService, heartRateSensorBluetoothService)
     scope.launchHeartRateSensorConnectionStateActor(userService, heartRateSensorBluetoothService)
-    scope.launchSessionStateActor(sessionService)
     scope.launchMeColorStateActor(settings)
     scope.launchBluetoothStateActor()
     launchPlatform(scope)

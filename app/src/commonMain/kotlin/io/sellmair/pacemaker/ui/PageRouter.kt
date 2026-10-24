@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.sellmair.evas.compose.composeValue
-import io.sellmair.pacemaker.ApplicationFeature
 
 @Composable
 fun PageRouter(
@@ -88,7 +86,6 @@ private fun RowScope.NavigationBarItem(
             Icon(
                 when (page) {
                     Page.MainPage -> Icons.Outlined.FavoriteBorder
-                    Page.TimelinePage -> Icons.Default.Timeline
                     Page.SettingsPage -> Icons.Default.Settings
                 }, contentDescription = null
             )
@@ -124,8 +121,5 @@ private fun PageWithAnimation(
 
 @Composable
 fun getEnabledPages(): List<Page> {
-    val sessionsEnabled = ApplicationFeature.Sessions.state.composeValue().enabled
-    val pages = Page.entries.toMutableList()
-    if (!sessionsEnabled) pages.remove(Page.TimelinePage)
-    return pages
+    return Page.entries
 }

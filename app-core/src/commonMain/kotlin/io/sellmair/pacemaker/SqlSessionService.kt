@@ -59,7 +59,7 @@ private class SqlStoredSessionService(
     }
 
     override suspend fun getHeartRateMeasurements(user: User): List<SessionRecord> = database {
-        sessionQueries.findHeartRateMeasurements(session.id.value).executeAsList().map { dbRecord ->
+        sessionQueries.findHeartRateMeasurements(session.id.value, user.id.value).executeAsList().map { dbRecord ->
             SessionRecord(
                 sessionId = session.id,
                 userId = UserId(dbRecord.user_id),

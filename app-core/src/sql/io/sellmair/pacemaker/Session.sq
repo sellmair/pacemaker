@@ -40,7 +40,7 @@ INSERT INTO db_session_heart_rate(
 ) VALUES (?, ?, ?, ?, ?);
 
 findHeartRateMeasurements:
-SELECT * FROM db_session_heart_rate WHERE session_id=?;
+SELECT * FROM db_session_heart_rate WHERE session_id=? AND user_id=?;
 
 findUsers:
 SELECT DISTINCT (user_id) FROM db_session_heart_rate WHERE session_id=?;
