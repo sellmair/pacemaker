@@ -39,4 +39,8 @@ dependencies {
     androidTestImplementation(deps.androidx.test.runner)
     androidTestImplementation(deps.androidx.test.core)
     androidTestImplementation(deps.androidx.test.ext.junit)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.12.1")
+    androidTestImplementation(deps.compose.foundation)
+    androidTestImplementation(deps.compose.material3)
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.12.1")
 }

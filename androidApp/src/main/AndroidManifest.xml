@@ -1,14 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/pacemaker_launcher"
+        android:roundIcon="@mipmap/pacemaker_launcher_round"
         android:label="Pacemaker"
         android:localeConfig="@xml/locales_config"
-        android:theme="@style/AppTheme">
+        android:theme="@style/PacemakerPhoneTheme">
         <activity
             android:name="io.sellmair.pacemaker.MainActivity"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

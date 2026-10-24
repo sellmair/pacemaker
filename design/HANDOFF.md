@@ -35,7 +35,7 @@ All sample measurements, people, device states and limits are illustrative. The 
 | `tools/` | Reproducible export, preview, validation and packaging scripts |
 | `validation/` | Machine-readable image, color, browser and native compiler results |
 
-This is a design handoff. Existing production icon files and app UI are not modified. The proposed UI follows the repository's current Live and Settings scope. Timeline/history, maps, GPS, accounts, and new Apple Watch functionality are outside this design.
+This folder contains the design handoff and the accepted Android phone implementation evidence under `implementation/`. The shared Compose redesign is adopted in the application with three direct destinations: Live, Devices and Profile. Timeline/history, maps, GPS, accounts, and new Apple Watch functionality remain outside this design.
 
 ## Icon and logo rules
 
@@ -158,7 +158,7 @@ Use brief, calm, direct copy. “Your signal.” and “Keep pace. Together.” 
 5. Apply the same tokens to Wear OS, keeping its interface smaller than the phone.
 6. Verify font scaling, localization, dark/light themes, outdoor readability, and assistive technology.
 
-The proposed layout is intentionally a design proposal. It reorganizes the current main/settings interactions without implementing them in the app.
+The editable guide remains a design reference. Android execution follows `ANDROID_PHONE_IMPLEMENTATION_PLAN.md`; native captures and validation are recorded separately under `implementation/android/`. The implementation preserves three speech modes, the existing 40–200 bpm editing range, immediate preference persistence and truthful source availability rather than copying the guide's simplified interactions.
 
 ## Reproduction and validation
 
@@ -178,7 +178,7 @@ Preview rendering uses Playwright, preferring locally installed Chrome on macOS.
 
 Validation checks 40 PNGs, catalog/manifest references, alpha/color modes, file size, Android safe geometry, intended contrast pairs and ICO entries. Where SDKs exist, it compiles/links Android resources with aapt2 and compiles the iOS catalog with actool. A missing SDK is reported as skipped, not passed. Browser checks cover local/offline loading, responsive layouts and representative control/state changes.
 
-Results are in `validation/report.json`, `native-compilers.json`, and `browser-checks.json`. Android resources passed aapt2 compile/link with build tools 36.1.0 and Android 36; iOS assets passed actool. The IDE build tool could not provide useful diagnostics for standalone design resources, so native resource compilers supplied the platform validation. No production app build or on-device visual validation is claimed.
+Asset-validation results are in `validation/report.json`, `native-compilers.json`, and `browser-checks.json`. Android resources passed aapt2 compile/link with build tools 36.1.0 and Android 36; iOS assets passed actool. The IDE build tool could not provide useful diagnostics for standalone design resources, so native resource compilers supplied that asset validation. Production Android builds, native UI tests and device deployments are recorded separately in `implementation/android/`.
 
 ## Provenance
 

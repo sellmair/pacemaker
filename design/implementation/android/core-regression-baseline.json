@@ -1,0 +1,51 @@
+{
+  "command": "./gradlew :app-core:testAndroidHostTest --console=plain",
+  "passed": true,
+  "total": 29,
+  "results": [
+    {
+      "file": "TEST-SqlUserServiceTest.xml",
+      "name": "SqlUserServiceTest",
+      "tests": "6",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-24T20:42:29.353Z",
+      "hostname": "DE-UNIT-2028",
+      "time": "0.015"
+    },
+    {
+      "file": "TEST-GroupStateTest.xml",
+      "name": "GroupStateTest",
+      "tests": "4",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-24T20:42:28.800Z",
+      "hostname": "DE-UNIT-2028",
+      "time": "0.539"
+    },
+    {
+      "file": "TEST-io.sellmair.pacemaker.HeartRateSourceTest.xml",
+      "name": "io.sellmair.pacemaker.HeartRateSourceTest",
+      "tests": "18",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-24T20:42:29.370Z",
+      "hostname": "DE-UNIT-2028",
+      "time": "0.007"
+    },
+    {
+      "file": "TEST-SessionSourceSelectionTest.xml",
+      "name": "SessionSourceSelectionTest",
+      "tests": "1",
+      "skipped": "0",
+      "failures": "0",
+      "errors": "0",
+      "timestamp": "2026-10-24T20:42:29.340Z",
+      "hostname": "DE-UNIT-2028",
+      "time": "0.013"
+    }
+  ]
+}

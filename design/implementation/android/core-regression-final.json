@@ -1,0 +1,33 @@
+{
+  "suites": [
+    {
+      "name": "GroupStateTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "SessionSourceSelectionTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "SqlUserServiceTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "io.sellmair.pacemaker.HeartRateSourceTest",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "totalTests": 29
+}

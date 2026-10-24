@@ -1,0 +1,5 @@
+<resources>
+    <style name="PacemakerPhoneTheme" parent="@style/AppTheme">
+        <item name="android:windowBackground">#171A19</item>
+    </style>
+</resources>

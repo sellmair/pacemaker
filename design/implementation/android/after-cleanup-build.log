@@ -1,0 +1,221 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/Users/Sebastian.Sellmair/.gradle/wrapper/dists/gradle-9.5.0-bin/bvnork1r7n8i6kp5cnkibsc9q/gradle-9.5.0/lib/native-platform-0.22-milestone-29.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Reusing configuration cache.
+> Task :androidApp:preBuild UP-TO-DATE
+> Task :utils:androidPreBuild UP-TO-DATE
+> Task :utils:preAndroidMainBuild UP-TO-DATE
+> Task :app:androidPreBuild UP-TO-DATE
+> Task :androidApp:preDebugBuild UP-TO-DATE
+> Task :models:jvmProcessResources NO-SOURCE
+> Task :models:processJvmMainResources SKIPPED
+> Task :utils:kmpPartiallyResolvedDependenciesChecker
+> Task :utils:jvmProcessResources NO-SOURCE
+> Task :utils:processJvmMainResources SKIPPED
+> Task :models:kmpPartiallyResolvedDependenciesChecker
+> Task :utils:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :models:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :bluetooth-core:androidPreBuild UP-TO-DATE
+> Task :app:kmpPartiallyResolvedDependenciesChecker
+> Task :bluetooth-core:preAndroidMainBuild UP-TO-DATE
+> Task :app-core:androidPreBuild UP-TO-DATE
+> Task :androidApp:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app-core:kmpPartiallyResolvedDependenciesChecker
+> Task :bluetooth:androidPreBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :bluetooth:kmpPartiallyResolvedDependenciesChecker
+> Task :app:generateExpectResourceCollectorsForCommonMain UP-TO-DATE
+> Task :app-core:preAndroidMainBuild UP-TO-DATE
+> Task :app-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preAndroidMainBuild UP-TO-DATE
+> Task :app:generateComposeResClass UP-TO-DATE
+> Task :utils:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :bluetooth:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :bluetooth-core:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :app:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :bluetooth:preAndroidMainBuild UP-TO-DATE
+> Task :app-core:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :androidApp:generateDebugAssets UP-TO-DATE
+> Task :bluetooth-core:kmpPartiallyResolvedDependenciesChecker
+> Task :app:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :app:generateAndroidMainAssets UP-TO-DATE
+> Task :app:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :bluetooth:generateAndroidMainAssets UP-TO-DATE
+> Task :app-core:generateAndroidMainAssets UP-TO-DATE
+> Task :bluetooth-core:generateAndroidMainAssets UP-TO-DATE
+> Task :utils:generateAndroidMainAssets UP-TO-DATE
+> Task :androidApp:generateDebugResources UP-TO-DATE
+> Task :bluetooth-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :bluetooth:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :app:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :androidApp:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :androidApp:javaPreCompileDebug UP-TO-DATE
+> Task :app:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :app:copyNonXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :bluetooth-core:mergeAndroidMainAssets UP-TO-DATE
+> Task :utils:mergeAndroidMainAssets UP-TO-DATE
+> Task :bluetooth:mergeAndroidMainAssets UP-TO-DATE
+> Task :app-core:mergeAndroidMainAssets UP-TO-DATE
+> Task :bluetooth-core:packageAndroidMainResources UP-TO-DATE
+> Task :app-core:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :utils:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :app:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :bluetooth:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :androidApp:mapDebugSourceSetPaths UP-TO-DATE
+> Task :bluetooth-core:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :androidApp:desugarDebugFileDependencies UP-TO-DATE
+> Task :utils:packageAndroidMainResources UP-TO-DATE
+> Task :bluetooth-core:parseAndroidMainLocalResources UP-TO-DATE
+> Task :utils:parseAndroidMainLocalResources UP-TO-DATE
+> Task :bluetooth:packageAndroidMainResources UP-TO-DATE
+> Task :app:convertXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :app-core:generateCommonMainPacemakerDatabaseInterface UP-TO-DATE
+> Task :androidApp:extractDeepLinksDebug UP-TO-DATE
+> Task :utils:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth:parseAndroidMainLocalResources UP-TO-DATE
+> Task :app:processAndroidMainManifest UP-TO-DATE
+> Task :app-core:processAndroidMainManifest UP-TO-DATE
+> Task :androidApp:packageDebugResources UP-TO-DATE
+> Task :androidApp:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth-core:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth-core:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :app-core:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :bluetooth-core:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :androidApp:mergeDebugJniLibFolders UP-TO-DATE
+> Task :utils:processAndroidMainManifest UP-TO-DATE
+> Task :bluetooth:generateAndroidMainRFile UP-TO-DATE
+> Task :app:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :utils:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :app-core:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :app:prepareComposeResourcesTaskForCommonMain UP-TO-DATE
+> Task :utils:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :utils:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :androidApp:validateSigningDebug UP-TO-DATE
+> Task :app:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :utils:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :bluetooth:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :bluetooth-core:processAndroidMainManifest UP-TO-DATE
+> Task :app-core:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :androidApp:writeDebugAppMetadata UP-TO-DATE
+> Task :androidApp:preDebugAndroidTestBuild SKIPPED
+> Task :app-core:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :bluetooth:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :app:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestResources UP-TO-DATE
+> Task :app:generateResourceAccessorsForCommonMain UP-TO-DATE
+> Task :androidApp:javaPreCompileDebugAndroidTest UP-TO-DATE
+> Task :utils:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestGlobalSynthetics UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :androidApp:mapDebugAndroidTestSourceSetPaths UP-TO-DATE
+> Task :app:copyAndroidMainComposeResourcesToAndroidAssets UP-TO-DATE
+> Task :androidApp:desugarDebugAndroidTestFileDependencies UP-TO-DATE
+> Task :androidApp:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:generateActualResourceCollectorsForAndroidMain UP-TO-DATE
+> Task :androidApp:validateSigningDebugAndroidTest UP-TO-DATE
+> Task :androidApp:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestJniLibFolders UP-TO-DATE
+> Task :androidApp:packageDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeAndroidMainAssets UP-TO-DATE
+> Task :androidApp:checkDebugAndroidTestDuplicateClasses UP-TO-DATE
+> Task :androidApp:parseDebugAndroidTestLocalResources UP-TO-DATE
+> Task :androidApp:processDebugNavigationResources UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestRFile UP-TO-DATE
+> Task :androidApp:checkDebugAarMetadata UP-TO-DATE
+> Task :androidApp:parseDebugLocalResources UP-TO-DATE
+> Task :androidApp:compileDebugNavigationResources UP-TO-DATE
+> Task :androidApp:checkDebugAndroidTestAarMetadata UP-TO-DATE
+> Task :androidApp:generateDebugRFile UP-TO-DATE
+> Task :app:packageAndroidMainResources UP-TO-DATE
+> Task :app:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:mergeDebugAssets UP-TO-DATE
+> Task :androidApp:compressDebugAssets UP-TO-DATE
+> Task :androidApp:compressDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:mergeExtDexDebug UP-TO-DATE
+> Task :app:parseAndroidMainLocalResources UP-TO-DATE
+> Task :bluetooth-core:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :bluetooth:processAndroidMainManifest UP-TO-DATE
+> Task :androidApp:mergeExtDexDebugAndroidTest UP-TO-DATE
+> Task :bluetooth-core:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :app:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth-core:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :app-core:packageAndroidMainResources UP-TO-DATE
+> Task :app-core:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app-core:parseAndroidMainLocalResources UP-TO-DATE
+> Task :app-core:generateAndroidMainRFile UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:mergeDebugResources UP-TO-DATE
+> Task :androidApp:processDebugMainManifest UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestManifest UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestManifest UP-TO-DATE
+> Task :androidApp:processDebugManifest UP-TO-DATE
+> Task :androidApp:processDebugManifestForPackage UP-TO-DATE
+> Task :androidApp:processDebugResources UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestResources UP-TO-DATE
+> Task :utils:compileAndroidMain UP-TO-DATE
+> Task :utils:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :utils:compileKotlinJvm UP-TO-DATE
+> Task :utils:processAndroidMainJavaRes UP-TO-DATE
+> Task :utils:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :utils:compileJvmMainJava NO-SOURCE
+> Task :utils:jvmMainClasses UP-TO-DATE
+> Task :utils:jvmJar UP-TO-DATE
+> Task :models:compileKotlinJvm UP-TO-DATE
+> Task :models:compileJvmMainJava NO-SOURCE
+> Task :models:jvmMainClasses UP-TO-DATE
+> Task :models:jvmJar UP-TO-DATE
+> Task :androidApp:mergeDebugNativeLibs UP-TO-DATE
+> Task :androidApp:stripDebugDebugSymbols UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :androidApp:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :bluetooth-core:compileAndroidMain UP-TO-DATE
+> Task :bluetooth-core:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :bluetooth-core:processAndroidMainJavaRes UP-TO-DATE
+> Task :bluetooth-core:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :bluetooth:compileAndroidMain UP-TO-DATE
+> Task :bluetooth:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :bluetooth:processAndroidMainJavaRes UP-TO-DATE
+> Task :bluetooth:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :app-core:compileAndroidMain UP-TO-DATE
+> Task :app-core:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :app-core:processAndroidMainJavaRes UP-TO-DATE
+> Task :app-core:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :app:compileAndroidMain
+> Task :app:processAndroidMainJavaRes
+> Task :app:bundleAndroidMainClassesToCompileJar
+> Task :app:bundleLibRuntimeToDirAndroidMain
+> Task :androidApp:compileDebugKotlin
+> Task :androidApp:compileDebugJavaWithJavac NO-SOURCE
+> Task :androidApp:processDebugJavaRes UP-TO-DATE
+> Task :androidApp:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :androidApp:dexBuilderDebug UP-TO-DATE
+> Task :androidApp:mergeProjectDexDebug UP-TO-DATE
+> Task :androidApp:compileDebugAndroidTestKotlin
+> Task :androidApp:processDebugAndroidTestJavaRes UP-TO-DATE
+> Task :androidApp:compileDebugAndroidTestJavaWithJavac NO-SOURCE
+> Task :androidApp:dexBuilderDebugAndroidTest UP-TO-DATE
+> Task :androidApp:mergeProjectDexDebugAndroidTest UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestJavaResource UP-TO-DATE
+> Task :androidApp:mergeDebugJavaResource
+> Task :androidApp:mergeLibDexDebugAndroidTest UP-TO-DATE
+> Task :androidApp:packageDebugAndroidTest UP-TO-DATE
+> Task :androidApp:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+> Task :androidApp:assembleDebugAndroidTest UP-TO-DATE
+> Task :androidApp:mergeLibDexDebug
+> Task :androidApp:packageDebug
+> Task :androidApp:assembleDebug
+> Task :androidApp:createDebugApkListingFileRedirect UP-TO-DATE
+
+BUILD SUCCESSFUL in 1s
+161 actionable tasks: 15 executed, 146 up-to-date
+Configuration cache entry reused.

@@ -3,6 +3,7 @@
 package io.sellmair.pacemaker
 
 import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.ComponentName
@@ -22,39 +23,76 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
-import androidx.lifecycle.lifecycleScope
 import io.sellmair.evas.compose.LocalEvents
 import io.sellmair.evas.compose.LocalStates
 import io.sellmair.pacemaker.ui.ApplicationWindow
+import io.sellmair.pacemaker.ui.SharedRhythmTheme
+import io.sellmair.pacemaker.ui.StartupScreen
+import io.sellmair.pacemaker.ui.StartupStatus
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.seconds
 
 
 class MainActivity : ComponentActivity(), CoroutineScope {
 
     override var coroutineContext: CoroutineContext = Dispatchers.Main + Job()
+    private var startupStatus by mutableStateOf(StartupStatus.Connecting)
+    private var bluetoothEnableRequestInFlight = false
+    private var bluetoothEnableRequestDismissed = false
+    private var serviceBindRequested = false
 
     private val mainServiceConnection = ApplicationBackendConnection()
     private val runtimePermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         if (hasBluetoothRuntimePermission()) {
+            requestBluetoothEnableIfNeeded()
+        } else {
+            startupStatus = StartupStatus.PermissionRequired
+            Toast.makeText(
+                this,
+                "Bluetooth permission is required to use Pacemaker.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private val bluetoothEnableRequest = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        bluetoothEnableRequestInFlight = false
+        val permissionsGranted = hasBluetoothRuntimePermission()
+        val bluetoothEnabled = permissionsGranted &&
+                getSystemService<BluetoothManager>()?.adapter?.isEnabled == true
+        if (result.resultCode == Activity.RESULT_OK && bluetoothEnabled) {
+            bluetoothEnableRequestDismissed = false
+            startupStatus = StartupStatus.Connecting
             startForegroundService()
         } else {
-            Toast.makeText(this, "Bluetooth permission is required to use Pacemaker.", Toast.LENGTH_LONG).show()
+            bluetoothEnableRequestDismissed = true
+            startupStatus = if (permissionsGranted) {
+                StartupStatus.Connecting
+            } else {
+                StartupStatus.PermissionRequired
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK),
-            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.BLACK)
+            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
 
         coroutineContext = Dispatchers.Main + Job()
 
@@ -68,8 +106,9 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
         }
         if (permissionsToRequest.isEmpty()) {
-            startForegroundService()
+            requestBluetoothEnableIfNeeded()
         } else {
+            startupStatus = StartupStatus.PermissionRequired
             runtimePermissionRequest.launch(permissionsToRequest.toTypedArray())
         }
 
@@ -83,26 +122,22 @@ class MainActivity : ComponentActivity(), CoroutineScope {
                 ) {
                     ApplicationWindow()
                 }
+            } else {
+                SharedRhythmTheme {
+                    StartupScreen(
+                        status = startupStatus,
+                        onRetryPermission = {
+                            runtimePermissionRequest.launch(permissionsToRequest.toTypedArray())
+                        }
+                    )
+                }
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val bluetoothManager = getSystemService<BluetoothManager>()
-        val adapter = bluetoothManager?.adapter
-
-        lifecycleScope.launch {
-            while (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                delay(1.seconds)
-            }
-
-            if (adapter?.isEnabled == false) {
-                val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                @Suppress("DEPRECATION")
-                startActivityForResult(enableBluetoothIntent, -1)
-            }
-        }
+        requestBluetoothEnableIfNeeded()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -121,6 +156,30 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         Manifest.permission.BLUETOOTH_ADVERTISE
     ).all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 
+    private fun requestBluetoothEnableIfNeeded() {
+        if (!hasBluetoothRuntimePermission()) {
+            startupStatus = StartupStatus.PermissionRequired
+            return
+        }
+
+        // Keep the app usable when the user declines the separate Bluetooth-enable prompt.
+        startupStatus = StartupStatus.Connecting
+        startForegroundService()
+
+        // BLUETOOTH_CONNECT is part of the complete grant check above, before adapter access.
+        val adapter = getSystemService<BluetoothManager>()?.adapter
+        if (adapter?.isEnabled == false) {
+            startupStatus = StartupStatus.BluetoothRequired
+            if (!bluetoothEnableRequestInFlight && !bluetoothEnableRequestDismissed) {
+                bluetoothEnableRequestInFlight = true
+                bluetoothEnableRequest.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+            }
+            return
+        }
+
+        bluetoothEnableRequestDismissed = false
+    }
+
     private inner class ApplicationBackendConnection : ServiceConnection {
 
         private var coroutineContext: CoroutineContext? = null
@@ -132,7 +191,8 @@ class MainActivity : ComponentActivity(), CoroutineScope {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             if (service is AndroidApplicationBackend.MainServiceBinder) {
                 this._backend.value = service
-                val coroutineContext = SupervisorJob() + Dispatchers.Main + service.events + service.states
+                val coroutineContext =
+                    SupervisorJob() + Dispatchers.Main + service.events + service.states
                 CoroutineScope(coroutineContext).launchFrontendServices()
                 this.coroutineContext = coroutineContext
             }
@@ -140,11 +200,15 @@ class MainActivity : ComponentActivity(), CoroutineScope {
 
         override fun onServiceDisconnected(name: ComponentName?) {
             _backend.value = null
+            serviceBindRequested = false
+            startupStatus = StartupStatus.Connecting
             coroutineContext?.cancel()
         }
     }
 
     private fun startForegroundService() {
+        if (serviceBindRequested) return
+        serviceBindRequested = true
         bindService(
             Intent(this, AndroidApplicationBackend::class.java),
             mainServiceConnection,

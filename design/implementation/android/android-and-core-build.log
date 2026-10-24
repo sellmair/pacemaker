@@ -1,0 +1,319 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/Users/Sebastian.Sellmair/.gradle/wrapper/dists/gradle-9.5.0-bin/bvnork1r7n8i6kp5cnkibsc9q/gradle-9.5.0/lib/native-platform-0.22-milestone-29.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Calculating task graph as no cached configuration is available for tasks: :androidApp:assembleDebug :androidApp:assembleDebugAndroidTest :app-core:testAndroidHostTest
+> Task :buildSrc:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :buildSrc:generateDependencies UP-TO-DATE
+> Task :buildSrc:generateExternalPluginSpecBuilders UP-TO-DATE
+> Task :buildSrc:extractPrecompiledScriptPluginPlugins UP-TO-DATE
+> Task :buildSrc:compilePluginsBlocks UP-TO-DATE
+> Task :buildSrc:generatePrecompiledScriptPluginAccessors UP-TO-DATE
+> Task :buildSrc:generateScriptPluginAdapters UP-TO-DATE
+> Task :buildSrc:compileKotlin UP-TO-DATE
+> Task :buildSrc:compileJava NO-SOURCE
+> Task :buildSrc:compileGroovy NO-SOURCE
+> Task :buildSrc:pluginDescriptors UP-TO-DATE
+> Task :buildSrc:processResources UP-TO-DATE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+> Task :app-core:androidPreBuild UP-TO-DATE
+> Task :app:androidPreBuild UP-TO-DATE
+> Task :utils:androidPreBuild UP-TO-DATE
+> Task :bluetooth-core:androidPreBuild UP-TO-DATE
+> Task :bluetooth:androidPreBuild UP-TO-DATE
+> Task :androidApp:preBuild UP-TO-DATE
+> Task :app-core:preAndroidMainBuild UP-TO-DATE
+> Task :models:jvmProcessResources NO-SOURCE
+> Task :app:preAndroidMainBuild UP-TO-DATE
+> Task :models:kmpPartiallyResolvedDependenciesChecker
+> Task :app-core:kmpPartiallyResolvedDependenciesChecker
+> Task :app:kmpPartiallyResolvedDependenciesChecker
+> Task :models:processJvmMainResources SKIPPED
+> Task :utils:kmpPartiallyResolvedDependenciesChecker
+> Task :models:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :bluetooth-core:preAndroidMainBuild UP-TO-DATE
+> Task :utils:preAndroidMainBuild UP-TO-DATE
+> Task :utils:jvmProcessResources NO-SOURCE
+> Task :app:generateComposeResClass UP-TO-DATE
+> Task :app:generateExpectResourceCollectorsForCommonMain UP-TO-DATE
+> Task :app:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :androidApp:preDebugBuild UP-TO-DATE
+> Task :bluetooth:preAndroidMainBuild UP-TO-DATE
+> Task :utils:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :app-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :utils:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :utils:processJvmMainResources SKIPPED
+> Task :app:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :app-core:packageAndroidMainResources UP-TO-DATE
+> Task :app-core:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :bluetooth-core:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :app-core:generateCommonMainPacemakerDatabaseInterface UP-TO-DATE
+> Task :androidApp:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :bluetooth:generateAndroidMainEmptyResourceFiles UP-TO-DATE
+> Task :bluetooth:kmpPartiallyResolvedDependenciesChecker
+> Task :app:convertXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :utils:packageAndroidMainResources UP-TO-DATE
+> Task :androidApp:javaPreCompileDebug UP-TO-DATE
+> Task :bluetooth:packageAndroidMainResources UP-TO-DATE
+> Task :app:generateAndroidMainAssets UP-TO-DATE
+> Task :app-core:generateAndroidMainAssets UP-TO-DATE
+> Task :bluetooth-core:kmpPartiallyResolvedDependenciesChecker
+> Task :bluetooth-core:packageAndroidMainResources UP-TO-DATE
+> Task :bluetooth:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :androidApp:generateDebugAssets UP-TO-DATE
+> Task :app-core:parseAndroidMainLocalResources UP-TO-DATE
+> Task :bluetooth:generateAndroidMainAssets UP-TO-DATE
+> Task :app:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :bluetooth-core:generateAndroidMainAssets UP-TO-DATE
+> Task :utils:parseAndroidMainLocalResources UP-TO-DATE
+> Task :app-core:mergeAndroidMainAssets UP-TO-DATE
+> Task :app:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :utils:generateAndroidMainAssets UP-TO-DATE
+> Task :bluetooth:parseAndroidMainLocalResources UP-TO-DATE
+> Task :bluetooth:mergeAndroidMainAssets UP-TO-DATE
+> Task :bluetooth-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:copyNonXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :bluetooth-core:parseAndroidMainLocalResources UP-TO-DATE
+> Task :utils:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth-core:mergeAndroidMainAssets UP-TO-DATE
+> Task :androidApp:desugarDebugFileDependencies UP-TO-DATE
+> Task :androidApp:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :app-core:generateAndroidMainRFile UP-TO-DATE
+> Task :app:prepareComposeResourcesTaskForCommonMain UP-TO-DATE
+> Task :utils:compileKotlinJvm UP-TO-DATE
+> Task :app-core:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :app:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :bluetooth-core:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :app:copyAndroidMainComposeResourcesToAndroidAssets UP-TO-DATE
+> Task :app:generateResourceAccessorsForCommonMain UP-TO-DATE
+> Task :bluetooth:generateAndroidMainRFile UP-TO-DATE
+> Task :bluetooth-core:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :utils:writeAndroidMainAarMetadata UP-TO-DATE
+> Task :utils:mergeAndroidMainAssets UP-TO-DATE
+> Task :utils:compileJvmMainJava NO-SOURCE
+> Task :app:generateActualResourceCollectorsForAndroidMain UP-TO-DATE
+> Task :androidApp:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:mergeAndroidMainAssets UP-TO-DATE
+> Task :utils:jvmMainClasses UP-TO-DATE
+> Task :app-core:processAndroidMainManifest UP-TO-DATE
+> Task :bluetooth:processAndroidMainManifest UP-TO-DATE
+> Task :app:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :utils:processAndroidMainManifest UP-TO-DATE
+> Task :androidApp:extractDeepLinksDebug UP-TO-DATE
+> Task :bluetooth-core:processAndroidMainManifest UP-TO-DATE
+> Task :app:processAndroidMainManifest UP-TO-DATE
+> Task :app-core:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth-core:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :utils:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :bluetooth:mapAndroidMainSourceSetPaths UP-TO-DATE
+> Task :app:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :utils:jvmJar UP-TO-DATE
+> Task :androidApp:mergeDebugJniLibFolders UP-TO-DATE
+> Task :bluetooth-core:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app:packageAndroidMainResources UP-TO-DATE
+> Task :app-core:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :utils:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app-core:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :app:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :app-core:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :bluetooth-core:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :utils:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :androidApp:validateSigningDebug UP-TO-DATE
+> Task :bluetooth:mergeAndroidMainJniLibFolders UP-TO-DATE
+> Task :bluetooth:compileAndroidMainLibraryResources UP-TO-DATE
+> Task :app-core:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:writeDebugAppMetadata UP-TO-DATE
+> Task :models:compileKotlinJvm UP-TO-DATE
+> Task :bluetooth-core:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :utils:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :bluetooth:mergeAndroidMainNativeLibs NO-SOURCE
+> Task :androidApp:preDebugAndroidTestBuild SKIPPED
+> Task :app:parseAndroidMainLocalResources UP-TO-DATE
+> Task :bluetooth-core:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :utils:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:checkDebugDuplicateClasses UP-TO-DATE
+> Task :models:compileJvmMainJava NO-SOURCE
+> Task :androidApp:generateDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:javaPreCompileDebugAndroidTest UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :bluetooth:copyAndroidMainJniLibsProjectOnly UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestGlobalSynthetics UP-TO-DATE
+> Task :models:jvmMainClasses UP-TO-DATE
+> Task :app:generateAndroidMainRFile UP-TO-DATE
+> Task :androidApp:packageDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:desugarDebugAndroidTestFileDependencies UP-TO-DATE
+> Task :utils:compileAndroidMain UP-TO-DATE
+> Task :androidApp:mapDebugAndroidTestSourceSetPaths UP-TO-DATE
+> Task :utils:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :utils:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :androidApp:parseDebugAndroidTestLocalResources UP-TO-DATE
+> Task :androidApp:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :utils:processAndroidMainJavaRes UP-TO-DATE
+> Task :androidApp:generateDebugAndroidTestRFile UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestJniLibFolders UP-TO-DATE
+> Task :androidApp:validateSigningDebugAndroidTest UP-TO-DATE
+> Task :androidApp:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app-core:preAndroidHostTestBuild UP-TO-DATE
+> Task :models:jvmJar UP-TO-DATE
+> Task :androidApp:checkDebugAndroidTestDuplicateClasses UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:mergeDebugAssets UP-TO-DATE
+> Task :androidApp:compressDebugAndroidTestAssets UP-TO-DATE
+> Task :androidApp:compressDebugAssets UP-TO-DATE
+> Task :androidApp:checkDebugAarMetadata UP-TO-DATE
+> Task :androidApp:checkDebugAndroidTestAarMetadata UP-TO-DATE
+> Task :app-core:processAndroidHostTestJavaRes NO-SOURCE
+> Task :utils:bundleAndroidMainClassesToRuntimeJar UP-TO-DATE
+> Task :app-core:androidJar UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:mergeExtDexDebug UP-TO-DATE
+> Task :androidApp:mergeExtDexDebugAndroidTest UP-TO-DATE
+> Task :bluetooth-core:compileAndroidMain UP-TO-DATE
+> Task :bluetooth-core:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :bluetooth-core:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :bluetooth-core:processAndroidMainJavaRes UP-TO-DATE
+> Task :androidApp:mergeDebugNativeLibs UP-TO-DATE
+> Task :androidApp:stripDebugDebugSymbols UP-TO-DATE
+> Task :bluetooth-core:bundleAndroidMainClassesToRuntimeJar UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestNativeLibs NO-SOURCE
+> Task :androidApp:stripDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :androidApp:mergeDebugAndroidTestManifest UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestManifest UP-TO-DATE
+> Task :bluetooth:compileAndroidMain UP-TO-DATE
+> Task :androidApp:mapDebugSourceSetPaths
+> Task :bluetooth:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :bluetooth:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :bluetooth:processAndroidMainJavaRes UP-TO-DATE
+> Task :bluetooth:bundleAndroidMainClassesToRuntimeJar UP-TO-DATE
+> Task :androidApp:generateDebugResources
+> Task :app-core:compileAndroidMain UP-TO-DATE
+> Task :app-core:bundleAndroidMainClassesToCompileJar UP-TO-DATE
+> Task :app-core:bundleLibRuntimeToDirAndroidMain UP-TO-DATE
+> Task :app-core:processAndroidMainJavaRes UP-TO-DATE
+> Task :app-core:bundleAndroidMainClassesToRuntimeJar UP-TO-DATE
+> Task :androidApp:processDebugAndroidTestResources UP-TO-DATE
+> Task :androidApp:processDebugNavigationResources
+> Task :androidApp:compileDebugNavigationResources UP-TO-DATE
+> Task :androidApp:packageDebugResources
+> Task :app-core:compileAndroidHostTest FROM-CACHE
+> Task :androidApp:parseDebugLocalResources
+> Task :androidApp:processDebugMainManifest
+> Task :androidApp:processDebugManifest
+> Task :androidApp:processDebugManifestForPackage
+> Task :androidApp:generateDebugRFile
+> Task :androidApp:mergeDebugResources
+> Task :androidApp:processDebugResources
+
+> Task :app-core:testAndroidHostTest
+
+GroupStateTest > local expiry is exactly fifteen seconds and remote expiry remains one minute PASSED
+
+GroupStateTest > own sensor expires in fifteen seconds while remote participant remains for one minute PASSED
+
+GroupStateTest > selected watch rejects own strap but keeps other users sensors PASSED
+
+GroupStateTest > sample 0 STANDARD_OUT
+    (0ms) s: GroupState(members=[UserState(user=User(id=UserId(value=1), name=Anonymous 1, isAdhoc=false), isMe=true, heartRate=128, heartRateLimit=145, color=HSLColor(hue=1.0, saturation=0.5, lightness=0.4), measuredAtEpochMillis=1792879985091)])
+    (0ms) Received first state with non-empty members
+    (0ms) Testing current state value...
+    (0ms) Waiting until the Group state resets..
+    (14999ms) Group state was reset!
+
+GroupStateTest > sample 0 PASSED
+
+SessionSourceSelectionTest > recording excludes this phone strap when wrist source is selected but keeps peer strap PASSED
+
+SqlUserServiceTest > test - heart rate flow PASSED
+
+SqlUserServiceTest > test - link sensor PASSED
+
+SqlUserServiceTest > test - me PASSED
+
+SqlUserServiceTest > test - update my heart rate limit PASSED
+
+SqlUserServiceTest > test - save new user PASSED
+
+SqlUserServiceTest > test - save and find heart rate limit PASSED
+
+HeartRateSourceTest > sessionCommandsRejectRetriesAndLateStartAfterStop PASSED
+
+HeartRateSourceTest > companionCodecRoundTripsEscapedNamesAndGroupTimes PASSED
+
+HeartRateSourceTest > phonePublishedRunAcceptsWatchStopOnSameLogicalRun PASSED
+
+HeartRateSourceTest > measurementStopCodecCarriesRunAndGeneration PASSED
+
+HeartRateSourceTest > measurementExpiresAfterFifteenSeconds PASSED
+
+HeartRateSourceTest > failedLocalStartIsNotReplayedAsSuccessfulOnRetry PASSED
+
+HeartRateSourceTest > retriedCommandsAreAcceptedOnceAndCacheIsBounded PASSED
+
+HeartRateSourceTest > watchSamplesRequireTheExplicitlySelectedNode PASSED
+
+HeartRateSourceTest > unavailableOrUntimedValuesAreNeverCurrent PASSED
+
+HeartRateSourceTest > measurementDisconnectStopCannotClearAStartedLaterRun PASSED
+
+HeartRateSourceTest > selectedWatchFiltersOnlyThisPhoneOwnParticipant PASSED
+
+HeartRateSourceTest > sameHeartRateValueCanBeBroadcastAgainAfterExpiryClear PASSED
+
+HeartRateSourceTest > stopTombstoneRejectsDelayedStartWithoutStoppingAnotherRun PASSED
+
+HeartRateSourceTest > failedStartRollsBackRunOwnershipButKeepsNewRunOrderValid PASSED
+
+HeartRateSourceTest > pinnedWearNodeNeverFallsBackToAnotherReachablePhone PASSED
+
+HeartRateSourceTest > stopTombstonesSurviveReloadAndRejectLateStart PASSED
+
+HeartRateSourceTest > freshnessBoundaryFlipsToClearAfterFifteenSeconds PASSED
+
+HeartRateSourceTest > duplicateAcceptedStopAcknowledgesWithoutApplyingToNextRun PASSED
+
+> Task :app:compileAndroidMain
+w: file:///Users/Sebastian.Sellmair/StudioProjects/pacemaker/app/src/commonMain/kotlin/io/sellmair/pacemaker/ui/settingsPage/SettingsPageContent.kt:124:60 Unnecessary safe call on a non-null receiver of type 'HeartRateSource'.
+
+> Task :app:processAndroidMainJavaRes UP-TO-DATE
+> Task :app:bundleLibRuntimeToDirAndroidMain
+> Task :app:bundleAndroidMainClassesToCompileJar
+> Task :androidApp:compileDebugKotlin
+> Task :androidApp:compileDebugJavaWithJavac NO-SOURCE
+> Task :androidApp:processDebugJavaRes UP-TO-DATE
+> Task :androidApp:bundleDebugClassesToCompileJar
+> Task :androidApp:mergeDebugJavaResource UP-TO-DATE
+> Task :androidApp:dexBuilderDebug
+> Task :androidApp:mergeProjectDexDebug
+> Task :androidApp:mergeLibDexDebugAndroidTest UP-TO-DATE
+
+> Task :androidApp:compileDebugAndroidTestKotlin
+w: file:///Users/Sebastian.Sellmair/StudioProjects/pacemaker/androidApp/src/androidTest/kotlin/io/sellmair/pacemaker/SharedRhythmDevicesTest.kt:51:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///Users/Sebastian.Sellmair/StudioProjects/pacemaker/androidApp/src/androidTest/kotlin/io/sellmair/pacemaker/SharedRhythmProfileTest.kt:57:19 'fun <reified A : ComponentActivity> createAndroidComposeRule(effectContext: CoroutineContext = ...): AndroidComposeTestRule<ActivityScenarioRule<A>, A>' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createAndroidComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+
+> Task :androidApp:compileDebugAndroidTestJavaWithJavac NO-SOURCE
+> Task :androidApp:processDebugAndroidTestJavaRes UP-TO-DATE
+> Task :androidApp:mergeDebugAndroidTestJavaResource UP-TO-DATE
+> Task :androidApp:dexBuilderDebugAndroidTest
+> Task :androidApp:mergeProjectDexDebugAndroidTest
+> Task :androidApp:packageDebugAndroidTest
+> Task :androidApp:assembleDebugAndroidTest
+> Task :androidApp:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
+> Task :androidApp:mergeLibDexDebug
+> Task :androidApp:packageDebug
+> Task :androidApp:assembleDebug
+> Task :androidApp:createDebugApkListingFileRedirect UP-TO-DATE
+
+[Incubating] Problems report is available at: file:///Users/Sebastian.Sellmair/StudioProjects/pacemaker/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 2s
+178 actionable tasks: 31 executed, 1 from cache, 146 up-to-date
+Configuration cache entry stored.
