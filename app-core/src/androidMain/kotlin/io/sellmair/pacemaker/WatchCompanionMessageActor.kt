@@ -52,22 +52,17 @@ internal class WatchCompanionMessageActor(
         val sensorId = HeartRateSensorId(WATCH_COMPANION_SOURCE_ID)
         val selected = states.getState(SelectedHeartRateSourceState).value.source
         if (selected?.id != sensorId.value || !acceptsWatchMeasurementFrom(selected.companionDeviceId, peerId)) return false
-        val stoppedRunIds = prefs.getStringSet("watch-measurement-stopped-run-ids", emptySet()).orEmpty()
+        val stoppedRunIds = prefs.watchStoppedRunIds
 
         if (message.bpm == null) {
-            val activeRunId = prefs.getString("watch-measurement-run-id", null)
-            val activeRunNodeId = prefs.getString("watch-measurement-run-node-id", null)
+            val activeRunId = prefs.watchActiveRunId
+            val activeRunNodeId = prefs.watchActiveRunNodeId
             val incomingRunId = message.measurementRunId
             val activeRunBelongsToPeer = activeRunNodeId == null || activeRunNodeId == peerId
             if (incomingRunId != null) {
-                val editor = prefs.edit().putStringSet(
-                    "watch-measurement-stopped-run-ids",
-                    (stoppedRunIds + incomingRunId).toList().takeLast(64).toSet()
+                prefs.markWatchRunStopped(
+                    incomingRunId, clearActive = activeRunBelongsToPeer && activeRunId == incomingRunId
                 )
-                if (activeRunBelongsToPeer && activeRunId == incomingRunId) {
-                    editor.remove("watch-measurement-run-id").remove("watch-measurement-run-node-id")
-                }
-                editor.apply()
                 if (activeRunBelongsToPeer && activeRunId != null && activeRunId != incomingRunId) return true
             }
             states.setState(SelectedHeartRateSourceState, SelectedHeartRateSourceState(selected.copy(
@@ -84,15 +79,7 @@ internal class WatchCompanionMessageActor(
         ) return false
         if (message.measurementRunId != null && message.measurementRunId in stoppedRunIds) return false
         message.measurementRunId?.let { runId ->
-            val previousRun = prefs.getString("watch-measurement-run-id", null)
-            if (previousRun != null && previousRun != runId) {
-                prefs.edit().putStringSet(
-                    "watch-measurement-stopped-run-ids",
-                    (stoppedRunIds + previousRun).toList().takeLast(64).toSet()
-                ).apply()
-            }
-            prefs.edit().putString("watch-measurement-run-id", runId)
-                .putString("watch-measurement-run-node-id", peerId).apply()
+            prefs.activateWatchRun(runId, peerId)
         }
         userService.linkSensor(me, sensorId)
         // Linking may suspend while the user switches or disconnects the selected source.

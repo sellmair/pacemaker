@@ -9,6 +9,10 @@ import io.sellmair.pacemaker.WATCH_COMPANION_MESSAGE_PATH
 import io.sellmair.pacemaker.WatchCompanionCodec
 import io.sellmair.pacemaker.WatchCompanionMessage
 import io.sellmair.pacemaker.WatchCompanionTransportAck
+import io.sellmair.pacemaker.advanceWearStopGeneration
+import io.sellmair.pacemaker.saveWearConfiguration
+import io.sellmair.pacemaker.wearCompanionPreferences
+import io.sellmair.pacemaker.wearPhoneNodeId
 import io.sellmair.evas.Events
 import io.sellmair.evas.States
 import android.os.Handler
@@ -54,8 +58,7 @@ internal object WearCompanionRuntime {
 
     fun receive(context: Context, nodeId: String, message: WatchCompanionMessage) {
         main.post {
-            val selectedPhone = context.getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-                .getString("phone-node-id", null)
+            val selectedPhone = context.wearCompanionPreferences().wearPhoneNodeId
             if (nodeId != selectedPhone) return@post
             if (message is WatchCompanionMessage.Ack) events.emitAsync(
                 WatchCompanionTransportAck(
@@ -65,10 +68,7 @@ internal object WearCompanionRuntime {
             )
             when (message) {
                 is WatchCompanionMessage.Configure -> {
-                    context.getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                        .putString("userId", message.userId).putString("name", message.userName)
-                        .putInt("limit", message.heartRateLimit).putFloat("hue", message.colorHue)
-                        .putBoolean("source-selected", message.sourceSelected).apply()
+                    context.wearCompanionPreferences().saveWearConfiguration(message)
                     states.workout = states.workout.copy(
                         userId = message.userId, userName = message.userName,
                         heartRateLimit = message.heartRateLimit, colorHue = message.colorHue,
@@ -109,10 +109,7 @@ class WearCompanionListenerService : WearableListenerService() {
     override fun onMessageReceived(event: MessageEvent) {
         if (event.path != WATCH_COMPANION_MESSAGE_PATH) return
         val message = WatchCompanionCodec.decode(event.data) ?: return
-        val selected = getSharedPreferences("wear-companion", Context.MODE_PRIVATE).getString(
-            "phone-node-id",
-            null
-        )
+        val selected = wearCompanionPreferences().wearPhoneNodeId
         if (selected != event.sourceNodeId) return
         if (message is WatchCompanionMessage.MeasurementStop) {
             if (!WearWorkoutService.isWorkoutActiveOrEnding()) {
@@ -124,14 +121,7 @@ class WearCompanionListenerService : WearableListenerService() {
                             .getOrDefault(false)
                     if (isPacemakerWorkout) startMeasurementStopService(event, message)
                     else {
-                        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                            .putLong(
-                                "measurement-stop-generation", maxOf(
-                                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-                                        .getLong("measurement-stop-generation", 0L),
-                                    message.generation
-                                )
-                            ).apply()
+                        wearCompanionPreferences().advanceWearStopGeneration(message.generation)
                         sendAck(
                             event.sourceNodeId,
                             message.messageId,

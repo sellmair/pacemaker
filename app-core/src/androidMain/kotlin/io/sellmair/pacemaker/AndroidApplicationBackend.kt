@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
@@ -62,7 +61,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
 
 
     override val settings: Settings by lazy {
-        SharedPreferencesSettings(getSharedPreferences("app", Context.MODE_PRIVATE))
+        SharedPreferencesSettings(appSettingsPreferences())
     }
 
     private val meId by lazy { settings.meId }
@@ -84,7 +83,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
         notification.startForeground(this)
         launchApplicationBackend(this)
         watchCompanionDataLayer = WatchCompanionDataLayer(this, this, WATCH_COMPANION_CAPABILITY)
-        val watchPreferences = getSharedPreferences("watch-companion", Context.MODE_PRIVATE)
+        val watchPreferences = phoneWatchPreferences()
         val stopDelivery = WatchMeasurementStopDelivery(
             SharedPreferencesWatchMeasurementStopStore(watchPreferences), this, watchCompanionDataLayer
         )

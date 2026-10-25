@@ -54,7 +54,7 @@ class WatchCompanionActorsTest {
 
         WatchCompanionInboundMessage("watch-a", reading(ownId, 123, now, "run-a")).emit()
         assertEquals(123, states.getState(SelectedHeartRateSourceState).value.source?.heartRate?.value?.toInt())
-        assertEquals("run-a", prefs.getString("watch-measurement-run-id", null))
+        assertEquals("run-a", prefs.watchActiveRunId)
     }
 
     @Test fun clearFromOldRunDoesNotClearNewRun() = runTest(Events() + States()) {
@@ -74,8 +74,8 @@ class WatchCompanionActorsTest {
         WatchCompanionInboundMessage("watch-a", reading(ownId, null, now, "run-old")).emit()
 
         assertEquals(144, states.getState(SelectedHeartRateSourceState).value.source?.heartRate?.value?.toInt())
-        assertEquals("run-new", prefs.getString("watch-measurement-run-id", null))
-        assertTrue("run-old" in prefs.getStringSet("watch-measurement-stopped-run-ids", emptySet()).orEmpty())
+        assertEquals("run-new", prefs.watchActiveRunId)
+        assertTrue("run-old" in prefs.watchStoppedRunIds)
     }
 
     @Test fun switchingSourceWhileSensorLinkSuspendsDoesNotRestoreWatchReading() = runTest(Events() + States()) {
@@ -116,7 +116,7 @@ class WatchCompanionActorsTest {
 
     @Test fun discoveryUsesCurrentSelectionAfterStopDrainSuspends() = runTest(Events() + States()) {
         val prefs = MemoryPreferences()
-        prefs.edit().putString("last-selected-watch-node-id", "watch-a").apply()
+        prefs.lastSelectedWatchNodeId = "watch-a"
         val transport = FakeWatchTransport()
         val actorScope = CoroutineScope(backgroundScope.coroutineContext + coroutineContext.eventsOrThrow + coroutineContext.statesOrThrow)
         val delivery = WatchMeasurementStopDelivery(MemoryStopStore(prefs), actorScope, transport)
@@ -151,8 +151,7 @@ class WatchCompanionActorsTest {
 
     @Test fun queuedStopSurvivesReloadAndRequiresMatchingPeerAck() = runTest(Events() + States()) {
         val prefs = MemoryPreferences()
-        prefs.edit().putString("watch-measurement-run-id", "run-a")
-            .putString("watch-measurement-run-node-id", "watch-a").apply()
+        prefs.activateWatchRun("run-a", "watch-a")
         val transport = FakeWatchTransport()
         val actorScope = CoroutineScope(backgroundScope.coroutineContext + coroutineContext.eventsOrThrow + coroutineContext.statesOrThrow)
         val store = MemoryStopStore(prefs)
@@ -178,8 +177,8 @@ class WatchCompanionActorsTest {
         )).emit()
         assertTrue(draining.await())
         assertTrue(reloaded.pendingTargets().isEmpty())
-        assertNull(prefs.getString("watch-measurement-run-id", null))
-        assertTrue("run-a" in prefs.getStringSet("watch-measurement-stopped-run-ids", emptySet()).orEmpty())
+        assertNull(prefs.watchActiveRunId)
+        assertTrue("run-a" in prefs.watchStoppedRunIds)
     }
 
     private fun selectedWatch(nodeId: String = "watch-a") = SelectedHeartRateSourceState(HeartRateSource(
@@ -222,16 +221,13 @@ private class MemoryStopStore(private val prefs: SharedPreferences) : WatchMeasu
     override fun load(): List<PendingMeasurementStop> = queue.toList()
     override fun save(queue: List<PendingMeasurementStop>) { this.queue = queue.toList() }
     override fun nextGeneration(): Long = ++generation
-    override fun activeRunFor(nodeId: String): String? = prefs.getString("watch-measurement-run-id", null)
-        .takeIf { prefs.getString("watch-measurement-run-node-id", null) == nodeId }
+    override fun activeRunFor(nodeId: String): String? = prefs.watchActiveRunId
+        .takeIf { prefs.watchActiveRunNodeId == nodeId }
     override fun markStopped(nodeId: String, runId: String?) {
         if (runId == null) return
-        val stopped = prefs.getStringSet("watch-measurement-stopped-run-ids", emptySet()).orEmpty()
-        val editor = prefs.edit().putStringSet("watch-measurement-stopped-run-ids", stopped + runId)
-        if (prefs.getString("watch-measurement-run-id", null) == runId &&
-            prefs.getString("watch-measurement-run-node-id", null) == nodeId
-        ) editor.remove("watch-measurement-run-id").remove("watch-measurement-run-node-id")
-        editor.apply()
+        prefs.markWatchRunStopped(
+            runId, clearActive = prefs.watchActiveRunId == runId && prefs.watchActiveRunNodeId == nodeId
+        )
     }
 }
 

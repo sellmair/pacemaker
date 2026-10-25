@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
@@ -29,6 +28,11 @@ import io.sellmair.pacemaker.HeartRateSource
 import io.sellmair.pacemaker.WatchCompanionMessage
 import io.sellmair.pacemaker.WatchCompanionDataLayer
 import io.sellmair.pacemaker.WATCH_PHONE_CAPABILITY
+import io.sellmair.pacemaker.advanceWearStopGeneration
+import io.sellmair.pacemaker.wearActiveMeasurementRunId
+import io.sellmair.pacemaker.wearCompanionPreferences
+import io.sellmair.pacemaker.wearPhoneNodeId
+import io.sellmair.pacemaker.wearStopGeneration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -90,8 +94,7 @@ class WearWorkoutService : Service(), CoroutineScope {
         createNotificationChannel()
         launch(start = CoroutineStart.UNDISPATCHED) {
             WatchCompanionDiscoveryState.flow().collect { discovery ->
-                val selected = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-                    .getString("phone-node-id", null)
+                val selected = wearCompanionPreferences().wearPhoneNodeId
                 val connected = discovery.candidates.any { it.id == selected && it.connected }
                 states.workout = states.workout.copy(
                     companionConnected = connected,
@@ -110,14 +113,13 @@ class WearWorkoutService : Service(), CoroutineScope {
                 val stopGeneration = intent.getLongExtra(EXTRA_GENERATION, 0L)
                 val targetRunId = intent.getStringExtra(EXTRA_RUN_ID)
                 if (nodeId != null && messageId != null) {
-                    val prefs = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-                    val previousStop = prefs.getLong("measurement-stop-generation", 0L)
-                    val activeRun = prefs.getString("active-measurement-run-id", null)
+                    val prefs = wearCompanionPreferences()
+                    val previousStop = prefs.wearStopGeneration
+                    val activeRun = prefs.wearActiveMeasurementRunId
                     if (!io.sellmair.pacemaker.shouldStopWatchMeasurement(
                             activeRun, previousStop, targetRunId, stopGeneration
                         )) {
-                        if (stopGeneration > previousStop) prefs.edit()
-                            .putLong("measurement-stop-generation", stopGeneration).apply()
+                        if (stopGeneration > previousStop) prefs.advanceWearStopGeneration(stopGeneration)
                         val anotherRunIsActive =
                             activeServiceExercise || startingWorkout || exerciseStartInFlight
                         startPhoneTransport()
@@ -142,8 +144,7 @@ class WearWorkoutService : Service(), CoroutineScope {
                     val stoppedRunId = targetRunId ?: activeRun
                     stopWorkout(sendToPhone = false) { stopped ->
                         launch {
-                            if (stopped) prefs.edit()
-                                .putLong("measurement-stop-generation", stopGeneration).apply()
+                            if (stopped) prefs.advanceWearStopGeneration(stopGeneration)
                             companionClient?.sendTo(
                                 nodeId, WatchCompanionMessage.Ack(
                                 messageId, stopped, stoppedRunId.takeIf { stopped }
@@ -171,8 +172,7 @@ class WearWorkoutService : Service(), CoroutineScope {
         }
         val generation = ++workoutGeneration
         runId = java.util.UUID.randomUUID().toString()
-        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-            .putString("active-measurement-run-id", runId).apply()
+        wearCompanionPreferences().wearActiveMeasurementRunId = runId
         activeServiceExercise = true
         startingWorkout = true
         states.workout = states.workout.copy(
@@ -236,8 +236,7 @@ class WearWorkoutService : Service(), CoroutineScope {
                 if (workoutType == null) {
                     startingWorkout = false
                     activeServiceExercise = false
-                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                        .remove("active-measurement-run-id").apply()
+                    wearCompanionPreferences().wearActiveMeasurementRunId = null
                     states.workout = states.workout.copy(
                         isRunning = false,
                         isStarting = false,
@@ -260,15 +259,13 @@ class WearWorkoutService : Service(), CoroutineScope {
                     exerciseStartInFlight = false
                     if (generation != workoutGeneration) {
                         if (runCatching { startFuture.get() }.isSuccess) exerciseClient.endExerciseAsync()
-                        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                            .remove("active-measurement-run-id").apply()
+                        wearCompanionPreferences().wearActiveMeasurementRunId = null
                         return@addListener
                     }
                     if (runCatching { startFuture.get() }.isFailure) {
                         startingWorkout = false
                         activeServiceExercise = false
-                        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                            .remove("active-measurement-run-id").apply()
+                        wearCompanionPreferences().wearActiveMeasurementRunId = null
                         states.workout = states.workout.copy(
                             isRunning = false,
                             isStarting = false,
@@ -330,8 +327,7 @@ class WearWorkoutService : Service(), CoroutineScope {
     }
 
     private suspend fun sendToPhone(message: WatchCompanionMessage) {
-        val nodeId = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-            .getString("phone-node-id", null) ?: return
+        val nodeId = wearCompanionPreferences().wearPhoneNodeId ?: return
         companionClient?.sendTo(nodeId, message)
     }
 
@@ -382,8 +378,7 @@ class WearWorkoutService : Service(), CoroutineScope {
         fun finishStop(ended: Boolean) {
             activeServiceExercise = !ended
             if (ended) {
-                getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-                    .remove("active-measurement-run-id").apply()
+                wearCompanionPreferences().wearActiveMeasurementRunId = null
                 runId = ""
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 completion?.invoke(true)

@@ -50,7 +50,7 @@ internal class WatchCompanionStatePublisher(
             }
         }
         scope.launch(start = CoroutineStart.UNDISPATCHED) {
-            var lastNodeId = prefs.getString("last-selected-watch-node-id", states.selectedWatchNodeId())
+            var lastNodeId = prefs.lastSelectedWatchNodeId ?: states.selectedWatchNodeId()
             SelectedHeartRateSourceState.flow().collect { selection ->
                 val nextNodeId = selection.source
                     ?.takeIf { it.kind == HeartRateSource.Kind.COMPANION_WATCH }?.companionDeviceId
@@ -58,7 +58,7 @@ internal class WatchCompanionStatePublisher(
                 val previousNodeId = lastNodeId
                 if (previousNodeId != null) stopDelivery.enqueue(previousNodeId)
                 lastNodeId = nextNodeId
-                prefs.edit().putString("last-selected-watch-node-id", nextNodeId).apply()
+                prefs.lastSelectedWatchNodeId = nextNodeId
                 if (nextNodeId != null && !stopDelivery.hasPendingFor(nextNodeId)) sendSnapshot(nextNodeId)
                 if (previousNodeId != null) stopDelivery.drain()
             }

@@ -1,7 +1,6 @@
 package io.sellmair.pacemaker.wear
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -30,6 +29,14 @@ import io.sellmair.pacemaker.WatchCompanionMessage
 import io.sellmair.pacemaker.WatchCompanionDiscoveryState
 import io.sellmair.pacemaker.WatchCompanionNodeAvailable
 import io.sellmair.pacemaker.resolvePinnedWatchPhoneNode
+import io.sellmair.pacemaker.wearAuthenticatedPhoneNodeId
+import io.sellmair.pacemaker.wearColorHue
+import io.sellmair.pacemaker.wearCompanionPreferences
+import io.sellmair.pacemaker.wearHeartRateLimit
+import io.sellmair.pacemaker.wearPhoneNodeId
+import io.sellmair.pacemaker.wearSourceSelected
+import io.sellmair.pacemaker.wearUserId
+import io.sellmair.pacemaker.wearUserName
 import io.sellmair.evas.collectEventsAsync
 import io.sellmair.evas.flow
 import kotlinx.coroutines.CoroutineScope
@@ -62,12 +69,12 @@ class WearActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val identity = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
+        val identity = wearCompanionPreferences()
         states.workout = states.workout.copy(
-            userId = identity.getString("userId", "") ?: "",
-            userName = identity.getString("name", "Pacemaker") ?: "Pacemaker",
-            heartRateLimit = identity.getInt("limit", 145), colorHue = identity.getFloat("hue", 0f),
-            sourceSelected = identity.getBoolean("source-selected", false)
+            userId = identity.wearUserId,
+            userName = identity.wearUserName,
+            heartRateLimit = identity.wearHeartRateLimit, colorHue = identity.wearColorHue,
+            sourceSelected = identity.wearSourceSelected
         )
         val future = HealthServices.getClient(this).exerciseClient.getCapabilitiesAsync()
         future.addListener({
@@ -90,8 +97,7 @@ class WearActivity : ComponentActivity() {
             }
         }
         companionScope.collectEventsAsync<WatchCompanionNodeAvailable> { event ->
-            if (event.nodeId == getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-                    .getString("phone-node-id", null)) sendHelloToSelectedPhone()
+            if (event.nodeId == wearCompanionPreferences().wearPhoneNodeId) sendHelloToSelectedPhone()
         }
         companionScope.launch { WearCompanionRuntime.expireGroupWhileActive() }
         initializeCompanionTransport()
@@ -125,12 +131,12 @@ class WearActivity : ComponentActivity() {
     }
 
     private suspend fun onCompanionPresenceChanged(state: WatchCompanionDeviceState) {
-        val prefs = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-        val pinned = prefs.getString("authenticated-phone-node-id", null)
+        val prefs = wearCompanionPreferences()
+        val pinned = prefs.wearAuthenticatedPhoneNodeId
         val target = resolvePinnedWatchPhoneNode(pinned, state.candidates)
-        if (target != null) prefs.edit().putString("phone-node-id", target).apply()
+        if (target != null) prefs.wearPhoneNodeId = target
         val connected = target != null
-        val sourceSelected = prefs.getBoolean("source-selected", false)
+        val sourceSelected = prefs.wearSourceSelected
         states.workout = states.workout.copy(
             companionConnected = connected,
             status = when {
@@ -145,12 +151,9 @@ class WearActivity : ComponentActivity() {
     }
 
     private suspend fun sendHelloToSelectedPhone() {
-        val prefs = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-        val nodeId = prefs.getString("phone-node-id", null) ?: return
-        if (prefs.getString(
-                "authenticated-phone-node-id",
-                null
-            ) == nodeId || helloInFlightNode == nodeId
+        val prefs = wearCompanionPreferences()
+        val nodeId = prefs.wearPhoneNodeId ?: return
+        if (prefs.wearAuthenticatedPhoneNodeId == nodeId || helloInFlightNode == nodeId
         ) return
         val transport = companionDataLayer ?: return
         helloInFlightNode = nodeId
@@ -160,9 +163,9 @@ class WearActivity : ComponentActivity() {
             retries = 2
         )
         if (helloInFlightNode == nodeId) helloInFlightNode = null
-        if (prefs.getString("phone-node-id", null) != nodeId) return
+        if (prefs.wearPhoneNodeId != nodeId) return
         if (accepted) {
-            prefs.edit().putString("authenticated-phone-node-id", nodeId).apply()
+            prefs.wearAuthenticatedPhoneNodeId = nodeId
             states.workout =
                 states.workout.copy(status = "Select this watch in Pacemaker")
         } else {

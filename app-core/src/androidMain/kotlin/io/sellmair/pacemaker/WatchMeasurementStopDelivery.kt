@@ -34,7 +34,7 @@ internal interface WatchMeasurementStopStore {
 /** Keeps the currently deployed queue format and run tombstones in phone preferences. */
 internal class SharedPreferencesWatchMeasurementStopStore(private val prefs: SharedPreferences) : WatchMeasurementStopStore {
     override fun load(): List<PendingMeasurementStop> {
-        val encoded = prefs.getString("measurement-stop-queue-v1", null) ?: return emptyList()
+        val encoded = prefs.watchStopQueueJson ?: return emptyList()
         return runCatching {
             val array = JSONArray(encoded)
             (0 until array.length()).mapNotNull { index ->
@@ -48,33 +48,26 @@ internal class SharedPreferencesWatchMeasurementStopStore(private val prefs: Sha
     }
 
     override fun save(queue: List<PendingMeasurementStop>) {
-        val editor = prefs.edit()
-        if (queue.isEmpty()) editor.remove("measurement-stop-queue-v1")
-        else editor.putString("measurement-stop-queue-v1", JSONArray().apply {
+        prefs.watchStopQueueJson = if (queue.isEmpty()) null else JSONArray().apply {
             queue.forEach { pending ->
                 put(JSONObject().put("node", pending.nodeId).put("message", pending.messageId)
                     .put("generation", pending.generation).put("run", pending.measurementRunId ?: ""))
             }
-        }.toString())
-        editor.apply()
+        }.toString()
     }
 
-    override fun nextGeneration(): Long = (prefs.getLong("measurement-stop-generation", 0L) + 1L).also {
-        prefs.edit().putLong("measurement-stop-generation", it).apply()
+    override fun nextGeneration(): Long = (prefs.watchStopGeneration + 1L).also {
+        prefs.watchStopGeneration = it
     }
 
-    override fun activeRunFor(nodeId: String): String? = prefs.getString("watch-measurement-run-id", null)
-        .takeIf { prefs.getString("watch-measurement-run-node-id", null) == nodeId }
+    override fun activeRunFor(nodeId: String): String? = prefs.watchActiveRunId
+        .takeIf { prefs.watchActiveRunNodeId == nodeId }
 
     override fun markStopped(nodeId: String, runId: String?) {
         if (runId == null) return
-        val stopped = prefs.getStringSet("watch-measurement-stopped-run-ids", emptySet()).orEmpty()
-        val editor = prefs.edit().putStringSet("watch-measurement-stopped-run-ids",
-            (stopped + runId).toList().takeLast(64).toSet())
-        if (prefs.getString("watch-measurement-run-id", null) == runId &&
-            prefs.getString("watch-measurement-run-node-id", null) == nodeId
-        ) editor.remove("watch-measurement-run-id").remove("watch-measurement-run-node-id")
-        editor.apply()
+        prefs.markWatchRunStopped(
+            runId, clearActive = prefs.watchActiveRunId == runId && prefs.watchActiveRunNodeId == nodeId
+        )
     }
 }
 
