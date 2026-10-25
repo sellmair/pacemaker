@@ -1,0 +1,24 @@
+{
+  "status": "Publisher details required before submission",
+  "proposed_category": "Health & Fitness",
+  "release_version": null,
+  "support_url": null,
+  "privacy_policy_url": null,
+  "marketing_url": null,
+  "support_email": null,
+  "review_contact": {
+    "name": null,
+    "email": null,
+    "phone": null
+  },
+  "copyright_owner": null,
+  "pricing": "Set in store consoles",
+  "declarations": "Complete Data Safety, App Privacy, health declarations and age ratings from actual app behavior and publisher practices.",
+  "appstore_watchos": "Existing companion needs its own current native Apple Watch screenshots if included in submission; this package covers iPhone.",
+  "phone_screenshot_language": "en-US",
+  "copy_languages": [
+    "en-US",
+    "de-DE",
+    "it-IT"
+  ]
+}

@@ -1,0 +1,20 @@
+Il tuo battito e il tuo gruppo di allenamento a colpo d'occhio. Pacemaker riunisce valori in tempo reale, limiti personali e partecipanti nelle vicinanze in un'unica schermata.
+
+IL BATTITO A COLPO D'OCCHIO
+Guarda i bpm attuali e confrontali con il limite che hai scelto. Messaggi chiari indicano se sei entro il limite, lo hai superato o stai aspettando una nuova lettura.
+
+INSIEME, AL VOSTRO RITMO
+Visualizza le altre persone che usano Pacemaker nelle vicinanze, con nome, battito e limite individuale. Ognuno può allenarsi con il proprio limite, tenendo d'occhio il gruppo.
+
+PERSONALIZZALO
+Scegli il nome visualizzato e il tuo colore. Imposta il limite di frequenza cardiaca tra 40 e 200 bpm. Seleziona tutti gli aggiornamenti vocali, solo gli avvisi o il silenzio.
+
+SCEGLI LA TUA SORGENTE
+Collega un sensore cardiaco Bluetooth compatibile, scegli l'orologio oppure lascia che la modalità automatica selezioni una sorgente disponibile. Lo stato della connessione indica da dove arriva la lettura.
+
+CHIARO, IN MODALITÀ CHIARA E SCURA
+Valori grandi, schermate essenziali e due modalità di visualizzazione rendono facili da trovare le informazioni importanti.
+
+L'app complementare per Wear OS mostra battito, limite e gruppo al polso. Configura l'orologio dall'app Android e avvia o interrompi un allenamento dall'orologio. Serve un orologio Wear OS compatibile, abbinato e dotato di rilevamento del battito.
+
+Le letture in tempo reale richiedono un sensore o un orologio compatibile: il telefono da solo non misura il battito. Per la condivisione nelle vicinanze, gli altri partecipanti devono usare Pacemaker con il Bluetooth attivo. Pacemaker è destinato al fitness, non alla diagnosi o al trattamento. Il limite scelto non è una valutazione medica.

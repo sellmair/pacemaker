@@ -1,0 +1,149 @@
+{
+  "brand": "Pacemaker",
+  "identity": "Shared Rhythm",
+  "sourceCommit": "0ca11b6",
+  "date": "2026-10-25",
+  "locales": {
+    "en-US": {
+      "name": "Pacemaker",
+      "subtitle": "Heart rate. Shared rhythm.",
+      "short": "Live heart rate, personal limits and nearby training partners in one clear view",
+      "promo": "Keep pace together. See your heart rate, set your own limit and follow the people training nearby, with clear readings and your choice of voice alerts.",
+      "keywords": "fitness,training,running,cycling,bluetooth,sensor,pulse,group,workout,alerts",
+      "intro": "Keep your heart rate and your training group in view. Pacemaker brings live readings, personal limits and nearby participants into one clear screen.",
+      "body": "YOUR HEART RATE, AT A GLANCE\nSee your current bpm and how it compares with the limit you choose. Clear status messages tell you when you are within your limit, above it or waiting for a fresh reading.\n\nKEEP PACE TOGETHER\nSee nearby Pacemaker participants with their names, heart rates and individual limits. Everyone can train to their own threshold while staying aware of the group.\n\nMAKE IT YOURS\nChoose your display name and identity color. Adjust your heart-rate limit from 40 to 200 bpm. Select all voice updates, warnings only or silence.\n\nCHOOSE YOUR SIGNAL\nConnect a compatible Bluetooth heart-rate sensor, choose your watch or let Automatic select an available source. Connection status stays visible so you know where your reading comes from.\n\nCLEAR IN LIGHT AND DARK\nLarge readings, focused layouts and light and dark appearances keep the essentials easy to find.",
+      "android": "The Wear OS companion shows your heart rate, limit and group on your wrist. Set up the watch through the Android phone app and start or stop a workout from the watch. A compatible paired Wear OS watch with heart-rate capability is required.",
+      "ios": "Use a compatible Bluetooth heart-rate sensor or the Apple Watch companion as your source. Apple Watch measurements require a paired watch and the necessary health permissions.",
+      "requirements": "Live readings require a compatible sensor or watch; the phone alone does not measure your pulse. Nearby sharing requires other participants to use Pacemaker with Bluetooth enabled. Pacemaker is for fitness use, not diagnosis or treatment; your chosen limit is not a medical assessment.",
+      "whatsnew": "A new Shared Rhythm design with clearer live readings, dedicated Live, Devices and Profile tabs, light and dark appearances, and a matching app icon. Improved layouts for larger text and easier adjustment of your personal limit.",
+      "headlines": [
+        [
+          "KEEP PACE.",
+          "TOGETHER."
+        ],
+        [
+          "YOUR LIMIT.",
+          "YOUR CHOICE."
+        ],
+        [
+          "CHOOSE",
+          "YOUR SIGNAL."
+        ],
+        [
+          "LIGHT OR DARK.",
+          "STAY FOCUSED."
+        ],
+        [
+          "YOUR ALERTS.",
+          "YOUR WAY."
+        ]
+      ],
+      "subs": [
+        "Your pulse and your group, in one view.",
+        "Set the threshold that fits your session.",
+        "Choose a compatible sensor or watch.",
+        "Clear readings in both appearances.",
+        "All updates, warnings only or silence."
+      ],
+      "feature": [
+        "KEEP PACE.",
+        "TOGETHER."
+      ],
+      "featureSub": "Live heart rate. Personal limits."
+    },
+    "de-DE": {
+      "name": "Pacemaker",
+      "subtitle": "Puls im Blick. Gemeinsam fit.",
+      "short": "Live-Puls, persönliche Limits und deine Trainingsgruppe auf einen Blick",
+      "promo": "Gemeinsam im Tempo bleiben. Sieh deinen Puls, wähle dein Limit und behalte die Gruppe in deiner Nähe im Blick. Du entscheidest, welche Sprachhinweise du hörst.",
+      "keywords": "fitness,training,laufen,radfahren,bluetooth,sensor,herzfrequenz,gruppe,sport,warnung",
+      "intro": "Dein Puls und deine Trainingsgruppe auf einen Blick. Pacemaker zeigt Live-Werte, persönliche Limits und Teilnehmende in deiner Nähe auf einem übersichtlichen Bildschirm.",
+      "body": "DEIN PULS AUF EINEN BLICK\nSieh deine aktuelle Herzfrequenz und den Abstand zu deinem selbst gewählten Limit. Klare Statusmeldungen zeigen, ob du innerhalb deines Limits bist, darüber liegst oder auf einen aktuellen Messwert wartest.\n\nGEMEINSAM IM TEMPO BLEIBEN\nSieh andere Pacemaker-Nutzende in deiner Nähe mit Namen, Puls und individuellem Limit. So kann jede Person nach ihrem eigenen Limit trainieren und die Gruppe im Blick behalten.\n\nPASSEND ZU DIR\nWähle deinen Anzeigenamen und deine Erkennungsfarbe. Stelle dein Herzfrequenz-Limit zwischen 40 und 200 bpm ein. Lass dir alle Sprachhinweise, nur Warnungen oder keine Ansagen geben.\n\nWÄHLE DEINE QUELLE\nVerbinde einen kompatiblen Bluetooth-Pulssensor, wähle deine Uhr oder überlasse der Automatik die Auswahl einer verfügbaren Quelle. Der Verbindungsstatus zeigt dir, woher dein Messwert kommt.\n\nKLAR IN HELL UND DUNKEL\nGroße Messwerte, übersichtliche Ansichten und ein heller und dunkler Modus machen die wichtigen Informationen leicht auffindbar.",
+      "android": "Die Wear OS-Begleit-App zeigt Puls, Limit und Gruppe am Handgelenk. Richte die Uhr über die Android-App ein und starte oder stoppe ein Training auf der Uhr. Dafür brauchst du eine kompatible, gekoppelte Wear OS-Uhr mit Pulsmessung.",
+      "ios": "Nutze einen kompatiblen Bluetooth-Pulssensor oder die Apple Watch-Begleit-App als Quelle. Für Messungen mit der Apple Watch brauchst du eine gekoppelte Uhr und die erforderlichen Gesundheitsberechtigungen.",
+      "requirements": "Live-Werte erfordern einen kompatiblen Sensor oder eine Uhr. Das Smartphone allein misst deinen Puls nicht. Für das Teilen in der Nähe müssen andere Teilnehmende Pacemaker mit aktiviertem Bluetooth verwenden. Pacemaker dient dem Fitnesstraining, nicht der Diagnose oder Behandlung. Dein gewähltes Limit ist keine medizinische Bewertung.",
+      "whatsnew": "Das neue Shared Rhythm-Design bringt klarere Live-Werte, eigene Tabs für Live, Geräte und Profil, einen hellen und dunklen Modus und ein passendes App-Symbol. Verbesserte Layouts für größere Schrift und einfacheres Anpassen deines persönlichen Limits.",
+      "headlines": [
+        [
+          "DEIN TEMPO.",
+          "GEMEINSAM."
+        ],
+        [
+          "DEIN LIMIT.",
+          "DEINE WAHL."
+        ],
+        [
+          "WÄHLE",
+          "DEINE QUELLE."
+        ],
+        [
+          "HELL ODER DUNKEL.",
+          "KLAR IM BLICK."
+        ],
+        [
+          "DEINE HINWEISE.",
+          "DEINE WAHL."
+        ]
+      ],
+      "subs": [
+        "Dein Puls und deine Gruppe auf einen Blick.",
+        "Wähle dein Limit für das Training.",
+        "Wähle einen kompatiblen Sensor oder eine Uhr.",
+        "Klare Messwerte in beiden Ansichten.",
+        "Alle Ansagen, nur Warnungen oder Ruhe."
+      ],
+      "feature": [
+        "DEIN TEMPO.",
+        "GEMEINSAM."
+      ],
+      "featureSub": "Live-Puls. Persönliche Limits."
+    },
+    "it-IT": {
+      "name": "Pacemaker",
+      "subtitle": "Battito e allenamento insieme",
+      "short": "Battito in tempo reale, limiti personali e compagni di allenamento vicini",
+      "promo": "Allenatevi insieme, ciascuno al proprio ritmo. Segui il battito, scegli il tuo limite e tieni d'occhio il gruppo vicino a te. Decidi quali avvisi vocali ascoltare.",
+      "keywords": "fitness,corsa,ciclismo,bluetooth,sensore,pulsazioni,gruppo,sport,avvisi,allenamento",
+      "intro": "Il tuo battito e il tuo gruppo di allenamento a colpo d'occhio. Pacemaker riunisce valori in tempo reale, limiti personali e partecipanti nelle vicinanze in un'unica schermata.",
+      "body": "IL BATTITO A COLPO D'OCCHIO\nGuarda i bpm attuali e confrontali con il limite che hai scelto. Messaggi chiari indicano se sei entro il limite, lo hai superato o stai aspettando una nuova lettura.\n\nINSIEME, AL VOSTRO RITMO\nVisualizza le altre persone che usano Pacemaker nelle vicinanze, con nome, battito e limite individuale. Ognuno può allenarsi con il proprio limite, tenendo d'occhio il gruppo.\n\nPERSONALIZZALO\nScegli il nome visualizzato e il tuo colore. Imposta il limite di frequenza cardiaca tra 40 e 200 bpm. Seleziona tutti gli aggiornamenti vocali, solo gli avvisi o il silenzio.\n\nSCEGLI LA TUA SORGENTE\nCollega un sensore cardiaco Bluetooth compatibile, scegli l'orologio oppure lascia che la modalità automatica selezioni una sorgente disponibile. Lo stato della connessione indica da dove arriva la lettura.\n\nCHIARO, IN MODALITÀ CHIARA E SCURA\nValori grandi, schermate essenziali e due modalità di visualizzazione rendono facili da trovare le informazioni importanti.",
+      "android": "L'app complementare per Wear OS mostra battito, limite e gruppo al polso. Configura l'orologio dall'app Android e avvia o interrompi un allenamento dall'orologio. Serve un orologio Wear OS compatibile, abbinato e dotato di rilevamento del battito.",
+      "ios": "Usa un sensore cardiaco Bluetooth compatibile o l'app complementare per Apple Watch come sorgente. Le letture da Apple Watch richiedono un orologio abbinato e le necessarie autorizzazioni per i dati sanitari.",
+      "requirements": "Le letture in tempo reale richiedono un sensore o un orologio compatibile: il telefono da solo non misura il battito. Per la condivisione nelle vicinanze, gli altri partecipanti devono usare Pacemaker con il Bluetooth attivo. Pacemaker è destinato al fitness, non alla diagnosi o al trattamento. Il limite scelto non è una valutazione medica.",
+      "whatsnew": "Il nuovo design Shared Rhythm offre valori più chiari, schede dedicate a Live, Dispositivi e Profilo, modalità chiara e scura e un'icona coordinata. Layout migliorati per il testo più grande e una regolazione più semplice del limite personale.",
+      "headlines": [
+        [
+          "IL TUO RITMO.",
+          "INSIEME."
+        ],
+        [
+          "IL TUO LIMITE.",
+          "LA TUA SCELTA."
+        ],
+        [
+          "SCEGLI",
+          "LA TUA SORGENTE."
+        ],
+        [
+          "CHIARO O SCURO.",
+          "TUTTO IN VISTA."
+        ],
+        [
+          "I TUOI AVVISI.",
+          "A MODO TUO."
+        ]
+      ],
+      "subs": [
+        "Il tuo battito e il gruppo, in una schermata.",
+        "Scegli il limite per il tuo allenamento.",
+        "Scegli un sensore o un orologio compatibile.",
+        "Valori chiari in entrambe le modalità.",
+        "Tutti gli aggiornamenti, solo avvisi o silenzio."
+      ],
+      "feature": [
+        "IL TUO RITMO.",
+        "INSIEME."
+      ],
+      "featureSub": "Battito dal vivo. Limiti personali."
+    }
+  }
+}

@@ -1,0 +1,487 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "check": "playstore/en-US/title",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "playstore/en-US/short_description",
+      "count": 79,
+      "unit": "characters",
+      "maximum": 80,
+      "passed": true
+    },
+    {
+      "check": "playstore/en-US/full_description",
+      "count": 1553,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/en-US/release_notes",
+      "count": 228,
+      "unit": "characters",
+      "maximum": 500,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/name",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/subtitle",
+      "count": 26,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/promotional_text",
+      "count": 151,
+      "unit": "characters",
+      "maximum": 170,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/description",
+      "count": 1488,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/keywords",
+      "count": 76,
+      "unit": "UTF-8 bytes",
+      "maximum": 100,
+      "passed": true
+    },
+    {
+      "check": "appstore/en-US/whats_new",
+      "count": 228,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/de-DE/title",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "playstore/de-DE/short_description",
+      "count": 71,
+      "unit": "characters",
+      "maximum": 80,
+      "passed": true
+    },
+    {
+      "check": "playstore/de-DE/full_description",
+      "count": 1744,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/de-DE/release_notes",
+      "count": 251,
+      "unit": "characters",
+      "maximum": 500,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/name",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/subtitle",
+      "count": 29,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/promotional_text",
+      "count": 159,
+      "unit": "characters",
+      "maximum": 170,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/description",
+      "count": 1718,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/keywords",
+      "count": 84,
+      "unit": "UTF-8 bytes",
+      "maximum": 100,
+      "passed": true
+    },
+    {
+      "check": "appstore/de-DE/whats_new",
+      "count": 251,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/it-IT/title",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "playstore/it-IT/short_description",
+      "count": 73,
+      "unit": "characters",
+      "maximum": 80,
+      "passed": true
+    },
+    {
+      "check": "playstore/it-IT/full_description",
+      "count": 1751,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/it-IT/release_notes",
+      "count": 243,
+      "unit": "characters",
+      "maximum": 500,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/name",
+      "count": 9,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/subtitle",
+      "count": 29,
+      "unit": "characters",
+      "maximum": 30,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/promotional_text",
+      "count": 163,
+      "unit": "characters",
+      "maximum": 170,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/description",
+      "count": 1712,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/keywords",
+      "count": 83,
+      "unit": "UTF-8 bytes",
+      "maximum": 100,
+      "passed": true
+    },
+    {
+      "check": "appstore/it-IT/whats_new",
+      "count": 243,
+      "unit": "characters",
+      "maximum": 4000,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/phone-1080x1920/01-train-together.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "channels": 3,
+      "bytes": 147664,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1206x2622/01-train-together.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "channels": 3,
+      "bytes": 193000,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1320x2868/01-train-together.png",
+      "dimensions": [
+        1320,
+        2868
+      ],
+      "channels": 3,
+      "bytes": 218725,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/phone-1080x1920/02-personal-limit.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "channels": 3,
+      "bytes": 147722,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1206x2622/02-personal-limit.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "channels": 3,
+      "bytes": 198099,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1320x2868/02-personal-limit.png",
+      "dimensions": [
+        1320,
+        2868
+      ],
+      "channels": 3,
+      "bytes": 215792,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/phone-1080x1920/03-your-signal.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "channels": 3,
+      "bytes": 157700,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1206x2622/03-your-signal.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "channels": 3,
+      "bytes": 213368,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1320x2868/03-your-signal.png",
+      "dimensions": [
+        1320,
+        2868
+      ],
+      "channels": 3,
+      "bytes": 227667,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/phone-1080x1920/04-clear-status.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "channels": 3,
+      "bytes": 156961,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1206x2622/04-clear-status.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "channels": 3,
+      "bytes": 199338,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1320x2868/04-clear-status.png",
+      "dimensions": [
+        1320,
+        2868
+      ],
+      "channels": 3,
+      "bytes": 221492,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/phone-1080x1920/05-voice-choice.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "channels": 3,
+      "bytes": 150096,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1206x2622/05-voice-choice.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "channels": 3,
+      "bytes": 200462,
+      "passed": true
+    },
+    {
+      "check": "appstore/screenshots/en-US/iphone-1320x2868/05-voice-choice.png",
+      "dimensions": [
+        1320,
+        2868
+      ],
+      "channels": 3,
+      "bytes": 218291,
+      "passed": true
+    },
+    {
+      "check": "playstore/graphics/en-US/feature-graphic-1024x500.png",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "channels": 3,
+      "bytes": 40214,
+      "passed": true
+    },
+    {
+      "check": "playstore/graphics/de-DE/feature-graphic-1024x500.png",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "channels": 3,
+      "bytes": 41409,
+      "passed": true
+    },
+    {
+      "check": "playstore/graphics/it-IT/feature-graphic-1024x500.png",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "channels": 3,
+      "bytes": 40071,
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/wear-os/01-live.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/wear-os/02-controls.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/en-US/wear-os/03-group.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/de-DE/wear-os/01-live.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/de-DE/wear-os/02-controls.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/de-DE/wear-os/03-group.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/it-IT/wear-os/01-live.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/it-IT/wear-os/02-controls.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/screenshots/it-IT/wear-os/03-group.png",
+      "dimensions": [
+        454,
+        454
+      ],
+      "passed": true
+    },
+    {
+      "check": "playstore/graphics/app-icon-512.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "channels": 4,
+      "bytes": 7159,
+      "passed": true
+    },
+    {
+      "check": "appstore/graphics/app-icon-1024.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "channels": 3,
+      "bytes": 14693,
+      "passed": true
+    }
+  ]
+}

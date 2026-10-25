@@ -1,0 +1,19 @@
+file	locale	alt_text
+screenshots/en-US/phone-1080x1920/01-train-together.png	en-US	Pacemaker Live shows 142 bpm, a 150 bpm limit and nearby participants with their own readings.
+screenshots/en-US/phone-1080x1920/02-personal-limit.png	en-US	Profile lets you choose a display name, heart-rate limit, identity color and voice alerts.
+screenshots/en-US/phone-1080x1920/03-your-signal.png	en-US	Devices offers automatic, sensor and watch sources with visible connection status.
+screenshots/en-US/phone-1080x1920/04-clear-status.png	en-US	Live makes the current heart-rate status and personal limit visible.
+screenshots/en-US/phone-1080x1920/05-voice-choice.png	en-US	Profile offers a choice of voice alerts alongside your personal settings.
+graphics/en-US/feature-graphic-1024x500.png	en-US	Keep pace together: live heart rate and personal limits in Pacemaker.
+graphics/de-DE/feature-graphic-1024x500.png	de-DE	Gemeinsam im Tempo bleiben: Live-Puls und persönliche Limits in Pacemaker.
+graphics/it-IT/feature-graphic-1024x500.png	it-IT	Allenati insieme agli altri: battito in tempo reale e limiti personali con Pacemaker.
+screenshots/en-US/wear-os/01-live.png	en-US	Heart rate, personal limit and group summary on Wear OS.
+screenshots/en-US/wear-os/02-controls.png	en-US	Workout controls on Wear OS.
+screenshots/en-US/wear-os/03-group.png	en-US	Group readings and individual limits on Wear OS.
+screenshots/de-DE/wear-os/01-live.png	de-DE	Puls, persönliches Limit und Gruppenübersicht auf Wear OS.
+screenshots/de-DE/wear-os/02-controls.png	de-DE	Trainingssteuerung auf Wear OS.
+screenshots/de-DE/wear-os/03-group.png	de-DE	Messwerte der Gruppe und individuelle Limits auf Wear OS.
+screenshots/it-IT/wear-os/01-live.png	it-IT	Battito, limite personale e riepilogo del gruppo su Wear OS.
+screenshots/it-IT/wear-os/02-controls.png	it-IT	Controlli di allenamento su Wear OS.
+screenshots/it-IT/wear-os/03-group.png	it-IT	Valori del gruppo e limiti individuali su Wear OS.
+graphics/app-icon-512.png	all	Pacemaker: two angular rhythm lines in acid yellow on charcoal.

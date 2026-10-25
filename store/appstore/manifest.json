@@ -1,0 +1,134 @@
+{
+  "generated": "2026-10-25",
+  "assets": [
+    {
+      "path": "appstore/screenshots/en-US/iphone-1206x2622/01-train-together.png",
+      "width": 1206,
+      "height": 2622,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Pacemaker Live shows 142 bpm, a 150 bpm limit and nearby participants with their own readings.",
+      "source": "source/assets/native/iosstandardLive.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1206x2622_01-train-together.html",
+      "sha256": "08b289a471525d126d0924a30fefd30dbfa0ff1c245751a371954f5057ec9e60"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1320x2868/01-train-together.png",
+      "width": 1320,
+      "height": 2868,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Pacemaker Live shows 142 bpm, a 150 bpm limit and nearby participants with their own readings.",
+      "source": "source/assets/native/ioslargeLive.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1320x2868_01-train-together.html",
+      "sha256": "d0c73114389b1017e6929fb7e97b0d4239e8aad6c3ef670dae090eddf8129b71"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1206x2622/02-personal-limit.png",
+      "width": 1206,
+      "height": 2622,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile lets you choose a display name, heart-rate limit, identity color and voice alerts.",
+      "source": "source/assets/native/iosstandardLimit.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1206x2622_02-personal-limit.html",
+      "sha256": "0f9cb100273fc717c375c21c14fb1757fd56894b6bf8de476eaa21efced717e1"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1320x2868/02-personal-limit.png",
+      "width": 1320,
+      "height": 2868,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile lets you choose a display name, heart-rate limit, identity color and voice alerts.",
+      "source": "source/assets/native/ioslargeLimit.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1320x2868_02-personal-limit.html",
+      "sha256": "09558de0923b22ad6dc32dcfb9f9c2de8d34dc9e1935a17b63702d9a2f670cef"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1206x2622/03-your-signal.png",
+      "width": 1206,
+      "height": 2622,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Devices offers automatic, sensor and watch sources with visible connection status.",
+      "source": "source/assets/native/iosstandardDevices.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1206x2622_03-your-signal.html",
+      "sha256": "706eda3fe5154fdbd75934b24a447a6886855713231cdb82585d0f21f759c490"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1320x2868/03-your-signal.png",
+      "width": 1320,
+      "height": 2868,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Devices offers automatic, sensor and watch sources with visible connection status.",
+      "source": "source/assets/native/ioslargeDevices.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1320x2868_03-your-signal.html",
+      "sha256": "badbc5f87c189bc6d3caaad43ab8339b3c62e0e8ca94198de82e628b2a7b7207"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1206x2622/04-clear-status.png",
+      "width": 1206,
+      "height": 2622,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Live makes the current heart-rate status and personal limit visible.",
+      "source": "source/assets/native/iosstandardLight.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1206x2622_04-clear-status.html",
+      "sha256": "4dc2351522d159caf711b1fe7be73de3a50efaab61418e5879496b4368b8c278"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1320x2868/04-clear-status.png",
+      "width": 1320,
+      "height": 2868,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Live makes the current heart-rate status and personal limit visible.",
+      "source": "source/assets/native/ioslargeLight.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1320x2868_04-clear-status.html",
+      "sha256": "45f17bd8bc63ea2eecd9b880d24a3a97275fc7c326f4e08fa692082305d3f842"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1206x2622/05-voice-choice.png",
+      "width": 1206,
+      "height": 2622,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile offers a choice of voice alerts alongside your personal settings.",
+      "source": "source/assets/native/iosstandardVoice.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1206x2622_05-voice-choice.html",
+      "sha256": "e43b8a1e990c12253c4dee947639ec6aa1063a63ec1ba79f027a16680b768df0"
+    },
+    {
+      "path": "appstore/screenshots/en-US/iphone-1320x2868/05-voice-choice.png",
+      "width": 1320,
+      "height": 2868,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile offers a choice of voice alerts alongside your personal settings.",
+      "source": "source/assets/native/ioslargeVoice.png",
+      "layout": "source/layouts/appstore_screenshots_en-US_iphone-1320x2868_05-voice-choice.html",
+      "sha256": "3e2123eddfd15e6cfbcfcc00cfe5097349ecc8f3b3c500c6a8252d59925e788c"
+    },
+    {
+      "path": "appstore/graphics/app-icon-1024.png",
+      "width": 1024,
+      "height": 1024,
+      "role": "app-icon",
+      "locale": "all",
+      "alt": "Pacemaker: two angular rhythm lines in acid yellow on charcoal.",
+      "sha256": "cf70588f050a335c796d2914b3e7e519928e1b7c28dfcae1505ea09eab775a2d"
+    }
+  ]
+}

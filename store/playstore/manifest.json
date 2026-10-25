@@ -1,0 +1,200 @@
+{
+  "generated": "2026-10-25",
+  "assets": [
+    {
+      "path": "playstore/screenshots/en-US/phone-1080x1920/01-train-together.png",
+      "width": 1080,
+      "height": 1920,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Pacemaker Live shows 142 bpm, a 150 bpm limit and nearby participants with their own readings.",
+      "source": "source/assets/native/androidLive.png",
+      "layout": "source/layouts/playstore_screenshots_en-US_phone-1080x1920_01-train-together.html",
+      "sha256": "70d5322b4b061a0c5e9d64ce29be48a0d8d683b888ac871313c9e08a2dd223fa"
+    },
+    {
+      "path": "playstore/screenshots/en-US/phone-1080x1920/02-personal-limit.png",
+      "width": 1080,
+      "height": 1920,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile lets you choose a display name, heart-rate limit, identity color and voice alerts.",
+      "source": "source/assets/native/androidLimit.png",
+      "layout": "source/layouts/playstore_screenshots_en-US_phone-1080x1920_02-personal-limit.html",
+      "sha256": "ab5f65feae7785f261008983051bf642c1a0d56b85e315ccca04ea2ea21d6b04"
+    },
+    {
+      "path": "playstore/screenshots/en-US/phone-1080x1920/03-your-signal.png",
+      "width": 1080,
+      "height": 1920,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Devices offers automatic, sensor and watch sources with visible connection status.",
+      "source": "source/assets/native/androidDevices.png",
+      "layout": "source/layouts/playstore_screenshots_en-US_phone-1080x1920_03-your-signal.html",
+      "sha256": "30c5a8f261f48b88d29acd506aacf360990eb966192f6bfd78e3e1cb7fe24b74"
+    },
+    {
+      "path": "playstore/screenshots/en-US/phone-1080x1920/04-clear-status.png",
+      "width": 1080,
+      "height": 1920,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Live makes the current heart-rate status and personal limit visible.",
+      "source": "source/assets/native/androidDark.png",
+      "layout": "source/layouts/playstore_screenshots_en-US_phone-1080x1920_04-clear-status.html",
+      "sha256": "fd299fef738819b57e99f1b494793a87ff69b3cdffd6273094ed9158e04521a3"
+    },
+    {
+      "path": "playstore/screenshots/en-US/phone-1080x1920/05-voice-choice.png",
+      "width": 1080,
+      "height": 1920,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "phone-screenshot",
+      "alt": "Profile offers a choice of voice alerts alongside your personal settings.",
+      "source": "source/assets/native/androidVoice.png",
+      "layout": "source/layouts/playstore_screenshots_en-US_phone-1080x1920_05-voice-choice.html",
+      "sha256": "f52d258c478445f83c512ebb58a90a47ad9b7d654e5d25c972c6cd35e8583279"
+    },
+    {
+      "path": "playstore/graphics/en-US/feature-graphic-1024x500.png",
+      "width": 1024,
+      "height": 500,
+      "format": "RGB PNG",
+      "locale": "en-US",
+      "role": "feature-graphic",
+      "alt": "Keep pace together: live heart rate and personal limits in Pacemaker.",
+      "source": "source/assets/native/androidLive.png",
+      "layout": "source/layouts/playstore_graphics_en-US_feature-graphic-1024x500.html",
+      "sha256": "cd764fb2cfe1162dbd432490ebb8f7555b9bf921b792c2348b9f68aafc50cb2a"
+    },
+    {
+      "path": "playstore/graphics/de-DE/feature-graphic-1024x500.png",
+      "width": 1024,
+      "height": 500,
+      "format": "RGB PNG",
+      "locale": "de-DE",
+      "role": "feature-graphic",
+      "alt": "Gemeinsam im Tempo bleiben: Live-Puls und persönliche Limits in Pacemaker.",
+      "source": "source/assets/native/androidLive.png",
+      "layout": "source/layouts/playstore_graphics_de-DE_feature-graphic-1024x500.html",
+      "sha256": "b895f840840b48c1b4c1c6049e3c228165a64e61130c5673a3af6116b873e633"
+    },
+    {
+      "path": "playstore/graphics/it-IT/feature-graphic-1024x500.png",
+      "width": 1024,
+      "height": 500,
+      "format": "RGB PNG",
+      "locale": "it-IT",
+      "role": "feature-graphic",
+      "alt": "Allenati insieme agli altri: battito in tempo reale e limiti personali con Pacemaker.",
+      "source": "source/assets/native/androidLive.png",
+      "layout": "source/layouts/playstore_graphics_it-IT_feature-graphic-1024x500.html",
+      "sha256": "88d692efc6737fe753270931fb578c9b3f1454ed53a7b565b49616e0b0ecf580"
+    },
+    {
+      "path": "playstore/screenshots/en-US/wear-os/01-live.png",
+      "width": 454,
+      "height": 454,
+      "locale": "en-US",
+      "role": "wear-screenshot",
+      "alt": "Heart rate, personal limit and group summary on Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-opening-large-en-1.0.png",
+      "sha256": "49343904bff7db92c746dbddbfb24bd4a57e2966f84177a7c53328d606e99a22"
+    },
+    {
+      "path": "playstore/screenshots/en-US/wear-os/02-controls.png",
+      "width": 454,
+      "height": 454,
+      "locale": "en-US",
+      "role": "wear-screenshot",
+      "alt": "Workout controls on Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-controls-large-en-1.0.png",
+      "sha256": "8aa5f41224bad0df387fcd8e2c310eb6164618fd9c978ab8ef85cd7b29e24ff9"
+    },
+    {
+      "path": "playstore/screenshots/en-US/wear-os/03-group.png",
+      "width": 454,
+      "height": 454,
+      "locale": "en-US",
+      "role": "wear-screenshot",
+      "alt": "Group readings and individual limits on Wear OS.",
+      "source": "design/implementation/wear-os/captures/group-opening-large-en-1.0.png",
+      "sha256": "71cca0a931970c905d40e0f53f2f7390de48534f21f1623a5f6a1937ce77393f"
+    },
+    {
+      "path": "playstore/screenshots/de-DE/wear-os/01-live.png",
+      "width": 454,
+      "height": 454,
+      "locale": "de-DE",
+      "role": "wear-screenshot",
+      "alt": "Puls, persönliches Limit und Gruppenübersicht auf Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-opening-large-de-1.0.png",
+      "sha256": "a2e94c02f8d85d676e021ed4469d6c6c6ab7165bb580191bb41c6415dc641ce5"
+    },
+    {
+      "path": "playstore/screenshots/de-DE/wear-os/02-controls.png",
+      "width": 454,
+      "height": 454,
+      "locale": "de-DE",
+      "role": "wear-screenshot",
+      "alt": "Trainingssteuerung auf Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-controls-large-de-1.0.png",
+      "sha256": "4dea6d703e497a7c93a373de33556549e8a3f8dff6cea8cf464945c8f932c794"
+    },
+    {
+      "path": "playstore/screenshots/de-DE/wear-os/03-group.png",
+      "width": 454,
+      "height": 454,
+      "locale": "de-DE",
+      "role": "wear-screenshot",
+      "alt": "Messwerte der Gruppe und individuelle Limits auf Wear OS.",
+      "source": "design/implementation/wear-os/captures/group-opening-large-de-1.0.png",
+      "sha256": "eec9521d35a1387ade3486b23393eca8b4f77adcf1258d07d135cbcd8995512f"
+    },
+    {
+      "path": "playstore/screenshots/it-IT/wear-os/01-live.png",
+      "width": 454,
+      "height": 454,
+      "locale": "it-IT",
+      "role": "wear-screenshot",
+      "alt": "Battito, limite personale e riepilogo del gruppo su Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-opening-large-it-1.0.png",
+      "sha256": "97d3adf28ef32f0f8b8cca4b9f994cc2237879e5daa67c95a24519104a4dfc25"
+    },
+    {
+      "path": "playstore/screenshots/it-IT/wear-os/02-controls.png",
+      "width": 454,
+      "height": 454,
+      "locale": "it-IT",
+      "role": "wear-screenshot",
+      "alt": "Controlli di allenamento su Wear OS.",
+      "source": "design/implementation/wear-os/captures/home-controls-large-it-1.0.png",
+      "sha256": "e470cde465287fd261b5bce7d9801df8a90fa9be7530a08616647c6f9e36259a"
+    },
+    {
+      "path": "playstore/screenshots/it-IT/wear-os/03-group.png",
+      "width": 454,
+      "height": 454,
+      "locale": "it-IT",
+      "role": "wear-screenshot",
+      "alt": "Valori del gruppo e limiti individuali su Wear OS.",
+      "source": "design/implementation/wear-os/captures/group-opening-large-it-1.0.png",
+      "sha256": "4c136467bc99c7d507806e29f6bc7c0f897a918e834165528c807c4cd5862d6b"
+    },
+    {
+      "path": "playstore/graphics/app-icon-512.png",
+      "width": 512,
+      "height": 512,
+      "role": "app-icon",
+      "locale": "all",
+      "alt": "Pacemaker: two angular rhythm lines in acid yellow on charcoal.",
+      "sha256": "7e694b6e175148ce94b5187ede5f04400f180f6970cd635965b91a495a7c1ea2"
+    }
+  ]
+}

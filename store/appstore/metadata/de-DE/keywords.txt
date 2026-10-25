@@ -1,0 +1,1 @@
+fitness,training,laufen,radfahren,bluetooth,sensor,herzfrequenz,gruppe,sport,warnung

@@ -1,0 +1,11 @@
+@font-face{font-family:Barlow;src:url('assets/fonts/BarlowCondensed-SemiBold.ttf');font-weight:600}@font-face{font-family:Inter;src:url('assets/fonts/Inter-Variable.ttf');font-weight:100 900}
+*{box-sizing:border-box}html,body{margin:0;width:var(--w);height:var(--h);overflow:hidden}body{background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}
+.header{position:absolute;top:calc(38px*var(--s));left:calc(60px*var(--s));right:calc(60px*var(--s));height:calc(295px*var(--s))}
+.lockup{width:calc(246px*var(--s));height:calc(42px*var(--s));object-fit:contain;object-position:left center}
+.number{position:absolute;right:0;top:calc(11px*var(--s));font-size:calc(20px*var(--s));font-weight:600;letter-spacing:.08em}
+h1{position:absolute;top:calc(68px*var(--s));margin:0;font-family:Barlow,sans-serif;font-weight:600;font-size:calc(94px*var(--s));line-height:.94;letter-spacing:-.015em}
+h1 span{display:block}.second{color:var(--accent)}
+.support{position:absolute;top:calc(258px*var(--s));margin:0;font-size:calc(25px*var(--s));line-height:1.3;font-weight:500;white-space:nowrap}
+.native{position:absolute;left:50%;transform:translateX(-50%);top:var(--top);width:var(--shot-w);height:var(--shot-h);outline:calc(3px*var(--s)) solid var(--edge);display:block}
+.feature .header{left:64px;top:64px;right:64px;height:372px}.feature .lockup{width:210px;height:32px}.feature h1{top:82px;font-size:85px;line-height:.96}.feature .support{top:280px;font-size:19px;white-space:normal;max-width:550px}
+.feature .native{left:auto;right:64px;transform:none;top:48px;height:404px;width:auto;outline:2px solid #171A19}

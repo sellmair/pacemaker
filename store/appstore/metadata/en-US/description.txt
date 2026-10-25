@@ -1,0 +1,20 @@
+Keep your heart rate and your training group in view. Pacemaker brings live readings, personal limits and nearby participants into one clear screen.
+
+YOUR HEART RATE, AT A GLANCE
+See your current bpm and how it compares with the limit you choose. Clear status messages tell you when you are within your limit, above it or waiting for a fresh reading.
+
+KEEP PACE TOGETHER
+See nearby Pacemaker participants with their names, heart rates and individual limits. Everyone can train to their own threshold while staying aware of the group.
+
+MAKE IT YOURS
+Choose your display name and identity color. Adjust your heart-rate limit from 40 to 200 bpm. Select all voice updates, warnings only or silence.
+
+CHOOSE YOUR SIGNAL
+Connect a compatible Bluetooth heart-rate sensor, choose your watch or let Automatic select an available source. Connection status stays visible so you know where your reading comes from.
+
+CLEAR IN LIGHT AND DARK
+Large readings, focused layouts and light and dark appearances keep the essentials easy to find.
+
+Use a compatible Bluetooth heart-rate sensor or the Apple Watch companion as your source. Apple Watch measurements require a paired watch and the necessary health permissions.
+
+Live readings require a compatible sensor or watch; the phone alone does not measure your pulse. Nearby sharing requires other participants to use Pacemaker with Bluetooth enabled. Pacemaker is for fitness use, not diagnosis or treatment; your chosen limit is not a medical assessment.
