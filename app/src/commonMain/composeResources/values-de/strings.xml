@@ -144,4 +144,5 @@
     <string name="settings_limit_range">Gespeichertes Limit liegt außerhalb des Bearbeitungsbereichs (%1$d–%2$d BPM).</string>
     <string name="settings_voice_label">Sprachmeldungen</string>
     <string name="settings_hue_accessibility">Farbton der Identitätsfarbe: %1$d Grad</string>
+    <string name="live_member_connection_lost">Verbindung verloren</string>
 </resources>

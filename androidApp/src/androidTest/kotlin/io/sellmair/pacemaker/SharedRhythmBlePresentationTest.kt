@@ -6,7 +6,7 @@ import io.sellmair.pacemaker.ble.BleConnectable
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.ui.mainPage.resolveSelectedBleSource
+import io.sellmair.pacemaker.ui.mainPage.resolveLiveHeartRateSource
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -24,7 +24,7 @@ class SharedRhythmBlePresentationTest {
 
     @Test
     fun restoredConnectingChoiceUsesRuntimeConnectedStateAndFreshMeasurement() {
-        val result = resolveSelectedBleSource(
+        val result = resolveLiveHeartRateSource(
             restored,
             HeartRateSensorConnectionState(true, BleConnectable.ConnectionState.Connected),
             enabled,
@@ -37,7 +37,7 @@ class SharedRhythmBlePresentationTest {
 
     @Test
     fun disconnectingAndDisabledBluetoothSuppressOldFreshMeasurement() {
-        val disconnecting = resolveSelectedBleSource(
+        val disconnecting = resolveLiveHeartRateSource(
             restored,
             HeartRateSensorConnectionState(false, null),
             enabled,
@@ -46,7 +46,7 @@ class SharedRhythmBlePresentationTest {
         )
         assertEquals(HeartRateSource.Availability.DISCONNECTED, disconnecting?.availability)
         assertNull(disconnecting?.currentHeartRate(now))
-        val disabled = resolveSelectedBleSource(
+        val disabled = resolveLiveHeartRateSource(
             restored,
             HeartRateSensorConnectionState(true, BleConnectable.ConnectionState.Connected),
             BluetoothState(false, true),
@@ -57,20 +57,37 @@ class SharedRhythmBlePresentationTest {
     }
 
     @Test
+    fun briefDisconnectAndReconnectKeepTheLastMeasurementUntilGraceExpires() {
+        for (connectionState in listOf(BleConnectable.ConnectionState.Disconnected, BleConnectable.ConnectionState.Connecting)) {
+            val connection = HeartRateSensorConnectionState(true, connectionState)
+            assertEquals(HeartRate(142), resolveLiveHeartRateSource(restored, connection, enabled, me, now + 59_999)?.currentHeartRate(now + 59_999))
+            assertNull(resolveLiveHeartRateSource(restored, connection, enabled, me, now + 60_001)?.currentHeartRate(now + 60_001))
+        }
+    }
+
+    @Test
+    fun briefCompanionTransportDropKeepsTheLastMeasurement() {
+        val companion = restored.copy(kind = HeartRateSource.Kind.COMPANION_WATCH,
+            availability = HeartRateSource.Availability.DISCONNECTED)
+        assertEquals(HeartRate(142), resolveLiveHeartRateSource(companion, null, enabled, me, now + 59_999)?.currentHeartRate(now + 59_999))
+        assertNull(resolveLiveHeartRateSource(companion, null, enabled, me, now + 60_001)?.currentHeartRate(now + 60_001))
+    }
+
+    @Test
     fun absentActorFallbackRequiresEnabledBluetoothAndFreshMeasurement() {
         assertEquals(
             HeartRate(142),
-            resolveSelectedBleSource(restored, null, enabled, me, now)?.currentHeartRate(now)
+            resolveLiveHeartRateSource(restored, null, enabled, me, now)?.currentHeartRate(now)
         )
-        assertNull(resolveSelectedBleSource(restored, null, null, me, now)?.currentHeartRate(now))
+        assertNull(resolveLiveHeartRateSource(restored, null, null, me, now)?.currentHeartRate(now))
         assertNull(
-            resolveSelectedBleSource(
+            resolveLiveHeartRateSource(
                 restored,
                 null,
                 enabled,
                 me,
-                now + 15_001
-            )?.currentHeartRate(now + 15_001)
+                now + 60_001
+            )?.currentHeartRate(now + 60_001)
         )
     }
 }

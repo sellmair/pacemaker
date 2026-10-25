@@ -8,10 +8,10 @@ class WearHomePresentationTest {
     private val now = 1_000_000L
 
     @Test
-    fun measurementIsFreshAtTheFifteenSecondBoundary() {
+    fun measurementIsFreshAtTheOneMinuteBoundary() {
         val presentation = workout(
             heartRate = 142,
-            measuredAtEpochMillis = now - 15_000,
+            measuredAtEpochMillis = now - 60_000,
         ).toWearHomePresentation(now)
 
         assertEquals(142, presentation.heartRate)
@@ -21,7 +21,7 @@ class WearHomePresentationTest {
     @Test
     fun staleFutureAndUntimestampedMeasurementsAreNotShown() {
         listOf(
-            workout(isRunning = true, heartRate = 142, measuredAtEpochMillis = now - 15_001),
+            workout(isRunning = true, heartRate = 142, measuredAtEpochMillis = now - 60_001),
             workout(isRunning = true, heartRate = 142, measuredAtEpochMillis = now + 1),
             workout(isRunning = true, heartRate = 142, measuredAtEpochMillis = null),
             workout(isRunning = true, heartRate = null, measuredAtEpochMillis = now),

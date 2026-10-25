@@ -9,11 +9,11 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class HeartRateSourceTest {
-    @Test fun measurementExpiresAfterFifteenSeconds() {
+    @Test fun measurementExpiresAfterOneMinute() {
         val source = HeartRateSource("watch-1", HeartRateSource.Kind.ONBOARD_WATCH,
             HeartRateSource.Availability.AVAILABLE, HeartRate(140), 10_000)
-        assertEquals(HeartRate(140), source.currentHeartRate(25_000))
-        assertNull(source.currentHeartRate(25_001))
+        assertEquals(HeartRate(140), source.currentHeartRate(70_000))
+        assertNull(source.currentHeartRate(70_001))
         assertNull(source.currentHeartRate(9_999))
     }
 
@@ -24,21 +24,21 @@ class HeartRateSourceTest {
             HeartRateSource.Availability.AVAILABLE, HeartRate(90)).currentHeartRate(100))
     }
 
-    @Test fun freshnessBoundaryFlipsToClearAfterFifteenSeconds() {
+    @Test fun freshnessBoundaryFlipsToClearAfterOneMinute() {
         val user = User(id = io.sellmair.pacemaker.model.UserId(1L), name = "runner")
         val state = MeState(user, HeartRate(100), HeartRate(160), measuredAtEpochMillis = 1_000)
-        assertTrue(state.hasFreshHeartRate(16_000))
-        assertFalse(state.hasFreshHeartRate(16_001))
+        assertTrue(state.hasFreshHeartRate(61_000))
+        assertFalse(state.hasFreshHeartRate(61_001))
         assertFalse(state.copy(heartRate = null).hasFreshHeartRate(2_000))
     }
 
     @Test fun sameHeartRateValueCanBeBroadcastAgainAfterExpiryClear() {
         val user = User(id = io.sellmair.pacemaker.model.UserId(1L), name = "runner")
         val first = MeState(user, HeartRate(120), HeartRate(160), measuredAtEpochMillis = 1_000)
-        val recovered = first.copy(measuredAtEpochMillis = 20_000)
+        val recovered = first.copy(measuredAtEpochMillis = 80_000)
         assertEquals(HeartRate(120), first.heartRateForBroadcast(2_000))
-        assertNull(first.heartRateForBroadcast(16_001))
-        assertEquals(HeartRate(120), recovered.heartRateForBroadcast(20_001))
+        assertNull(first.heartRateForBroadcast(61_001))
+        assertEquals(HeartRate(120), recovered.heartRateForBroadcast(80_001))
     }
 
     @Test fun selectedWatchFiltersOnlyThisPhoneOwnParticipant() {

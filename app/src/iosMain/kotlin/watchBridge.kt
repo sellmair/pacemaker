@@ -147,7 +147,7 @@ object IosWatchBridge {
         val groupJson = members.joinToString(",") { member ->
             "{\"userId\":${quote(member.user.id.value.toString())}," +
                 "\"name\":${quote(member.user.name)}," +
-                "\"bpm\":${member.heartRate.value.toInt()}," +
+                "\"bpm\":${member.heartRate.value.toInt().takeUnless { member.isConnectionLost } ?: "null"}," +
                 "\"limit\":${member.heartRateLimit?.value?.toInt() ?: "null"}," +
                 "\"measuredAt\":${member.measuredAtEpochMillis}}"
         }

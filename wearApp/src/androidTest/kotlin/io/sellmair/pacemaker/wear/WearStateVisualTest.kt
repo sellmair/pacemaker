@@ -26,7 +26,7 @@ class WearStateVisualTest {
         val cases = listOf(
             "at-limit" to wearFixtureState().copy(heartRate = 150),
             "above-limit" to wearFixtureState().copy(heartRate = 151),
-            "no-reading" to wearFixtureState().copy(measuredAtEpochMillis = WearFixtureNow - 15_001L),
+            "no-reading" to wearFixtureState().copy(measuredAtEpochMillis = WearFixtureNow - 60_001L),
             "phone-lost" to wearFixtureState().copy(companionConnected = false),
             "permissions" to wearFixtureState().copy(heartRate = null, status = "Allow heart rate access in Settings"),
             "starting" to wearFixtureState().copy(isRunning = false, isStarting = true, heartRate = null, status = "Starting workout"),

@@ -3,7 +3,7 @@ package io.sellmair.pacemaker
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.evas.State
 import io.sellmair.evas.Event
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 
 /** The currently selected input for this participant. Only one source is active at a time. */
 data class HeartRateSource(
@@ -20,7 +20,7 @@ data class HeartRateSource(
     enum class Kind { BLE_SENSOR, COMPANION_WATCH, ONBOARD_WATCH }
     enum class Availability { AVAILABLE, CONNECTING, DISCONNECTED, PERMISSION_REQUIRED, UNSUPPORTED }
 
-    /** Do not display, save, alert on, or rebroadcast measurements older than 15 seconds. */
+    /** Allow normal gaps between sensor updates before expiring the last measurement. */
     fun currentHeartRate(nowEpochMillis: Long): HeartRate? {
         val value = heartRate ?: return null
         val measuredAt = measuredAtEpochMillis ?: return null
@@ -29,7 +29,7 @@ data class HeartRateSource(
     }
 
     companion object {
-        val MAX_AGE = 15.seconds
+        val MAX_AGE = 1.minutes
     }
 }
 

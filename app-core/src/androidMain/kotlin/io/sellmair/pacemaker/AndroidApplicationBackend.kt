@@ -420,7 +420,7 @@ class AndroidApplicationBackend : Service(), ApplicationBackend, CoroutineScope 
             .sortedByDescending { it.heartRateLimit != null && it.heartRate >= it.heartRateLimit }
             .take(5)
             .map { member -> WatchCompanionMessage.GroupSnapshot.Member(
-                member.user.id.value.toString(), member.user.name, member.heartRate.value.toInt(),
+                member.user.id.value.toString(), member.user.name, member.heartRate.value.toInt().takeUnless { member.isConnectionLost },
                 member.heartRateLimit?.value?.toInt(), member.measuredAtEpochMillis
             ) }
         val groupSnapshot = WatchCompanionMessage.GroupSnapshot(

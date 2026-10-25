@@ -57,7 +57,7 @@ internal fun MainPage() {
         state = LiveScreenContentState(
             me = me,
             group = group,
-            selectedSource = resolveSelectedBleSource(
+            selectedSource = resolveLiveHeartRateSource(
                 source = selectedSource,
                 connection = sensorConnection,
                 bluetooth = bluetooth,
@@ -79,33 +79,44 @@ internal fun MainPage() {
  * process-restored CONNECTING selection does not suppress readings after the sensor reconnects.
  * When the actor has not attached yet, a fresh MeState sample is evidence of an active source only
  * while Bluetooth is known enabled and permitted.
+ * Companion transport gaps also keep the last reading for its normal grace period.
  */
-internal fun resolveSelectedBleSource(
+internal fun resolveLiveHeartRateSource(
     source: HeartRateSource?,
     connection: HeartRateSensorConnectionState?,
     bluetooth: BluetoothState?,
     me: MeState?,
     nowEpochMillis: Long
 ): HeartRateSource? {
-    if (source?.kind != HeartRateSource.Kind.BLE_SENSOR) return source
-
     val freshMeasurement = me?.takeIf { it.hasFreshHeartRate(nowEpochMillis) }
+    if (source?.kind != HeartRateSource.Kind.BLE_SENSOR) {
+        return if (source?.kind == HeartRateSource.Kind.COMPANION_WATCH && freshMeasurement != null &&
+            source.availability in setOf(HeartRateSource.Availability.CONNECTING, HeartRateSource.Availability.DISCONNECTED)
+        ) {
+            source.copy(
+                availability = HeartRateSource.Availability.AVAILABLE,
+                heartRate = freshMeasurement.heartRate,
+                measuredAtEpochMillis = freshMeasurement.measuredAtEpochMillis
+            )
+        } else source
+    }
     val availability = when {
         bluetooth != null && !bluetooth.isBluetoothPermissionGranted -> HeartRateSource.Availability.PERMISSION_REQUIRED
         bluetooth != null && !bluetooth.isBluetoothEnabled -> HeartRateSource.Availability.DISCONNECTED
+        connection?.connectIfPossible == false -> HeartRateSource.Availability.DISCONNECTED
+        bluetooth?.isBluetoothEnabled == true && bluetooth.isBluetoothPermissionGranted && freshMeasurement != null ->
+            HeartRateSource.Availability.AVAILABLE
         connection != null -> when (connection.connectionState) {
             BleConnectable.ConnectionState.Connected -> HeartRateSource.Availability.AVAILABLE
             BleConnectable.ConnectionState.Connecting -> HeartRateSource.Availability.CONNECTING
             BleConnectable.ConnectionState.Disconnected, null -> HeartRateSource.Availability.DISCONNECTED
         }
-        bluetooth?.isBluetoothEnabled == true && bluetooth.isBluetoothPermissionGranted && freshMeasurement != null ->
-            HeartRateSource.Availability.AVAILABLE
         else -> HeartRateSource.Availability.DISCONNECTED
     }
 
     return source.copy(
         availability = availability,
         heartRate = freshMeasurement?.heartRate,
-        measuredAtEpochMillis = freshMeasurement?.measuredAtEpochMillis
+        measuredAtEpochMillis = me?.measuredAtEpochMillis
     )
 }

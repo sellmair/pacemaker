@@ -60,6 +60,7 @@ internal fun CoroutineScope.launchHeartRateUtteranceProducer() = launch {
     GroupState.collect { state ->
         group = state
         criticalUserStates = state.members.filter { memberState ->
+            if (memberState.isConnectionLost) return@filter false
             val currentHeartRate = memberState.heartRate
             val currentHeartRateLimit = memberState.heartRateLimit ?: return@filter false
             currentHeartRate > currentHeartRateLimit

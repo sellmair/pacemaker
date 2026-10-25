@@ -10,6 +10,7 @@ import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -34,6 +35,7 @@ data class GroupState(val members: List<UserState> = emptyList()) : Iterable<Use
 
     companion object Key : State.Key<GroupState> {
         override val default = GroupState(emptyList())
+        val CONNECTION_LOST_RETENTION = 1.minutes
     }
 
     object KeepMeasurementDuration : ConfigurationKey.WithDefault<Duration> {
@@ -46,7 +48,9 @@ internal fun CoroutineScope.launchGroupStateActor(
     clock: Clock = Clock.System
 ) {
     val actorIn = Channel<ActorIn>(Channel.UNLIMITED)
-    val measurements = hashMapOf<UserId, AddMeasurement>()
+    val measurements = linkedMapOf<UserId, AddMeasurement>()
+    val lostConnections = mutableSetOf<UserId>()
+    val expiryJobs = mutableMapOf<UserId, Job>()
     val meUserId = async { userService.me().id }
     val colors = hashMapOf<UserId, HSLColor>()
 
@@ -59,7 +63,8 @@ internal fun CoroutineScope.launchGroupStateActor(
                 heartRate = measurement.heartRate,
                 heartRateLimit = userService.findHeartRateLimit(user),
                 color = colors.getOrElse(userId) { UserColors.default(userId) },
-                measuredAtEpochMillis = measurement.time.toEpochMilliseconds()
+                measuredAtEpochMillis = measurement.time.toEpochMilliseconds(),
+                isConnectionLost = userId in lostConnections
             )
         }
 
@@ -71,22 +76,43 @@ internal fun CoroutineScope.launchGroupStateActor(
         actorIn.consumeEach { event ->
             when (event) {
                 is AddMeasurement -> {
+                    val previous = measurements[event.user.id]
+                    if (previous != null && event.time < previous.time) return@consumeEach
                     measurements[event.user.id] = event
+                    lostConnections.remove(event.user.id)
+                    expiryJobs.remove(event.user.id)?.cancel()
                     updateAndEmitGroup()
 
                     /* Schedule invalidation of measurement after certain amount of time */
-                    launch {
+                    expiryJobs[event.user.id] = launch {
                         val elapsed = clock.now() - event.time
                         val remaining = (event.keepFor - elapsed).coerceAtLeast(Duration.ZERO)
                         delay(remaining)
-                        actorIn.send(ActorIn.Discard(event.user.id, event))
+                        actorIn.send(ActorIn.MarkConnectionLost(event.user.id, event))
+                    }
+                }
+
+                is ActorIn.MarkConnectionLost -> {
+                    if (measurements[event.userId] === event.message) {
+                        if (event.userId == meUserId.await()) {
+                            measurements.remove(event.userId)
+                            expiryJobs.remove(event.userId)
+                        } else {
+                            lostConnections.add(event.userId)
+                            expiryJobs[event.userId] = launch {
+                                delay(GroupState.CONNECTION_LOST_RETENTION)
+                                actorIn.send(ActorIn.Discard(event.userId, event.message))
+                            }
+                        }
+                        updateAndEmitGroup()
                     }
                 }
 
                 is ActorIn.Discard -> {
-                    /* Measurement has not been updated, but is now discared */
-                    if (measurements[event.userId] == event.message) {
+                    if (measurements[event.userId] === event.message) {
                         measurements.remove(event.userId)
+                        lostConnections.remove(event.userId)
+                        expiryJobs.remove(event.userId)
                         updateAndEmitGroup()
                     }
                 }
@@ -96,7 +122,9 @@ internal fun CoroutineScope.launchGroupStateActor(
                 }
 
                 is ActorIn.ClearOwn -> {
-                    measurements.remove(meUserId.await())
+                    val ownId = meUserId.await()
+                    measurements.remove(ownId)
+                    expiryJobs.remove(ownId)?.cancel()
                     updateAndEmitGroup()
                 }
             }
@@ -112,10 +140,9 @@ internal fun CoroutineScope.launchGroupStateActor(
 
     launch(actorContext) {
         SelectedHeartRateSourceState.flow().map { state ->
-            val source = state.source
-            (source?.id) to (source?.heartRate != null)
-        }.distinctUntilChanged().collect { (_, hasValue) ->
-            if (!hasValue) actorIn.send(ActorIn.ClearOwn)
+            state.source?.let { it.id to it.companionDeviceId }
+        }.distinctUntilChanged().collect {
+            actorIn.send(ActorIn.ClearOwn)
         }
     }
 
@@ -129,7 +156,7 @@ internal fun CoroutineScope.launchGroupStateActor(
         val ownUserId = MeState.value()?.me?.id
         val selectedSource = SelectedHeartRateSourceState.value()?.source
         if (!acceptsHeartRateMeasurement(selectedSource, ownUserId?.value?.toString().orEmpty(), user.id.value.toString(), event.sensorId.value)) return@collectEventsAsync
-        actorIn.send(AddMeasurement(event.heartRate, user, event.time, HeartRateSource.MAX_AGE))
+        actorIn.send(AddMeasurement(event.heartRate, user, event.time, GroupState.KeepMeasurementDuration.value()))
     }
 
 
@@ -151,7 +178,8 @@ internal fun CoroutineScope.launchGroupStateActor(
 
 private sealed class ActorIn {
     data class AddMeasurement(val heartRate: HeartRate, val user: User, val time: Instant, val keepFor: Duration) : ActorIn()
-    data class Discard(val userId: UserId, val message: ActorIn) : ActorIn()
+    data class MarkConnectionLost(val userId: UserId, val message: AddMeasurement) : ActorIn()
+    data class Discard(val userId: UserId, val message: AddMeasurement) : ActorIn()
     data object RecalculateGroup : ActorIn()
     data object ClearOwn : ActorIn()
 }

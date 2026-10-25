@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 data class MeState(
@@ -77,10 +76,9 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService, clock: 
 
     launch {
         SelectedHeartRateSourceState.flow().map { state ->
-            val source = state.source
-            (source?.id) to (source?.heartRate != null)
-        }.distinctUntilChanged().collect { (_, hasValue) ->
-            if (!hasValue) valuesChannel.send(Values(clearMeasurement = true))
+            state.source?.let { it.id to it.companionDeviceId }
+        }.distinctUntilChanged().collect {
+            valuesChannel.send(Values(clearMeasurement = true))
         }
     }
 
@@ -90,17 +88,17 @@ internal fun CoroutineScope.launchMeStateActor(userService: UserService, clock: 
         var currentMeasurement: HeartRateMeasurementEvent? = null
 
         valuesChannel.consumeEach { update ->
+            if (update.clearMeasurementAt != null && currentMeasurement?.time != update.clearMeasurementAt) return@consumeEach
             me = update.me ?: me
             heartRateLimit = update.heartRateLimit ?: heartRateLimit
             if (update.measurementChanged) currentMeasurement = update.measurement
-            if (update.clearMeasurement ||
-                (update.clearMeasurementAt != null && currentMeasurement?.time == update.clearMeasurementAt)) {
-                currentMeasurement = null
-            }
+            if (update.clearMeasurement) currentMeasurement = null
 
             MeState(
                 me = me,
-                heartRate = currentMeasurement?.heartRate,
+                heartRate = currentMeasurement?.takeIf {
+                    clock.now() - it.time < HeartRateSource.MAX_AGE
+                }?.heartRate,
                 heartRateLimit = heartRateLimit ?: return@consumeEach,
                 measuredAtEpochMillis = currentMeasurement?.time?.toEpochMilliseconds()
             ).emit()

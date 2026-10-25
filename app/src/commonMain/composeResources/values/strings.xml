@@ -144,4 +144,5 @@
     <string name="settings_limit_range">Stored limit is outside the editable range (%1$d–%2$d bpm).</string>
     <string name="settings_voice_label">Voice alerts</string>
     <string name="settings_hue_accessibility">Identity color hue: %1$d degrees</string>
+    <string name="live_member_connection_lost">Connection lost</string>
 </resources>

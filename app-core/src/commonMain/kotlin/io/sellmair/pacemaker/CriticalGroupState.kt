@@ -14,6 +14,7 @@ data class CriticalGroupState(val criticalMembers: List<UserState>) : State {
 internal fun CoroutineScope.launchCriticalGroupStateActor() = launchState(CriticalGroupState) {
     GroupState.collect { groupState ->
         val criticalMembers = groupState.members.filter { userState ->
+            if (userState.isConnectionLost) return@filter false
             val heartRateLimit = userState.heartRateLimit ?: return@filter false
             userState.heartRate > heartRateLimit
         }

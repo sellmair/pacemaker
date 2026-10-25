@@ -10,10 +10,10 @@ class WearGroupPresentationTest {
     private val now = 1_000_000L
 
     @Test
-    fun readingsAreMaskedAtFifteenSecondsBeforeCriticalOrdering() {
+    fun readingsAreMaskedAtOneMinuteBeforeCriticalOrdering() {
         val presentation = listOf(
-            member("stale-critical", "Stale", bpm = 190, limit = 150, measuredAt = now - 15_001),
-            member("fresh-critical", "Fresh", bpm = 150, limit = 150, measuredAt = now - 15_000),
+            member("stale-critical", "Stale", bpm = 190, limit = 150, measuredAt = now - 60_001),
+            member("fresh-critical", "Fresh", bpm = 150, limit = 150, measuredAt = now - 60_000),
             member("future-critical", "Future", bpm = 190, limit = 150, measuredAt = now + 1),
             member("missing-time", "Missing", bpm = 190, limit = 150, measuredAt = null),
         ).toWearGroupPresentation(now)
@@ -29,7 +29,7 @@ class WearGroupPresentationTest {
     @Test
     fun duplicateIdentityPrefersFreshReadingAndNewestFreshDuplicate() {
         val presentation = listOf(
-            member("alex", "Old Alex", bpm = 160, limit = 150, measuredAt = now - 20_000),
+            member("alex", "Old Alex", bpm = 160, limit = 150, measuredAt = now - 70_000),
             member("sam", "Sam", bpm = 120, limit = 140, measuredAt = now - 500),
             member("alex", "Alex", bpm = 145, limit = 150, measuredAt = now - 2_000),
             member("alex", "Newest Alex", bpm = 151, limit = 150, measuredAt = now - 500),
@@ -44,7 +44,7 @@ class WearGroupPresentationTest {
     @Test
     fun duplicateWithOnlyStaleOrFutureMeasurementsDoesNotBecomeCritical() {
         val presentation = listOf(
-            member("alex", "Past Alex", bpm = 170, limit = 150, measuredAt = now - 20_000),
+            member("alex", "Past Alex", bpm = 170, limit = 150, measuredAt = now - 70_000),
             member("alex", "Future Alex", bpm = 180, limit = 150, measuredAt = now + 10),
         ).toWearGroupPresentation(now)
 

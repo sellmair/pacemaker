@@ -1,5 +1,10 @@
 package io.sellmair.pacemaker.ui.mainPage
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +29,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,6 +82,7 @@ import pacemaker.app.generated.resources.live_member_below_limit
 import pacemaker.app.generated.resources.live_member_above_limit
 import pacemaker.app.generated.resources.live_member_at_limit
 import pacemaker.app.generated.resources.live_member_outdated
+import pacemaker.app.generated.resources.live_member_connection_lost
 import pacemaker.app.generated.resources.live_no_current_reading
 import pacemaker.app.generated.resources.live_meter_accessibility
 import pacemaker.app.generated.resources.live_meter_start
@@ -164,7 +172,7 @@ fun LivePageContent(
         state.selectedSource?.availability == HeartRateSource.Availability.DISCONNECTED ->
             stringResource(Res.string.live_status_signal_lost)
 
-        ownRate != null && (ownFreshness == MeasurementFreshness.Expired || ownFreshness == MeasurementFreshness.Invalid) ->
+        ownFreshness == MeasurementFreshness.Expired || (ownRate != null && ownFreshness == MeasurementFreshness.Invalid) ->
             stringResource(Res.string.live_status_signal_lost)
 
         ownRate != null -> sourceStatus(state.selectedSource, state.nowEpochMillis)
@@ -315,7 +323,7 @@ fun LivePageContent(
                     isCurrentUser = true
                 )
             }
-            peers.forEach { member ->
+            AnimatedPeerRows(peers) { member ->
                 LiveMemberRow(
                     name = member.user.name.ifBlank { stringResource(Res.string.live_member_fallback) },
                     initials = member.user.nameAbbreviation.ifBlank { "?" }.uppercase(),
@@ -324,6 +332,9 @@ fun LivePageContent(
                     freshness = member.freshness(state.nowEpochMillis),
                     limitBpm = member.heartRateLimit?.toString()?.toIntOrNull(),
                     identityColor = member.color.toColor(),
+                    readingStatusOverride = if (member.isConnectionLost || member.freshness(state.nowEpochMillis) == MeasurementFreshness.Expired) {
+                        stringResource(Res.string.live_member_connection_lost)
+                    } else null,
                     isCurrentUser = false
                 )
             }
@@ -336,6 +347,40 @@ fun LivePageContent(
         LiveSourceFooter(source = state.selectedSource, nowEpochMillis = state.nowEpochMillis)
     }
 
+}
+
+/** Keep each departing identity composed until its fade and height collapse have finished. */
+@Composable
+private fun AnimatedPeerRows(members: List<UserState>, content: @Composable (UserState) -> Unit) {
+    var retained by remember { mutableStateOf(members) }
+    LaunchedEffect(members) {
+        val currentById = members.associateBy { it.user.id }
+        val retainedIds = retained.map { it.user.id }.toSet()
+        retained = retained.map { currentById[it.user.id] ?: it } + members.filterNot { it.user.id in retainedIds }
+    }
+    Column {
+        retained.forEach { previous ->
+            key(previous.user.id) {
+                val current = members.firstOrNull { it.user.id == previous.user.id }
+                val visibility = remember { MutableTransitionState(true) }
+                LaunchedEffect(current != null) { visibility.targetState = current != null }
+                LaunchedEffect(visibility.isIdle, visibility.currentState, current != null) {
+                    if (visibility.isIdle && !visibility.currentState && current == null) {
+                        retained = retained.filterNot { it.user.id == previous.user.id }
+                    }
+                }
+                AnimatedVisibility(
+                    visibleState = visibility,
+                    exit = fadeOut(tween(300)) + shrinkVertically(tween(300), shrinkTowards = Alignment.Top)
+                ) {
+                    Column {
+                        content(current ?: previous)
+                        Spacer(Modifier.height(PacemakerSpacing.x1))
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -387,7 +432,7 @@ private fun Long?.toFreshness(nowEpochMillis: Long): MeasurementFreshness {
 }
 
 private fun UserState.freshness(nowEpochMillis: Long): MeasurementFreshness =
-    measuredAtEpochMillis.toFreshness(nowEpochMillis)
+    if (isConnectionLost) MeasurementFreshness.Expired else measuredAtEpochMillis.toFreshness(nowEpochMillis)
 
 @Composable
 private fun LiveMemberRow(

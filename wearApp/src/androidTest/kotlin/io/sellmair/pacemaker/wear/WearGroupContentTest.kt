@@ -58,7 +58,7 @@ class WearGroupContentTest {
     @Test
     fun retainedStaleMemberShowsNoReadingAndItsOwnLimit() {
         val members = listOf(
-            WearGroupMember("old", "Old member", 220, 140, WearFixtureNow - 15_001L),
+            WearGroupMember("old", "Old member", 220, 140, WearFixtureNow - 60_001L),
             WearGroupMember("fresh", "Fresh member", 160, 150, WearFixtureNow),
         )
         compose.setContent {

@@ -1,183 +1,203 @@
 import io.sellmair.evas.*
 import io.sellmair.pacemaker.*
+import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.bluetooth.HeartRateMeasurementEvent
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackage
 import io.sellmair.pacemaker.bluetooth.PacemakerBroadcastPackageEvent
-import io.sellmair.pacemaker.ble.BleDeviceId
 import io.sellmair.pacemaker.model.HeartRate
 import io.sellmair.pacemaker.model.HeartRateSensorId
+import io.sellmair.pacemaker.model.User
 import io.sellmair.pacemaker.model.UserId
-import io.sellmair.pacemaker.utils.value
 import io.sellmair.pacemaker.utils.invoke
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import utils.createInMemoryDatabase
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 import kotlin.time.Clock
 import kotlin.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GroupStateTest {
-
     private val userService = SqlUserService(createInMemoryDatabase(), UserId(1))
+    private val other = User(UserId(2), "Other runner")
 
     @Test
-    fun `sample 0`() = test {
-        val meSensorId = HeartRateSensorId("me")
+    fun `sensor and group readings survive a minute without updates then show lost peers for another minute`() = test { clock ->
         val me = userService.me()
-        userService.linkSensor(me, meSensorId)
-        val measuredAt = Clock.System.now()
-        HeartRateMeasurementEvent(HeartRate(128f), meSensorId, measuredAt).emit()
+        val sensorId = HeartRateSensorId("me")
+        userService.linkSensor(me, sensorId)
+        userService.saveUser(other)
+        HeartRateMeasurementEvent(HeartRate(128), sensorId, clock.now()).emit()
+        broadcast(clock)
+        testScheduler.runCurrent()
+        assertEquals(2, GroupState.value().members.size)
 
-        launch {
-            GroupState.collect { println("(${testScheduler.currentTime}ms) s: $it") }
-        }
+        testScheduler.advanceTimeBy(59_999)
+        testScheduler.runCurrent()
+        assertEquals(HeartRate(128), MeState.value()?.heartRate)
+        assertFalse(GroupState.value().members.single { it.user.id == other.id }.isConnectionLost)
 
-        val state = GroupState.flow().first { it.members.isNotEmpty() }
-        println("(${testScheduler.currentTime}ms) Received first state with non-empty members")
+        testScheduler.advanceTimeBy(1)
+        testScheduler.runCurrent()
+        assertNull(MeState.value()?.heartRate)
+        val lost = GroupState.value().members.single()
+        assertEquals(other.id, lost.user.id)
+        assertTrue(lost.isConnectionLost)
 
-        assertEquals(
-            GroupState(
-                listOf(
-                    UserState(
-                        user = me,
-                        isMe = true,
-                        heartRate = HeartRate(128f),
-                        heartRateLimit = UserService.NewUserHeartRateLimit.value(),
-                        color = UserColors.default(me.id),
-                        measuredAtEpochMillis = measuredAt.toEpochMilliseconds()
-                    )
-                )
-            ), state,
-            "Expect first state with non-empty members to reflect the previously emitted '${HeartRateMeasurementEvent::class}'"
-        )
-
-        println("(${testScheduler.currentTime}ms) Testing current state value...")
-        assertEquals(
-            state, GroupState.value(),
-            "(${testScheduler.currentTime}ms) Expect the current value of 'GroupState' to be the recently emitted state"
-        )
-
-        println("(${testScheduler.currentTime}ms) Waiting until the Group state resets..")
-        GroupState.flow().first { it == GroupState.default }
-
-        println("(${testScheduler.currentTime}ms) Group state was reset!")
-        assertEquals(GroupState.default, GroupState.value())
+        testScheduler.advanceTimeBy(59_999)
+        testScheduler.runCurrent()
+        assertEquals(lost, GroupState.value().members.single())
+        testScheduler.advanceTimeBy(1)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.isEmpty())
     }
 
     @Test
-    fun `selected watch rejects own strap but keeps other users sensors`() = test {
+    fun `sparse unchanged broadcasts refresh the full grace period`() = test { clock ->
+        userService.saveUser(other)
+        repeat(3) {
+            broadcast(clock)
+            testScheduler.runCurrent()
+            testScheduler.advanceTimeBy(55_000)
+            testScheduler.runCurrent()
+            assertFalse(GroupState.value().members.single().isConnectionLost)
+        }
+        testScheduler.advanceTimeBy(5_000)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.single().isConnectionLost)
+    }
+
+    @Test
+    fun `recovery clears lost status and cancels the old removal`() = test { clock ->
+        userService.saveUser(other)
+        broadcast(clock)
+        testScheduler.runCurrent()
+        testScheduler.advanceTimeBy(90_000)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.single().isConnectionLost)
+        broadcast(clock)
+        testScheduler.runCurrent()
+        assertFalse(GroupState.value().members.single().isConnectionLost)
+        testScheduler.advanceTimeBy(30_000)
+        testScheduler.runCurrent()
+        assertFalse(GroupState.value().members.single().isConnectionLost)
+        testScheduler.advanceTimeBy(30_000)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.single().isConnectionLost)
+        testScheduler.advanceTimeBy(60_000)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.isEmpty())
+    }
+
+    @Test
+    fun `other users direct sensors get the same grace and lost retention as broadcasts`() = test { clock ->
+        userService.saveUser(other)
+        val sensorId = HeartRateSensorId("other-sensor")
+        userService.linkSensor(other, sensorId)
+        HeartRateMeasurementEvent(HeartRate(142), sensorId, clock.now()).emit()
+        testScheduler.runCurrent()
+        testScheduler.advanceTimeBy(59_999)
+        testScheduler.runCurrent()
+        assertFalse(GroupState.value().members.single().isConnectionLost)
+        testScheduler.advanceTimeBy(1)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.single().isConnectionLost)
+        testScheduler.advanceTimeBy(60_000)
+        testScheduler.runCurrent()
+        assertTrue(GroupState.value().members.isEmpty())
+    }
+
+    @Test
+    fun `transport drop keeps own measurement but selecting another source clears it`() = test { clock ->
+        val me = userService.me()
+        val sensorId = HeartRateSensorId(WATCH_COMPANION_SOURCE_ID)
+        userService.linkSensor(me, sensorId)
+        val source = HeartRateSource(WATCH_COMPANION_SOURCE_ID, HeartRateSource.Kind.COMPANION_WATCH,
+            HeartRateSource.Availability.AVAILABLE)
+        currentCoroutineContext().statesOrThrow.setState(SelectedHeartRateSourceState, SelectedHeartRateSourceState(source))
+        testScheduler.runCurrent()
+        HeartRateMeasurementEvent(HeartRate(120), sensorId, clock.now()).emit()
+        testScheduler.runCurrent()
+        currentCoroutineContext().statesOrThrow.setState(SelectedHeartRateSourceState,
+            SelectedHeartRateSourceState(source.copy(availability = HeartRateSource.Availability.DISCONNECTED)))
+        testScheduler.runCurrent()
+        assertEquals(HeartRate(120), MeState.value()?.heartRate)
+        assertEquals(HeartRate(120), GroupState.value().members.single().heartRate)
+        currentCoroutineContext().statesOrThrow.setState(SelectedHeartRateSourceState, SelectedHeartRateSourceState(
+            HeartRateSource("another-sensor", HeartRateSource.Kind.BLE_SENSOR, HeartRateSource.Availability.CONNECTING)))
+        testScheduler.runCurrent()
+        assertNull(MeState.value()?.heartRate)
+        assertTrue(GroupState.value().members.isEmpty())
+    }
+
+    @Test
+    fun `retained lost peers do not produce heart rate warnings`() = test { clock ->
+        launchCriticalGroupStateActor()
+        launchHeartRateUtteranceProducer()
+        val warnings = mutableListOf<HeartRateUtteranceRequest.SlowDownHeartRateUtterance>()
+        collectEventsAsync<HeartRateUtteranceRequest.SlowDownHeartRateUtterance> { warnings += it }
+        testScheduler.runCurrent()
+        val member = UserState(other, false, HeartRate(190), HeartRate(150), UserColors.default(other.id),
+            clock.now().toEpochMilliseconds(), isConnectionLost = true)
+        currentCoroutineContext().statesOrThrow.setState(GroupState, GroupState(listOf(member)))
+        testScheduler.runCurrent()
+        testScheduler.advanceTimeBy(15_000)
+        testScheduler.runCurrent()
+        assertTrue(warnings.isEmpty())
+        assertNull(CriticalGroupState.value())
+        currentCoroutineContext().statesOrThrow.setState(GroupState, GroupState(listOf(member.copy(isConnectionLost = false))))
+        testScheduler.runCurrent()
+        testScheduler.advanceTimeBy(15_000)
+        testScheduler.runCurrent()
+        assertEquals(1, warnings.size)
+        assertEquals(other.id, CriticalGroupState.value()?.criticalMembers?.single()?.user?.id)
+    }
+
+    @Test
+    fun `selected watch rejects own strap but keeps other users sensors`() = test { clock ->
         val me = userService.me()
         val ownStrap = HeartRateSensorId("own-strap")
-        userService.linkSensor(me, ownStrap)
-        val other = io.sellmair.pacemaker.model.User(UserId(2), "Other runner")
-        userService.saveUser(other)
         val otherStrap = HeartRateSensorId("other-strap")
+        userService.linkSensor(me, ownStrap)
+        userService.saveUser(other)
         userService.linkSensor(other, otherStrap)
-        currentCoroutineContext().statesOrThrow.setState(SelectedHeartRateSourceState, SelectedHeartRateSourceState(HeartRateSource(
-            WATCH_COMPANION_SOURCE_ID, HeartRateSource.Kind.COMPANION_WATCH,
-            HeartRateSource.Availability.CONNECTING
-        )))
-        MeState.flow().first { it != null }
-        val time = Clock.System.now()
-        HeartRateMeasurementEvent(HeartRate(101), ownStrap, time).emit()
-        HeartRateMeasurementEvent(HeartRate(142), otherStrap, time).emit()
-
-        val state = GroupState.flow().first { it.members.any { member -> member.user.id == other.id } }
-        assertFalse(state.members.any { it.user.id == me.id })
-        assertEquals(HeartRate(142), state.members.single { it.user.id == other.id }.heartRate)
+        currentCoroutineContext().statesOrThrow.setState(SelectedHeartRateSourceState, SelectedHeartRateSourceState(
+            HeartRateSource(WATCH_COMPANION_SOURCE_ID, HeartRateSource.Kind.COMPANION_WATCH, HeartRateSource.Availability.CONNECTING)))
+        testScheduler.runCurrent()
+        HeartRateMeasurementEvent(HeartRate(101), ownStrap, clock.now()).emit()
+        HeartRateMeasurementEvent(HeartRate(142), otherStrap, clock.now()).emit()
+        testScheduler.runCurrent()
+        assertEquals(other.id, GroupState.value().members.single().user.id)
     }
 
-    @Test
-    fun `own sensor expires in fifteen seconds while remote participant remains for one minute`() = test {
-        val me = userService.me()
-        val ownSensor = HeartRateSensorId("own-sensor")
-        userService.linkSensor(me, ownSensor)
-        val other = io.sellmair.pacemaker.model.User(UserId(3), "Remote runner")
-        userService.saveUser(other)
-        val time = Clock.System.now()
-        HeartRateMeasurementEvent(HeartRate(120), ownSensor, time).emit()
+    private suspend fun broadcast(clock: Clock) {
         PacemakerBroadcastPackageEvent(PacemakerBroadcastPackage(
-            receivedTime = time, deviceId = BleDeviceId("peer"), userId = other.id,
+            receivedTime = clock.now(), deviceId = BleDeviceId("peer"), userId = other.id,
             userName = other.name, heartRate = HeartRate(150), heartRateLimit = HeartRate(175), userColorHue = null
         )).emit()
-        GroupState.flow().first { it.members.size == 2 }
-
-        testScheduler.advanceTimeBy(15_001)
-        testScheduler.runCurrent()
-        val afterOwnExpiry = GroupState.flow().first { it.members.none { member -> member.user.id == me.id } }
-        assertTrue(afterOwnExpiry.members.any { it.user.id == other.id })
-
-        testScheduler.advanceTimeBy(45_001)
-        testScheduler.runCurrent()
-        assertTrue(GroupState.flow().first { it.members.isEmpty() }.members.isEmpty())
     }
 
-    @Test
-    fun `local expiry is exactly fifteen seconds and remote expiry remains one minute`() = runTest(
+    private fun test(block: suspend TestScope.(Clock) -> Unit) = runTest(
         Events() + States() + DatabaseBackgroundDispatcher(Dispatchers.Unconfined)
     ) {
         val clock = SchedulerClock(testScheduler)
         launchMeStateActor(userService, clock)
         launchGroupStateActor(userService, currentCoroutineContext(), clock)
+        testScheduler.runCurrent()
         try {
-        val me = userService.me()
-        val ownSensor = HeartRateSensorId("local-clocked")
-        userService.linkSensor(me, ownSensor)
-        val other = io.sellmair.pacemaker.model.User(UserId(40), "Remote runner")
-        userService.saveUser(other)
-        val now = clock.now()
-        HeartRateMeasurementEvent(HeartRate(111), ownSensor, now).emit()
-        PacemakerBroadcastPackageEvent(PacemakerBroadcastPackage(
-            receivedTime = now, deviceId = BleDeviceId("clocked-peer"), userId = other.id,
-            userName = other.name, heartRate = HeartRate(151), heartRateLimit = HeartRate(175), userColorHue = null
-        )).emit()
-        testScheduler.runCurrent()
-        GroupState.flow().first { it.members.size == 2 }
-
-        testScheduler.advanceTimeBy(14_999)
-        testScheduler.runCurrent()
-        assertTrue(GroupState.value().members.any { it.user.id == me.id })
-        testScheduler.advanceTimeBy(1)
-        testScheduler.runCurrent()
-        assertTrue(GroupState.flow().first { it.members.none { member -> member.user.id == me.id } }
-            .members.any { it.user.id == other.id })
-
-        testScheduler.advanceTimeBy(44_999)
-        testScheduler.runCurrent()
-        assertTrue(GroupState.value().members.any { it.user.id == other.id })
-        testScheduler.advanceTimeBy(1)
-        testScheduler.runCurrent()
-        assertEquals(GroupState.default, GroupState.flow().first { it == GroupState.default })
-        } finally {
-            currentCoroutineContext().cancelChildren()
-        }
-    }
-
-    private fun test(block: suspend TestScope.() -> Unit) = runTest(
-        Events() + States() + DatabaseBackgroundDispatcher(Dispatchers.Unconfined)
-    ) {
-        try {
-            launchMeStateActor(userService)
-            launchGroupStateActor(userService, actorContext = currentCoroutineContext())
-            block()
+            block(clock)
         } finally {
             currentCoroutineContext().cancelChildren()
         }
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 private class SchedulerClock(private val scheduler: TestCoroutineScheduler) : Clock {
-    private val epochMillis = 1_800_000_000_000L
-    override fun now(): Instant = Instant.fromEpochMilliseconds(epochMillis + scheduler.currentTime)
+    override fun now(): Instant = Instant.fromEpochMilliseconds(1_800_000_000_000L + scheduler.currentTime)
 }

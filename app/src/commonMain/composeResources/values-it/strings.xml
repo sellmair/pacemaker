@@ -144,4 +144,5 @@
     <string name="settings_limit_range">Il limite salvato è fuori dall’intervallo modificabile (%1$d–%2$d bpm).</string>
     <string name="settings_voice_label">Avvisi vocali</string>
     <string name="settings_hue_accessibility">Tonalità del colore identità: %1$d gradi</string>
+    <string name="live_member_connection_lost">Connessione persa</string>
 </resources>
