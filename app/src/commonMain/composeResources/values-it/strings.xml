@@ -36,6 +36,7 @@
     <string name="live_title">La tua frequenza cardiaca</string>
     <string name="live_bpm">bpm</string>
     <string name="live_status_waiting">In attesa della prima misurazione.</string>
+    <string name="live_status_waiting_badge">In attesa</string>
     <string name="live_status_connecting">Connessione a %1$s in corso.</string>
     <string name="live_status_disconnected">La sorgente selezionata è disconnessa.</string>
     <string name="live_status_permission">Questa sorgente richiede l’autorizzazione Bluetooth.</string>

@@ -10,6 +10,11 @@ import UIKit
 
 final class PacemakerAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--pacemaker-ui-testing") {
+            return true
+        }
+        #endif
         WatchPhoneBridge.shared.activate()
         return true
     }

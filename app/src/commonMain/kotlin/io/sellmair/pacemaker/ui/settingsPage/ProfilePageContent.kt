@@ -157,11 +157,12 @@ fun ProfilePageContent(
             val hue = state.hue.coerceIn(0f, 360f)
             val identityColor = UserColors.fromHue(hue).toColor()
             val hueLabel = stringResource(Res.string.settings_hue_label)
-            val hueStateDescription = stringResource(Res.string.settings_hue_accessibility, hue.toInt())
+            val hueStateDescription = stringResource(Res.string.settings_hue_accessibility, hue.roundToInt())
             PacemakerSlider(
                 value = hue,
                 onValueChange = onHueChanged,
                 valueRange = 0f..360f,
+                steps = 359,
                 modifier = Modifier.semantics {
                     contentDescription = hueLabel
                     stateDescription = hueStateDescription

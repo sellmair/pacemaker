@@ -439,6 +439,7 @@ fun PacemakerLimitControl(
                 )
             },
             valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
+            steps = valueRange.last - valueRange.first - 1,
             enabled = enabled,
             thumbColor = SharedRhythmColors().accentText,
             activeTrackColor = SharedRhythmColors().accentText,
@@ -461,6 +462,7 @@ fun PacemakerSlider(
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
+    steps: Int = 0,
     enabled: Boolean = true,
     thumbColor: Color,
     activeTrackColor: Color,
@@ -476,6 +478,7 @@ fun PacemakerSlider(
         onValueChange = onValueChange,
         modifier = modifier,
         valueRange = valueRange,
+        steps = steps,
         enabled = enabled,
         colors = sliderColors,
         thumb = {

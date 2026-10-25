@@ -16,7 +16,11 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -84,6 +88,53 @@ class SharedRhythmProfileTest {
         render(onLimitChanged = { values += it })
         compose.onNodeWithContentDescription("Increase limit").performScrollTo().performClick()
         compose.runOnIdle { assertEquals(151f, values.single().value, 0f) }
+    }
+
+    @Test
+    fun discreteLimitAndHueSlidersKeepStoredFractionsUntilChangedAndSnapToOneUnit() {
+        val initial = sample().copy(
+            me = sample().me.copy(heartRateLimit = HeartRate(150.5f)),
+            hue = 145.7f
+        )
+        val limitEdits = mutableListOf<HeartRate>()
+        val hueEdits = mutableListOf<Float>()
+        render(
+            initial = initial,
+            onLimitChanged = { limitEdits += it },
+            onHueChanged = { hueEdits += it }
+        )
+
+        val limit = compose.onNodeWithContentDescription("Heart-rate limit")
+        val hue = compose.onNodeWithContentDescription("Identity color")
+        limit.assert(
+            SemanticsMatcher.expectValue(
+                SemanticsProperties.ProgressBarRangeInfo,
+                ProgressBarRangeInfo(151f, 40f..200f, 159)
+            )
+        )
+        hue.assert(
+            SemanticsMatcher.expectValue(
+                SemanticsProperties.ProgressBarRangeInfo,
+                ProgressBarRangeInfo(146f, 0f..360f, 359)
+            )
+        )
+        compose.runOnIdle {
+            assertTrue(limitEdits.isEmpty())
+            assertTrue(hueEdits.isEmpty())
+            assertEquals(150.5f, initial.me.heartRateLimit.value, 0f)
+            assertEquals(145.7f, initial.hue, 0f)
+        }
+
+        val heartRateStep = 160f / 159f
+        val hueStep = 360f / 359f
+        limit.performSemanticsAction(SemanticsActions.SetProgress) { it(151f + heartRateStep) }
+        limit.performSemanticsAction(SemanticsActions.SetProgress) { it(151f - heartRateStep) }
+        hue.performSemanticsAction(SemanticsActions.SetProgress) { it(146f + hueStep) }
+        hue.performSemanticsAction(SemanticsActions.SetProgress) { it(146f - hueStep) }
+        compose.runOnIdle {
+            assertEquals(listOf(152f, 150f), limitEdits.map { it.value })
+            assertEquals(listOf(147f, 145f), hueEdits)
+        }
     }
 
     @Test

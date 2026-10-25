@@ -12,6 +12,9 @@ iosApp/Pods/*
 iosApp/Pacemaker.xcworkspace/*
 iosApp/Pacemaker.xcodeproj/*
 !iosApp/Pacemaker.xcodeproj/project.pbxproj
+!iosApp/Pacemaker.xcodeproj/xcshareddata/
+!iosApp/Pacemaker.xcodeproj/xcshareddata/xcschemes/
+!iosApp/Pacemaker.xcodeproj/xcshareddata/xcschemes/*.xcscheme
 app/PM.podspec
 
 # Addition

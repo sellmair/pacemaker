@@ -1,0 +1,390 @@
+{
+  "configurations": 24,
+  "native_pngs": 144,
+  "cases": [
+    {
+      "case": "standard-normal-en-light",
+      "font": "normal",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 11.84,
+      "captures": [
+        "captures/matrix/standard-normal-en-light/native-en-devices.png",
+        "captures/matrix/standard-normal-en-light/native-en-live-peers.png",
+        "captures/matrix/standard-normal-en-light/native-en-live.png",
+        "captures/matrix/standard-normal-en-light/native-en-profile-limit.png",
+        "captures/matrix/standard-normal-en-light/native-en-profile-lower.png",
+        "captures/matrix/standard-normal-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "standard-normal-en-dark",
+      "font": "normal",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 10.47,
+      "captures": [
+        "captures/matrix/standard-normal-en-dark/native-en-devices.png",
+        "captures/matrix/standard-normal-en-dark/native-en-live-peers.png",
+        "captures/matrix/standard-normal-en-dark/native-en-live.png",
+        "captures/matrix/standard-normal-en-dark/native-en-profile-limit.png",
+        "captures/matrix/standard-normal-en-dark/native-en-profile-lower.png",
+        "captures/matrix/standard-normal-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-en-light",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 13.06,
+      "captures": [
+        "captures/matrix/standard-a11y-en-light/native-en-devices.png",
+        "captures/matrix/standard-a11y-en-light/native-en-live-peers.png",
+        "captures/matrix/standard-a11y-en-light/native-en-live.png",
+        "captures/matrix/standard-a11y-en-light/native-en-profile-limit.png",
+        "captures/matrix/standard-a11y-en-light/native-en-profile-lower.png",
+        "captures/matrix/standard-a11y-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-en-dark",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 13.07,
+      "captures": [
+        "captures/matrix/standard-a11y-en-dark/native-en-devices.png",
+        "captures/matrix/standard-a11y-en-dark/native-en-live-peers.png",
+        "captures/matrix/standard-a11y-en-dark/native-en-live.png",
+        "captures/matrix/standard-a11y-en-dark/native-en-profile-limit.png",
+        "captures/matrix/standard-a11y-en-dark/native-en-profile-lower.png",
+        "captures/matrix/standard-a11y-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-de-light",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 11.01,
+      "captures": [
+        "captures/matrix/standard-a11y-de-light/native-de-devices.png",
+        "captures/matrix/standard-a11y-de-light/native-de-live-peers.png",
+        "captures/matrix/standard-a11y-de-light/native-de-live.png",
+        "captures/matrix/standard-a11y-de-light/native-de-profile-limit.png",
+        "captures/matrix/standard-a11y-de-light/native-de-profile-lower.png",
+        "captures/matrix/standard-a11y-de-light/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-de-dark",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 13.38,
+      "captures": [
+        "captures/matrix/standard-a11y-de-dark/native-de-devices.png",
+        "captures/matrix/standard-a11y-de-dark/native-de-live-peers.png",
+        "captures/matrix/standard-a11y-de-dark/native-de-live.png",
+        "captures/matrix/standard-a11y-de-dark/native-de-profile-limit.png",
+        "captures/matrix/standard-a11y-de-dark/native-de-profile-lower.png",
+        "captures/matrix/standard-a11y-de-dark/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-it-light",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 13.36,
+      "captures": [
+        "captures/matrix/standard-a11y-it-light/native-it-devices.png",
+        "captures/matrix/standard-a11y-it-light/native-it-live-peers.png",
+        "captures/matrix/standard-a11y-it-light/native-it-live.png",
+        "captures/matrix/standard-a11y-it-light/native-it-profile-limit.png",
+        "captures/matrix/standard-a11y-it-light/native-it-profile-lower.png",
+        "captures/matrix/standard-a11y-it-light/native-it-profile.png"
+      ]
+    },
+    {
+      "case": "standard-a11y-it-dark",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 13.29,
+      "captures": [
+        "captures/matrix/standard-a11y-it-dark/native-it-devices.png",
+        "captures/matrix/standard-a11y-it-dark/native-it-live-peers.png",
+        "captures/matrix/standard-a11y-it-dark/native-it-live.png",
+        "captures/matrix/standard-a11y-it-dark/native-it-profile-limit.png",
+        "captures/matrix/standard-a11y-it-dark/native-it-profile-lower.png",
+        "captures/matrix/standard-a11y-it-dark/native-it-profile.png"
+      ]
+    },
+    {
+      "case": "small-normal-en-light",
+      "font": "normal",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 16.79,
+      "captures": [
+        "captures/matrix/small-normal-en-light/native-en-devices.png",
+        "captures/matrix/small-normal-en-light/native-en-live-peers.png",
+        "captures/matrix/small-normal-en-light/native-en-live.png",
+        "captures/matrix/small-normal-en-light/native-en-profile-limit.png",
+        "captures/matrix/small-normal-en-light/native-en-profile-lower.png",
+        "captures/matrix/small-normal-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "small-normal-en-dark",
+      "font": "normal",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 13.12,
+      "captures": [
+        "captures/matrix/small-normal-en-dark/native-en-devices.png",
+        "captures/matrix/small-normal-en-dark/native-en-live-peers.png",
+        "captures/matrix/small-normal-en-dark/native-en-live.png",
+        "captures/matrix/small-normal-en-dark/native-en-profile-limit.png",
+        "captures/matrix/small-normal-en-dark/native-en-profile-lower.png",
+        "captures/matrix/small-normal-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-en-light",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 12.04,
+      "captures": [
+        "captures/matrix/small-a11y-en-light/native-en-devices.png",
+        "captures/matrix/small-a11y-en-light/native-en-live-peers.png",
+        "captures/matrix/small-a11y-en-light/native-en-live.png",
+        "captures/matrix/small-a11y-en-light/native-en-profile-limit.png",
+        "captures/matrix/small-a11y-en-light/native-en-profile-lower.png",
+        "captures/matrix/small-a11y-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-en-dark",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 12.15,
+      "captures": [
+        "captures/matrix/small-a11y-en-dark/native-en-devices.png",
+        "captures/matrix/small-a11y-en-dark/native-en-live-peers.png",
+        "captures/matrix/small-a11y-en-dark/native-en-live.png",
+        "captures/matrix/small-a11y-en-dark/native-en-profile-limit.png",
+        "captures/matrix/small-a11y-en-dark/native-en-profile-lower.png",
+        "captures/matrix/small-a11y-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-de-light",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 12.6,
+      "captures": [
+        "captures/matrix/small-a11y-de-light/native-de-devices.png",
+        "captures/matrix/small-a11y-de-light/native-de-live-peers.png",
+        "captures/matrix/small-a11y-de-light/native-de-live.png",
+        "captures/matrix/small-a11y-de-light/native-de-profile-limit.png",
+        "captures/matrix/small-a11y-de-light/native-de-profile-lower.png",
+        "captures/matrix/small-a11y-de-light/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-de-dark",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 12.97,
+      "captures": [
+        "captures/matrix/small-a11y-de-dark/native-de-devices.png",
+        "captures/matrix/small-a11y-de-dark/native-de-live-peers.png",
+        "captures/matrix/small-a11y-de-dark/native-de-live.png",
+        "captures/matrix/small-a11y-de-dark/native-de-profile-limit.png",
+        "captures/matrix/small-a11y-de-dark/native-de-profile-lower.png",
+        "captures/matrix/small-a11y-de-dark/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-it-light",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 12.02,
+      "captures": [
+        "captures/matrix/small-a11y-it-light/native-it-devices.png",
+        "captures/matrix/small-a11y-it-light/native-it-live-peers.png",
+        "captures/matrix/small-a11y-it-light/native-it-live.png",
+        "captures/matrix/small-a11y-it-light/native-it-profile-limit.png",
+        "captures/matrix/small-a11y-it-light/native-it-profile-lower.png",
+        "captures/matrix/small-a11y-it-light/native-it-profile.png"
+      ]
+    },
+    {
+      "case": "small-a11y-it-dark",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 11.98,
+      "captures": [
+        "captures/matrix/small-a11y-it-dark/native-it-devices.png",
+        "captures/matrix/small-a11y-it-dark/native-it-live-peers.png",
+        "captures/matrix/small-a11y-it-dark/native-it-live.png",
+        "captures/matrix/small-a11y-it-dark/native-it-profile-limit.png",
+        "captures/matrix/small-a11y-it-dark/native-it-profile-lower.png",
+        "captures/matrix/small-a11y-it-dark/native-it-profile.png"
+      ]
+    },
+    {
+      "case": "large-normal-en-light",
+      "font": "normal",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 19.42,
+      "captures": [
+        "captures/matrix/large-normal-en-light/native-en-devices.png",
+        "captures/matrix/large-normal-en-light/native-en-live-peers.png",
+        "captures/matrix/large-normal-en-light/native-en-live.png",
+        "captures/matrix/large-normal-en-light/native-en-profile-limit.png",
+        "captures/matrix/large-normal-en-light/native-en-profile-lower.png",
+        "captures/matrix/large-normal-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "large-normal-en-dark",
+      "font": "normal",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 15.2,
+      "captures": [
+        "captures/matrix/large-normal-en-dark/native-en-devices.png",
+        "captures/matrix/large-normal-en-dark/native-en-live-peers.png",
+        "captures/matrix/large-normal-en-dark/native-en-live.png",
+        "captures/matrix/large-normal-en-dark/native-en-profile-limit.png",
+        "captures/matrix/large-normal-en-dark/native-en-profile-lower.png",
+        "captures/matrix/large-normal-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-en-light",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 15.46,
+      "captures": [
+        "captures/matrix/large-a11y-en-light/native-en-devices.png",
+        "captures/matrix/large-a11y-en-light/native-en-live-peers.png",
+        "captures/matrix/large-a11y-en-light/native-en-live.png",
+        "captures/matrix/large-a11y-en-light/native-en-profile-limit.png",
+        "captures/matrix/large-a11y-en-light/native-en-profile-lower.png",
+        "captures/matrix/large-a11y-en-light/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-en-dark",
+      "font": "a11y",
+      "language": "en",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 14.07,
+      "captures": [
+        "captures/matrix/large-a11y-en-dark/native-en-devices.png",
+        "captures/matrix/large-a11y-en-dark/native-en-live-peers.png",
+        "captures/matrix/large-a11y-en-dark/native-en-live.png",
+        "captures/matrix/large-a11y-en-dark/native-en-profile-limit.png",
+        "captures/matrix/large-a11y-en-dark/native-en-profile-lower.png",
+        "captures/matrix/large-a11y-en-dark/native-en-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-de-light",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 17.77,
+      "captures": [
+        "captures/matrix/large-a11y-de-light/native-de-devices.png",
+        "captures/matrix/large-a11y-de-light/native-de-live-peers.png",
+        "captures/matrix/large-a11y-de-light/native-de-live.png",
+        "captures/matrix/large-a11y-de-light/native-de-profile-limit.png",
+        "captures/matrix/large-a11y-de-light/native-de-profile-lower.png",
+        "captures/matrix/large-a11y-de-light/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-de-dark",
+      "font": "a11y",
+      "language": "de",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 13.58,
+      "captures": [
+        "captures/matrix/large-a11y-de-dark/native-de-devices.png",
+        "captures/matrix/large-a11y-de-dark/native-de-live-peers.png",
+        "captures/matrix/large-a11y-de-dark/native-de-live.png",
+        "captures/matrix/large-a11y-de-dark/native-de-profile-limit.png",
+        "captures/matrix/large-a11y-de-dark/native-de-profile-lower.png",
+        "captures/matrix/large-a11y-de-dark/native-de-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-it-light",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "light",
+      "exit": 0,
+      "elapsed": 15.37,
+      "captures": [
+        "captures/matrix/large-a11y-it-light/native-it-devices.png",
+        "captures/matrix/large-a11y-it-light/native-it-live-peers.png",
+        "captures/matrix/large-a11y-it-light/native-it-live.png",
+        "captures/matrix/large-a11y-it-light/native-it-profile-limit.png",
+        "captures/matrix/large-a11y-it-light/native-it-profile-lower.png",
+        "captures/matrix/large-a11y-it-light/native-it-profile.png"
+      ]
+    },
+    {
+      "case": "large-a11y-it-dark",
+      "font": "a11y",
+      "language": "it",
+      "appearance": "dark",
+      "exit": 0,
+      "elapsed": 15.52,
+      "captures": [
+        "captures/matrix/large-a11y-it-dark/native-it-devices.png",
+        "captures/matrix/large-a11y-it-dark/native-it-live-peers.png",
+        "captures/matrix/large-a11y-it-dark/native-it-live.png",
+        "captures/matrix/large-a11y-it-dark/native-it-profile-limit.png",
+        "captures/matrix/large-a11y-it-dark/native-it-profile-lower.png",
+        "captures/matrix/large-a11y-it-dark/native-it-profile.png"
+      ]
+    }
+  ]
+}

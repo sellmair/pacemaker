@@ -1,6 +1,7 @@
 package io.sellmair.pacemaker
 
 import android.graphics.Bitmap
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -9,6 +10,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertCountEquals
@@ -33,15 +36,25 @@ import io.sellmair.pacemaker.ui.PageRouter
 import io.sellmair.pacemaker.ui.mainPage.LivePageContent
 import io.sellmair.pacemaker.ui.mainPage.LiveScreenContentState
 import java.io.File
+import java.util.Locale
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import org.junit.After
 import org.junit.runner.RunWith
 
 /** Fixed samples enter the same stateless screen used by the real Evas route. */
 @RunWith(AndroidJUnit4::class)
 class SharedRhythmLiveTest {
+    private val originalLocales = android.os.LocaleList.getDefault()
+
+    @After
+    fun restoreLocale() {
+        android.os.LocaleList.setDefault(originalLocales)
+        Locale.setDefault(originalLocales[0])
+    }
+
     @get:Rule
     val compose = createComposeRule()
 
@@ -226,18 +239,56 @@ class SharedRhythmLiveTest {
         capture("live-compact-large-font-dark-native.png")
     }
 
+    @Test
+    fun germanMissingReadingAtLargeTextKeepsHeaderHorizontalAndGuidanceAvailable() {
+        Locale.setDefault(Locale.GERMAN)
+        android.os.LocaleList.setDefault(android.os.LocaleList(Locale.GERMAN))
+        val missingReading = sample().copy(
+            me = MeState(me, null, HeartRate(150f), null),
+            selectedSource = null
+        )
+        render(missingReading, compactLargeFont = true, locale = Locale.GERMAN)
+
+        val title = compose.onNodeWithText("DEINE HERZFREQUENZ")
+        val badge = compose.onNodeWithText("Warten")
+        val guidance = compose.onAllNodesWithText("Warte auf deinen ersten Messwert.")[0]
+        title.assertIsDisplayed()
+        badge.assertIsDisplayed()
+        guidance.assertExists()
+        val titleBounds = title.getUnclippedBoundsInRoot()
+        assertTrue(
+            "The heading should stay a bounded horizontal label",
+            titleBounds.right - titleBounds.left > titleBounds.bottom - titleBounds.top
+        )
+        capture("live-german-missing-large-text-dark-native.png")
+        guidance.performScrollTo().assertIsDisplayed()
+    }
+
     private fun render(
         state: LiveScreenContentState,
         dark: Boolean = true,
         compactLargeFont: Boolean = false,
+        locale: Locale? = null,
         onUtteranceChanged: (UtteranceState) -> Unit = {},
         stateProvider: (() -> LiveScreenContentState)? = null
     ) {
         compose.setContent {
             val density = LocalDensity.current
             val fixtureDensity = if (compactLargeFont) Density(density.density * 1.285714f, 1.6f) else density
+            val appContext = LocalContext.current
+            val fixtureContext = locale?.let { requestedLocale ->
+                Configuration(LocalConfiguration.current).apply { setLocale(requestedLocale) }
+                    .let(appContext::createConfigurationContext)
+            } ?: appContext
+            val fixtureConfiguration = locale?.let {
+                Configuration(LocalConfiguration.current).apply { setLocale(it) }
+            } ?: LocalConfiguration.current
             SharedRhythmTheme(dark = dark) {
-                CompositionLocalProvider(LocalDensity provides fixtureDensity) {
+                CompositionLocalProvider(
+                    LocalDensity provides fixtureDensity,
+                    LocalContext provides fixtureContext,
+                    LocalConfiguration provides fixtureConfiguration
+                ) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     PageRouter { page ->
                         if (page == Page.Live) {

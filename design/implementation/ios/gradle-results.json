@@ -1,0 +1,9 @@
+{
+  "question": "Do the delivery candidate iOS frameworks core Bluetooth tests and Android phone and Wear builds all pass together?",
+  "command": "./gradlew :app:linkDebugFrameworkIosSimulatorArm64 :app:linkReleaseFrameworkIosArm64 :app-core:testAndroidHostTest :bluetooth:jvmTest :androidApp:assembleDebug :androidApp:assembleDebugAndroidTest :wearApp:assembleDebug --console=plain --no-scan",
+  "exit_status": 0,
+  "elapsed_seconds": 2.375,
+  "failed_tasks": [],
+  "scope": "broad",
+  "warning": "Java native-access warnings; no failed task."
+}

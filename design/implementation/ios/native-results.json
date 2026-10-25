@@ -1,0 +1,77 @@
+{
+  "acceptance": {
+    "exit": 0,
+    "results": [
+      "Test Case '-[PacemakerUITests.PacemakerUITests testDebugFixtureRendersKeyboardAndRestoresTabDraftAndScroll]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testDebugFixtureRendersKeyboardAndRestoresTabDraftAndScroll]' passed (18.102 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureCoversLimitFreshnessPeerAndSourceScenarios]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureCoversLimitFreshnessPeerAndSourceScenarios]' passed (42.932 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureVoiceModesAndHeartRateSourceChoicesActivate]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureVoiceModesAndHeartRateSourceChoicesActivate]' passed (15.992 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testNativeScreenCaptures]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testNativeScreenCaptures]' passed (9.548 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testNonzeroProfileScrollPositionRestoresAfterTabSwitch]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testNonzeroProfileScrollPositionRestoresAfterTabSwitch]' skipped (4.691 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testProductionNamePersistsAcrossRelaunchAndIsRestored]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testProductionNamePersistsAcrossRelaunchAndIsRestored]' passed (19.035 seconds).",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testProfileLimitButtonsRespectFortyAndTwoHundredBPMBounds]' started.",
+      "Test Case '-[PacemakerUITests.PacemakerUITests testProfileLimitButtonsRespectFortyAndTwoHundredBPMBounds]' passed (12.430 seconds).",
+      "\t Executed 7 tests, with 1 test skipped and 0 failures (0 unexpected) in 122.730 (122.735) seconds",
+      "\t Executed 7 tests, with 1 test skipped and 0 failures (0 unexpected) in 122.730 (122.736) seconds",
+      "\t Executed 7 tests, with 1 test skipped and 0 failures (0 unexpected) in 122.730 (122.737) seconds",
+      "** TEST EXECUTE SUCCEEDED **"
+    ]
+  },
+  "delivery-focused": [
+    {
+      "case": "scroll",
+      "exit": 0,
+      "events": [
+        "Test Case '-[PacemakerUITests.PacemakerUITests testNonzeroProfileScrollPositionRestoresAfterTabSwitch]' started.",
+        "Test Case '-[PacemakerUITests.PacemakerUITests testNonzeroProfileScrollPositionRestoresAfterTabSwitch]' passed (11.606 seconds).",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 11.606 (11.607) seconds",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 11.606 (11.607) seconds",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 11.606 (11.608) seconds",
+        "** TEST EXECUTE SUCCEEDED **"
+      ]
+    },
+    {
+      "case": "live",
+      "exit": 0,
+      "events": [
+        "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureCoversLimitFreshnessPeerAndSourceScenarios]' started.",
+        "Test Case '-[PacemakerUITests.PacemakerUITests testFixtureCoversLimitFreshnessPeerAndSourceScenarios]' passed (42.220 seconds).",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 42.220 (42.221) seconds",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 42.220 (42.221) seconds",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 42.220 (42.222) seconds",
+        "** TEST EXECUTE SUCCEEDED **"
+      ]
+    }
+  ],
+  "release-build": {
+    "exit": 0,
+    "events": [
+      "** BUILD SUCCEEDED **"
+    ],
+    "debug_fixture_launch_flag_present": false
+  },
+  "device-final-build": {
+    "exit": 0,
+    "events": [
+      "** BUILD SUCCEEDED **"
+    ]
+  },
+  "compat-build": {
+    "exit": 0,
+    "events": [
+      "** BUILD SUCCEEDED **"
+    ]
+  },
+  "android-live": {
+    "tests": 20,
+    "failures": 0,
+    "ignored": 0,
+    "evidence": "TestRunner run finished 25 October 2026 13:50:38",
+    "class": "io.sellmair.pacemaker.SharedRhythmLiveTest"
+  }
+}

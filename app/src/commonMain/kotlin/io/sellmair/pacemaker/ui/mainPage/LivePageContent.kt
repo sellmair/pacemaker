@@ -48,6 +48,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -100,6 +101,7 @@ import pacemaker.app.generated.resources.live_status_permission
 import pacemaker.app.generated.resources.live_status_signal_lost
 import pacemaker.app.generated.resources.live_status_unsupported
 import pacemaker.app.generated.resources.live_status_waiting
+import pacemaker.app.generated.resources.live_status_waiting_badge
 import pacemaker.app.generated.resources.live_status_within
 import pacemaker.app.generated.resources.live_title
 import pacemaker.app.generated.resources.live_you
@@ -180,6 +182,13 @@ fun LivePageContent(
     }
     val liveHeaderLabel = stringResource(Res.string.live_status_live)
     val signalLostLabel = stringResource(Res.string.live_status_signal_lost)
+    val headerStatusLabel = when {
+        ownRateBpm != null -> liveHeaderLabel
+        state.selectedSource?.availability == HeartRateSource.Availability.DISCONNECTED ->
+            stringResource(Res.string.live_status_offline)
+        else -> stringResource(Res.string.live_status_waiting_badge)
+    }
+    val headerFontScale = LocalDensity.current.fontScale
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -187,30 +196,38 @@ fun LivePageContent(
             .padding(horizontal = 24.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(PacemakerSpacing.x4)
     ) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                stringResource(Res.string.live_title).uppercase(),
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.labelLarge,
-                color = colors.muted
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (ownRateBpm != null) {
-                    Spacer(
-                        Modifier.width(8.dp).height(8.dp).clip(CircleShape)
-                            .background(colors.success.ink)
-                    )
-                    Spacer(Modifier.width(PacemakerSpacing.x1))
-                }
+        val liveTitle = stringResource(Res.string.live_title).uppercase()
+        val badgeColor = when {
+            ownRateBpm != null -> colors.success.ink
+            aboveLimit -> colors.danger.ink
+            else -> colors.muted
+        }
+        if (headerFontScale >= 1.3f) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(PacemakerSpacing.x1)
+            ) {
                 Text(
-                    if (ownRateBpm != null) liveHeaderLabel
-                    else if (state.selectedSource?.availability == HeartRateSource.Availability.DISCONNECTED) {
-                        stringResource(Res.string.live_status_offline)
-                    } else statusTitle,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (ownRateBpm != null) colors.success.ink
-                    else if (aboveLimit) colors.danger.ink else colors.muted
+                    liveTitle,
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = colors.muted,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
+                LiveHeaderStatus(headerStatusLabel, ownRateBpm != null, badgeColor)
+            }
+        } else {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    liveTitle,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = colors.muted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                LiveHeaderStatus(headerStatusLabel, ownRateBpm != null, badgeColor)
             }
         }
 
@@ -380,6 +397,27 @@ private fun AnimatedPeerRows(members: List<UserState>, content: @Composable (Use
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun LiveHeaderStatus(label: String, isLive: Boolean, color: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (isLive) {
+            Spacer(
+                Modifier.width(8.dp).height(8.dp).clip(CircleShape)
+                    .background(color)
+            )
+            Spacer(Modifier.width(PacemakerSpacing.x1))
+        }
+        Text(
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = color,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

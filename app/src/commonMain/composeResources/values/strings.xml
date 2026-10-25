@@ -36,6 +36,7 @@
     <string name="live_title">Your heart rate</string>
     <string name="live_bpm">bpm</string>
     <string name="live_status_waiting">Waiting for your first reading.</string>
+    <string name="live_status_waiting_badge">Waiting</string>
     <string name="live_status_connecting">%1$s is connecting.</string>
     <string name="live_status_disconnected">The selected source is disconnected.</string>
     <string name="live_status_permission">Bluetooth permission is needed for this source.</string>

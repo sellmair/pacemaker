@@ -36,6 +36,7 @@
     <string name="live_title">Deine Herzfrequenz</string>
     <string name="live_bpm">BPM</string>
     <string name="live_status_waiting">Warte auf deinen ersten Messwert.</string>
+    <string name="live_status_waiting_badge">Warten</string>
     <string name="live_status_connecting">%1$s wird verbunden.</string>
     <string name="live_status_disconnected">Die ausgewählte Quelle ist getrennt.</string>
     <string name="live_status_permission">Für diese Quelle ist eine Bluetooth-Berechtigung erforderlich.</string>
