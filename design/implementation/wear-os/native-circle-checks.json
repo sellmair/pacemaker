@@ -1,0 +1,86 @@
+[
+  {
+    "profile": "small",
+    "locale": "en",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "small",
+    "locale": "en",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "small",
+    "locale": "de",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "small",
+    "locale": "de",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "small",
+    "locale": "it",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "small",
+    "locale": "it",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "en",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "en",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "de",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "de",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "it",
+    "fontScale": "1.0",
+    "result": "passed",
+    "error": ""
+  },
+  {
+    "profile": "large",
+    "locale": "it",
+    "fontScale": "1.3",
+    "result": "passed",
+    "error": ""
+  }
+]

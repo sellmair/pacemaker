@@ -1,7 +1,4 @@
 <resources>
-    <string name="nearby_group">Nearby group</string>
-    <string name="group_bluetooth_unavailable">Group Bluetooth unavailable</string>
-    <string name="phone_shows_group">Your phone shows the nearby group</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="connect_phone">Connect</string>
@@ -20,9 +17,23 @@
     <string name="status_select_phone">Open Pacemaker on your selected phone</string>
     <string name="status_connected">Connected to Pacemaker</string>
     <string name="status_phone_lost">Phone connection lost</string>
-    <string name="status_with_phone">With phone</string>
     <string name="status_session_sync">Session sync unavailable</string>
     <string name="own_limit">Your limit: %1$d BPM</string>
     <string name="close">Close</string>
     <string name="group_count">Group · %1$d</string>
+    <string name="wear_your_heart_rate">YOUR HEART RATE</string>
+    <string name="wear_bpm">bpm</string>
+    <string name="wear_bpm_limit">bpm · limit %1$d</string>
+    <string name="wear_within_limit">Within your limit</string>
+    <string name="wear_at_limit">At your limit</string>
+    <string name="wear_above_limit">Above your limit</string>
+    <string name="wear_limit_not_set">Set a limit on your phone</string>
+    <string name="wear_status_with_group">%1$s · %2$d together</string>
+    <string name="wear_group_summary">%1$d shown · %2$d total</string>
+    <string name="wear_group_empty">No group members yet</string>
+    <string name="wear_member_bpm">%1$d bpm</string>
+    <string name="wear_member_bpm_limit">%1$d bpm · limit %2$d</string>
+    <string name="wear_member_no_reading_limit">No reading · limit %1$d</string>
+    <string name="wear_no_reading">No reading</string>
+    <string name="wear_workout_active">Workout active</string>
 </resources>

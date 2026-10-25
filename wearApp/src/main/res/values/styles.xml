@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="WearAppTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@color/wear_launch_background</item>
+    </style>
+</resources>

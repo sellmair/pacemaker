@@ -61,7 +61,13 @@ data class WearWorkoutState(
     val measuredAtEpochMillis: Long? = null
 )
 
-data class WearGroupMember(val userId: String, val name: String, val bpm: Int?, val limit: Int?, val measuredAtEpochMillis: Long?) {
+data class WearGroupMember(
+    val userId: String,
+    val name: String,
+    val bpm: Int?,
+    val limit: Int?,
+    val measuredAtEpochMillis: Long?
+) {
     val isCritical get() = bpm != null && limit != null && bpm >= limit
 }
 
@@ -104,7 +110,8 @@ class WearWorkoutService : Service(), CoroutineScope {
             val bpm = point?.value?.toInt()
             val sampleTime = (point as? SampleDataPoint<*>)?.timeDurationFromBoot?.toMillis()
             if (bpm != null && bpm in 25..240 && sampleTime != null) {
-                val measuredAt = System.currentTimeMillis() - android.os.SystemClock.elapsedRealtime() + sampleTime
+                val measuredAt =
+                    System.currentTimeMillis() - android.os.SystemClock.elapsedRealtime() + sampleTime
                 onHeartRate(bpm, measuredAt, generation)
             }
             if (update.exerciseStateInfo.state.isEnded) {
@@ -114,7 +121,8 @@ class WearWorkoutService : Service(), CoroutineScope {
 
         override fun onLapSummaryReceived(lapSummary: ExerciseLapSummary) = Unit
 
-        override fun onAvailabilityChanged(dataType: DataType<*, *>, availability: Availability) = Unit
+        override fun onAvailabilityChanged(dataType: DataType<*, *>, availability: Availability) =
+            Unit
     }
 
     override fun onCreate() {
@@ -136,25 +144,39 @@ class WearWorkoutService : Service(), CoroutineScope {
                     val prefs = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
                     val previousStop = prefs.getLong("measurement-stop-generation", 0L)
                     val activeRun = prefs.getString("active-measurement-run-id", null)
-                    val gate = io.sellmair.pacemaker.WatchMeasurementRunGate(activeRun, previousStop)
+                    val gate =
+                        io.sellmair.pacemaker.WatchMeasurementRunGate(activeRun, previousStop)
                     if (!gate.shouldStop(targetRunId, stopGeneration)) {
-                        if (stopGeneration > previousStop) prefs.edit().putLong("measurement-stop-generation", stopGeneration).apply()
-                        val anotherRunIsActive = activeServiceExercise || startingWorkout || exerciseStartInFlight
+                        if (stopGeneration > previousStop) prefs.edit()
+                            .putLong("measurement-stop-generation", stopGeneration).apply()
+                        val anotherRunIsActive =
+                            activeServiceExercise || startingWorkout || exerciseStartInFlight
                         startPhoneTransport(false, null, null)
                         launch {
-                            companionClient?.sendTo(nodeId, WatchCompanionMessage.Ack(messageId, true, targetRunId))
+                            companionClient?.sendTo(
+                                nodeId,
+                                WatchCompanionMessage.Ack(messageId, true, targetRunId)
+                            )
                             if (!anotherRunIsActive) stopSelf()
                         }
                         return START_NOT_STICKY
                     }
-                    val type = if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH else 0
-                    ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Stopping heart rate"), type)
+                    val type =
+                        if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH else 0
+                    ServiceCompat.startForeground(
+                        this,
+                        NOTIFICATION_ID,
+                        notification("Stopping heart rate"),
+                        type
+                    )
                     startPhoneTransport(false, null, null)
                     val stoppedRunId = targetRunId ?: activeRun
                     stopWorkout(sendToPhone = false) { stopped ->
                         launch {
-                            if (stopped) prefs.edit().putLong("measurement-stop-generation", stopGeneration).apply()
-                            companionClient?.sendTo(nodeId, WatchCompanionMessage.Ack(
+                            if (stopped) prefs.edit()
+                                .putLong("measurement-stop-generation", stopGeneration).apply()
+                            companionClient?.sendTo(
+                                nodeId, WatchCompanionMessage.Ack(
                                 messageId, stopped, stoppedRunId.takeIf { stopped }
                             ))
                             if (stopped) stopSelf()
@@ -162,19 +184,23 @@ class WearWorkoutService : Service(), CoroutineScope {
                     }
                 }
             }
+
             ACTION_START -> startWorkout(
                 fromPhone = intent.getBooleanExtra(EXTRA_FROM_PHONE, false),
                 phoneRunId = intent.getStringExtra(EXTRA_RUN_ID),
                 phoneRevision = intent.getLongExtra(EXTRA_REVISION, 0L).takeIf { it > 0 }
             )
+
             ACTION_STOP -> stopWorkout()
         }
         return START_STICKY
     }
 
     @Suppress("RestrictedApi") // Health Services exposes this ownership status for safe workout adoption.
-    private fun startWorkout(fromPhone: Boolean = false, phoneRunId: String? = null, phoneRevision: Long? = null,
-                             completion: (Boolean) -> Unit = {}) {
+    private fun startWorkout(
+        fromPhone: Boolean = false, phoneRunId: String? = null, phoneRevision: Long? = null,
+        completion: (Boolean) -> Unit = {}
+    ) {
         if (fromPhone && !hasBackgroundHealthPermission()) {
             WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
                 isStarting = false, status = "Open watch to allow heart rate access"
@@ -188,7 +214,8 @@ class WearWorkoutService : Service(), CoroutineScope {
             return
         }
         if (!fromPhone && (!WearWorkoutUiState.state.value.companionConnected || WearWorkoutUiState.state.value.userId.isBlank())) {
-            WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(status = "Open Pacemaker on your phone to connect")
+            WearWorkoutUiState.state.value =
+                WearWorkoutUiState.state.value.copy(status = "Open Pacemaker on your phone to connect")
             completion(false)
             return
         }
@@ -201,13 +228,21 @@ class WearWorkoutService : Service(), CoroutineScope {
         WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
             status = "Checking heart rate", isStarting = true
         )
-        val foregroundType = if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH else 0
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Starting Pacemaker"), foregroundType)
+        val foregroundType =
+            if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH else 0
+        ServiceCompat.startForeground(
+            this,
+            NOTIFICATION_ID,
+            notification("Starting Pacemaker"),
+            foregroundType
+        )
 
         val capabilitiesFuture = exerciseClient.getCapabilitiesAsync()
         val exerciseInfoFuture = exerciseClient.getCurrentExerciseInfoAsync()
         exerciseInfoFuture.addListener({
-            if (generation != workoutGeneration) { completion(false); return@addListener }
+            if (generation != workoutGeneration) {
+                completion(false); return@addListener
+            }
             val info = runCatching { exerciseInfoFuture.get() }.getOrNull()
             if (info == null) {
                 startingWorkout = false
@@ -232,7 +267,9 @@ class WearWorkoutService : Service(), CoroutineScope {
             if (info?.exerciseTrackedStatus == ExerciseTrackedStatus.OWNED_EXERCISE_IN_PROGRESS) {
                 startingWorkout = false
                 WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
-                    status = "Pacemaker workout already active", isRunning = true, isStarting = false
+                    status = "Pacemaker workout already active",
+                    isRunning = true,
+                    isStarting = false
                 )
                 val callback = updateCallbackFor(generation)
                 registeredUpdateCallback = callback
@@ -247,19 +284,28 @@ class WearWorkoutService : Service(), CoroutineScope {
                 return@addListener
             }
             capabilitiesFuture.addListener({
-                if (generation != workoutGeneration) { completion(false); return@addListener }
+                if (generation != workoutGeneration) {
+                    completion(false); return@addListener
+                }
                 val capabilities = runCatching { capabilitiesFuture.get() }.getOrNull()
-                val workoutType = listOf(ExerciseType.RUNNING, ExerciseType.WALKING, ExerciseType.WORKOUT)
-                    .firstOrNull { type ->
-                        capabilities?.typeToCapabilities?.get(type)?.supportedDataTypes?.contains(DataType.HEART_RATE_BPM) == true
-                    }
+                val workoutType =
+                    listOf(ExerciseType.RUNNING, ExerciseType.WALKING, ExerciseType.WORKOUT)
+                        .firstOrNull { type ->
+                            capabilities?.typeToCapabilities?.get(type)?.supportedDataTypes?.contains(
+                                DataType.HEART_RATE_BPM
+                            ) == true
+                        }
                 if (workoutType == null) {
                     startingWorkout = false
                     activeServiceExercise = false
-                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit().remove("active-measurement-run-id").apply()
-                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit().remove("active-measurement-run-id").apply()
+                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
+                        .remove("active-measurement-run-id").apply()
+                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
+                        .remove("active-measurement-run-id").apply()
                     WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
-                        isRunning = false, isStarting = false, status = "Heart rate sensor unavailable"
+                        isRunning = false,
+                        isStarting = false,
+                        status = "Heart rate sensor unavailable"
                     )
                     stopForeground(STOP_FOREGROUND_REMOVE)
                     completion(false)
@@ -276,30 +322,34 @@ class WearWorkoutService : Service(), CoroutineScope {
                 val startFuture = exerciseClient.startExerciseAsync(config)
                 exerciseStartInFlight = true
                 startFuture.addListener({
-                exerciseStartInFlight = false
-                if (generation != workoutGeneration) {
-                    if (runCatching { startFuture.get() }.isSuccess) exerciseClient.endExerciseAsync()
-                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit().remove("active-measurement-run-id").apply()
-                    completion(false)
-                    return@addListener
-                }
-                if (runCatching { startFuture.get() }.isFailure) {
+                    exerciseStartInFlight = false
+                    if (generation != workoutGeneration) {
+                        if (runCatching { startFuture.get() }.isSuccess) exerciseClient.endExerciseAsync()
+                        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
+                            .remove("active-measurement-run-id").apply()
+                        completion(false)
+                        return@addListener
+                    }
+                    if (runCatching { startFuture.get() }.isFailure) {
+                        startingWorkout = false
+                        activeServiceExercise = false
+                        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
+                            .remove("active-measurement-run-id").apply()
+                        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+                            isRunning = false,
+                            isStarting = false,
+                            status = "Could not start workout"
+                        )
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        completion(false)
+                        return@addListener
+                    }
                     startingWorkout = false
-                    activeServiceExercise = false
-                    getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit().remove("active-measurement-run-id").apply()
                     WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
-                        isRunning = false, isStarting = false, status = "Could not start workout"
+                        isRunning = true, isStarting = false, status = "With phone"
                     )
-                    stopForeground(STOP_FOREGROUND_REMOVE)
-                    completion(false)
-                    return@addListener
-                }
-                startingWorkout = false
-                WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
-                    isRunning = true, isStarting = false, status = "With phone"
-                )
-                startPhoneTransport(fromPhone, phoneRunId, phoneRevision)
-                completion(true)
+                    startPhoneTransport(fromPhone, phoneRunId, phoneRevision)
+                    completion(true)
                 }, ContextCompat.getMainExecutor(this))
             }, ContextCompat.getMainExecutor(this))
         }, ContextCompat.getMainExecutor(this))
@@ -344,7 +394,8 @@ class WearWorkoutService : Service(), CoroutineScope {
             delay((HeartRateSource.MAX_AGE.inWholeMilliseconds - age).coerceAtLeast(0))
             val current = WearWorkoutUiState.state.value
             if (current.measuredAtEpochMillis == measuredAt) {
-                WearWorkoutUiState.state.value = current.copy(heartRate = null, status = "Heart rate unavailable")
+                WearWorkoutUiState.state.value =
+                    current.copy(heartRate = null, status = "Heart rate unavailable")
             }
         }
         WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
@@ -353,10 +404,17 @@ class WearWorkoutService : Service(), CoroutineScope {
             status = "With phone"
         )
         val identity = WearWorkoutUiState.state.value
-        if (identity.sourceSelected && identity.userId.isNotBlank()) launch { companionClient?.send(WatchCompanionMessage.HeartRate(
-            messageId = "hr-${java.util.UUID.randomUUID()}", userId = identity.userId, bpm = bpm,
-            measuredAtEpochMillis = measuredAt, measurementRunId = runId
-        )) }
+        if (identity.sourceSelected && identity.userId.isNotBlank()) launch {
+            companionClient?.send(
+                WatchCompanionMessage.HeartRate(
+                    messageId = "hr-${java.util.UUID.randomUUID()}",
+                    userId = identity.userId,
+                    bpm = bpm,
+                    measuredAtEpochMillis = measuredAt,
+                    measurementRunId = runId
+                )
+            )
+        }
         alertIfCritical("me", bpm, identity.heartRateLimit)
     }
 
@@ -364,20 +422,38 @@ class WearWorkoutService : Service(), CoroutineScope {
         when (message) {
             is WatchCompanionMessage.Configure -> {
                 WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
-                    userId = message.userId, userName = message.userName, heartRateLimit = message.heartRateLimit,
-                    colorHue = message.colorHue, sourceSelected = message.sourceSelected
+                    userId = message.userId,
+                    userName = message.userName,
+                    heartRateLimit = message.heartRateLimit,
+                    colorHue = message.colorHue,
+                    sourceSelected = message.sourceSelected
                 )
                 getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
                     .putString("userId", message.userId).putString("name", message.userName)
                     .putInt("limit", message.heartRateLimit).putFloat("hue", message.colorHue)
                     .putBoolean("source-selected", message.sourceSelected).apply()
             }
+
             is WatchCompanionMessage.GroupSnapshot -> {
                 val now = Clock.System.now().toEpochMilliseconds()
-                val members = message.members.map { WearGroupMember(it.userId, it.name, it.bpm, it.limit, it.measuredAtEpochMillis) }
-                    .map { member -> if (member.measuredAtEpochMillis == null || now - member.measuredAtEpochMillis !in 0..60_000) member.copy(bpm = null) else member }
-                WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(group = members)
-                members.filter { it.isCritical }.forEach { alertIfCritical(it.userId, it.bpm!!, it.limit) }
+                val members = message.members.map {
+                    WearGroupMember(
+                        it.userId,
+                        it.name,
+                        it.bpm,
+                        it.limit,
+                        it.measuredAtEpochMillis
+                    )
+                }
+                    .map { member ->
+                        if (member.measuredAtEpochMillis == null || now - member.measuredAtEpochMillis !in 0..60_000) member.copy(
+                            bpm = null
+                        ) else member
+                    }
+                WearWorkoutUiState.state.value =
+                    WearWorkoutUiState.state.value.copy(group = members)
+                members.filter { it.isCritical }
+                    .forEach { alertIfCritical(it.userId, it.bpm!!, it.limit) }
                 groupExpiryJob?.cancel()
                 groupExpiryJob = launch {
                     while (isActive && companionEnabled) {
@@ -387,10 +463,12 @@ class WearWorkoutService : Service(), CoroutineScope {
                             if (member.measuredAtEpochMillis == null || nowMs - member.measuredAtEpochMillis !in 0..60_000)
                                 member.copy(bpm = null) else member
                         }
-                        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(group = rows)
+                        WearWorkoutUiState.state.value =
+                            WearWorkoutUiState.state.value.copy(group = rows)
                     }
                 }
             }
+
             is WatchCompanionMessage.Hello -> Unit
             is WatchCompanionMessage.Session -> Unit
             is WatchCompanionMessage.MeasurementStop -> Unit
@@ -421,23 +499,40 @@ class WearWorkoutService : Service(), CoroutineScope {
     }
 
     @Suppress("RestrictedApi") // Health Services exposes this ownership status for safely ending an orphan workout.
-    private fun stopWorkout(sendToPhone: Boolean = true, endExercise: Boolean = true, completion: ((Boolean) -> Unit)? = null) {
+    private fun stopWorkout(
+        sendToPhone: Boolean = true,
+        endExercise: Boolean = true,
+        completion: ((Boolean) -> Unit)? = null
+    ) {
         if (sendToPhone) {
             val userId = WearWorkoutUiState.state.value.userId
-            if (userId.isNotBlank()) launch { companionClient?.send(WatchCompanionMessage.HeartRate(
-                messageId = "hr-clear-${java.util.UUID.randomUUID()}", userId = userId, bpm = null,
-                measuredAtEpochMillis = Clock.System.now().toEpochMilliseconds(), measurementRunId = runId
-            )) }
+            if (userId.isNotBlank()) launch {
+                companionClient?.send(
+                    WatchCompanionMessage.HeartRate(
+                        messageId = "hr-clear-${java.util.UUID.randomUUID()}",
+                        userId = userId,
+                        bpm = null,
+                        measuredAtEpochMillis = Clock.System.now().toEpochMilliseconds(),
+                        measurementRunId = runId
+                    )
+                )
+            }
         }
         val wasRunning = WearWorkoutUiState.state.value.isRunning
-        val endingFuture = if (endExercise && wasRunning) exerciseClient.endExerciseAsync() else null
+        val endingFuture =
+            if (endExercise && wasRunning) exerciseClient.endExerciseAsync() else null
         val shouldCheckOrphan = endExercise && !wasRunning && completion != null
         workoutGeneration++
         startingWorkout = false
         registeredUpdateCallback?.let { runCatching { exerciseClient.clearUpdateCallbackAsync(it) } }
         registeredUpdateCallback = null
         heartRateExpiryJob?.cancel()
-        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(isRunning = false, isStarting = false, heartRate = null, status = "Ready")
+        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+            isRunning = false,
+            isStarting = false,
+            heartRate = null,
+            status = "Ready"
+        )
         fun finishStop(ended: Boolean) {
             activeServiceExercise = !ended
             if (ended) {
@@ -458,7 +553,10 @@ class WearWorkoutService : Service(), CoroutineScope {
             completion?.invoke(false)
         }
         if (endingFuture != null) {
-            endingFuture.addListener({ finishStop(runCatching { endingFuture.get() }.isSuccess) }, ContextCompat.getMainExecutor(this))
+            endingFuture.addListener(
+                { finishStop(runCatching { endingFuture.get() }.isSuccess) },
+                ContextCompat.getMainExecutor(this)
+            )
         } else if (shouldCheckOrphan) {
             val infoFuture = exerciseClient.getCurrentExerciseInfoAsync()
             infoFuture.addListener({
@@ -466,38 +564,54 @@ class WearWorkoutService : Service(), CoroutineScope {
                 if (info == null) finishStop(false)
                 else if (info.exerciseTrackedStatus == ExerciseTrackedStatus.OWNED_EXERCISE_IN_PROGRESS) {
                     val orphanStop = exerciseClient.endExerciseAsync()
-                    orphanStop.addListener({ finishStop(runCatching { orphanStop.get() }.isSuccess) }, ContextCompat.getMainExecutor(this))
+                    orphanStop.addListener(
+                        { finishStop(runCatching { orphanStop.get() }.isSuccess) },
+                        ContextCompat.getMainExecutor(this)
+                    )
                 } else finishStop(true)
             }, ContextCompat.getMainExecutor(this))
         } else finishStop(true)
     }
 
     private fun hasBackgroundHealthPermission(): Boolean {
-        val heartRatePermission = if (Build.VERSION.SDK_INT >= 36) "android.permission.health.READ_HEART_RATE"
+        val heartRatePermission =
+            if (Build.VERSION.SDK_INT >= 36) "android.permission.health.READ_HEART_RATE"
             else android.Manifest.permission.BODY_SENSORS
-        if (ContextCompat.checkSelfPermission(this, heartRatePermission) != android.content.pm.PackageManager.PERMISSION_GRANTED) return false
+        if (ContextCompat.checkSelfPermission(
+                this,
+                heartRatePermission
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) return false
         val backgroundPermission = when {
             Build.VERSION.SDK_INT >= 36 -> "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
             Build.VERSION.SDK_INT >= 33 -> android.Manifest.permission.BODY_SENSORS_BACKGROUND
             else -> null
         }
-        return backgroundPermission == null || ContextCompat.checkSelfPermission(this, backgroundPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        return backgroundPermission == null || ContextCompat.checkSelfPermission(
+            this,
+            backgroundPermission
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= 26) {
             getSystemService(NotificationManager::class.java).createNotificationChannel(
-                NotificationChannel(CHANNEL_ID, "Pacemaker workout", NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(
+                    CHANNEL_ID,
+                    "Pacemaker workout",
+                    NotificationManager.IMPORTANCE_LOW
+                )
             )
         }
     }
 
-    private fun notification(text: String): Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-        .setSmallIcon(android.R.drawable.ic_menu_compass)
-        .setContentTitle("Pacemaker")
-        .setContentText(text)
-        .setOngoing(true)
-        .build()
+    private fun notification(text: String): Notification =
+        NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.pacemaker_launcher_monochrome)
+            .setContentTitle("Pacemaker")
+            .setContentText(text)
+            .setOngoing(true)
+            .build()
 
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onDestroy() {
@@ -507,7 +621,8 @@ class WearWorkoutService : Service(), CoroutineScope {
     }
 
     companion object {
-        @Volatile private var activeServiceExercise = false
+        @Volatile
+        private var activeServiceExercise = false
         fun isWorkoutActiveOrEnding(): Boolean = activeServiceExercise
 
         const val ACTION_START = "io.sellmair.pacemaker.wear.START"

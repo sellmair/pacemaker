@@ -1,0 +1,25 @@
+{
+  "workflow": "2bfb9e6726709ed7ae13a88ac1c1cebc",
+  "integrated": {
+    "tasks": [
+      ":wearApp:assembleDebug",
+      ":wearApp:assembleDebugAndroidTest",
+      ":wearApp:testDebugUnitTest",
+      ":app-core:testAndroidHostTest",
+      ":androidApp:assembleDebug"
+    ],
+    "exitStatus": 0,
+    "elapsedSeconds": 4.919
+  },
+  "finalFocusedRun": {
+    "sequence": 17,
+    "question": "Does the final state-pressure capture harness compile with centered long-copy evidence?",
+    "command": "./gradlew :wearApp:assembleDebugAndroidTest --console=plain --no-scan",
+    "exitStatus": 0,
+    "failedTasks": []
+  },
+  "notes": [
+    "Focused Wear rebuilds and native reruns passed after presentation repairs.",
+    "Existing service warnings, JDK native-access warnings and deprecated v1 Compose test-rule warnings remain; there were no failing required checks."
+  ]
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "profile": "small",
+    "locale": "en",
+    "fontScale": "1.0",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-en-1.0.png",
+      "home-controls-small-en-1.0.png",
+      "group-opening-small-en-1.0.png",
+      "group-members-small-en-1.0.png",
+      "ambient-small-en-1.0.png"
+    ]
+  },
+  {
+    "profile": "small",
+    "locale": "en",
+    "fontScale": "1.3",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-en-1.3.png",
+      "home-controls-small-en-1.3.png",
+      "group-opening-small-en-1.3.png",
+      "group-members-small-en-1.3.png",
+      "ambient-small-en-1.3.png"
+    ]
+  },
+  {
+    "profile": "small",
+    "locale": "de",
+    "fontScale": "1.0",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-de-1.0.png",
+      "home-controls-small-de-1.0.png",
+      "group-opening-small-de-1.0.png",
+      "group-members-small-de-1.0.png",
+      "ambient-small-de-1.0.png"
+    ]
+  },
+  {
+    "profile": "small",
+    "locale": "de",
+    "fontScale": "1.3",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-de-1.3.png",
+      "home-controls-small-de-1.3.png",
+      "group-opening-small-de-1.3.png",
+      "group-members-small-de-1.3.png",
+      "ambient-small-de-1.3.png"
+    ]
+  },
+  {
+    "profile": "small",
+    "locale": "it",
+    "fontScale": "1.0",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-it-1.0.png",
+      "home-controls-small-it-1.0.png",
+      "group-opening-small-it-1.0.png",
+      "group-members-small-it-1.0.png",
+      "ambient-small-it-1.0.png"
+    ]
+  },
+  {
+    "profile": "small",
+    "locale": "it",
+    "fontScale": "1.3",
+    "tests": 3,
+    "result": "passed",
+    "captures": [
+      "home-opening-small-it-1.3.png",
+      "home-controls-small-it-1.3.png",
+      "group-opening-small-it-1.3.png",
+      "group-members-small-it-1.3.png",
+      "ambient-small-it-1.3.png"
+    ]
+  }
+]

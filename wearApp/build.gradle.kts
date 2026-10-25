@@ -11,6 +11,8 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "2026.1"
+        testApplicationId = "io.sellmair.pacemaker.wear.test"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true }
     buildTypes {
@@ -39,6 +41,15 @@ dependencies {
     implementation(deps.compose.runtime)
     implementation(deps.compose.ui)
     implementation(deps.compose.foundation)
-    implementation(deps.compose.material3)
-    implementation("androidx.wear.compose:compose-material3:1.5.0")
+    implementation("androidx.wear.compose:compose-foundation:1.7.1")
+    implementation("androidx.wear.compose:compose-material3:1.7.1")
+    debugImplementation("androidx.wear.compose:compose-ui-tooling:1.7.1")
+    androidTestImplementation(deps.androidx.test.runner)
+    androidTestImplementation(deps.androidx.test.core)
+    androidTestImplementation(deps.androidx.test.ext.junit)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.12.1")
+    androidTestImplementation(deps.compose.foundation)
+    androidTestImplementation("androidx.wear.compose:compose-material3:1.7.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.12.1")
+    testImplementation("junit:junit:4.13.2")
 }
