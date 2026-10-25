@@ -37,21 +37,7 @@ internal fun MainPage() {
         ?.let { HeartRateSensorConnectionState.Key(HeartRateSensorId(it.id)).composeValue() }
     val bluetooth = BluetoothState.composeValue()
     val utteranceState by UtteranceState.composeState()
-    var nowEpochMillis by remember {
-        mutableLongStateOf(Clock.System.now().toEpochMilliseconds())
-    }
-
-    val clockScope = rememberCoroutineScope()
-    LifecycleResumeEffect(Unit) {
-        nowEpochMillis = Clock.System.now().toEpochMilliseconds()
-        val clockJob = clockScope.launch {
-            while (true) {
-                delay(1.seconds)
-                nowEpochMillis = Clock.System.now().toEpochMilliseconds()
-            }
-        }
-        onPauseOrDispose { clockJob.cancel() }
-    }
+    val nowEpochMillis = liveNowEpochMillis()
 
     LivePageContent(
         state = LiveScreenContentState(
@@ -72,6 +58,31 @@ internal fun MainPage() {
             UtteranceState.set(state)
         }
     )
+}
+
+/**
+ * The timer invalidates the screen so idle readings expire. Every composition also samples the
+ * clock: a packet received between ticks must never be compared with the previous tick's time.
+ */
+@Composable
+internal fun liveNowEpochMillis(
+    clock: () -> Long = { Clock.System.now().toEpochMilliseconds() }
+): Long {
+    var clockTickEpochMillis by remember { mutableLongStateOf(clock()) }
+    val clockScope = rememberCoroutineScope()
+    LifecycleResumeEffect(Unit) {
+        clockTickEpochMillis = clock()
+        val clockJob = clockScope.launch {
+            while (true) {
+                delay(1.seconds)
+                clockTickEpochMillis = clock()
+            }
+        }
+        onPauseOrDispose { clockJob.cancel() }
+    }
+
+    // Read the observable tick to keep periodic invalidation, then sample the actual current time.
+    return clockTickEpochMillis.let { clock() }
 }
 
 /**

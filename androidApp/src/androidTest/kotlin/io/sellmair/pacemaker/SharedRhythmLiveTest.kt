@@ -1,3 +1,5 @@
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+
 package io.sellmair.pacemaker
 
 import android.graphics.Bitmap
@@ -6,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -33,6 +36,7 @@ import io.sellmair.pacemaker.ui.SharedRhythmColors
 import io.sellmair.pacemaker.ui.SharedRhythmTheme
 import io.sellmair.pacemaker.ui.Page
 import io.sellmair.pacemaker.ui.PageRouter
+import io.sellmair.pacemaker.ui.mainPage.liveNowEpochMillis
 import io.sellmair.pacemaker.ui.mainPage.LivePageContent
 import io.sellmair.pacemaker.ui.mainPage.LiveScreenContentState
 import java.io.File
@@ -87,6 +91,47 @@ class SharedRhythmLiveTest {
     fun futureDatedValueIsNotShownAsLive() {
         render(sample().copy(me = MeState(me, HeartRate(142f), HeartRate(150f), now + 1_000)))
         compose.onAllNodesWithText("142").assertCountEquals(0)
+    }
+
+    @Test
+    fun incomingReadingsBetweenClockTicksStayVisibleImmediately() {
+        var wallClock = now
+        val state = mutableStateOf(sample().copy(
+            selectedSource = source(HeartRateSource.Availability.AVAILABLE)
+        ))
+        render(state.value, stateProvider = {
+            state.value.copy(nowEpochMillis = liveNowEpochMillis { wallClock })
+        })
+        compose.mainClock.autoAdvance = false
+        compose.runOnIdle {
+            // No periodic clock tick has run when the next packet arrives half a second later.
+            wallClock = now + 500
+            state.value = state.value.copy(
+                me = MeState(me, HeartRate(143f), HeartRate(150f), wallClock),
+                group = GroupState(listOf(peer(137f, wallClock))),
+                selectedSource = source(HeartRateSource.Availability.AVAILABLE).copy(
+                    heartRate = HeartRate(143f),
+                    measuredAtEpochMillis = wallClock
+                )
+            )
+        }
+        compose.mainClock.advanceTimeByFrame()
+        compose.onAllNodesWithText("143").assertCountEquals(2)
+        compose.onNodeWithText("137").assertIsDisplayed()
+        compose.onAllNodesWithText("Waiting for a valid reading").assertCountEquals(0)
+        compose.onNodeWithText("Source: Polar H10 · connected").performScrollTo().assertIsDisplayed()
+
+        // Fresh clock sampling must not make a genuinely future timestamp valid.
+        compose.runOnIdle {
+            state.value = state.value.copy(group = GroupState(listOf(peer(138f, wallClock + 1_000))))
+        }
+        compose.mainClock.advanceTimeByFrame()
+        compose.onAllNodesWithText("138").assertCountEquals(0)
+
+        // The periodic tick must still expire readings when no more packets arrive.
+        compose.runOnIdle { wallClock += 60_001 }
+        compose.mainClock.advanceTimeBy(1_100)
+        compose.onAllNodesWithText("143").assertCountEquals(0)
     }
 
     @Test
@@ -270,7 +315,7 @@ class SharedRhythmLiveTest {
         compactLargeFont: Boolean = false,
         locale: Locale? = null,
         onUtteranceChanged: (UtteranceState) -> Unit = {},
-        stateProvider: (() -> LiveScreenContentState)? = null
+        stateProvider: (@Composable () -> LiveScreenContentState)? = null
     ) {
         compose.setContent {
             val density = LocalDensity.current
