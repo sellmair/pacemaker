@@ -28,8 +28,6 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
-    @State private var showWatchLaunchHelp = false
-
     private var uiTesting: Bool {
         #if DEBUG
         ProcessInfo.processInfo.arguments.contains("--pacemaker-ui-testing")
@@ -45,12 +43,6 @@ struct ContentView: View {
                     if !uiTesting {
                         WatchPhoneBridge.shared.activate()
                     }
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .watchLaunchFailed)) { _ in showWatchLaunchHelp = true }
-                .alert("watch_launch_failed_title", isPresented: $showWatchLaunchHelp) {
-                    Button("OK", role: .cancel) { }
-                } message: {
-                    Text("watch_launch_failed_message")
                 }
     }
 }

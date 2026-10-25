@@ -27,8 +27,13 @@ import io.sellmair.pacemaker.WATCH_PHONE_CAPABILITY
 import io.sellmair.pacemaker.WatchCompanionDataLayer
 import io.sellmair.pacemaker.WatchCompanionDeviceState
 import io.sellmair.pacemaker.WatchCompanionMessage
+import io.sellmair.pacemaker.WatchCompanionDiscoveryState
+import io.sellmair.pacemaker.WatchCompanionNodeAvailable
 import io.sellmair.pacemaker.resolvePinnedWatchPhoneNode
+import io.sellmair.evas.collectEventsAsync
+import io.sellmair.evas.flow
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -39,7 +44,10 @@ class WearActivity : ComponentActivity() {
 
     private var permissionFlow = PermissionFlow.CONNECT
     private var healthReady by mutableStateOf(false)
-    private val companionScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val companionScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate + WearCompanionRuntime.events + WearCompanionRuntime.states
+    )
+    private val states = WearCompanionRuntime.states
     private var companionDataLayer: WatchCompanionDataLayer? = null
     private var helloInFlightNode: String? = null
     private var contentInstalled = false
@@ -47,20 +55,15 @@ class WearActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
             if (grants.values.all { it }) {
                 if (permissionFlow == PermissionFlow.CONNECT) initializeCompanionTransport() else requestBackgroundPermissionOrStart()
-            } else WearWorkoutUiState.state.value =
-                WearWorkoutUiState.state.value.copy(status = "Allow heart rate access in Settings")
+            } else states.workout =
+                states.workout.copy(status = "Allow heart rate access in Settings")
             render()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Remove legacy standalone selection and ownership settings while retaining paired identity.
-        getSharedPreferences("wear", Context.MODE_PRIVATE).edit().remove("mode").apply()
-        getSharedPreferences("wear-companion", Context.MODE_PRIVATE).edit()
-            .remove("watch-only-authorized").remove("watch-owns-participant")
-            .remove("ownership-pending").apply()
         val identity = getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
-        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+        states.workout = states.workout.copy(
             userId = identity.getString("userId", "") ?: "",
             userName = identity.getString("name", "Pacemaker") ?: "Pacemaker",
             heartRateLimit = identity.getInt("limit", 145), colorHue = identity.getFloat("hue", 0f),
@@ -73,11 +76,24 @@ class WearActivity : ComponentActivity() {
                 listOf(ExerciseType.RUNNING, ExerciseType.WALKING, ExerciseType.WORKOUT).any {
                     caps?.typeToCapabilities?.get(it)?.supportedDataTypes?.contains(DataType.HEART_RATE_BPM) == true
                 }
-            if (!healthReady) WearWorkoutUiState.state.value =
-                WearWorkoutUiState.state.value.copy(status = "This watch cannot measure workout heart rate")
+            if (!healthReady) states.workout =
+                states.workout.copy(status = "This watch cannot measure workout heart rate")
             render()
         }, ContextCompat.getMainExecutor(this))
         render()
+        companionScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            WatchCompanionDiscoveryState.flow().collect { discovery ->
+                onCompanionPresenceChanged(WatchCompanionDeviceState(
+                    candidates = discovery.candidates,
+                    platformAvailable = discovery.platformAvailable
+                ))
+            }
+        }
+        companionScope.collectEventsAsync<WatchCompanionNodeAvailable> { event ->
+            if (event.nodeId == getSharedPreferences("wear-companion", Context.MODE_PRIVATE)
+                    .getString("phone-node-id", null)) sendHelloToSelectedPhone()
+        }
+        companionScope.launch { WearCompanionRuntime.expireGroupWhileActive() }
         initializeCompanionTransport()
     }
 
@@ -93,7 +109,7 @@ class WearActivity : ComponentActivity() {
         if (GoogleApiAvailability.getInstance()
                 .isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS
         ) {
-            WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+            states.workout = states.workout.copy(
                 companionConnected = false, status = "Google Play services is unavailable"
             )
             render()
@@ -101,19 +117,8 @@ class WearActivity : ComponentActivity() {
         }
         if (companionDataLayer == null) {
             companionDataLayer = WatchCompanionDataLayer(
-                this, companionScope, WATCH_PHONE_CAPABILITY,
-                selectedNodeId = {
-                    getSharedPreferences(
-                        "wear-companion",
-                        Context.MODE_PRIVATE
-                    ).getString("phone-node-id", null)
-                },
-                onPresenceChanged = ::onCompanionPresenceChanged,
-                onNodeAvailable = {
-                    sendHelloToSelectedPhone()
-                }
+                this, companionScope, WATCH_PHONE_CAPABILITY
             ).also {
-                WearCompanionRuntime.addTransport(it)
                 it.start()
             }
         } else companionScope.launch { companionDataLayer?.refreshPresence() }
@@ -126,12 +131,12 @@ class WearActivity : ComponentActivity() {
         if (target != null) prefs.edit().putString("phone-node-id", target).apply()
         val connected = target != null
         val sourceSelected = prefs.getBoolean("source-selected", false)
-        WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+        states.workout = states.workout.copy(
             companionConnected = connected,
             status = when {
                 !state.platformAvailable -> "Google Play services is unavailable"
                 !connected -> "Open Pacemaker on your phone to connect"
-                WearWorkoutUiState.state.value.userId.isBlank() || !sourceSelected -> "Select this watch in Pacemaker"
+                states.workout.userId.isBlank() || !sourceSelected -> "Select this watch in Pacemaker"
                 else -> "Connected to Pacemaker"
             }
         )
@@ -149,28 +154,28 @@ class WearActivity : ComponentActivity() {
         ) return
         val transport = companionDataLayer ?: return
         helloInFlightNode = nodeId
-        val accepted = transport.sendReliable(
+        val accepted = transport.sendReliableTo(
+            nodeId,
             WatchCompanionMessage.Hello("wear-hello-${java.util.UUID.randomUUID()}"),
             retries = 2
         )
         if (helloInFlightNode == nodeId) helloInFlightNode = null
+        if (prefs.getString("phone-node-id", null) != nodeId) return
         if (accepted) {
             prefs.edit().putString("authenticated-phone-node-id", nodeId).apply()
-            WearWorkoutUiState.state.value =
-                WearWorkoutUiState.state.value.copy(status = "Select this watch in Pacemaker")
+            states.workout =
+                states.workout.copy(status = "Select this watch in Pacemaker")
         } else {
-            WearWorkoutUiState.state.value = WearWorkoutUiState.state.value.copy(
+            states.workout = states.workout.copy(
                 companionConnected = false, status = "Open Pacemaker on your phone to connect"
             )
         }
         render()
     }
 
-    companion object {
-    }
 
     private fun toggleWorkout() {
-        if (WearWorkoutUiState.state.value.isRunning) {
+        if (states.workout.isRunning) {
             startService(
                 Intent(
                     this,
@@ -179,10 +184,10 @@ class WearActivity : ComponentActivity() {
             )
             return
         }
-        if (!WearWorkoutUiState.state.value.companionConnected || !WearWorkoutUiState.state.value.sourceSelected || WearWorkoutUiState.state.value.userId.isBlank()) {
+        if (!states.workout.companionConnected || !states.workout.sourceSelected || states.workout.userId.isBlank()) {
             initializeCompanionTransport()
-            WearWorkoutUiState.state.value =
-                WearWorkoutUiState.state.value.copy(status = "Open Pacemaker on your phone to connect")
+            states.workout =
+                states.workout.copy(status = "Open Pacemaker on your phone to connect")
             render()
             return
         }
@@ -215,15 +220,15 @@ class WearActivity : ComponentActivity() {
     }
 
     private fun toggleWorkoutAfterPermissions() {
-        val state = WearWorkoutUiState.state.value
+        val state = states.workout
         if (state.isRunning) startService(
             Intent(this, WearWorkoutService::class.java).setAction(
                 WearWorkoutService.ACTION_STOP
             )
         )
-        else if (!state.companionConnected || !state.sourceSelected || state.userId.isBlank()) WearWorkoutUiState.state.value =
+        else if (!state.companionConnected || !state.sourceSelected || state.userId.isBlank()) states.workout =
             state.copy(status = "Open Pacemaker on your phone to connect")
-        else if (!healthReady) WearWorkoutUiState.state.value =
+        else if (!healthReady) states.workout =
             state.copy(status = "Heart rate sensor unavailable")
         else ContextCompat.startForegroundService(
             this,
@@ -233,7 +238,6 @@ class WearActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
-        companionDataLayer?.let(WearCompanionRuntime::removeTransport)
         companionDataLayer?.close()
         companionScope.cancel()
         super.onDestroy()
@@ -246,7 +250,7 @@ class WearActivity : ComponentActivity() {
             val ambientModeManager = rememberAmbientModeManager()
             CompositionLocalProvider(LocalAmbientModeManager provides ambientModeManager) {
                 val ambient = ambientModeManager.currentAmbientMode is AmbientMode.Ambient
-                val workout by WearWorkoutUiState.state.collectAsStateWithLifecycle()
+            val workout by states.getState(WearWorkoutState).collectAsStateWithLifecycle()
                 val nowEpochMillis = rememberInteractiveWearNowEpochMillis(ambient)
                 WearAppContent(
                     state = workout,

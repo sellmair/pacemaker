@@ -49,57 +49,6 @@ class HeartRateSourceTest {
         assertTrue(acceptsHeartRateMeasurement(watch, "own", "other", "other-user-strap"))
     }
 
-    @Test fun retriedCommandsAreAcceptedOnceAndCacheIsBounded() {
-        val deduplicator = MessageDeduplicator(capacity = 2)
-        assertTrue(deduplicator.accept("a"))
-        assertFalse(deduplicator.accept("a"))
-        assertTrue(deduplicator.accept("b"))
-        assertTrue(deduplicator.accept("c"))
-        assertTrue(deduplicator.accept("a"))
-    }
-
-    @Test fun sessionCommandsRejectRetriesAndLateStartAfterStop() {
-        val gate = WatchSessionCommandGate()
-        val start = WatchSessionCommand("start-1", WatchSessionCommand.Action.START, 1, "run-a", 1)
-        val stop = WatchSessionCommand("stop-1", WatchSessionCommand.Action.STOP, 2, "run-a", 2)
-        val lateStart = WatchSessionCommand("late-start", WatchSessionCommand.Action.START, 3, "run-a", 1)
-        assertTrue(gate.accept(start))
-        assertTrue(gate.accept(start)) // retry is acknowledged idempotently without reapplying Start
-        assertTrue(gate.accept(stop))
-        assertFalse(gate.accept(lateStart))
-        val startSecondRun = WatchSessionCommand("start-2", WatchSessionCommand.Action.START, 4, "run-b", 1)
-        val lateStopFirstRun = WatchSessionCommand("late-stop", WatchSessionCommand.Action.STOP, 5, "run-a", 3)
-        assertTrue(gate.accept(startSecondRun))
-        assertFalse(gate.accept(lateStopFirstRun))
-    }
-
-    @Test fun stopTombstoneRejectsDelayedStartWithoutStoppingAnotherRun() {
-        val gate = WatchSessionCommandGate()
-        val stopBeforeStart = WatchSessionCommand("stop-a", WatchSessionCommand.Action.STOP, 2, "run-a", 2)
-        val delayedStart = WatchSessionCommand("start-a", WatchSessionCommand.Action.START, 1, "run-a", 1)
-        assertTrue(gate.accept(stopBeforeStart))
-        assertFalse(gate.accept(delayedStart))
-
-        assertTrue(gate.accept(WatchSessionCommand("start-b", WatchSessionCommand.Action.START, 3, "run-b", 1)))
-        assertFalse(gate.accept(WatchSessionCommand("late-stop-a", WatchSessionCommand.Action.STOP, 4, "run-a", 3)))
-        assertFalse(gate.accept(WatchSessionCommand("duplicate-start-b", WatchSessionCommand.Action.START, 5, "run-b", 1)))
-        assertTrue(gate.accept(WatchSessionCommand("stop-b", WatchSessionCommand.Action.STOP, 6, "run-b", 2)))
-    }
-
-    @Test fun duplicateAcceptedStopAcknowledgesWithoutApplyingToNextRun() {
-        val gate = WatchSessionCommandGate()
-        val startA = WatchSessionCommand("start-a", WatchSessionCommand.Action.START, 1, "run-a", 1)
-        val stopA = WatchSessionCommand("stop-a", WatchSessionCommand.Action.STOP, 2, "run-a", 2)
-        val startB = WatchSessionCommand("start-b", WatchSessionCommand.Action.START, 3, "run-b", 1)
-        assertTrue(gate.decide(startA).shouldApply)
-        assertTrue(gate.decide(stopA).shouldApply)
-        assertTrue(gate.decide(startB).shouldApply)
-        val retry = gate.decide(stopA)
-        assertTrue(retry.accepted)
-        assertFalse(retry.shouldApply)
-        assertTrue(gate.decide(WatchSessionCommand("stop-b", WatchSessionCommand.Action.STOP, 4, "run-b", 2)).shouldApply)
-    }
-
     @Test fun pinnedWearNodeNeverFallsBackToAnotherReachablePhone() {
         val candidates = listOf(
             WatchCompanionCandidate("phone-a", "Paired phone", connected = false),
@@ -111,18 +60,11 @@ class HeartRateSourceTest {
     }
 
     @Test fun measurementDisconnectStopCannotClearAStartedLaterRun() {
-        val gate = WatchMeasurementRunGate()
-        gate.start("run-a")
-        assertTrue(gate.acceptsHeartRate("run-a"))
-        assertFalse(gate.acceptsHeartRate("run-b"))
-        assertTrue(gate.shouldStop("run-a", 1))
-        gate.stopped(1)
-        assertFalse(gate.acceptsHeartRate("run-a"))
-
-        gate.start("run-b")
-        assertTrue(gate.acceptsHeartRate("run-b"))
-        assertFalse(gate.shouldStop("run-a", 2))
-        assertTrue(gate.shouldStop("run-b", 2))
+        assertTrue(shouldStopWatchMeasurement("run-a", 0, "run-a", 1))
+        assertFalse(shouldStopWatchMeasurement("run-b", 1, "run-a", 2))
+        assertTrue(shouldStopWatchMeasurement("run-b", 1, "run-b", 2))
+        assertFalse(shouldStopWatchMeasurement("run-b", 2, "run-b", 2))
+        assertTrue(shouldStopWatchMeasurement("run-b", 2, null, 3))
     }
 
     @Test fun watchSamplesRequireTheExplicitlySelectedNode() {
@@ -136,59 +78,10 @@ class HeartRateSourceTest {
         assertEquals(stop, WatchCompanionCodec.decode(WatchCompanionCodec.encode(stop)))
         val heartRate = WatchCompanionMessage.HeartRate("hr-1", "user", 90, 100, "run-a")
         assertEquals(heartRate, WatchCompanionCodec.decode(WatchCompanionCodec.encode(heartRate)))
-        assertEquals(null, WatchCompanionCodec.decode("H|old|user|90|100").let {
-            (it as? WatchCompanionMessage.HeartRate)?.measurementRunId
-        })
-    }
-
-    @Test fun stopTombstonesSurviveReloadAndRejectLateStart() {
-        val firstProcess = WatchSessionStopTombstones()
-        firstProcess.markStopped("run-a")
-        val afterRestart = WatchSessionStopTombstones(firstProcess.snapshot())
-        assertTrue(afterRestart.rejectsStart("run-a"))
-        assertFalse(afterRestart.rejectsStart("run-b"))
-        afterRestart.markStopped("run-b")
-        assertEquals(setOf("run-a", "run-b"), afterRestart.snapshot())
-    }
-
-    @Test fun failedLocalStartIsNotReplayedAsSuccessfulOnRetry() {
-        val gate = WatchSessionCommandGate()
-        val start = WatchSessionCommand("start-failed", WatchSessionCommand.Action.START, 1, "run-a", 1)
-        val first = gate.decide(start)
-        assertTrue(first.accepted)
-        assertTrue(first.shouldApply)
-        gate.complete(start.commandId, false)
-        val retry = gate.decide(start)
-        assertFalse(retry.accepted)
-        assertFalse(retry.shouldApply)
-    }
-
-    @Test fun failedStartRollsBackRunOwnershipButKeepsNewRunOrderValid() {
-        val gate = WatchSessionCommandGate()
-        val failedStart = WatchSessionCommand("start-failed-a", WatchSessionCommand.Action.START, 1, "run-a", 1)
-        assertTrue(gate.decide(failedStart).shouldApply)
-        gate.complete(failedStart.commandId, false)
-        assertFalse(gate.decide(failedStart).accepted)
-        val nextRun = WatchSessionCommand("start-b", WatchSessionCommand.Action.START, 2, "run-b", 1)
-        assertTrue(gate.decide(nextRun).accepted)
-        assertFalse(gate.decide(nextRun).shouldApply)
-    }
-
-    @Test fun phonePublishedRunAcceptsWatchStopOnSameLogicalRun() {
-        val gate = WatchSessionCommandGate()
-        val runId = phonePublishedWatchRunId("42")
-        val phoneStart = WatchSessionCommand("phone-start-sql-42", WatchSessionCommand.Action.START, 1, runId, 1)
-        assertTrue(gate.decide(phoneStart).shouldApply)
-        gate.complete(phoneStart.commandId, true)
-
-        val watchStop = WatchSessionCommand("watch-stop-sql-42", WatchSessionCommand.Action.STOP, 2, runId, 2)
-        assertTrue(isWatchStopForRun(watchStop, requestedRunId = null, publishedRunId = runId))
-        assertTrue(gate.decide(watchStop).accepted)
-        assertFalse(gate.decide(watchStop).shouldApply)
-        assertTrue(isWatchStopForSession(watchStop, activeSessionId = "42", requestedRunId = null,
-            requestedSessionId = null, publishedRunId = runId, publishedSessionId = "42"))
-        assertFalse(isWatchStopForSession(watchStop, activeSessionId = "43", requestedRunId = null,
-            requestedSessionId = null, publishedRunId = runId, publishedSessionId = "42"))
+        val noRun = WatchCompanionMessage.HeartRate("hr-2", "user", null, 101, null)
+        assertEquals(noRun, WatchCompanionCodec.decode(WatchCompanionCodec.encode(noRun)))
+        val untargetedStop = WatchCompanionMessage.MeasurementStop("stop-2", 8, null)
+        assertEquals(untargetedStop, WatchCompanionCodec.decode(WatchCompanionCodec.encode(untargetedStop)))
     }
 
     @Test fun companionCodecRoundTripsEscapedNamesAndGroupTimes() {
@@ -201,7 +94,21 @@ class HeartRateSourceTest {
         assertEquals(ack, WatchCompanionCodec.decode(WatchCompanionCodec.encode(ack)))
         val disconnectedSource = WatchCompanionMessage.Configure("config-2", "u1", "Zoë", 12f, 145, sourceSelected = false)
         assertEquals(disconnectedSource, WatchCompanionCodec.decode(WatchCompanionCodec.encode(disconnectedSource)))
-        assertEquals(true, (WatchCompanionCodec.decode("C|legacy|u1|Runner|12.0|145") as WatchCompanionMessage.Configure).sourceSelected)
+    }
+
+    @Test fun companionCodecRejectsIncompleteOrMalformedFrames() {
+        assertNull(WatchCompanionCodec.decode("P"))
+        assertNull(WatchCompanionCodec.decode("C|config|u1|Runner|12.0|145"))
+        assertNull(WatchCompanionCodec.decode("H|sample|u1|90|100"))
+        assertNull(WatchCompanionCodec.decode("M|stop|8"))
+        assertNull(WatchCompanionCodec.decode("A|stop|true"))
+        assertNull(WatchCompanionCodec.decode("C|config|u1|Runner|12.0|145|unknown"))
+        assertNull(WatchCompanionCodec.decode("H|sample|u1|90|100|run|extra"))
+        assertNull(WatchCompanionCodec.decode("H|sample|u1|bad|100|run"))
+        assertNull(WatchCompanionCodec.decode("G|group|1|u1|Runner|bad|150|100"))
+        assertNull(WatchCompanionCodec.decode("G|group|1|u1|Runner|90|bad|100"))
+        assertNull(WatchCompanionCodec.decode("G|group|1|u1|Runner|90|150|bad"))
+        assertNull(WatchCompanionCodec.decode("G|group|858993460|u1|Runner||"))
     }
 
 }

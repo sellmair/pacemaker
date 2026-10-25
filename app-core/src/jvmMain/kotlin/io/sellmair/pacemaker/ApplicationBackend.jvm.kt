@@ -30,10 +30,6 @@ object JvmApplicationBackend : ApplicationBackend {
 
     private val database by lazy { createInMemoryDatabase() }
 
-    override val sessionService: SessionService by lazy {
-        SqlSessionService(database)
-    }
-
     private val meId by lazy {
         settings.meId
     }

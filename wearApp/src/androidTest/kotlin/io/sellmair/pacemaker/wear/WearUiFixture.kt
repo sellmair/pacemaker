@@ -53,7 +53,8 @@ private fun fixtureConfiguration(original: Configuration): Configuration {
 internal fun WearUiFixture(content: @Composable () -> Unit) {
     val original = LocalContext.current
     val density = LocalDensity.current.density
-    val configuration = remember(original) { fixtureConfiguration(original.resources.configuration) }
+    val baseConfiguration = LocalConfiguration.current
+    val configuration = remember(baseConfiguration) { fixtureConfiguration(baseConfiguration) }
     val localized = remember(original, configuration) { original.createConfigurationContext(configuration) }
     CompositionLocalProvider(
         LocalContext provides localized,

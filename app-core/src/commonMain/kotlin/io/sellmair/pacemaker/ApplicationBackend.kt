@@ -11,7 +11,6 @@ import kotlinx.coroutines.Deferred
 interface ApplicationBackend {
     val pacemakerBluetoothService: Deferred<PacemakerBluetoothService>
     val heartRateSensorBluetoothService: Deferred<HeartRateSensorBluetoothService>
-    val sessionService: SessionService
     val userService: UserService
     val states: States
     val events: Events

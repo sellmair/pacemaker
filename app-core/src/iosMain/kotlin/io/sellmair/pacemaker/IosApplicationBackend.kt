@@ -41,10 +41,6 @@ class IosApplicationBackend : ApplicationBackend, CoroutineScope {
         SqlUserService(pacemakerDatabase, meId)
     }
 
-    override val sessionService: SessionService by lazy {
-        SqlSessionService(pacemakerDatabase)
-    }
-
 
     init {
         launchApplicationBackend(this)

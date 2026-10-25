@@ -117,8 +117,7 @@ class MainActivity : ComponentActivity(), CoroutineScope {
             if (backend != null) {
                 CompositionLocalProvider(
                     LocalStates provides backend.states,
-                    LocalEvents provides backend.events,
-                    LocalSessionService provides backend.sessionService
+                    LocalEvents provides backend.events
                 ) {
                     ApplicationWindow()
                 }

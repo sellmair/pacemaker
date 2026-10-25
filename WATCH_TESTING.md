@@ -20,15 +20,15 @@ Current inventory:
 
 | Layer | What it checks | What it does not establish |
 | --- | --- | --- |
-| app-core common tests, HeartRateSourceTest | 15-second boundaries, own-source filtering, codecs, peer selection, measurement Stop run guard, plus retained legacy session helpers | Actual phone receiver/prefs mutations, persisted Stop queue, Android/Wear services, real sensor or transport |
-| app-core Android host tests | Group state/expiry and other-user strap behavior; SQL user behavior; one retained legacy recording test | Wear listeners, Health Services, permission/foreground restrictions, rendered UI |
+| app-core common tests | One-minute source freshness, own-source filtering, codecs, peer selection, measurement Stop run guard, and pure watch snapshot mapping | Android/Wear services, real sensor or transport |
+| app-core Android host tests | Group state, SQL user behavior, phone watch-message validation, selection races, and persisted Stop delivery through a controlled store and transport | Wear listeners, Health Services, permission/foreground restrictions, rendered UI |
 | AndroidStartupTest on a phone | MainActivity resumes and backend reaches foreground | Permission onboarding: it pre-grants permissions. Also not watch Start/Stop, live HR, UI removal, or recording prevention |
 | Debug/profile builds and Wear lint | Compilation, packaging, static checks | Runtime permission grants, actual exercise end, radio delivery, round-screen usability |
 | Shared JVM/iOS simulator runs | Portability of shared assertions | Independent additional scenarios or Apple Watch support |
 
-At the 2026-10-24 checkpoint, XML reports contained 18 JVM cases and 29 Android host cases (18 shared + 4 GroupState + 6 SqlUserService + 1 legacy SessionSourceSelection). The iOS simulator ran the same 18 shared cases. Do not present these repeated runs as 65 distinct behavioral scenarios.
+The 2026-10-24 test counts describe an older source tree. Use fresh reports for the current case count, and do not count the same shared assertions on JVM, Android host, and iOS simulator as distinct scenarios.
 
-Important gap: WatchMeasurementRunGate.shouldStop is used by the Wear service, but its acceptsHeartRate test helper does not exercise the production phone receiver's separate preference/tombstone logic. A passing helper test therefore does not prove late heart-rate handling in AndroidApplicationBackend. Several retained session-command tests concern the removed recording flow and are not evidence for the current measurement protocol.
+Important gap: host tests exercise the production phone message actor and Stop delivery with controlled collaborators, while real Wear listeners, radio delivery, and Health Services remain paired-device checks. The run gate's helper test alone does not establish those platform outcomes.
 
 ### Automated baseline
 
@@ -148,7 +148,7 @@ Prerequisites: M04 active.
 
 1. Tap watch Stop.
 2. Inspect the watch health service/exercise state and phone reading.
-3. Wait beyond 15 seconds.
+3. Wait beyond one minute.
 4. Start a new measurement and stop it again.
 
 Expected: actual Health Services end, health foreground service removed, own phone HR unavailable, unrelated group members retained, no old HR reappears. Start can be used again. Use a service/exercise observation plus UI; lost ADB means the service-end assertion is BLOCKED. Cleanup: idle.
@@ -212,16 +212,16 @@ Prerequisites: M04 active; profile builds.
 
 Expected: measurement and live delivery continue without an open Activity; no unexpected new measurement on reconnect. Expired readings clear and new fresh data recovers, including the same numerical BPM. ADB disappearing when Wi-Fi sleeps does not prove the app transport disconnected. Cleanup: stop measurement and restore changed display settings.
 
-### M11 — Local 15-second and remote 60-second freshness
+### M11 — Local one-minute and remote 60-second freshness
 
 Prerequisites: own watch sample and a distinct nearby participant.
 
 1. Stop delivering own sensor samples without continually refreshing their timestamps.
-2. Observe phone own reading, notification, and nearby broadcast after 15 seconds.
+2. Observe phone own reading, notification, and nearby broadcast after one minute.
 3. Stop the other participant's updates and observe group expiry after 60 seconds.
 4. Restore fresh samples, including a BPM identical to the old value.
 
-Expected: own cached HR clears after the 15-second freshness window; remote group values expire after 60 seconds; no false timestamp refresh from cached color/limit updates; identical fresh BPM returns. Record original sample timestamps and observation times. Cleanup: restore transport and stop fixtures.
+Expected: own cached HR clears after the one-minute freshness window; remote group values expire after 60 seconds; no false timestamp refresh from cached color/limit updates; identical fresh BPM returns. Record original sample timestamps and observation times. Cleanup: restore transport and stop fixtures.
 
 ### M12 — Idle group screen and critical haptics
 

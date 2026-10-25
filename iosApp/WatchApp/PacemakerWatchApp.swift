@@ -1,21 +1,10 @@
 import SwiftUI
-import HealthKit
-import WatchKit
 
 @main
 struct PacemakerWatchApp: App {
-    @WKApplicationDelegateAdaptor(PacemakerWatchAppDelegate.self) private var delegate
     @StateObject private var session = WatchSessionModel.shared
     var body: some Scene {
         WindowGroup { WatchHomeView().environmentObject(session) }
-    }
-}
-
-final class PacemakerWatchAppDelegate: NSObject, WKApplicationDelegate {
-    func handle(_ workoutConfiguration: HKWorkoutConfiguration) {
-        // HealthKit may launch the watch app while its UI is not visible. Activate
-        // WatchConnectivity here so a phone-authorized Start can reach the model.
-        Task { @MainActor in WatchSessionModel.shared.handlePhoneWorkoutLaunch(workoutConfiguration) }
     }
 }
 
