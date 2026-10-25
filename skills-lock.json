@@ -1,11 +1,125 @@
 {
   "version": 1,
   "skills": {
+    "android-benchmark-comparison": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/android-benchmark-comparison/SKILL.md",
+      "computedHash": "3904097391f8a41c156932146d41e0532675a27cb17a938ed7397e125ce83648"
+    },
+    "compose-animations": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-animations/SKILL.md",
+      "computedHash": "03397a33040128057c65813037d31dbf37cf5e2e1ce5961ff7e1c12eaac51449"
+    },
+    "compose-component-design": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-component-design/SKILL.md",
+      "computedHash": "c76c2aa036b947efbad8e9c8d371d8370c76e2cce497cf2adddea305bd58f369"
+    },
+    "compose-focus-navigation": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-focus-navigation/SKILL.md",
+      "computedHash": "a03ecba54b878005e451ab21f134f5eb3016a5349c88a3953ec7487e7b8bb964"
+    },
+    "compose-performance": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-performance/SKILL.md",
+      "computedHash": "9a802ea2c577d78f5bf462bb3eb245e959503456f233d30dd742db53b55de216"
+    },
+    "compose-state-and-effects": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-state-and-effects/SKILL.md",
+      "computedHash": "f261a5e6afec26c1465855470d3db2edf2ec014ba9cb1b6aeef38bae17fc9887"
+    },
+    "compose-ui-testing-patterns": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-ui-testing-patterns/SKILL.md",
+      "computedHash": "4d83f0e6164a9303cecf51a06652bc813c0759aa14be8774b6181dc56226a825"
+    },
+    "deliver-spec": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/deliver-spec/SKILL.md",
+      "computedHash": "4c4344a7c6cdcaa35a36e232d920a35fd905f16595ec1a7e99cebfea06f74790"
+    },
+    "gradle-run": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/gradle-run/SKILL.md",
+      "computedHash": "5e573edd723d1b39c21cfd0d6fb25449ee0b97a1555ab7ef02836e206563f0b9"
+    },
+    "grounded-writing": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/grounded-writing/SKILL.md",
+      "computedHash": "1c01de865c9896e83678338f33b06d8976ef9d7b70ea7e039625edfaf1dd84b0"
+    },
+    "implement-with-subagents": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/implement-with-subagents/SKILL.md",
+      "computedHash": "220aaa1962efc75c893d8fda8c19863e45f3b9dac55fb22ffcc9deed6708acea"
+    },
+    "kotlin-api-design": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-api-design/SKILL.md",
+      "computedHash": "55d7ed1f83ab2deaf7e7f0d537d54d670e775288ac2afb0e0a842e865e0cb344"
+    },
+    "kotlin-concurrency-and-flow": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-concurrency-and-flow/SKILL.md",
+      "computedHash": "0d3e2979094009914533a3ebfa30c87909b0edb82df484f04d5d9e6366f8591f"
+    },
+    "kotlin-control-flow": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-control-flow/SKILL.md",
+      "computedHash": "5eb2e691de770e770e20e8e25a23d5d55d81d4b66264423daa5e1e2219b2e4fd"
+    },
     "mobile-android-design": {
       "source": "wshobson/agents",
       "sourceType": "github",
       "skillPath": "plugins/ui-design/skills/mobile-android-design/SKILL.md",
       "computedHash": "bcb274bcc4e0ad076b5947f90e5a247f370ed4da1274b2b7347dc293ee396309"
+    },
+    "release-kotlin-library": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/release-kotlin-library/SKILL.md",
+      "computedHash": "f3e8719dc121461c8552dca93e2c93c8374097a2d238864572abab23bd73103d"
+    },
+    "run-github-project": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/run-github-project/SKILL.md",
+      "computedHash": "2c4bf4a6e12a2ef046ff82881587f3f0ae11d3f15ddef226f0ae2bae5cfd089e"
+    },
+    "shepherd": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/shepherd/SKILL.md",
+      "computedHash": "18411be6163e1e66d3e8b1181880bfecdbf6ee5e92f4b7366ccc5b2ac2891f81"
+    },
+    "to-plan": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/to-plan/SKILL.md",
+      "computedHash": "568a4db080a0c46ddc2937968d7c861b2ab4b44840256648453d6d7afe02b448"
+    },
+    "using-chrisbanes-skills": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/using-chrisbanes-skills/SKILL.md",
+      "computedHash": "a61329e34fe0c501325b9c34c348fd01b2f08adee6de2c688a3edaf55ab5e1f3"
     }
   }
 }
