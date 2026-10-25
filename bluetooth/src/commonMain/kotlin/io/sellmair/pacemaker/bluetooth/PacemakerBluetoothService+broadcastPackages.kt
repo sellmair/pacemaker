@@ -16,20 +16,51 @@ import io.sellmair.pacemaker.model.UserId
 import io.sellmair.pacemaker.utils.LogTag
 import io.sellmair.pacemaker.utils.error
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.yield
 import kotlin.time.Clock
 
 fun PacemakerBluetoothService.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
     return newConnections.flatMapMerge { connection -> connection.broadcastPackages() }
 }
 
-fun PacemakerBluetoothConnection.broadcastPackages(): Flow<PacemakerBroadcastPackage> = receivedValues
-    .broadcastPackages()
+fun PacemakerBluetoothConnection.broadcastPackages(): Flow<PacemakerBroadcastPackage> {
+    val connectionJob = coroutineContext[Job]
+    return channelFlow {
+        coroutineScope {
+            val receiver = launch(start = CoroutineStart.UNDISPATCHED) {
+                receivedValues.broadcastPackages().collect { send(it) }
+            }
+            val reader = launch {
+                // Let the decoder's undispatched collect register with the
+                // replay=0 SharedFlow before the initial read responses arrive.
+                yield()
+                (this@broadcastPackages as? ReadablePacemakerBluetoothConnection)
+                    ?.requestInitialRead()
+            }
+            val completionHandle = connectionJob?.invokeOnCompletion {
+                receiver.cancel()
+                reader.cancel()
+            }
+            try {
+                receiver.join()
+            } finally {
+                reader.cancel()
+                completionHandle?.dispose()
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalStdlibApi::class)
-internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcastPackage> = channelFlow {
+internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcastPackage> = flow {
     val logTag = LogTag.ble.with("decode PacemakerBroadcastPackage")
 
     class State(
@@ -48,12 +79,15 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
     }
 
     suspend fun State.emitIfPossible() {
-        send(
+        emit(
             PacemakerBroadcastPackage(
                 receivedTime = Clock.System.now(),
                 deviceId = deviceId,
                 userId = userId ?: return,
-                userName = userName ?: "n/a",
+                // A connection may first report the numeric characteristics before
+                // the name read/notification arrives. Emitting a placeholder here
+                // makes the receiver persist "n/a" as the user's actual name.
+                userName = userName?.takeIf(String::isNotBlank) ?: return,
                 heartRate = heartRate ?: return,
                 heartRateLimit = heartRateLimit ?: return,
                 userColorHue = userColorHue,
@@ -65,41 +99,68 @@ internal fun Flow<BleReceivedValue>.broadcastPackages(): Flow<PacemakerBroadcast
         with(stateOf(value.deviceId)) {
             when (value.characteristic) {
                 userIdCharacteristic -> {
-                    userId = runCatching { UserId(value.data) }.getOrNull()
-                    if (userId == null) {
+                    val decoded = runCatching { UserId(value.data) }.getOrNull()
+                    if (decoded == null) {
                         logTag.error("Failed decoding userId (${value.data.toHexString()})")
+                        return@collect
+                    } else {
+                        if (userId != null && userId != decoded) {
+                            // Characteristics belong to a user identity. Never combine
+                            // a newly observed ID with the previous user's metadata.
+                            userName = null
+                            userColorHue = null
+                            heartRate = null
+                            heartRateLimit = null
+                        }
+                        userId = decoded
                     }
                     emitIfPossible()
                 }
 
                 userNameCharacteristic -> {
-                    userName = runCatching { value.data.decodeToString() }.getOrNull()
-                    if (userName == null) {
+                    val decoded = runCatching { value.data.decodeToString() }.getOrNull()
+                    if (decoded.isNullOrBlank()) {
                         logTag.error("Failed decoding userName (${value.data.toHexString()})")
+                        return@collect
+                    } else {
+                        userName = decoded
                     }
                     emitIfPossible()
                 }
 
                 heartRateCharacteristic -> {
-                    heartRate = HeartRate(value.data)
-                    if (heartRate == null) {
-                        logTag.error("Failed decoding heartRate (${value.data.toHexString()})")
+                    val decoded = HeartRate(value.data)
+                    if (decoded == null) {
+                        if (value.data.isEmpty()) {
+                            heartRate = null
+                        } else {
+                            logTag.error("Failed decoding heartRate (${value.data.toHexString()})")
+                        }
+                        return@collect
+                    } else {
+                        heartRate = decoded
                     }
                     emitIfPossible()
                 }
 
                 heartRateLimitCharacteristic -> {
-                    heartRateLimit = HeartRate(value.data)
-                    if (heartRateLimit == null) {
+                    val decoded = HeartRate(value.data)
+                    if (decoded == null) {
                         logTag.error("Failed decoding heartRateLimit (${value.data.toHexString()})")
+                        return@collect
+                    } else {
+                        heartRateLimit = decoded
                     }
                     emitIfPossible()
                 }
 
                 userColorHueCharacteristic -> {
-                    userColorHue = Hue(value.data)
-                    if (userColorHue == null) {
+                    val decoded = Hue(value.data)
+                    if (decoded == null) {
                         logTag.error("Failed decoding userColorHue (${value.data.toHexString()}")
+                        return@collect
+                    } else {
+                        userColorHue = decoded
                     }
                     emitIfPossible()
                 }

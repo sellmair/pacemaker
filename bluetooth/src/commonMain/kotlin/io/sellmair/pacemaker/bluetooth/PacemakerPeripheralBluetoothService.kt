@@ -58,11 +58,14 @@ internal suspend fun PacemakerPeripheralBluetoothService(ble: Ble): PacemakerPer
     }
 }
 
-private class PeripheralPacemakerBluetoothConnection(
+internal class PeripheralPacemakerBluetoothConnection(
     override val deviceId: BleDeviceId,
     parentScope: CoroutineScope
 ) : PacemakerBluetoothConnection {
-    override val receivedValues: MutableSharedFlow<BleReceivedValue> = MutableSharedFlow()
+    // The first write creates and publishes this connection immediately before
+    // forwarding the write value. Retain that initial packet until its decoder
+    // subscribes to the newly published connection.
+    override val receivedValues: MutableSharedFlow<BleReceivedValue> = MutableSharedFlow(replay = 8)
 
     override val coroutineContext: CoroutineContext =
         parentScope.coroutineContext + Job(parentScope.coroutineContext.job)

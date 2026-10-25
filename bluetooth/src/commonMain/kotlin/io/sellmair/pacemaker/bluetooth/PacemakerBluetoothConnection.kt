@@ -16,10 +16,21 @@ interface PacemakerBluetoothConnection : CoroutineScope {
 
 internal interface WritablePacemakerBluetoothConnection : PacemakerBluetoothConnection, PacemakerBluetoothWritable
 
+internal interface ReadablePacemakerBluetoothConnection {
+    suspend fun requestInitialRead()
+}
+
 internal fun PacemakerConnection(connection: BleConnection): WritablePacemakerBluetoothConnection =
     object : WritablePacemakerBluetoothConnection,
+        ReadablePacemakerBluetoothConnection,
         PacemakerBluetoothWritable by PacemakerBluetoothWritable(connection) {
         override val deviceId: BleDeviceId = connection.deviceId
         override val receivedValues: SharedFlow<BleReceivedValue> = connection.receivedValues
         override val coroutineContext: CoroutineContext = connection.scope.coroutineContext
+
+        override suspend fun requestInitialRead() {
+            PacemakerServiceDescriptors.service.characteristics
+                .filter { it.isReadable }
+                .forEach { connection.requestRead(it) }
+        }
     }

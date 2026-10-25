@@ -40,7 +40,9 @@ internal suspend fun PacemakerCentralBluetoothService(ble: Ble): PacemakerCentra
                 PacemakerServiceDescriptors.service.characteristics
                     .filter { it.isReadable }
                     .forEach { readableCharacteristic -> connection.requestRead(readableCharacteristic) }
-                delay(60.seconds)
+                // Refresh well before the one-minute freshness window used by
+                // the group state and live UI.
+                delay(15.seconds)
             }
         }
 
